@@ -1,0 +1,59 @@
+﻿常用装备，用于快速查找
+
+强化
+	U082=L16 抽动的挣扎 Twitchthroe 镶嵌甲Studded Leather +10STR +10DEX +20IAS 
+	U201=L28 粗野之冠 Peasant Crown 战帽War Hat +15FRW 
+	U061=L15 渡鸟之爪 Raven Claw 长弓Long Bow
+	U103=L9 血拳 Bloodfist 重手套Heavy Gloves +10IAS 
+	SET125=L28 山德的禁忌 Sander's Taboo +20IAS 
+帽子
+	isor,nec: U248=L62 谐角之冠 Harlequin Crest 军帽Shako
+	lsor,ama: U336=L76 格利风之眼 Griffon's Eye 权冠diadem +25FCR
+	pal: SET104=L34 吉永之脸 Guillaume's Face +15STR
+	merc: 
+		U208=L41 吸血鬼的凝视 Vampire Gaze 残酷头盔Grim Helm
+		U206=L49 盗贼皇冠 Crown of Thieves 巨皇冠Grand Crown
+		U345=L83 安达利尔的面貌 Andariel's Visage 恶魔头盖骨面具demonhead
+项链
+	U272=L67 马拉的万花筒 Mara's Kaleidoscope
+	U276=大君之怒 Highlord's Wrath
+	U269=猫眼 The Cat's Eye
+戒指
+	U122=L29 乔丹之石 The Stone of Jordan 戒指Ring
+	U268=L58 布尔凯索之戒 Bul-Kathos' Wedding Band 婚戒
+	U275=L45 乌鸦之霜 Raven Frost
+衣服
+	sor,ama: U210=L29 蛇魔法师之皮 Skin of the Vipermagi 海蛇皮甲SerpentSkin Armor
+	nec: RW031=L65 谜团 Enigma
+	pal,merc: RW066=L59 刚毅 Fortitude
+	merc: RW053=L51 强制 Duress
+		U215=谢夫特斯坦布 Shaftstop
+手套
+	U364=L76 卓古拉之握 Dracul's Grasp 吸血鬼骸骨手套vampirebone gloves
+腰带
+	U373=L80 蜘蛛之网 Arachnid Mesh 蛛网腰带spiderweb sash
+	ama,pal: U246=L47 雷神之力 Thundergod's Vigor 巨戰腰帶War Belt +20STR
+鞋子
+	SET124=L20 山德的碎石 Sander's Riprap +40FRW +5STR +10DEX
+	SET069=L45 艾尔多的成长 Aldur's Advance +40FRW
+	U241=L72 蚀肉骑士 Gore Rider 巨戰之靴War Boots +30FRW
+主武器
+	esor: U284=L42 眼球 The Oculus 涡流水晶Swirling Crystal
+	sor,nec: RW037=L55 橡树之心 Heart of the Oak
+	ama: U281=L42 泰坦的复仇 Titan's Revenge 祭奠标枪Ceremonial Javelin
+	pal: U371=L61 天堂之光 Heaven's Light 强威权杖mighty scepter
+	merc:
+		RW060=L53 遵从 Obedience
+		RW101=L63 无限 Infinity
+		U326=L75 死神的丧钟 The Reaper's Toll 锐利之斧thresher
+副武器
+	RW027=CTA战争召唤 Call to Arms
+盾牌:
+	RW049=SPT精神 Spirit
+	pal: U285=L68 撒卡兰姆使者 Herald of Zakarum  饰金盾牌Guilded Shield
+护符
+	U381=毁灭 Annihilus
+	U400=L75 地狱火炬 Hellfire Torch
+其它
+	U218=守护天使 Guardian Angel 聖堂武士外袍Templar Coat
+	SET77=塔-拉夏的判决 Tal Rasha's Adjudication

@@ -1,0 +1,90 @@
+AlertNoBug: 0,VK_
+CFG Version Eng : ""
+CFG Version Chi : ""
+Default Game Name:     "mf1"               //设置默认游戏名,注意引号必须有
+Default Game Password: ""                  //设置默认游戏密码
+Default Game Description: ""             //设置默认游戏描述
+Item ExtInfo Toggle :          0, -1               //开启命令
+//item Colours[2022]:         -1, -1 , -2 , -2       // 回城卷轴，白色
+//item Colours[2023]:         -1, -1 , -2 , -2       // 辨识卷轴
+//item Colours[2008,2009]:    11, -1 , -1 , -1       // 紫瓶，紫色
+//item Colours[2085-2089]:    -1, -1 , -2 , -1       //Mana Potion
+item Colours[2084]:    1, -1 , -2 , -1       //Super Healing Potion
+item Colours[2089]:    3, -1 , -2 , -1       //Super Mana Potion
+Rune Colours[1-21]:                      8,0x62,-1,-1       //低级符文
+Rune Colours[4,6,7,8,9,10,11,15,21]:       8,0x62,-1,-1       //用于craft的符文
+Rune Colours[1-6]:       -1,-2,-2,-2      
+//Rune Colours[6]:                      8,0x5B,-1,-1       //低级符文
+//item Colours[LGem]:         1, 0x62 , -2 , -1       //低级宝石
+item Colours[2050,2055,2060,2065,2070,2075,2090]:         -1, -2 , -2 , -2       //Chipped Gem
+//item Colours[2076]:         1, 0x62 , -2 , -2       //FDiamond 21->22
+//item Colours[2057]:         1, 0x62 , -2 , -2       //黄Topz 22->23
+//item Colours[2052]:         1, 0x62 , -2 , -2       //紫Ame 23->24
+//item Colours[2062]:         1, 0x62 , -2 , -2       //蓝Sap 24->25
+//item Colours[2072]:         1, 0x62 , -2 , -2       //红Ruby 25->26
+//item Colours[2067]:         1, 0x62 , -2 , -2       //绿Eme 26->27
+//item Colours[2077]:         1, 0x62 , -2 , -2       //白Diamond 27->28
+
+//Item Colours[物品代码][物品质量][无形否][孔数]
+//Item Colours[1008-1022,1054-1065,1068,1124-1127,1138][1,2,3][1][3]: 1, 0x62 , -2 , -2       //2 sockets body armor
+//Item Colours[1051-1053,1123,1160][1,2,3][1][4]: 1, 0x62 , -2 , -2       //3 sockets helm
+Item Colours[1142][1,2,3][1][1,5]: 1, 0x62 , -2 , -2       //4 sockets shield 
+//Item Colours[1173-1177,1193-1197][1,2,3][1][1,5]: 1, 0x62 , -2 , -2       //4 sockets paladin shield 
+//Item Colours[1060-1062][1,2,3][1][1,4]: 1, 0x62 , -2 , -2       //max 3 sockets body armor <250
+//Item Colours[1063,1064,1068][1,2,3][1][1,4]: 1, 0x62 , -2 , -2       //max 3 sockets body armor >250
+//Item Colours[1068][1,2,3][1][1,4]: 1, 0x62 , -2 , -2       //max 3 sockets body armor >250
+Item Colours[1124-1131,1065,1066,1138][1,2,3][1][4]: 1, -1 , -2 , -2       //3 sockets body armor 
+Item Colours[1125][1,2,3][1][1,4,5]: 1, 0x5B , -2 , -2       //Wyrmhide
+//Item Colours[1124-1131,1065,1066,1138][1,2,3][1,2][1,5]: 1, 0x5B , -2 , -2       //4 sockets body armor 
+//Item Colours[1138][1,2,3][1,2][1,5]: 1, 0x5B , -2 , -2       //4 sockets body armor 
+//Item Colours[31][1,2,3][1][5]: 1, 0x62 , -2 , -2       //max 4 sockets one hand sword
+//Item Colours[30][1,2,3][1][5,6]: 1, 0x62 , -2 , -2       //4,5 sockets one hand sword
+//Item Colours[22][1,2][1,2][1]: 1, 0x62 , -2 , -2       //4 sockets maces
+//Item Colours[22][3][1,2][1]: 1, 0x62 , -2 , -2       //4 sockets maces
+//Item Colours[22][1,2,3][1,2][5,6]: 1, 0x62 , -2 , -2       //4 sockets maces
+//Item Colours[69-71,77][1,2,3][1][5]: 1, 0x62 , -2 , -2       //4 sockets bow
+//Item Colours[59,152,255][1,2,3][1,2][1]: 1, 0x5B , -2 , -2       //max 4 sockets polearms
+//Item Colours[59-63,152-156,255-259][1,2,3][1,2][5]: 1, 0x5B , -2 , -2       //4 sockets polearms
+//Item Colours[59-60][1,2,3][1][5]: 1, 0x5B , -2 , -2       //4 sockets polearms
+Item Colours[256,259][1,2,3][2][1,5,6]: 1, 0x62 , -2 , -2       //4 sockets polearms
+Item Colours[201][1,2,3][1,2][5]: 1, 0x62 , -2 , -2       //4 sockets axes
+//Item Colours[66,67,159,160][1,2,3][1][5]: 1, 0x62 , -2 , -2       //max 4 sockets stave
+//Item Colours[68,161][1,2,3][1][5]: 1, 0x62 , -2 , -2       //max 4 sockets stave
+Item Colours[1197][1,2,3][1,2][1,4,5]: 1, 0x62 , -2 , -2       //旋风盾 Vortex Shield 
+//Item Colours[1085,1087,1156][1,2,3][1,2][1]: 1, 0x62 , -2 , -2 //belt
+
+Snapshot Path: "D:\game\snapshot"
+Message Log Toggle:      2   //记录游戏日志 0不记录日志, 1记录日志  2 不记录聊天信息
+//Auto Reveal Act:                0                   //自动开全部地图
+//Auto Invite Toggle:             0, CTRL_VK_P //             //自动邀请，最早进游戏的人物可以自动激活，U键
+//Auto Party Toggle:              1, -1 //             //自动接受组队邀请，U键
+Auto Summon Toggle: 1, CTRL_ALT_VK_S, 1 //第三个值为2表示只在尼拉赛克神殿使用自动召唤
+AutoSummonSkeletonLevelAdjust: -2
+AutoSummonSkeletonMageLevelAdjust: -2
+Auto Summon Mana: 60 //召唤需要法力
+Auto Summon Switch Skill Ms: 60 //切换技能时间
+AutoPotionToggle: 1,CTRL_ALT_VK_P
+HirePotionMinCLevel: 67 //当人物级别大于等于此值时给佣兵自动喝药，否则只喊救命
+HirePotionColumn: 1 //佣兵使用第几列药,0取消此功能
+ManaPotionMax: 500 //当人物法力上限超过此值时启动自动法力药剂
+ManaPotionColumn: 3 //使用第几列药,0取消此功能
+ManaPotionValue: 50 //法力低于此值后喝药
+ManaPotionNTValue: 50 //在尼拉赛克神殿法力低于此值后喝药
+Auto Hide Minimap Toggle: 1, CTRL_ALT_VK_V
+Bug Auto Quit Hell Toggle:      1, CTRL_ALT_VK_B          //地狱难度bug保护提示后是否自动退出游戏 0 不退出 1退出
+Bug Auto Quit Hell Act5 Toggle: 0, SHIFT_CTRL_ALT_VK_B  //地狱难度ACT5 bug保护提示后是否自动退出游戏 0 不退出 1退出
+//LibraryPath: "D:\game\diablo2\D2MultiRes_113c.dll"
+Auto Call To Arm: 200 //切换武器后200ms检查是否全屏并且左手是否CTA,如果是则将左键设为BC,右键设为BO,按住W键时保持站立,松开后自动切换武器回来,设为0取消此功能
+Mini Map Scroll Keys[1]: VK_UP,VK_
+Mini Map Scroll Keys[2]: VK_DOWN,VK_
+Mini Map Scroll Keys[3]: VK_LEFT,VK_
+Mini Map Scroll Keys[4]: VK_RIGHT,VK_
+NecTeleportAttractToggle: 1,VK_ //0:无操作 1:如果是NEC右键切换为传送时将左键切换为吸引,由传送切换为别的技能时将左键切换为普通攻击
+NecNoAttackInHellToggle: 1,VK_  //地狱难度NEC左键技能设为普通攻击时左键点击怪物只移动不攻击
+//MultiClientTransferClickKey: VK_MENU //将左右键操作发到别的窗口执行，不能使用组合键
+
+Monitor Packet: 0 //安装接收包监控补丁，可能影响速度
+PacketHandlerToggle: 0,CTRL_ALT_VK_N
+MonitorRecvCmd[0,7,8,0x67,0x68,0x6b,0x6d,0x8a,0x8f,0x95]:0
+MonitorSendCmd[0,0x6d]:0
+Test Key: CTRL_VK_T

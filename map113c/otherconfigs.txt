@@ -1,0 +1,57 @@
+//实际上用不到的设置
+Auto Maximize Width: 1600 //分辨率宽度大于等于1600时进入游戏时自动最大化
+Auto Maximize Height: 900//分辨率高度大于等于900时进入游戏时自动最大化
+//命令行中包含-d2multires时加载D2MultiRes_113c.dll
+LoadLibraryCommand: "-d2multires"
+//或者启动时按住Ctrl键加载D2MultiRes_113c.dll，这样只要一个快捷方式就可以启动高分率和低分率两种窗口，适合单开和多开
+LoadLibraryKey: VK_CONTROL
+LibraryPath: "..\D2MultiRes_113c.dll"
+//切换技能，可定义32组，每组设置四个按键, 每个职业可单独设置
+//通过此功能每个按键可对应三种技能，按下时左键右键分别操作一种技能，松开时右键切换到另一种技能。
+//SwitchSkillKeys[组编号]: 按键1,按键2,按键3,按键4
+//按下时左键技能SwitchSkillLeft[组编号][职业]: 技能编号1,技能编号2,技能编号3,技能编号4,选第一个可用技能
+//按下时右键技能SwitchSkillRight[组编号][职业]: 技能编号1,技能编号2,技能编号3,技能编号4
+//松开时左键技能SwitchSkillLeftUp[组编号][职业]: 技能编号,PreviousSkill表示恢复原先的技能
+//松开时右键技能SwitchSkillRightUp[组编号][职业]: 技能编号
+//SwitchSkillStandStill[组编号]: 1:按住键时站在原地不动
+//职业:ClassAma:1 ClassSor:2 ClassNec:3 ClassPal:4 ClassBar:5 ClassDru:6 ClassAsn:7 ClassAll:1-7
+//举例1: 将左键设置为BC,右键设置为BO
+SwitchSkillKeys[1]: CTRL_VK_B
+SwitchSkillLeft[1]: SkillBattleCommand,-1,-1,-1
+SwitchSkillRight[1]: SkillBattleOrders,-1,-1,-1
+//举例2: 按下C时切换到传送
+//SwitchSkillKeys[2]: VK_C
+//SwitchSkillRight[2]: SkillTeleport
+//SwitchSkillLeft[2][ClassNec]: SkillAttack,-1,-1,-1
+//举例3: 按下X时切换到回城卷轴或回城书
+//SwitchSkillKeys[3]: VK_X
+//SwitchSkillRight[3]: SkillScrollofTownportal,SkillBookofTownportal
+//SwitchSkillRightUp[3]: PreviousSkill
+//SwitchSkillLeft[3][ClassNec]: SkillBoneArmor,-1,-1,-1
+//SwitchSkillLeftUp[3]: PreviousSkill
+//SwitchSkillLeftUp[3][ClassNec]: SkillTeeth
+//SwitchSkillStandStill[3]: 1
+SwitchSkillKeys[2]: VK_W
+SwitchSkillRight[2]: SwapWeapon,-1,-1,-1
+SwitchSkillRightUp[2]: SwapWeapon
+SwitchSkillStandStill[2]: 1
+SwitchSkillKeys[4]: VK_D
+SwitchSkillRight[4][ClassNec]: SkillAmplifyDamage,-1,-1,-1
+SwitchSkillKeys[5]: VK_A
+SwitchSkillRight[5][ClassNec]: SkillRaiseSkeleton,-1,-1,-1
+SwitchSkillKeys[6]: VK_Y
+SwitchSkillRight[6][ClassNec]: SkillRaiseSkeletalMage,-1,-1,-1
+SwitchSkillKeys[7]: VK_E
+SwitchSkillRight[7][ClassNec]: SkillDimVision,-1,-1,-1
+SwitchSkillKeys[8]: VK_S
+SwitchSkillRight[8][ClassNec]: SkillAttract,-1,-1,-1
+SwitchSkillKeys[9]: VK_Z
+SwitchSkillRight[9][ClassNec]: SkillCorpseExplosion,-1,-1,-1
+SwitchSkillKeys[12]: VK_Q
+SwitchSkillRight[12][ClassNec]: SkillDecrepify
+SwitchSkillKeys[13]: VK_TAB
+SwitchSkillRight[13][ClassNec]: SkillRevive
+//SwitchWindowKeys[1]: VK_F1 //切换窗口按键，可设置8个
+//SwitchWindowKeys[2]: VK_F2
+//SwitchWindowKeys[3]: VK_F3
+//SwitchWindowKeys[4]: VK_F4

@@ -1,0 +1,367 @@
+//internal id +1
+PreviousSkill:-2
+SwapWeapon:-3
+SkillAttack:1
+SkillKick:2
+SkillThrow:3
+SkillUnsummon:4
+SkillLeftHandThrow:5
+SkillLeftHandSwing:6
+//-------- ama --------
+SkillMagicArrow:7
+SkillFireArrow:8
+SkillInnerSight:9
+SkillCriticalStrike:10
+SkillJab:11
+SkillColdArrow:12
+SkillMultipleShot:13
+SkillDodge:14
+SkillPowerStrike:15
+SkillPoisonJavelin:16
+SkillExplodingArrow:17
+SkillSlowMissiles:18
+SkillAvoid:19
+SkillImpale:20
+SkillLightningBolt:21
+SkillIceArrow:22
+SkillGuidedArrow:23
+SkillPenetrate:24
+SkillChargedStrike:25
+SkillPlagueJavelin:26
+SkillStrafe:27
+SkillImmolationArrow:28
+SkillDopplezon:29
+SkillEvade:30
+SkillFend:31
+SkillFreezingArrow:32
+SkillValkyrie:33
+SkillPierce:34
+SkillLightningStrike:35
+SkillLightningFury:36
+//-------- sor --------
+SkillFireBolt:37	//火弹
+SkillWarmth:38	//温暖
+SkillChargedBolt:39	//闪电弹
+SkillIceBolt:40	//冰弹
+SkillFrozenArmor:41	//冰封装甲
+SkillInferno:42	//地狱火
+SkillStaticField:43	//静电力场
+SkillTelekinesis:44	//心灵传动
+SkillFrostNova:45	//霜之新星
+SkillIceBlast:46	//冰风暴
+SkillBlaze:47	//烈焰之径
+SkillFireBall:48	//火球
+SkillNova:49	//新星
+SkillLightning:50	//闪电
+SkillShiverArmor:51	//碎冰甲
+SkillFireWall:52	//火墙
+SkillEnchant:53	//火焰强化
+SkillChainLightning:54	//连锁闪电
+SkillTeleport:55	//传送
+SkillGlacialSpike:56	//冰尖柱
+SkillMeteor:57	//陨石
+SkillThunderStorm:58	//雷暴
+SkillEnergyShield:59	//能量护盾
+SkillBlizzard:60	//暴风雪
+SkillChillingArmor:61	//寒冰装甲
+SkillFireMastery:62	//火焰支配
+SkillHydra:63	//九头海蛇
+SkillLightningMastery:64	//闪电支配
+SkillFrozenOrb:65	//冰封球
+SkillColdMastery:66	//冰冷支配
+//-------- nec --------
+SkillAmplifyDamage:67	//伤害加深
+SkillTeeth:68	//牙
+SkillBoneArmor:69	//骨盾
+SkillSkeletonMastery:70	//骷髅支配
+SkillRaiseSkeleton:71	//骷髅复生
+SkillDimVision:72	//微暗灵视
+SkillWeaken:73	//削弱
+SkillPoisonDagger:74	//淬毒匕首
+SkillCorpseExplosion:75	//尸体爆炸
+SkillClayGolem:76	//粘土石魔
+SkillIronMaiden:77	//攻击反噬
+SkillTerror:78	//恐惧
+SkillBoneWall:79	//骨墙
+SkillGolemMastery:80	//石魔支配
+SkillRaiseSkeletalMage:81	//骷髅法师
+SkillConfuse:82	//迷乱
+SkillLifeTap:83	//生命偷取
+SkillPoisonExplosion:84	//毒爆
+SkillBoneSpear:85	//骨矛
+SkillBloodGolem:86	//鲜血石魔
+SkillAttract:87	//吸引
+SkillDecrepify:88	//衰老
+SkillBonePrison:89	//骨牢
+SkillSummonResist:90	//召唤抵抗
+SkillIronGolem:91	//钢铁石魔
+SkillLowerResist:92	//降低抵抗
+SkillPoisonNova:93	//剧毒新星
+SkillBoneSpirit:94	//骨魂
+SkillFireGolem:95	//火焰石魔
+SkillRevive:96	//重生
+//-------- pal --------
+SkillSacrifice:97
+SkillSmite:98
+SkillMight:99
+SkillPrayer:100
+SkillResistFire:101
+SkillHolyBolt:102
+SkillHolyFire:103
+SkillThorns:104
+SkillDefiance:105
+SkillResistCold:106
+SkillZeal:107
+SkillCharge:108
+SkillBlessedAim:109
+SkillCleansing:110
+SkillResistLightning:111
+SkillVengeance:112
+SkillBlessedHammer:113
+SkillConcentration:114
+SkillHolyFreeze:115
+SkillVigor:116
+SkillConversion:117
+SkillHolyShield:118
+SkillHolyShock:119
+SkillSanctuary:120
+SkillMeditation:121
+SkillFistoftheHeavens:122
+SkillFanaticism:123
+SkillConviction:124
+SkillRedemption:125
+SkillSalvation:126
+//-------- bar --------
+SkillBash:127
+SkillSwordMastery:128
+SkillAxeMastery:129
+SkillMaceMastery:130
+SkillHowl:131
+SkillFindPotion:132
+SkillLeap:133
+SkillDoubleSwing:134
+SkillPoleArmMastery:135
+SkillThrowingMastery:136
+SkillSpearMastery:137
+SkillTaunt:138
+SkillShout:139
+SkillStun:140
+SkillDoubleThrow:141
+SkillIncreasedStamina:142
+SkillFindItem:143
+SkillLeapAttack:144
+SkillConcentrate:145
+SkillIronSkin:146
+SkillBattleCry:147
+SkillFrenzy:148
+SkillIncreasedSpeed:149
+SkillBattleOrders:150
+SkillGrimWard:151
+SkillWhirlwind:152
+SkillBerserk:153
+SkillNaturalResistance:154
+SkillWarCry:155
+SkillBattleCommand:156
+SkillFireHit:157
+SkillUnHolyBolt:158
+SkillSkeletonRaise:159
+SkillMaggotEgg:160
+SkillShamanFire:161
+SkillMagottUp:162
+SkillMagottDown:163
+SkillMagottLay:164
+SkillAndrialSpray:165
+SkillJump:166
+SkillSwarmMove:167
+SkillNest:168
+SkillQuickStrike:169
+SkillVampireFireball:170
+SkillVampireFirewall:171
+SkillVampireMeteor:172
+SkillGargoyleTrap:173
+SkillSpiderLay:174
+SkillVampireHeal:175
+SkillVampireRaise:176
+SkillSubmerge:177
+SkillFetishAura:178
+SkillFetishInferno:179
+SkillZakarumHeal:180
+SkillEmerge:181
+SkillResurrect:182
+SkillBestow:183
+SkillMissileSkill1:184
+SkillMonTeleport:185
+SkillPrimeLightning:186
+SkillPrimeBolt:187
+SkillPrimeBlaze:188
+SkillPrimeFirewall:189
+SkillPrimeSpike:190
+SkillPrimeIceNova:191
+SkillPrimePoisonball:192
+SkillPrimePoisonNova:193
+SkillDiabLight:194
+SkillDiabCold:195
+SkillDiabFire:196
+SkillFingerMageSpider:197
+SkillDiabWall:198
+SkillDiabRun:199
+SkillDiabPrison:200
+SkillPoisonBallTrap:201
+SkillAndyPoisonBolt:202
+SkillHireableMissile:203
+SkillDesertTurret:204
+SkillArcaneTower:205
+SkillMonBlizzard:206
+SkillMosquito:207
+SkillCursedBallTrapRight:208
+SkillCursedBallTrapLeft:209
+SkillMonFrozenArmor:210
+SkillMonBoneArmor:211
+SkillMonBoneSpirit:212
+SkillMonCurseCast:213
+SkillHellMeteor:214
+SkillRegurgitatorEat:215
+SkillMonFrenzy:216
+SkillQueenDeath:217
+SkillScrollofIdentify:218
+SkillBookofIdentify:219
+SkillScrollofTownportal:220
+SkillBookofTownportal:221
+//-------- dru --------
+SkillRaven:222 //summon
+SkillPlaguePoppy:223
+SkillWearwolf:224 //shape
+SkillLycanthropy:225 //shape  
+SkillFirestorm:226 //elemental
+SkillOakSage:227 //summon
+SkillSummonSpiritWolf:228 //summon
+SkillWearbear:229 //shape
+SkillMoltenBoulder:230 //elemental
+SkillArcticBlast:231 //elemental
+SkillCycleofLife:232
+SkillFeralRage:233 //shape
+SkillMaul:234 //shape
+SkillEruption:235
+SkillCycloneArmor:236 //element
+SkillHeartofWolverine:237
+SkillSummonFenris:238
+SkillRabies:239
+SkillFireClaws:240
+SkillTwister:241
+SkillVines:242
+SkillHunger:243
+SkillShockWave:244
+SkillVolcano:245
+SkillTornado:246
+SkillSpiritofBarbs:247
+SkillSummonGrizzly:248
+SkillFury:249
+SkillArmageddon:250
+SkillHurricane:251
+//-------- asn --------
+SkillFireTrauma:252
+SkillClawMastery:253
+SkillPsychicHammer:254
+SkillTigerStrike:255
+SkillDragonTalon:256
+SkillShockField:257
+SkillBladeSentinel:258
+SkillQuickness:259
+SkillFistsofFire:260
+SkillDragonClaw:261
+SkillChargedBoltSentry:262
+SkillWakeofFireSentry:263
+SkillWeaponBlock:264
+SkillCloakofShadows:265
+SkillCobraStrike:266
+SkillBladeFury:267
+SkillFade:268
+SkillShadowWarrior:269
+SkillClawsofThunder:270
+SkillDragonTail:271
+SkillLightningSentry:272
+SkillInfernoSentry:273
+SkillMindBlast:274
+SkillBladesofIce:275
+SkillDragonFlight:276
+SkillDeathSentry:277
+SkillBladeShield:278
+SkillVenom:279
+SkillShadowMaster:280
+SkillRoyalStrike:281
+SkillWakeOfDestructionSentry:282
+SkillImpInferno:283
+SkillImpFireball:284
+SkillBaalTaunt:285
+SkillBaalCorpseExplode:286
+SkillBaalMonsterSpawn:287
+SkillCatapultChargedBall:288
+SkillCatapultSpikeBall:289
+SkillSuckBlood:290
+SkillCryHelp:291
+SkillHealingVortex:292
+SkillTeleport2:293
+SkillSelfResurrect:294
+SkillVineAttack:295
+SkillOverseerWhip:296
+SkillBarbsAura:297
+SkillWolverineAura:298
+SkillOakSageAura:299
+SkillImpFireMissile:300
+SkillImpregnate:301
+SkillSiegeBeastStomp:302
+SkillMinionSpawner:303
+SkillCatapultBlizzard:304
+SkillCatapultPlague:305
+SkillCatapultMeteor:306
+SkillBoltSentry:307
+SkillCorpseCycler:308
+SkillDeathMaul:309
+SkillDefenseCurse:310
+SkillBloodMana:311
+Skillmoninfernosentry:312
+Skillmondeathsentry:313
+Skillsentrylightning:314
+Skillfenrisrage:315
+SkillBaalTentacle:316
+SkillBaalNova:317
+SkillBaalInferno:318
+SkillBaalColdMissiles:319
+SkillMegademonInferno:320
+SkillEvilHutSpawner:321
+SkillCountessFirewall:322
+SkillImpBolt:323
+SkillHorrorArcticBlast:324
+Skilldeathsentryltng:325
+SkillVineCycler:326
+SkillBearSmite:327
+SkillResurrect2:328
+SkillBloodLordFrenzy:329
+SkillBaalTeleport:330
+SkillImpTeleport:331
+SkillBaalCloneTeleport:332
+SkillZakarumLightning:333
+SkillVampireMissile:334
+SkillMephistoMissile:335
+SkillDoomKnightMissile:336
+SkillRogueMissile:337
+SkillHydraMissile:338
+SkillNecromageMissile:339
+SkillMonBow:340
+SkillMonFireArrow:341
+SkillMonColdArrow:342
+SkillMonExplodingArrow:343
+SkillMonFreezingArrow:344
+SkillMonPowerStrike:345
+SkillSuccubusBolt:346
+SkillMephFrostNova:347
+SkillMonIceSpear:348
+SkillShamanIce:349
+SkillDiablogeddon:350
+SkillDeleriumChange:351
+SkillNihlathakCorpseExplosion:352
+SkillSerpentCharge:353
+SkillTrapNova:354
+SkillUnHolyBoltEx:355
+SkillShamanFireEx:356
+SkillImpFireMissileEx:357

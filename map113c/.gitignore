@@ -1,0 +1,11 @@
+/d2hackmap.exp
+/d2hackmap.lib
+/d2hackmap.map
+/d2hackmap.pdb
+/need.txt
+/old.txt
+/keymap.log
+/runtime/d2hackmap*.log
+/runtime/keymap.log
+/runtime/d2_*.txt
+/r

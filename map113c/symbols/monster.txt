@@ -1,0 +1,706 @@
+//Monsters, internal id +1
+Skeleton: 1
+Returned 1: 2
+Bone Warrior 1: 3
+Burning Dead: 4
+Horror: 5
+Zombie: 6
+Hungry Dead: 7
+Ghoul: 8
+Drowned Carcass: 9
+Plague Bearer 1: 10
+Afflicted 1: 11
+Tainted 1: 12
+Misshapen 1: 13
+Disfigured 1: 14
+Damned 1: 15
+Foul Crow 1: 16
+Blood Hawk 1: 17
+Black Raptor 1: 18
+Cloud Stalker 1: 19
+Fallen: 20
+Carver 1: 21
+Devilkin 1: 22
+Dark One 1: 23
+Warped One: 24
+Brute: 25
+Yeti: 26
+Crusher: 27
+Wailing Beast: 28
+Gargantuan Beast: 29
+Sand Raider 1: 30
+Marauder 1: 31
+Invader 1: 32
+Infidel 1: 33
+Assailant 1: 34
+unused Gorgon: 35
+unused StoneStalker: 36
+unused SerpentQueen: 37
+unused StygianWatcher: 38
+Ghost 1: 39
+Wraith 1: 40
+Specter 1: 41
+Apparition: 42
+Dark Shape: 43
+Dark Hunter: 44
+Vile Hunter: 45
+Dark Stalker: 46
+Black Rogue: 47
+Flesh Hunter: 48
+Dune Beast: 49
+Rock Dweller: 50
+Jungle Hunter: 51
+Doom Ape: 52
+Temple Guard 1: 53
+Moon Clan 1: 54
+Night Clan 1: 55
+Blood Clan 1: 56
+Hell Clan 1: 57
+Death Clan 1: 58
+Fallen Shaman: 59
+Carver Shaman 1: 60
+Devilkin Shaman 1: 61
+Dark Shaman 1: 62
+Warped Shaman: 63
+Quill Rat 1: 64
+Spike Fiend 1: 65
+Thorn Beast: 66
+Razor Spine 1: 67
+Bush Barb: 68
+Sand Maggot: 69
+Rock Worm: 70
+Devourer: 71
+Giant Lamprey: 72
+Blood Maggot 1: 73
+Tomb Viper 1: 74
+Claw Viper 1: 75
+Salamander 1: 76
+Pit Viper 1: 77
+Serpent Magus 1: 78
+Sand Leaper: 79
+Cave Leaper 1: 80
+Tomb Creeper 1: 81
+Tree Lurker: 82
+Cliff Lurker: 83
+Huntress 1: 84
+Saber Cat 1: 85
+Night Tiger: 86
+Hell Cat: 87
+Itchies: 88
+Black Locusts: 89
+Plague Bugs: 90
+Hell Swarm: 91
+Dung Soldier: 92
+Death Beetle: 93
+Scarab 1: 94
+Steel Scarab 1: 95
+Bone Scarab: 96
+Dried Corpse: 97
+Decayed: 98
+Embalmed: 99
+Preserved Dead: 100
+Cadaver 1: 101
+Hollow One: 102
+Guardian 1: 103
+Unraveler 1: 104
+Horadrim Ancient 1: 105
+Baal Unraveler: 106
+unused DamnedHorde: 107
+unused TwistedHorde: 108
+unused WickedHorde: 109
+unused UnholyHorde: 110
+Carrion Bird 1: 111
+Undead Scavenger: 112
+Hell Buzzard: 113
+Winged Nightmare: 114
+Sucker: 115
+Feeder: 116
+Blood Hook: 117
+Blood Wing: 118
+Gloam 1: 119
+Swamp Ghost: 120
+Burning Soul 1: 121
+Black Soul 1: 122
+Arach 1: 123
+Sand Fisher: 124
+Poison Spinner: 125
+Flame Spider: 126
+Spider Magus: 127
+Thorned Hulk 1: 128
+Bramble Hulk: 129
+Thrasher: 130
+Spikefist: 131
+Ghoul Lord 1: 132
+Night Lord 1: 133
+Dark Lord 1: 134
+Blood Lord 1: 135
+The Banished: 136
+Desert Wing: 137
+Fiend 1: 138
+Gloombat 1: 139
+Blood Diver: 140
+Dark Familiar: 141
+Rat Man 1: 142
+Fetish 1: 143
+Flayer 1: 144
+Soul Killer 1: 145
+Stygian Doll 1: 146
+Deckard Cain 1: 147
+Gheed: 148
+Akara: 149
+dummy chicken: 150
+Kashya: 151
+dummy rat: 152
+dummy RogueTown: 153
+dummy HellMeteor: 154
+Charsi: 155
+Warriv 1: 156
+Andariel: 157
+dummy Smallbird: 158
+dummy Largebird: 159
+dummy Bat: 160
+Dark Ranger: 161
+Vile Archer 1: 162
+Dark Archer 1: 163
+Black Archer: 164
+Flesh Archer: 165
+Dark Spearwoman: 166
+Vile Lancer 1: 167
+Dark Lancer 1: 168
+Black Lancer 1: 169
+Flesh Lancer: 170
+Skeleton Archer: 171
+Returned Archer 1: 172
+Bone Archer 1: 173
+Burning Dead Archer 1: 174
+Horror Archer 1: 175
+Warriv 2: 176
+Atma: 177
+Drognan: 178
+Fara: 179
+dummy Cow: 180
+Sand Maggot Young: 181
+Rock Worm Young: 182
+Devourer Young: 183
+Giant Lamprey Young: 184
+Blood Maggot Young 1: 185
+dummy Camel: 186
+Blunderbore 1: 187
+Gorebelly: 188
+Mauler 1: 189
+Urdar: 190
+Sand Maggot Egg: 191
+Rock Worm Egg: 192
+Devourer Egg: 193
+Giant Lamprey Egg: 194
+Blood Maggot Egg 1: 195
+dummy Act2Male: 196
+dummy Act2Female: 197
+dummy Act2Child: 198
+Greiz: 199
+Elzix: 200
+Geglash: 201
+Jerhyn: 202
+Lysander: 203
+dummy Act2Guard: 204
+dummy Act2Vendor1: 205
+dummy Act2Vendor2: 206
+Foul Crow Nest: 207
+Blood Hawk Nest: 208
+Black Raptor Nest: 209
+Cloud Stalker Nest: 210
+Meshif 1: 211
+Duriel: 212
+Undead Rat Man: 213
+Undead Fetish: 214
+Undead Flayer: 215
+Undead Soul Killer 1: 216
+Undead Stygian Doll 1: 217
+unused DarkGuard: 218
+unused DarkKnight: 219
+unused BloodGuard: 220
+unused BloodKnight: 221
+unused DarkPaladin: 222
+unused BloodMage: 223
+unused Demonist: 224
+unused BlackMagus: 225
+unused Diabolist: 226
+unused DeathMage: 227
+Maggot: 228
+Mummy Sarcophagus: 229
+Radament: 230
+unused FireBeast: 231
+unused IceGlobe: 232
+unused LightningBeast: 233
+unused PoisonOrb: 234
+Flying Scimitar: 235
+Zakarumite: 236
+Faithful: 237
+Zealot 1: 238
+Sexton: 239
+Cantor: 240
+Heirophant 1: 241
+Heirophant 2: 242
+Mephisto: 243
+Diablo: 244
+Deckard Cain 2: 245
+Deckard Cain 3: 246
+Deckard Cain 4: 247
+Swamp Dweller: 248
+Bog Creature: 249
+Slime Prince: 250
+The Summoner: 251
+Tyrael: 252
+Asheara: 253
+Hratli: 254
+Alkor: 255
+Ormus: 256
+Izual: 257
+Halbu: 258
+Water Watcher Limb: 259
+River Stalker Limb: 260
+Stygian Watcher Limb: 261
+Water Watcher Head: 262
+River Stalker Head: 263
+Stygian Watcher Head: 264
+Meshif 2: 265
+Deckard Cain 5: 266
+Flavie: 267
+Blood Raven: 268
+dummy bug: 269
+dummy scorpion: 270
+Rogue Scout: 271
+Rogue Hireling, Act 1 Hireling: 272
+dummy RogueTownShoot: 273
+Gargoyle Trap: 274
+Returned Mage 1: 275
+Bone Mage 1: 276
+Burning Dead Mage 1: 277
+Horror Mage 1: 278
+RatMan Shaman: 279
+Fetish Shaman: 280
+Flayer Shaman 1: 281
+Soul Killer Shaman 1: 282
+Stygian Doll Shaman 1: 283
+Larva: 284
+Sand Maggot Queen: 285
+Rock Worm Queen: 286
+Devourer Queen: 287
+Giant Lamprey Queen: 288
+Blood Maggot Queen: 289
+Clay Golem: 290
+Blood Golem: 291
+Iron Golem: 292
+Fire Golem: 293
+dummy Familiar: 294
+dummy Act3Male: 295
+Night Marauder: 296
+dummy Act3Female: 297
+Natalya: 298
+Flesh Spawner 1: 299
+Stygian Hag: 300
+Grotesque 1: 301
+Flesh Beast 1: 302
+Stygian Dog: 303
+Grotesque Wyrm 1: 304
+Doom Caster: 305
+Strangler 1: 306
+Storm Caster 1: 307
+Corpulent: 308
+Corpse Spitter: 309
+Maw Fiend 1: 310
+Doom Knight 1: 311
+Abyss Knight: 312
+Oblivion Knight 1: 313
+Quill Bear: 314
+Spike Giant: 315
+Thorn Brute: 316
+Razor Beast: 317
+Barbed Giant: 318
+dummy Snake: 319
+dummy Parrot: 320
+dummy Fish: 321
+dummy Evil Hole 1: 322
+dummy Evil Hole 2: 323
+dummy Evil Hole 3: 324
+dummy Evil Hole 4: 325
+dummy Evil Hole 5: 326
+trap firebolt 1: 327
+trap unknown1: 328
+trap unknown2: 329
+trap poison: 330
+trap chainlightning: 331
+Kaelan: 332
+dummy InvisoSpawner: 333
+unused DiabloClone: 334
+Sucker Nest: 335
+Feeder Nest: 336
+Blood Hook Nest: 337
+Blood Wing Nest: 338
+Act 2 Hireling: 339
+dummy MiniSpider: 340
+PrisonFL: 341
+PrisonFR: 342
+PrisonBL: 343
+PrisonBR: 344
+Bonewall: 345
+Council Member 1: 346
+Council Member 2: 347
+Council Member 3: 348
+Turret 1: 349
+Turret 2: 350
+Turret 3: 351
+Hydra 1: 352
+Hydra 2: 353
+Hydra 3: 354
+trap pillar: 355
+dummy seven tombs: 356
+Decoy: 357
+Valkyrie: 358
+dummy Act2Hireling: 359
+Iron Wolf, Act 3 Hireling: 360
+Balrog 1: 361
+Pit Lord 1: 362
+Venom Lord: 363
+Necroskeleton: 364
+Necromage: 365
+Griswold: 366
+Compelling Orb: 367
+Tyrael 1: 368
+Dark Wanderer: 369
+trap nova 1: 370
+dummy SpiritMummy: 371
+Lightning Spire: 372
+Fire Tower: 373
+Slinger 1: 374
+Spear Cat 1: 375
+Night Slinger 1: 376
+Hell Slinger: 377
+dummy Boba Fett: 378
+dummy Darth Maul: 379
+Returned Mage 2: 380
+Bone Mage 2: 381
+Death Mage: 382
+Horror Mage 2: 383
+Returned Mage 3: 384
+Bone Mage 3: 385
+Burning Dead Mage 2: 386
+Horror Mage 3: 387
+Returned Mage 4: 388
+Bone Mage 4: 389
+Burning Dead Mage 3: 390
+Horror Mage 4: 391
+Hell Bovine: 392
+window right: 393
+window left: 394
+Spear Cat 2: 395
+Night Slinger 2: 396
+Rat Man 2: 397
+Fetish 2: 398
+Flayer 2: 399
+Soul Killer 2: 400
+Stygian Doll 2: 401
+dummy Mephisto Spirit: 402
+The Smith: 403
+Trapped Soul 1: 404
+Trapped Soul 2: 405
+Jamella: 406
+Izual's Ghost: 407
+Rat Man 3: 408
+Hadriel: 409
+Hephasto The Armorer: 410
+Wake of Fire: 411
+Charged Bolt Sentry: 412
+Lightning Sentry: 413
+Blade Sentinel: 414
+Invis Pet: 415
+Inferno Sentry: 416
+Death Sentry: 417
+Shadow Warrior: 418
+Shadow Master: 419
+Raven: 420
+Spirit Wolf: 421
+Dire Wolf: 422
+Spirit of Barbs: 423
+Heart of Wolverine: 424
+Oak Sage: 425
+Plague Poppy: 426
+Cycle of Life: 427
+Vine Creature: 428
+Grizzly: 429 //大灰熊
+Eagle: 430
+Wolf: 431
+Bear: 432
+Barricaded Door 1: 433
+Barricaded Door 2: 434
+Prison Door: 435
+Barricaded Tower: 436
+Rot Walker: 437
+Reanimated Horde: 438
+Prowling Dead: 439
+Unholy Corpse 1: 440
+Defiled Warrior: 441
+Siege Beast: 442
+Crush Beast: 443
+Blood Bringer: 444
+Gore Bearer: 445
+Demon Steed: 446
+Snow Drifter: 447
+Abominable: 448
+Chilled Froth: 449
+Frozen Abyss: 450
+Fallen Wolfrider: 451
+Carver Wolfrider: 452
+Devilkin Wolfrider: 453
+Enslaved: 454
+Slayer 1: 455
+Ice Boar: 456
+Fire Boar: 457
+Hell Spawn 1: 458
+Ice Spawn: 459
+Greater Hell Spawn 1: 460
+Greater Ice Spawn: 461
+Fanatic Enslaved: 462
+Berserker Slayer: 463
+Consumed Ice Boar: 464
+Consumed Fire Boar: 465
+Frenzied Hell Spawn: 466
+Frenzied Ice Spawn: 467
+Insane Hell Spawn: 468
+Insane Ice Spawn: 469
+Succubus 1: 470
+Vile Temptress: 471
+Stygian Harlot: 472
+Hell Temptress 1: 473
+Blood Temptress: 474
+Siren 1: 475
+Vile Witch 1: 476
+Stygian Fury: 477
+Blood Witch: 478
+Hell Witch 1: 479
+Overseer, Shenk: 480
+Lasher: 481
+Overlord: 482
+Blood Boss: 483
+Hell Whip: 484
+Demon Portal 1: 485
+Demon Portal 2: 486
+Demon Portal 3: 487
+Demon Portal 4: 488
+Demon Portal 5: 489
+Demon Portal 6: 490
+Demon Portal 7: 491
+Demon Portal 8: 492
+Demon Imp 1: 493
+Demon Rascal: 494
+Demon Gremlin: 495
+Demon Trickster 1: 496
+Demon Sprite: 497
+Catapult S: 498
+Catapult E: 499
+Catapult Siege: 500
+Catapult W: 501
+Frozen Creeper: 502
+Frozen Terror: 503
+Frozen Scourge: 504
+Frozen Horror: 505
+Frozen Scorch: 506
+Moon Lord 1: 507
+Night Lord 2: 508
+Blood Lord 2: 509
+Hell Lord 1: 510
+Death Lord: 511
+Larzuk: 512
+Anya Town: 513
+Malah: 514
+Nihlathak Town: 515
+Qual Kehk: 516
+Catapult Spotter S: 517
+Catapult Spotter E: 518
+Catapult Spotter Siege: 519
+Catapult Spotter W: 520
+Deckard Cain 6: 521
+Tyrael 2: 522
+Barbarian Fighter 1: 523
+Barbarian Fighter 2: 524
+Barricade Wall Right: 525
+Barricade Wall Left: 526
+Nihlathak: 527
+Anya: 528
+Evil Demon Hut: 529
+Death Mauler 1: 530
+Death Brawler: 531
+Death Slasher: 532
+Death Berserker: 533
+Death Brigadier: 534
+Barbarian Captive: 535
+Act 5 Townguard 1: 536
+Act 5 Townguard 2: 537
+Talic Statue: 538
+Madawc Statue: 539
+Korlic Statue: 540
+Talic: 541
+Madawc: 542
+Korlic: 543
+Baal Throne: 544
+Baal Crab: 545
+Baal Taunt: 546
+Putrid Defiler: 547
+Wretched Defiler: 548
+Fetid Defiler: 549
+Rancid Defiler: 550
+Rank Defiler: 551
+Pain Worm: 552
+Torment Worm: 553
+Agony Worm: 554
+Menace Worm: 555
+Anguish Worm: 556
+Bunny: 557
+Baal Council Member: 558
+Baal Venom Lord: 559
+Baal Crab to Stairs: 560
+Act 5 Hireling 1hs: 561
+Act 5 Hireling 2hs, Act 5 Hireling: 562
+Festering Appendages 1: 563
+Festering Appendages 2: 564
+Festering Appendages 3: 565
+Festering Appendages 4: 566
+Festering Appendages 5: 567
+Injured Barbarian 1: 568
+Injured Barbarian 2: 569
+Injured Barbarian 3: 570
+Baal Crab Clone: 571
+Minion of Destruction 1: 572
+Minion of Destruction 2: 573
+Minion of Destruction 3: 574
+Worldstone Effect: 575
+Burning Dead Archer 2: 576
+Bone Archer 2: 577
+Burning Dead Archer 3: 578
+Returned Archer 2: 579
+Horror Archer 2: 580
+Afflicted 2: 581
+Tainted 2: 582
+Misshapen 2: 583
+Disfigured 2: 584
+Damned 2: 585
+Moon Clan 2: 586
+Night Clan 2: 587
+Hell Clan 2: 588
+Blood Clan 2: 589
+Death Clan 2: 590
+Foul Crow 2: 591
+Blood Hawk 2: 592
+Black Raptor 2: 593
+Cloud Stalker 2: 594
+Claw Viper 2: 595
+Pit Viper 2: 596
+Salamander 2: 597
+Tomb Viper 2: 598
+Serpent Magus 2: 599
+Marauder 2: 600
+Infidel 2: 601
+Sand Raider 2: 602
+Invader 2: 603
+Assailant 2: 604
+Death Mauler 2: 605
+Quill Rat 2: 606
+Spike Fiend 2: 607
+Razor Spine 2: 608
+Carrion Bird 2: 609
+Thorned Hulk 2: 610
+Slinger 2: 611
+Slinger 3: 612
+Slinger 4: 613
+Vile Archer 2: 614
+Dark Archer 2: 615
+Vile Lancer 2: 616
+Dark Lancer 2: 617
+Black Lancer 2: 618
+Blunderbore 2: 619
+Mauler 2: 620
+Returned Mage 5: 621
+Burning Dead Mage 4: 622
+Returned Mage 6: 623
+Horror Mage 5: 624
+Bone Mage 5: 625
+Horror Mage 6: 626
+Horror Mage 7: 627
+Huntress 2: 628
+Saber Cat 2: 629
+Cave Leaper 2: 630
+Tomb Creeper 2: 631
+Ghost 2: 632
+Wraith 2: 633
+Specter 2: 634
+Succubus 2: 635
+Hell Temptress 2: 636
+Siren 2: 637
+Hell Witch 2: 638
+Vile Witch 2: 639
+Gloam 2: 640
+Black Soul 2: 641
+Burning Soul 2: 642
+Carver 2: 643
+Devilkin 2: 644
+Dark One 2: 645
+Carver Shaman 2: 646
+Devilkin Shaman 2: 647
+Dark Shaman 2: 648
+Bone Warrior 2: 649
+Returned 2: 650
+Gloombat 2: 651
+Fiend 2: 652
+Moon Lord 2: 653
+Hell Lord 2: 654
+Scarab 2: 655
+Steel Scarab 2: 656
+Flayer 3: 657
+Stygian Doll 3: 658
+Soul Killer 3: 659
+Flayer 4: 660
+Stygian Doll 4: 661
+Soul Killer 4: 662
+Flayer Shaman 2: 663
+Stygian Doll Shaman 2: 664
+Soul Killer Shaman 2: 665
+Temple Guard 2: 666
+Temple Guard 3: 667
+Guardian 2: 668
+Unraveler 2: 669
+Horadrim Ancient 2: 670
+Horadrim Ancient 3: 671
+Zealot 2: 672
+Zealot 3: 673
+Heirophant 3: 674
+Heirophant 4: 675
+Grotesque 2: 676
+Flesh Spawner 2: 677
+Grotesque Wyrm 2: 678
+Flesh Beast 2: 679
+Blood Maggot 2: 680
+Blood Maggot Young 2: 681
+Blood Maggot Egg 2: 682
+Slayer 2: 683
+Hell Spawn 2: 684
+Greater Hell Spawn 2: 685
+Arach 2: 686
+Balrog 2: 687
+Pit Lord 2: 688
+Demon Imp 2: 689
+Demon Trickster 2: 690
+Undead Stygian Doll 2: 691
+Undead Soul Killer 2: 692
+Strangler 2: 693
+Storm Caster 2: 694
+Maw Fiend 2: 695
+Blood Lord 3: 696
+Ghoul Lord 2: 697
+Dark Lord 2: 698
+Unholy Corpse 2: 699
+Doom Knight 2: 700
+Doom Knight 3: 701
+Oblivion Knight 2: 702
+Oblivion Knight 3: 703
+Cadaver 2: 704
+
