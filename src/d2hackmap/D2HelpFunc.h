@@ -3,9 +3,12 @@
 
 UnitAny *GetUnitFromIdSafe(DWORD dwUnitId, DWORD dwUnitType);
 PetUnit * GetPetByType(UnitAny *pUnit,int type);
-int getSkillLevel(UnitAny *pUnit,int cls, int type, int skillId);
+int getSkillLevel(UnitAny *pUnit, int skillId);
 RosterUnit *getRosterUnit(int id);
 void useBelt(int id,int shift);
+UnitAny *getRoomtileByTxt(int txt);
+UnitAny *getPortalToArea(int level,char *owner);
+int getRoomtileTxtToLevel(int toLevel);
 int singlePlayerSaveGame(char *path);
 int encodeItem(UnitAny *pUnit,char *buf,int size);
 int hasSkill(int id);
@@ -20,6 +23,9 @@ void ShowGameMessage(char *Msg);
 void ShowGameMessage(DWORD val);
 int getFcrFrame(int type,UnitAny *pUnit);
 int getGameControlKey(int cmd);
+void SetBottomAlertMsg1(wchar_t *wszMsg, int ms, int color,int blink);
+void SetBottomAlertMsg2(wchar_t *wszMsg, int ms, int color,int blink);
+void SetBottomAlertMsg3(wchar_t *wszMsg, int ms, int color,int blink);
 
 CellFile *InitCellFile(CellFile *pCellFile);
 void DeleteCellFile(CellFile *pCellFile);
@@ -46,8 +52,6 @@ BOOL CheckUnitSelect( UnitAny *pUnit );
 int GetItemAlvl(int Ilvl,int Qlvl,int magic_lvl);
 int GetItemILvlAfterCube(int icubeType,int Ilvl , int Clvl);
 void DrawCenterAlertMsg();
-void SetCenterAlertMsgParam(int color1,int color2,int ms);
-void SetCenterAlertMsg( BOOL draw ,wchar_t *wszMsg );
 UnitAny * GetUnitPet(UnitAny *pUnit) ;
 DWORD GetUnitMagicStat(UnitAny *pUnit , DWORD dwStatNo);
 int GetGameLanguage();

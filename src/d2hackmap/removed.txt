@@ -1,0 +1,49 @@
+		/*if (!portal) {
+			int txt=getRoomtileTxtToLevel(pRU->dwLevelNo);
+			if (txt) {
+				UnitAny *room=getRoomtileByTxt(txt);
+				if (room) {
+					LeftClickObject(room);
+					enterRoomAttempts++;
+					//gameMessage("Auto Follow: enter level %d",pRU->dwLevelNo);
+					waitToMs=dwCurMs+dwMultiClientCheckInterval;
+					return;
+				}
+			}
+			portal=getPortalToArea(pRU->dwLevelNo,NULL);
+		}*/
+
+	/*if (pRU->dwLevelNo!=LEVELNO) {
+		if (enterRoomAttempts>20) {
+			follower_stop_follow();
+			gameMessage("Auto Follow: can't follow to level %d",pRU->dwLevelNo);
+			return;
+		}
+		if (D2CheckUiStatus(UIVAR_WAYPOINT)) {
+			switch (followState) {
+				case FS_CLICK_OBJECT:
+			}
+		}
+		UnitAny *portal=NULL;
+		if ((followerInteractType==2||followerInteractType==5)&&dwCurMs<followerInteractTimeout) {
+			portal=GetUnitFromIdSafe(followerInteractId,followerInteractType);
+			//if (portal) gameMessage("enter type=%d id=%d",followerInteractType,followerInteractId);
+		}
+		if (portal) {
+			if (portal->dwUnitType==2) followState=FS_CLICK_OBJECT;
+			if (fScreenSaverActive) delayScreenSaver(80);
+			fAutoFollowMoving=1;
+			LeftClickObject(portal);
+			enterRoomAttempts++;
+			//wsprintfW(wszbuf, L"Auto Follow: enter portal to level %d",pRU->dwLevelNo);
+			//D2ShowGameMessage(wszbuf, 0);
+			waitToMs=dwCurMs+dwMultiClientCheckInterval;
+			return;
+		}
+		if (!pUnit) {
+			gameMessage("Auto Follow: don't know how to enter level %d",pRU->dwLevelNo);
+			follower_stop_follow();
+			return;
+		}
+	}
+	*/

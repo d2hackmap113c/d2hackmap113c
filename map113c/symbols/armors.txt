@@ -1,5 +1,5 @@
 //Armor items, internal id +1001
-Cap, cap: 1001
+Cap: 1001
 Skull Cap, skp: 1002
 Helm, hlm: 1003
 Full Helm, fhl: 1004

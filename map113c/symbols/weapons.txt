@@ -1,6 +1,6 @@
 //Weapon items, internal ID+1
 Hand Axe, hax: 1
-Axe, axe: 2
+Axe: 2
 Double Axe, 2ax: 3
 Military Pick, mpi: 4
 War Axe, wax: 5

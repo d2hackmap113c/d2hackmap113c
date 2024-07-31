@@ -2,7 +2,6 @@
 
 #ifdef MODULE_ENVIRONMENT
 
-
 //ÌìÆø
 void __declspec(naked) WeatherPatch_ASM()
 {
@@ -99,7 +98,9 @@ DWORD __fastcall InfravisionPatch(UnitAny *pUnit){
 				if (dwAutoEnchantGroupId) AutoEnchantUnit(pUnit);
 			#endif
 			if (dwAutoSummonMode) AutoSummonUnit(pUnit);
+			if (dwAutoSkillMode) AutoSkillUnit(pUnit);
 			if (tHiddenCorpse.isOn && pUnit->dwMode == 0x0C && afMonsterCorpses[pUnit->dwTxtFileNo] == 0) return 1;
+			if (!fPlayerInTown&&pUnit->pMonsterData->fBoss&&pUnit->dwMode!=0x0C) checkBossMonster(pUnit);
 			break;
 		case UNITNO_MISSILE:
 			if (tHiddenCorpse.isOn && pUnit->dwMode!=3 && afMissileCorpses[pUnit->dwTxtFileNo] == 0) return 1;

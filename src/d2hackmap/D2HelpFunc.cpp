@@ -1,9 +1,5 @@
 #include "stdafx.h"
 
-static wchar_t wszAlertMsg[512] = {L'\0'} ;
-static BOOL fHasCenterAlertMsg = FALSE;
-static int dwAlertColor1=0,dwAlertColor2=0,dwAlertMs=0;
-static int dwAlertMsgColor=0,dwAlertMsgMs=0;
 /*
 cls: 0:ama 1:sor 2:nec 3:pal 4:bar 5:dru 6:asn
 type: 
@@ -15,15 +11,93 @@ bar: 0=combat战门 1=combatMasteries战门专家 2=warcries呐喊
 dru: 0=summon召唤 1=shape变形 2=elementals元素
 asn: 0=traps陷阱 1=shadow影子 2=martial武学
 */
-int getSkillLevel(UnitAny *pUnit,int cls, int type, int skillId) {
+static int clsSkillId[7]={6,36,66,96,126,221,251,};
+int skillTypes[7][30]={
+	{
+		0,0,1,1,2, //L1: 6:Magic Arrow, 7:Fire Arrow | 8:Inner Sight, 9:Critical Strike | 10:Jab,
+		0,0,1,2,2, //L6: 11:Cold Arrow, 12:Multiple Shot | 13:Dodge | 14:Power Strike, 15:Poison Javelin,
+		0,1,1,2,2, //L12: 16:Exploding Arrow | 17:Slow Missiles, 18:Avoid | 19:Impale, 20:Lightning Bolt,
+		0,0,1,2,2, //L18: 21:Ice Arrow, 22:Guided Arrow | 23:Penetrate | 24:Charged Strike, 25:Plague Javelin,
+		0,0,1,1,2, //L24: 26:Strafe, 27:Immolation Arrow | 28:Decoy, 29:Evade | 30:Fend,
+		0,1,1,2,2, //L30: 31:Freezing Arrow | 32:Valkyrie, 33:Pierce | 34:Lightning Strike, 35:Lightning Fury,
+	}, //ama
+	{
+		0,0,1,2,2, //L1: 36:Fire Bolt火弹, 37:Warmth温暖 | 38:Charged Bolt闪电弹 | 39:Ice Bolt冰弹, 40:Frozen Armor冰封装甲,
+		0,1,1,2,2, //L6: 41:Inferno地狱火 | 42:Static Field静电力场, 43:Telekinesis心灵传动 | 44:Frost Nova霜之新星, 45:Ice Blast冰风暴,
+		0,0,1,1,2, //L12: 46:Blaze烈焰之径, 47:Fire Ball火球 | 48:Nova新星, 49:Lightning闪电 | 50:Shiver Armor碎冰甲,
+		0,0,1,1,2, //L18: 51:Fire Wall火墙, 52:Enchant火焰强化 | 53:Chain Lightning连锁闪电, 54:Teleport传送 | 55:Glacial Spike冰尖柱,
+		0,1,1,2,2, //L24: 56:Meteor陨石 | 57:Thunder Storm雷暴, 58:Energy Shield能量护盾 | 59:Blizzard暴风雪, 60:Chilling Armor寒冰装甲,
+		0,0,1,2,2, //L30: 61:Fire Mastery火焰支配, 62:Hydra九头海蛇 | 63:Lightning Mastery闪电支配 | 64:Frozen Orb冰封球, 65:Cold Mastery冰冷支配,
+	}, //sor
+	{
+		0,1,1,2,2, //L1: 66:Amplify Damage伤害加深 | 67:Teeth牙, 68:Bone Armor骨盾 | 69:Skeleton Mastery骷髅支配, 70:Raise Skeleton骷髅复生
+		0,0,1,1,2, //L6: 71:Dim Vision微暗灵视, 72:Weaken削弱 | 73:Poison Dagger淬毒匕首, 74:Corpse Explosion尸体爆炸 | 75:Clay Golem粘土石魔,
+		0,0,1,2,2, //L12: 76:Iron Maiden攻击反噬, 77:Terror恐惧 | 78:Bone Wall骨墙 | 79:Golem Mastery石魔支配, 80:Raise Skeletal Mage骷髅法师,
+		0,0,1,1,2, //L18: 81:Confuse迷乱, 82:Life Tap生命偷取 | 83:Poison Explosion毒爆, 84:Bone Spear骨矛 | 85:BloodGolem鲜血石魔,
+		0,0,1,2,2, //L24: 86:Attract吸引, 87:Decrepify衰老 | 88:Bone Prison骨牢 | 89:Summon Resist召唤抵抗, 90:IronGolem钢铁石魔,
+		0,1,1,2,2, //L30 91:Lower Resist降低抵抗 | 92:Poison Nova剧毒新星, 93:Bone Spirit骨魂 | 94:FireGolem火焰石魔, 95:Revive重生,
+	},//nec
+	{
+		0,0,1,2,2, //L1: 96:Sacrifice, 97:Smite | 98:Might | 99:Prayer, 100:Resist Fire
+		0,1,1,2,2, //L6: 101:Holy Bolt | 102:Holy Fire, 103:Thorns | 104:Defiance, 105:Resist Cold
+		0,0,1,2,2, //L12: 106:Zeal, 107:Charge | 108:Blessed Aim | 109:Cleansing, 110:Resist Lightning
+		0,0,1,1,2, //L18: 111:Vengeance, 112:Blessed Hammer | 113:Concentration, 114:Holy Freeze | 115:Vigor
+		0,0,1,1,2, //L24: 116:Conversion, 117:Holy Shield | 118:Holy Shock, 119:Sanctuary | 120:Meditation
+		0,1,1,2,2, //L30: 121:Fist of the Heavens | 122:Fanaticism, 123:Conviction | 124:Redemption, 125:Salvation
+	},//pal
+	{
+		0,1,1,1,2,2, //L1: 126:Bash | 127:Sword Mastery, 128:Axe Mastery, 129:Mace Mastery | 130:Howl, 131:Find Potion
+		0,0,1,1,1,2,2, //L6: 132:Leap, 133:Double Swing | 134:Pole Arm Mastery, 135:Throwing Mastery, 136:Spear Mastery | 137:Taunt, 138:Shout
+		0,0,1,2, //L12: 139:Stun, 140:Double Throw | 141:Increased Stamina | 142:Find Item
+		0,0,1,2, //L18: 143:Leap Attack, 144:Concentrate | 145:Iron Skin | 146:Battle Cry
+		0,1,2,2, //L24: 147:Frenzy | 148:Increased Speed | 149:Battle Orders, 150:Grim Ward
+		0,0,1,2,2, //L30: 151:Whirlwind, 152:Berserk | 153:Natural Resistance | 154:War Cry, 155:Battle Command
+	},//bar
+	{
+		0,0,1,1,2, //L1: 221:Raven, 222:Poison Creeper | 223:Werewolf, 224:Lycanthropy | 225:Firestorm
+		0,0,1,2,2, //L6: 226:Oak Sage, 227:Summon Spirit Wolf | 228:Werebear | 229:Molten Boulder, 230:Arctic Blast
+		0,1,1,2,2, //L12: 231:Carrion Vine | 232:Feral Rage, 233:Maul撞鎚 | 234:Fissure, 235:Cyclone Armor
+		0,0,1,1,2, //L18: 236:Heart of Wolverine, 237:Summon Dire Wolf | 238:Rabies, 239:Fire Claws | 240:Twister
+		0,1,1,2,2, //L24: 241:Solar Creeper | 242:Hunger, 243:Shock Wave | 244:Volcano, 245:Tornado
+		0,0,1,2,2, //L30: 246:Spirit of Barbs, 247:Summon Grizzly | 248:Fury | 249:Armageddon, 250:Hurricane
+	},//dru
+	{
+		0,1,1,2,2, //L1: 251:Fire Blast | 252:Claw Mastery, 253:Psychic Hammer | 254:Tiger Strike, 255:Dragon Talon
+		0,0,1,2,2, //L6: 256:Shock Web, 257:Blade Sentinel | 258:Burst of Speed | 259:Fists of Fire, 260:Dragon Claw
+		0,0,1,1,2, //L12: 261:Charged Bolt Sentry, 262:Wake of Fire | 263:Weapon Block, 264:Cloak of Shadows | 265:Cobra Strike,
+		0,1,1,2,2, //L18: 266:Blade Fury | 267:Fade, 268:Shadow Warrior | 269:Claws of Thunder, 270:Dragon Tail
+		0,0,1,2,2, //L24: 271:Lightning Sentry, 272:Wake of Inferno | 273:Mind Blast | 274:Blades of Ice, 275:Dragon Flight
+		0,0,1,1,2, //L30: 276:Death Sentry, 277:Blade Shield | 278:Venom, 279:Shadow Master | 280:Phoenix Strike,
+	},//asn
+};
+int getSkillClass(int skillId) {
+	for (int i=0;i<7;i++) if (clsSkillId[i]<=skillId&&skillId<clsSkillId[i]+30) return i;
+	return -1;
+}
+int getSkillType(int cls,int skillId) {
+	if (cls<0||cls>6) return -1;
+	int idx=skillId-clsSkillId[cls];
+	if (idx<0||idx>=30) return -1;
+	return skillTypes[cls][idx];
+}
+int getSkillLevel(UnitAny *pUnit,int skillId) {
+	int cls=getSkillClass(skillId);if (cls<0) return 0;
+	int type=getSkillType(cls,skillId);if (type<0) return 0;
 	int lv=0;
 	for (struct Skill *p=pUnit->pSkill->pFirstSkill;p;p=p->pNextSkill) {
 		if (p->pSkillInfo->wSkillId==skillId) {lv=p->dwSkillLevel;break;}
 	}
-	lv+=D2GetUnitStat(pUnit, 107, skillId); //class only
-	int s=D2GetUnitStat(pUnit, 97, skillId); 
-	if (s>3) s=3;
-	lv+=s;
+	int clsLv=D2GetUnitStat(pUnit, 107, skillId); //class only
+	int singleSkill=D2GetUnitStat(pUnit, 97, skillId); 
+	if (clsLv||singleSkill) {
+		int pcls=getPlayerClass(pUnit->dwUnitId);
+		if (pcls<0) pcls=pUnit->dwTxtFileNo;
+		if (pcls==cls) {
+			lv+=clsLv;
+			if (singleSkill>3) singleSkill=3;
+		}
+	}
+	lv+=singleSkill;
 	if (!lv) return 0;
 	lv+=D2GetUnitStat(pUnit, 188, cls*8+type); //type skill
 	lv+=D2GetUnitStat(pUnit, 83, cls); //class skill
@@ -33,6 +107,44 @@ int getSkillLevel(UnitAny *pUnit,int cls, int type, int skillId) {
 RosterUnit *getRosterUnit(int id) {
 	for (RosterUnit *pRU = PLAYERLIST; pRU; pRU = pRU->pNext ) if (pRU->dwUnitId==id) return pRU;
 	return NULL;
+}
+UnitAny *getRoomtileByTxt(int txt) {
+	for (int i=0;i<128;i++) {
+		UnitAny *pUnit=p_D2UnitTable[5*128+i];
+		while (pUnit) {
+			if (pUnit->dwTxtFileNo==txt) return pUnit;
+			pUnit=pUnit->pHashNext;
+		}
+	}
+	return NULL;
+}
+//level 0:town -1:any
+UnitAny *getPortalToArea(int level,char *owner) {
+	for (int i=0;i<128;i++) {
+		UnitAny *pUnit=p_D2UnitTable[2*128+i];
+		while (pUnit) {
+			//blue portal 59 red portal 60
+			if ((pUnit->dwTxtFileNo==0x3b||pUnit->dwTxtFileNo==0x3c)&&pUnit->pObjectData) {
+				int lvl=pUnit->pObjectData->nShrineNo;
+				if (level!=0&&level!=-1&&lvl!=level) goto next;
+				if (level==0&&lvl!=1&&lvl!=40&&lvl!=75&&lvl!=103&&lvl!=109) goto next;
+				char *name=(char *)pUnit->pObjectData;name+=0x28;
+				if (!owner||strcmp(owner,name)==0) return pUnit;
+			}
+next:
+			pUnit=pUnit->pHashNext;
+		}
+	}
+	return NULL;
+}
+int getRoomtileTxtToLevel(int toLevel) {
+	//only appear if distance < 20
+	for(RoomTile *pRoomtile = PLAYER->pMonPath->pRoom1->pRoom2->pRoomTiles ;pRoomtile ; pRoomtile = pRoomtile->pNext ){
+		int txt=*(pRoomtile->pNum);
+		int lvl=pRoomtile->pRoom2->pDrlgLevel->dwLevelNo;
+		if (lvl==toLevel) return txt;
+	}
+	return 0;
 }
 int singlePlayerSaveGame(char *path) {
 	char dumpbuf[8192];
@@ -267,31 +379,55 @@ end:
 		ret
 	}
 }
-void SetCenterAlertMsgParam(int color1,int color2,int ms) {
-	dwAlertColor1=color1;
-	dwAlertColor2=color2;
-	dwAlertMs=ms;
+static wchar_t wszBAlertMsg1[512] = {L'\0'} ;
+static wchar_t wszBAlertMsg2[512] = {L'\0'} ;
+static wchar_t wszBAlertMsg3[512] = {L'\0'} ;
+static int dwBAlertMsgMs1,fBAlertBlink1;
+static int dwBAlertMsgColor1=0,dwBAlertMsgColorMs1=0;
+static int dwBAlertMsgMs2,fBAlertBlink2;
+static int dwBAlertMsgColor2=0,dwBAlertMsgColorMs2=0;
+static int dwBAlertMsgMs3,fBAlertBlink3;
+static int dwBAlertMsgColor3=0,dwBAlertMsgColorMs3=0;
+void SetBottomAlertMsg1(wchar_t *wszMsg, int ms, int color,int blink) {	
+	wcscpy(wszBAlertMsg1,wszMsg);dwBAlertMsgMs1=dwCurMs+ms;
+	if (!blink||!fBAlertBlink1) {dwBAlertMsgColor1=color;dwBAlertMsgColorMs1=(dwCurMs+256)&0xFFFFFF00;}
+	fBAlertBlink1=blink;
 }
-void SetCenterAlertMsg( BOOL draw ,wchar_t *wszMsg ){	
-	fHasCenterAlertMsg = draw;
-	if(fHasCenterAlertMsg){
-		if (!dwAlertMsgColor) {
-			if (!dwAlertMs) dwAlertMs=250;
-			dwAlertMsgColor=dwAlertColor1;dwAlertMsgMs=dwCurMs+dwAlertMs;
-		}
-		wcscpy(wszAlertMsg,wszMsg);
-	} else {
-		dwAlertMsgColor=0;
-	}
+void SetBottomAlertMsg2(wchar_t *wszMsg, int ms, int color,int blink) {	
+	wcscpy(wszBAlertMsg2,wszMsg);dwBAlertMsgMs2=dwCurMs+ms;
+	if (!blink||!fBAlertBlink2) {dwBAlertMsgColor2=color;dwBAlertMsgColorMs2=(dwCurMs+256)&0xFFFFFF00;}
+	fBAlertBlink2=blink;
+}
+void SetBottomAlertMsg3(wchar_t *wszMsg, int ms, int color,int blink) {	
+	wcscpy(wszBAlertMsg3,wszMsg);dwBAlertMsgMs3=dwCurMs+ms;
+	if (!blink||!fBAlertBlink3) {dwBAlertMsgColor3=color;dwBAlertMsgColorMs3=(dwCurMs+256)&0xFFFFFF00;}
+	fBAlertBlink3=blink;
 }
 void DrawCenterAlertMsg(){
   //需要DrawClientPatch支持
-	if(fHasCenterAlertMsg){
-		if (dwCurMs>dwAlertMsgMs) {
-			dwAlertMsgColor=dwAlertMsgColor==dwAlertColor1?dwAlertColor2:dwAlertColor1;
-			dwAlertMsgMs=dwCurMs+dwAlertMs;
+	if (dwBAlertMsgMs1) {
+		if (dwCurMs>dwBAlertMsgMs1) {dwBAlertMsgMs1=0;fBAlertBlink1=0;}
+		if (fBAlertBlink1&&dwCurMs>dwBAlertMsgColorMs1) {
+			dwBAlertMsgColor1=dwBAlertMsgColor1==1?2:1;
+			dwBAlertMsgColorMs1=(dwCurMs+256)&0xFFFFFF00;
 		}
-		DrawCenterText(3, wszAlertMsg , SCREENSIZE.x/2, SCREENSIZE.y/2, dwAlertMsgColor, 1,0);
+		DrawCenterText(3, wszBAlertMsg1 , SCREENSIZE.x/2, SCREENSIZE.y/2+120, dwBAlertMsgColor1, 1,0);
+	}
+	if (dwBAlertMsgMs2) {
+		if (dwCurMs>dwBAlertMsgMs2) {dwBAlertMsgMs2=0;fBAlertBlink2=0;}
+		if (fBAlertBlink2&&dwCurMs>dwBAlertMsgColorMs2) {
+			dwBAlertMsgColor2=dwBAlertMsgColor2==1?2:1;
+			dwBAlertMsgColorMs2=(dwCurMs+256)&0xFFFFFF00;
+		}
+		DrawCenterText(3, wszBAlertMsg2 , SCREENSIZE.x/2, SCREENSIZE.y/2+150, dwBAlertMsgColor2, 1,0);
+	}
+	if (dwBAlertMsgMs3) {
+		if (dwCurMs>dwBAlertMsgMs3) {dwBAlertMsgMs3=0;fBAlertBlink3=0;}
+		if (fBAlertBlink3&&dwCurMs>dwBAlertMsgColorMs3) {
+			dwBAlertMsgColor3=dwBAlertMsgColor3==1?2:1;
+			dwBAlertMsgColorMs3=(dwCurMs+256)&0xFFFFFF00;
+		}
+		DrawCenterText(3, wszBAlertMsg3 , SCREENSIZE.x/2, SCREENSIZE.y/2+150, dwBAlertMsgColor3, 1,0);
 	}
 }
 
@@ -603,8 +739,9 @@ void DrawDefaultFontText(wchar_t *wStr, int xpos, int ypos, DWORD dwColor, int d
 }
 
 
-void ExitGame()
-{
+extern int fSkipPainting;
+void ExitGame() {
+	fSkipPainting=0;
 	*p_D2ExitAppFlag = 0;
 	SendMessage(D2GetHwnd(), WM_CLOSE, 0, 0);
 }

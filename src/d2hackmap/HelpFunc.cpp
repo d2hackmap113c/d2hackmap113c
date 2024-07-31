@@ -442,3 +442,15 @@ char *loadFile(HANDLE heap,FILE *fp,int *psize) {
 	} 
 	return p;
 }
+void __cdecl gameMessage(char *fmt, ...) {
+	va_list va;
+	wchar_t wszbuf[256];
+	char buf[256];
+	va_start(va, fmt);
+	int len = wvsprintf(buf, fmt, va);
+	if (len>255) buf[255]=0;
+	wsprintfW(wszbuf, L"%hs",buf);
+	LOG("%s\n",buf);
+	D2ShowGameMessage(wszbuf, 0);
+}
+

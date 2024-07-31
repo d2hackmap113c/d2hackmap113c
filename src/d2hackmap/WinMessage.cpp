@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+int fSkipPainting=0;
 int dwQuickSwapItemMs=0;
 int dwScreenBlockMask=0;
 void MoveItem(D2MSG *pMsg );
@@ -117,7 +118,7 @@ int canAutoClick() {
 
 void enableScreenSaver(int enable) {
 	if (enable) {
-		if (!dwEnableScreenSaver) return;
+		if (!tEnableScreenSaver.isOn) return;
 		if (fScreenSaverActive) return;
 		dwScreenBlockMask=p_D2ScreenBlocked[0]^3;
 		*p_D2ScreenBlocked|=dwScreenBlockMask; 
@@ -174,6 +175,22 @@ int FullScreen() {
 	}
 	LockMouse();
 	return 1;
+}
+int AttractNPC() {
+	UnitAny *pSelectedUnit = D2GetSelectedUnit();
+	if (pSelectedUnit&&pSelectedUnit->dwUnitType==1) {
+		pSelectedUnit->dwUnitId;
+		BYTE packet[17] = {0x59};
+		*(DWORD*)&packet[1] = pSelectedUnit->dwUnitType;
+		*(DWORD*)&packet[5] = pSelectedUnit->dwUnitId;
+		int x0=PLAYER->pMonPath->wPosX;
+		int y0=PLAYER->pMonPath->wPosY;
+		*(DWORD*)&packet[9] = x0;
+		*(DWORD*)&packet[13] = y0;
+		SendPacket(packet,sizeof(packet));
+		return 1;
+	}
+	return 0;
 }
 static int makeRuntimeInfoPath(char *path,int id) {
 	char dir[512];
@@ -234,6 +251,8 @@ int getOtherClients(D2Window *wins,int cap,int area) {
 	if (!ip[0]||!game[0]) return 0;
 	for (int i=1;i<=8;i++) {
 		if (n>=cap) break;
+		if (dwGameWindowId<=dwMultiClientMaxWindowId&&i>dwMultiClientMaxWindowId
+			||dwGameWindowId>dwMultiClientMaxWindowId&&i<=dwMultiClientMaxWindowId) continue;
 		if (i==dwGameWindowId) continue;
 		D2Window *pwin=&wins[n];
 		if (!loadRuntimeInfo(pwin,i)) continue;
@@ -270,6 +289,7 @@ int SwitchWindow(int id) {
 }
 void WinMessageNewGame() {
 	fScreenSaverActive=0;
+	fSkipPainting=0;
 	forceStandStill=0;
 	dwQuickSwapItemMs=0;dwCheckCTAMs=0;dwSwapWeaponKey=0;
 	LockMouse();
@@ -289,6 +309,7 @@ void WinMessageNewGame() {
 }
 void WinMessageEndGame() {
 	fScreenSaverActive=0;
+	fSkipPainting=0;
 	LockMouse();
 	WINDOWPLACEMENT wp;
 	HWND hwnd=D2GetHwnd();
@@ -307,16 +328,20 @@ void WinMessageEndGame() {
 	setWinTitle(hwnd,0);
 	saveRuntimeInfo(hwnd);
 }
+void refreshScreenSaver() {
+	fSkipPainting=tEnableScreenSaver.isOn&&!fWinActive;
+	if(!fWinActive&&tAutoEnchant.isOn&&PLAYER->pSkill->pRightSkill->pSkillInfo->wSkillId ==52 ) 
+		screenSaverMs=GetTickCount()+dwAutoEnchantScreenSaverDelayMs;
+	else
+		screenSaverMs=GetTickCount();
+}
 void winActiveMsg(int active) {
 	if (!fInGame) return;
 	enAutoLeftClick=0;
 	enAutoRightClick=0;
 	forceStandStill=0;
 	fWinActive=active;
-	if(!active&&tAutoEnchant.isOn&&PLAYER->pSkill->pRightSkill->pSkillInfo->wSkillId ==52 ) 
-		screenSaverMs=GetTickCount()+dwAutoEnchantScreenSaverDelayMs;
-	else
-		screenSaverMs=GetTickCount();
+	refreshScreenSaver();
 }
 int hasCTA() {
 	for (UnitAny *pUnit = D2GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = D2GetNextItemInInv(pUnit)) {
@@ -629,28 +654,34 @@ int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 		case WM_SYSKEYUP:
 			switch (w) {
 				case VK_AUTOFOLLOW_START:
-					startFollowId(l);
+					follower_start_follow(l);
 					return 0;
 				case VK_AUTOFOLLOW_STOP:
-					stopFollow();
+					follower_stop_follow();
 					return 0;
-				case VK_AUTOFOLLOW_ENTERDOOR:
-					enterDoor(l&0xFFFFFF,(l>>24)&0xFF);
+				case VK_MULTICLIENT_ENTER_DOOR:
+					follower_enter_door(l&0xFFFFFF,(l>>24)&0xFF);
 					return 0;
-				case VK_AUTOFOLLOW_RETREAT:
-					retreat(l);
+				case VK_MULTICLIENT_BACK_TO_TOWN:
+					follower_back_to_town(l);
 					return 0;
 				case VK_MULTICLIENT_LEFT_XY:
-					multiclient_left_xy(l&0xFFFF,(l>>16)&0xFFFF);
+					follower_left_click_xy(l&0xFFFF,(l>>16)&0xFFFF);
 					return 0;
 				case VK_MULTICLIENT_RIGHT_XY:
-					multiclient_right_xy(l&0xFFFF,(l>>16)&0xFFFF);
+					follower_right_click_xy(l&0xFFFF,(l>>16)&0xFFFF);
 					return 0;
 				case VK_MULTICLIENT_LEFT_UNIT:
-					multiclient_left_unit((l>>28)&0xF,l&0xFFFFFFF);
+					follower_left_click_unit((l>>28)&0xF,l&0xFFFFFFF);
 					return 0;
 				case VK_MULTICLIENT_RIGHT_UNIT:
-					multiclient_right_unit((l>>28)&0xF,l&0xFFFFFFF);
+					follower_right_client_unit((l>>28)&0xF,l&0xFFFFFFF);
+					return 0;
+				case VK_AUTOFOLLOW_CLICK_OBJECT:
+					follower_click_object((l>>28)&0xF,l&0xFFFFFFF);
+					return 0;
+				case VK_MULTICLIENT_INFO:
+					leader_recv_info(l);
 					return 0;
 				default:
 					keyUp(w,1);
@@ -760,5 +791,29 @@ original:
 		mov eax, dword ptr [p_D2ActiveWeapon]
 		mov ecx, dword ptr [eax]
 		ret
+	}
+}
+// 6FA8B0A1 - FF 90 84000000        - call dword ptr [eax+00000084]
+void __declspec(naked) DrawCellFile_Patch_ASM() {
+	__asm {
+		cmp fSkipPainting, 0
+		je original
+		xor eax,eax
+		ret 16
+		//original code
+original:
+		jmp dword ptr [eax+0x84]
+	}
+}
+// 6FA8B00C - FF 90 98000000        - call dword ptr [eax+00000098]
+void __declspec(naked) DrawAutomapCell_Patch_ASM() {
+	__asm {
+		cmp fSkipPainting, 0
+		je original
+		xor eax,eax
+		ret 12
+		//original code
+original:
+		jmp dword ptr [eax+0x98]
 	}
 }

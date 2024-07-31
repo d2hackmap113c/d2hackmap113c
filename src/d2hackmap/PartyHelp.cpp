@@ -29,7 +29,7 @@ void ResponseInvite(){
 BOOL CheckInvite() {
 	if ( dwPlayerId==1 )return TRUE;
 	for (RosterUnit *pUnit = PLAYERLIST; pUnit; pUnit = pUnit->pNext) {
-		if (pUnit->dwUnitId<dwPlayerId) return FALSE; //自己不是最小编号，放弃邀请权利
+		if (pUnit->dwUnitId<(DWORD)dwPlayerId) return FALSE; //自己不是最小编号，放弃邀请权利
 	}
 	return TRUE;
 }

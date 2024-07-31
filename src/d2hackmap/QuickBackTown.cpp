@@ -46,9 +46,11 @@ void __fastcall AutoBackToTown(BYTE *aPacket) {
 	{
 		if ( fBackToTown ){
 			fBackToTown = FALSE;
+			int id=*(int*)&aPacket[3];// portal ID
 			BYTE castMove[9] = {0x13};
-			*(DWORD*)&castMove[1] = 2;
-			*(DWORD*)&castMove[5] = *(DWORD*)&aPacket[3]; // portal ID
+			*(int*)&castMove[1] = 2;
+			*(int*)&castMove[5] = id; 
+			leader_click_object(UNITNO_OBJECT,id);
 			SendPacket(castMove,sizeof(castMove));
 		}
 

@@ -2,6 +2,9 @@
 
 #include "d2ptrs.h"
 
+void  NpcTradePatch_ASM();
+void DrawCellFile_Patch_ASM();
+void DrawAutomapCell_Patch_ASM();
 void initSendPacketCheckTable();
 void DropItemSendCmd17Patch_ASM();
 void RecvCommand_22_Patch_ASM();
@@ -33,6 +36,8 @@ static Patch_t aD2Patchs[] = {
 	{PatchCALL,   DLLOFFSET(D2WIN, 0x6F8F7740),    (DWORD)WinMessagePatch_ASM,           5 ,   &fDefault},
 	{PatchCALL,   DLLOFFSET(D2CLIENT, 0x6FAF33D1),    (DWORD)StandStillPatch_ASM,           10 ,   &fDefault},
 	{PatchCALL,   DLLOFFSET(D2CLIENT, 0x6FB5BF86),    (DWORD)ReceiveSwapWeapon_ASM,           6 ,   &fDefault},
+	{PatchCALL,   DLLOFFSET(D2GFX, 0x6FA8B0A1),    (DWORD)DrawCellFile_Patch_ASM,           6 ,   &fDefault},
+	{PatchCALL,   DLLOFFSET(D2GFX, 0x6FA8B00C),    (DWORD)DrawAutomapCell_Patch_ASM,           6 ,   &fDefault},
 //--- m_pub.h ---
 	{PatchCALL,   DLLOFFSET(D2CLIENT, 0x6FAF4230),    (DWORD)GameLoopPatch_ASM,               7 ,   &fDefault},
 	{PatchCALL,   DLLOFFSET(D2CLIENT, 0x6FAF5153),    (DWORD)GameEndPatch_ASM,                5 ,   &fDefault},
@@ -221,6 +226,8 @@ static Patch_t aD2Patchs[] = {
 //--- m_MultiClient.h ---
 	{PatchCALL,   DLLOFFSET(D2CLIENT , 0x6FACBDE5),   (DWORD)LeftClick_Patch_ASM,        5 ,   &fDefault},
 	{PatchCALL,   DLLOFFSET(D2CLIENT , 0x6FACBC42),   (DWORD)RightClick_Patch_ASM,        5 ,   &fDefault},
+//--- m_NpcTrade.h ---
+	{PatchCALL,   DLLOFFSET(D2CLIENT , 0x6FAFAEE0),   (DWORD)NpcTradePatch_ASM,        5 ,   &fDefault},
 //--- m_Snapshot.h ---
 	{PatchCALL,   DLLOFFSET(D2CLIENT, 0x6FB5F8B3),      (DWORD)RecvCommand_63_Patch_ASM, 5 , &fDefault},
 	{PatchCALL,   DLLOFFSET(D2CLIENT, 0x6FB5EBA3),      (DWORD)RecvCommand_81_Patch_ASM, 6 , &fDefault},

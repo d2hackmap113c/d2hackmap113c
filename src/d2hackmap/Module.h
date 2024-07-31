@@ -34,10 +34,19 @@ int saveRuntimeInfo();
 	GVAR (BOOL,			fKeyRepeat,				FALSE)
 	GVAR (DWORD,		dwKeyDown,					0)
 	GVAR (int,			dwGameLng,					-1)
-	GVAR (DWORD,		dwPlayerId,					0)
-	GVAR (DWORD,		dwPlayerClass,					0)
+	GVAR (int,		dwPlayerId,					0)
+	GVAR (int,		dwPlayerClass,					0)
 	GVAR (int,			dwLeftSkill,					-1)
 	GVAR (int,			dwRightSkill,					-1)
+	GVAR (int,		dwPlayerLevel,					0)
+	GVAR (int,		dwPlayerMaxHP,					0)
+	GVAR (int,		dwPlayerHP,					0)
+	GVAR (int,		dwPlayerMaxMana,				0)
+	GVAR (int,		dwPlayerMana,					0)
+	GVAR (UnitAny *,		leftWeapon,					0)
+	GVAR (UnitAny *,		rightWeapon,					0)
+	GVAR (int,		dwRecheckSelfItemMs,					0)
+	GVAR (int,		dwSkillChangeCount,					0) //increase if skill level may change
 	GVAR (BOOL,			fEnterGameSound,				0)
 	GVAR (int,			dwEnterGameShowDifficultyMs,				0)
 	GVAR2(DWORD,		actlvls[],	1, 40, 75, 103, 109, 137 )
@@ -267,9 +276,11 @@ GVAR2(ToggleVar,	tOutTownSelect,				TOGGLEVAR_ONOFF,	1,	-1,	1,	"Out of town sele
 	void WinMessagePatch_ASM();
 	void SetCursorPosPatch_ASM();
 	int inputUserPassword(int id);
+	void refreshScreenSaver();
 	void delayScreenSaver(int ms);
 	int canAutoClick();
 	int FullScreen();
+	int AttractNPC();
 	int LockMouse();
 	void StandStillPatch_ASM();
 	int getOtherClients(D2Window *hwnd,int cap,int area);
@@ -286,6 +297,7 @@ GVAR2(ToggleVar,	tOutTownSelect,				TOGGLEVAR_ONOFF,	1,	-1,	1,	"Out of town sele
 	GVAR2(ToggleVar,	tAutoMinimapTeleportToggle,				TOGGLEVAR_ONOFF,	0,	0,	 0,	"Auto Teleport MiniMap")
 	GVAR (int,		dwAutoHideMinimapKey,						0)
 	GVAR2(ToggleVar,	tFullScreen,			TOGGLEVAR_DOWN,	0,	-1,		1, "FullScreen",			&FullScreen,0,0,2)
+	GVAR2(ToggleVar,	tAttractNPC,			TOGGLEVAR_DOWN,	0,	-1,		1, "AttractNPC",			&AttractNPC,0,0,2)
 	GVAR(DWORD,	dwAutoMaximizeWidth,				1600)
 	GVAR(DWORD,	dwAutoMaximizeHeight,				900)
 	GVAR(DWORD,	dwHideCaptionBorder,				1)
@@ -295,7 +307,7 @@ GVAR2(ToggleVar,	tOutTownSelect,				TOGGLEVAR_ONOFF,	1,	-1,	1,	"Out of town sele
 	GVAR(DWORD,	dwAutoClickLeftUpFs,				0)
 	GVAR(DWORD,	dwAutoClickRightDownFs,				0)
 	GVAR(DWORD,	dwAutoClickRightUpFs,				0)
-	GVAR (DWORD,		dwEnableScreenSaver,						0)
+	GVAR2(ToggleVar,	tEnableScreenSaver,				TOGGLEVAR_ONOFF,	0,	0,	 0,	"EnableScreenSaver",&refreshScreenSaver)
 	GVAR (int,		dwLoadLibraryKey,						0)
 	GVAR2(char,			szLoadLibraryCmd[256]	,			0)
 	GVAR2(char,			szLibraryPath[256]	,			0)
@@ -333,6 +345,28 @@ GVAR(int,	dwAutoEnchantGroup,				3)
 GVAR(int,	dwAutoEnchantGroupId,				0)
 GVAR2(BYTE,	dwAutoEnchantMonsterGroup[1024],				0)
 #endif
+//--- m_NpcTrade.h ---
+#ifdef FUNCTION_DECLARE
+void NpcTradeNewGame();
+void NpcTradeLoop();
+#endif
+#ifdef VARIABLE_DEFINE
+GVAR(int,	dwNpcTradeCheckMs,				0)
+GVAR(int,	dwNpcTradeShowMs,				0)
+#endif
+//--- m_AutoSkill.h ---
+#ifdef FUNCTION_DECLARE
+void AutoSkillNewGame();
+void AutoSkillRunLoop();
+void AutoSkillUnit(UnitAny *pUnit);
+#endif
+#ifdef VARIABLE_DEFINE
+GVAR2(ToggleVar,	tAutoSkill,				TOGGLEVAR_ONOFF,	0,	-1,	 0,	"Auto Skill")
+GVAR(int,	dwAutoSkillDistance, 20)
+GVAR(int,	dwAutoSkillCheckInterval,				500)
+GVAR(int,	dwAutoSkillCheckMs,				0)
+GVAR(int,	dwAutoSkillMode,				0)
+#endif
 //--- m_AutoSummon.h ---
 #ifdef FUNCTION_DECLARE
 	void AutoSummonUnit(UnitAny *pUnit);
@@ -341,12 +375,24 @@ GVAR2(BYTE,	dwAutoEnchantMonsterGroup[1024],				0)
 #endif
 #ifdef VARIABLE_DEFINE
 GVAR2(ToggleVar,	tAutoSummon,				TOGGLEVAR_ONOFF,	0,	-1,	 0,	"Auto Summon")
+GVAR2(ToggleVar,	tAutoSummonRevive,				TOGGLEVAR_ONOFF,	0,	-1,	 0,	"Auto Revive")
+GVAR2(ToggleVar,	tShowSummonInfo,			TOGGLEVAR_ONOFF,	0,	-1,	 0,	"ShowSummonInfo")
 GVAR(int,	dwAutoSummonStartMs,				0)
 GVAR(int,	dwAutoSummonMode,				0)
 GVAR(int,	dwAutoSummonMana,				100)
-GVAR(int,	dwAutoSummonSwitchSkillMs,				100)
+GVAR(int,	dwSwitchSkillMs,				100)
 GVAR(int,	dwAutoSummonSkeletonLevelAdjust,				8)
 GVAR(int,	dwAutoSummonSkeletonMageLevelAdjust,				8)
+GVAR(int,	dwAutoSummonReviveLevelAdjust,				8)
+GVAR2(char,	aAutoReviveMonster[1024]	,0)
+GVAR(int,	dwSkeletonCount,				0)
+GVAR(int,	dwSkeletonMaxCount,				0)
+GVAR(int,	dwSkeletonMageCount,				0)
+GVAR(int,	dwSkeletonMageMaxCount,				0)
+GVAR(int,	dwReviveCount,				0)
+GVAR(int,	dwReviveMaxCount,				0)
+GVAR(int,	dwSkeletonHPPercent,				0)
+GVAR(int,	dwReviveTimePercent,				0)
 #endif
 //--- m_Snapshot.h ---
 #ifdef FUNCTION_DECLARE
@@ -518,6 +564,7 @@ GVAR (DWORD,		dwOrgMode,				0)
 	void RecvCommand_A9_Patch_ASM();
 	void RecvCommand_A7_Patch_ASM();
 	void ResetMonitor();
+	void recheckSelfItems();
 #endif
 #ifdef VARIABLE_DEFINE
 	GVAR2(ToggleVar,		tCountDown,	TOGGLEVAR_ONOFF,	0,	-1,	1,	"Count Down")	
@@ -720,7 +767,8 @@ GVAR2(ToggleVar,	tPlayerHPPercent,			TOGGLEVAR_ONOFF,	0,	-1,	1, "PlayerHPPercent
 #ifdef FUNCTION_DECLARE
 	#define MODULE_CHECKDANGEROUS
 	void ChickenLifeNewGame();
-	void ChickenLife();
+	void ChickenLifeLoop();
+	void checkBossMonster( UnitAny  *pUnit );
 	void CheckDangerousPlayer( UnitAny  *pUnit );
 	void CheckDangerousMonster( UnitAny  *pUnit );
 #endif
@@ -736,28 +784,31 @@ GVAR (int,		dwHirePotionMinCLevel,						0)
 GVAR (int,		dwHirePotionLifePercent,						0)
 GVAR (int,		dwHirePotionColumn,						0)
 GVAR (int,		dwHirePotionDelayMs,						3000)
+GVAR (int,		dwHealingPotionLifePercent,						0)
+GVAR (int,		dwHealingPotionColumn,						0)
+GVAR (int,		dwHealingPotionDelayMs,						0)
 GVAR (int,		dwManaPotionMax,						0)
 GVAR (int,		dwManaPotionValue,						0)
 GVAR (int,		dwManaPotionNTValue,						0) 
 GVAR (int,		dwManaPotionColumn,						0)
 GVAR (int,		dwManaPotionDelayMs,						3000)
-GVAR (DWORD,		dwChickenLife,						0)
-GVAR (DWORD,		dwChickenMaxLife,						0)
-GVAR (DWORD,		dwChickenHostileLife,				0)
-GVAR (DWORD,		dwChickenHostileNearbyLife,			0)
-GVAR (DWORD,		dwChickenLifePercent,				0)
-GVAR (DWORD,		dwChickenHostileLifePercent,		0)
-GVAR (DWORD,		dwChickenHostileNearbyLifePercent,	0)
-GVAR (DWORD,		nChickenLifeAction,					1)
+GVAR (int,		dwChickenLife,						0)
+GVAR (int,		dwChickenMaxLife,						0)
+GVAR (int,		dwChickenHostileLife,				0)
+GVAR (int,		dwChickenHostileNearbyLife,			0)
+GVAR (int,		dwChickenLifePercent,				0)
+GVAR (int,		dwChickenHostileLifePercent,		0)
+GVAR (int,		dwChickenHostileNearbyLifePercent,	0)
+GVAR (int,		nChickenLifeAction,					1)
 GVAR2(ToggleVar,	tChickenLife,			TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken life")
 GVAR2(ToggleVar,	tChickenHostile,		TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken hostile")
 GVAR2(ToggleVar,	tChickenHostileNearby,	TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken hostile nearby")
 GVAR2(ToggleVar,	tChickenDangerousMonster,		TOGGLEVAR_ONOFF,	0,	-1,	1, "Chicken Dangerous Monster")
 GVAR2(ToggleVar,	tAutoPotion,			TOGGLEVAR_ONOFF,	0,	-1,	1,	"Auto Potion")
 GVAR2(char,			anDangerousMonster[1000][2]	,		{0})
-GVAR (DWORD,		nDangerousMonsterAction,			2)
-GVAR (DWORD,		dwChickenLifeMinClevel,						0)
-GVAR (DWORD,		dwChickenLifeForcedClevel,						90)
+GVAR (int,		nDangerousMonsterAction,			2)
+GVAR (int,		dwChickenLifeMinClevel,						0)
+GVAR (int,		dwChickenLifeForcedClevel,						90)
 GVAR (int,		dwChickenLifeEnterGame,						1)
 #endif
 //--- m_QuestProtect.h ---
@@ -780,6 +831,7 @@ GVAR2(ToggleVar,	tBugKD,				TOGGLEVAR_ONOFF,	0,	-1,	1, "Bug KD Protect" , &ReSet
 GVAR2(ToggleVar,	tBugKB,				TOGGLEVAR_ONOFF,	0,	-1,	1, "Bug KB Protect" , &ReSetTimer)
 GVAR2(ToggleVar,	tBugAutoQuit,	    TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle"	,&ReSetTimer)
 GVAR2(ToggleVar,	tBugAutoQuitHell,	    TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(Hell)"	,&ReSetTimer)
+GVAR2(ToggleVar,	tBugAutoQuitHellAct4,	TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(HellAct4)"	,&ReSetTimer)
 GVAR2(ToggleVar,	tBugAutoQuitHellAct5,	TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(HellAct5)"	,&ReSetTimer)
 GVAR2(ToggleVar,	tBugAllHellAlert,	    TOGGLEVAR_ONOFF,	0,	-1,	1, "Bug All Hell Aert Toggle(Hell)"	,&ReSetTimer)
 GVAR (DWORD,		dwBugAlertTimes,			10)
@@ -854,33 +906,42 @@ GVAR2(ToggleVar,	tKeepGameWindow,		TOGGLEVAR_ONOFF,	0,	-1,		1 , "Keep game windo
 #ifdef FUNCTION_DECLARE
 	void MultiClientNewGame();
 	void MultiClientLoop();
+	int MultiClientToggleFollow();
 	int MultiClientStartFollow();
 	int MultiClientStopFollow();
 	int MultiClientEnterDoor();
-	int MultiClientRetreat();
+	int leader_back_to_town();
 	int MultiClientStartClick(int param);
 	int MultiClientStopClick(int param);
-	void startFollowId(int uid);
-	void stopFollow();
-	void enterDoor(int uid,int area);
-	void retreat(int uid);
-	void multiclient_left_xy(int x,int y);
-	void multiclient_right_xy(int x,int y);
-	void multiclient_left_unit(int type,int id);
-	void multiclient_right_unit(int type,int id);
+	void follower_start_follow(int uid);
+	void follower_stop_follow();
+	void follower_enter_door(int uid,int area);
+	void follower_back_to_town(int uid);
+	void follower_left_click_xy(int x,int y);
+	void follower_right_click_xy(int x,int y);
+	void follower_left_click_unit(int type,int id);
+	void follower_right_client_unit(int type,int id);
+	void follower_click_object(int type,int id);
+	void follower_send_info(int info);
+	void leader_recv_info(int info);
+	void leader_click_object(int type,int id);
 #endif
 #ifdef VARIABLE_DEFINE
 	GVAR2(ToggleVar,	tMultiClient,				TOGGLEVAR_ONOFF,	0,	-1,	1,  "Auto Follow" )
+	GVAR2(ToggleVar,	tMultiClientToggleFollow,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientToggleFollow",&MultiClientToggleFollow)
 	GVAR2(ToggleVar,	tMultiClientStartFollow,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStartFollow",&MultiClientStartFollow)
 	GVAR2(ToggleVar,	tMultiClientStopFollow,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStopFollow",&MultiClientStopFollow)
 	GVAR2(ToggleVar,	tMultiClientEnterDoor,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientEnterDoor",&MultiClientEnterDoor)
-	GVAR2(ToggleVar,	tMultiClientRetreat,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientRetreat",&MultiClientRetreat)
+	GVAR2(ToggleVar,	tMultiClientRetreat,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientRetreat",&leader_back_to_town)
 	GVAR2(ToggleVar,	tMultiClientClick,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientClick",&MultiClientStartClick)
+	GVAR2(ToggleVar,	tMultiClientClick2,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientClick2",&MultiClientStartClick)
+	GVAR (int,			dwMultiClientMaxWindowId,					8)
 	GVAR (int,			fTransferClick,					0)
 	GVAR2 (wchar_t,			wszTransferClick[64],					0)
 	GVAR (int,			dwMultiClientDistance,					5)
 	GVAR (int,			dwMultiClientMaxDistance,					100)
 	GVAR (int,			dwMultiClientMoveDistance,					20)
+	GVAR (int,			dwMultiClientCheckInterval,					200)
 	GVAR (int,			dwMultiClientOverAreaDistance,					20)
 	GVAR (int,			dwMultiClientCount,					0)
 	GVAR (int,			dwMultiClientFollowId,					0)
@@ -889,6 +950,7 @@ GVAR2(ToggleVar,	tKeepGameWindow,		TOGGLEVAR_ONOFF,	0,	-1,		1 , "Keep game windo
 	GVAR (int,			dwMultiClientClickRight,					0)
 	GVAR (int,			dwMultiClientClickTimeout,					0)
 	GVAR2(ToggleVar,	tNecNoAttackInHell,				TOGGLEVAR_ONOFF,	0,	-1,	1,  "NecNoAttackInHell")
+	GVAR (int,			fAutoFollowMoving,					0)
 #endif
 //--- m_DropProtection.h ---
 #ifdef FUNCTION_DECLARE

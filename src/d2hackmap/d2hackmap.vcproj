@@ -60,6 +60,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				OutputFile="..\..\map113c\$(ProjectName).dll"
 				LinkIncremental="2"
 				ModuleDefinitionFile="d2hackmap.def"
 				GenerateDebugInformation="true"
@@ -431,6 +432,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\AutoSkill.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\AutoSummon.cpp"
 						>
 					</File>
@@ -456,6 +461,10 @@
 					</File>
 					<File
 						RelativePath=".\MultiClient.cpp"
+						>
+					</File>
+					<File
+						RelativePath=".\NpcTrade.cpp"
 						>
 					</File>
 					<File

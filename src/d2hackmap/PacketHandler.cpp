@@ -675,11 +675,13 @@ void __cdecl GamePacketSendIntercept(int regs) {
 void initSendPacketCheckTable() {
 	sendPacketCheckTable[0x0c]=1; //right skill map
 	sendPacketCheckTable[0x0d]=1; //right skill unit
+	sendPacketCheckTable[0x13]=1; //Interact (click) entity
 	sendPacketCheckTable[0x17]=1; //drop item
 	sendPacketCheckTable[0x20]=1; //active item
 	sendPacketCheckTable[0x33]=1; //sell item
 	sendPacketCheckTable[0x36]=1; //hire merc
 	sendPacketCheckTable[0x3C]=1; //select skill
+	sendPacketCheckTable[0x49]=1; //Take WP/Close WP
 	sendPacketCheckTable[0x61]=1; //change merc equipment
 }
 void onRightSkillMap(int x,int y);
@@ -690,9 +692,9 @@ void showResetProtectMsg() {
 	wsprintfW(wszbuf, L"Reset Protection, (use %hs to unlock)",keyname);
 	D2ShowGameMessage(wszbuf, 0);
 }
-int ResetProtection(int id) {
+int ResetProtection(int unitId) {
 	if (!tResetProtectionToggle.isOn) return 0;
-	UnitAny *pUnit=GetUnitFromIdSafe(id,UNITNO_ITEM);
+	UnitAny *pUnit=GetUnitFromIdSafe(unitId,UNITNO_ITEM);
 	if (!pUnit) return 0;
 	if (pUnit->dwUnitType!=UNITNO_ITEM) return 0;
 	int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
@@ -724,6 +726,8 @@ protect:
 		ret
 	}
 }
+extern int fAutoSummonSwitchSkill,fAutoSummonSwitchSkillTmp;
+int dwInteractEntityCount=0;
 int __cdecl blockSendPacket(int regs) {
 	int *esp=&regs;
 	int len=esp[10];
@@ -737,20 +741,41 @@ int __cdecl blockSendPacket(int regs) {
 		case 0x0d: //right skill unit
 			onRightSkillUnit(*(int *)(packet+1),*(int *)(packet+5));
 			break;
+		case 0x13: {//Interact (click) entity
+			int type=*(int *)&packet[1];
+			int id=*(int *)&packet[5];
+			dwInteractEntityCount++;
+			if (dwMultiClientCount&&(type==2||type==5)) {
+				leader_click_object(type,id);
+			}
+			break;
+		}
 		case 0x17:case 0x33:case 0x36: return DropProtectionPacketBlock(packet,len);
 		case 0x20: { //active item
 			int id=*(int *)&packet[1];
 			if (ResetProtection(id)) return 1;
+			break;
 		}
 		case 0x3c: {//select skill
 			int skill=*(WORD*)&packet[1];
 			int left=packet[4];
+			fAutoSummonSwitchSkill=fAutoSummonSwitchSkillTmp;fAutoSummonSwitchSkillTmp=0;
 			if (tNecTeleportAttract.isOn&&dwPlayerClass==2&&!left) {
 				if (skill==54) dwChangeLeftSkill=86;
 				else if (dwRightSkill==54) dwChangeLeftSkill=0;
 			}
 			break;
 		}
+		case 0x49: {//Take WP/Close WP
+			int unitId=*(DWORD *)&packet[1];
+			int dest=packet[5];
+			if (dest) {
+				//gameMessage("waypoint %d to %d mouse=(%d,%d)",unitId,dest,p_D2MousePos->y,p_D2MousePos->x);
+				leader_click_object(8,unitId);
+				leader_click_object(9,dest);
+			}
+			break;
+		}	
 		case 0x61: //change merc equipment
 			//TODO save merc
 			break;

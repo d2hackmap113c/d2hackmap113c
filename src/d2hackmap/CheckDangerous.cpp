@@ -4,10 +4,12 @@
 
 extern int fState100HP,fState106Mana;
 int dwCheckMercMs;
-static int checkMs=0,manaMs=0,golemMs=0,dwClearAlertMs,hireMs=0,dwMaxlife=0,dwMaxMana=0,dwLvl=0;
+static int manaMs=0,healingMs=0,golemMs=0,hireMs=0;
 static int *pMercHpPercent=NULL;
 static int *pGolemHpPercent=NULL;
 static int fIronGolemIsRuneword,fIronGolemTownProtection;
+static int ceHp,cowKingHp;
+static double ceDis,cowKingDis;
 
 void ProtectAction(wchar_t* wszShowMsg, int action = 1 , BYTE nCol = 8) {
 	//  1 exit game  , 2 back to home , 3 show message  4 drink
@@ -69,8 +71,9 @@ static void rescanMercPointers() {
 }
 
 void ChickenLifeNewGame() {
-	static int bugHell=0,bugHellA5=0;
+	static int bugHell=0,bugHellA4=0,bugHellA5=0;
 	if (tBugAutoQuitHell.isOn) bugHell=1;
+	if (tBugAutoQuitHellAct4.isOn) bugHellA4=1;
 	if (tBugAutoQuitHellAct5.isOn) bugHellA5=1;
 	if (dwChickenLifeEnterGame) {
 		tChickenLife.isOn=1;
@@ -78,17 +81,16 @@ void ChickenLifeNewGame() {
 		tDropProtectionToggle.isOn=1;
 		tResetProtectionToggle.isOn=1;
 		if (bugHell) tBugAutoQuitHell.isOn=1;
+		if (bugHellA4) tBugAutoQuitHellAct4.isOn=1;
 		if (bugHellA5) tBugAutoQuitHellAct5.isOn=1;
 	}
-	dwCheckMercMs=dwCurMs+3000;checkMs=0;manaMs=0;golemMs=0;dwClearAlertMs=0;
-	hireMs=0;dwMaxlife=0;dwMaxMana=0;dwLvl=0;
+	dwCheckMercMs=dwCurMs+3000;manaMs=0;healingMs=0;golemMs=0;hireMs=0;
 	pMercHpPercent=NULL;pGolemHpPercent=NULL;
 	fIronGolemIsRuneword=0;fIronGolemTownProtection=0;
-	rescanMercPointers();
+	if (EXPANSION) rescanMercPointers();
 }
 
-void ChickenLife() {
-	if (dwClearAlertMs&&dwCurMs>dwClearAlertMs) {dwClearAlertMs=0;SetCenterAlertMsg(0,L"");}
+void ChickenLifeLoop() {
 	if (PLAYER->dwMode==0x11) return ;
 	if (tChickenLife.isOn || tChickenHostile.isOn){
 		if (fPlayerInTown ) {
@@ -97,22 +99,15 @@ void ChickenLife() {
 			return;
 		}
 		if ( fLifeProtectOn ) return ;
-		if (dwCheckMercMs&&dwCurMs>dwCheckMercMs) {
+		if (EXPANSION&&dwCheckMercMs&&dwCurMs>dwCheckMercMs) {
 			rescanMercPointers();
 			dwCheckMercMs=dwCurMs+10000;
 		}
-		if (!checkMs||dwCurMs>=checkMs) {
-			dwLvl = D2GetUnitStat(PLAYER, STAT_LEVEL, 0);
-			dwMaxlife = D2GetUnitStat(PLAYER, STAT_MAXHP, 0)>>8;
-			dwMaxMana = D2GetUnitStat(PLAYER, STAT_MAXMANA, 0)>>8;
-			checkMs=dwCurMs+dwAutoPotionCheckMs;
-		}
 		if (tAutoPotion.isOn) {
 			if (dwManaPotionColumn&&(!manaMs||dwCurMs>=manaMs)) {
-				if (dwMaxMana>=dwManaPotionMax) {
-					int dwMana = D2GetUnitStat(PLAYER, STAT_MANA, 0)>>8;
-					if (LEVELNO!=121&&dwMana<=dwManaPotionValue
-						||LEVELNO==121&&dwMana<=dwManaPotionNTValue) {
+				if (dwPlayerMaxMana>=dwManaPotionMax) {
+					if (LEVELNO!=121&&dwPlayerMana<=dwManaPotionValue
+						||LEVELNO==121&&dwPlayerMana<=dwManaPotionNTValue) {
 						if (p_D2BeltNotEmpty[dwManaPotionColumn-1]&&!fState106Mana) {
 							D2ShowGameMessage(L"Auto mana potion", 0);
 							manaMs=dwCurMs+dwManaPotionDelayMs;
@@ -121,17 +116,26 @@ void ChickenLife() {
 					}
 				}
 			}
-			if (dwHirePotionColumn&&dwHirePotionLifePercent
+			if (dwHealingPotionColumn&&dwHealingPotionLifePercent&&(!healingMs||dwCurMs>=healingMs)) {
+				if(dwPlayerHP*100 <= dwPlayerMaxHP*dwHealingPotionLifePercent ){
+					if (p_D2BeltNotEmpty[dwHealingPotionColumn-1]&&!fState100HP) {
+						D2ShowGameMessage(L"Auto healing potion", 0);
+						healingMs=dwCurMs+dwHealingPotionDelayMs;
+						GameControl(22+dwHealingPotionColumn);
+					}
+				}
+			}
+			if (EXPANSION&&dwHirePotionColumn&&dwHirePotionLifePercent
 				&&pMercHpPercent&&0<*pMercHpPercent&&*pMercHpPercent<dwHirePotionLifePercent
 				&&(!hireMs||dwCurMs>=hireMs)&&p_D2BeltNotEmpty[dwHirePotionColumn-1]) {
 				hireMs=dwCurMs+dwHirePotionDelayMs;
-				if (dwLvl>=dwHirePotionMinCLevel) {
+				if (dwPlayerLevel>=dwHirePotionMinCLevel) {
 					D2ShowGameMessage(L"Auto merc potion", 0);
 					useBelt(dwHirePotionColumn-1,1);
 				} else D2PlaySound(PLAYER->dwUnitId, UNITNO_PLAYER,0x19);
 			}
 		}
-		if (fIronGolemIsRuneword&&pGolemHpPercent&&0<*pGolemHpPercent) {
+		if (EXPANSION&&fIronGolemIsRuneword&&pGolemHpPercent&&0<*pGolemHpPercent) {
 			if (dwIronGolemLifeExitPercent&&*pGolemHpPercent<dwIronGolemLifeExitPercent) {
 				ProtectAction(L"<Hackmap>: Iron Golem Life below threshold,", 1);
 				fLifeProtectOn = TRUE;
@@ -142,29 +146,25 @@ void ChickenLife() {
 			} else if (dwIronGolemLifeAlertPercent&&*pGolemHpPercent<dwIronGolemLifeAlertPercent) {
 				wchar_t wszbuf[256];
 				wsprintfW(wszbuf, L"IronGolem%02d%%",*pGolemHpPercent);
-				SetCenterAlertMsgParam(1,2,250);
-				SetCenterAlertMsg(1,wszbuf);
-				dwClearAlertMs=dwCurMs+100;
+				SetBottomAlertMsg1(wszbuf,100,1,1);
 				if (!golemMs||dwCurMs>=golemMs) {
 					golemMs=dwCurMs+2000;
 					D2PlaySound(PLAYER->dwUnitId, UNITNO_PLAYER,0x19);
 				}
 			}
 		}
-		DWORD dwLife = D2GetUnitStat(PLAYER, STAT_HP, 0)>>8;
 
-		if (dwLvl>=(int)dwChickenLifeMinClevel && tChickenLife.isOn
-			||dwLvl>=(int)dwChickenLifeForcedClevel){
-			if( dwChickenLife && (int)dwChickenMaxLife<=dwMaxlife && dwLife<=dwChickenLife) {
-				dwMaxlife = D2GetUnitStat(PLAYER, STAT_MAXHP, 0)>>8;
-				if(dwChickenLife && (int)dwChickenMaxLife<=dwMaxlife && dwLife<=dwChickenLife) {
+		if (dwPlayerLevel>=(int)dwChickenLifeMinClevel && tChickenLife.isOn
+			||dwPlayerLevel>=(int)dwChickenLifeForcedClevel){
+			if( dwChickenLife && (int)dwChickenMaxLife<=dwPlayerMaxHP && dwPlayerHP<=dwChickenLife) {
+				if(dwChickenLife && (int)dwChickenMaxLife<=dwPlayerMaxHP && dwPlayerHP<=dwChickenLife) {
 					ProtectAction(L"<Hackmap>: Life below chicken threshold,", nChickenLifeAction);
 					fLifeProtectOn = TRUE;
 					return;
 				}
 			}
-			if(dwLife<dwChickenMaxLife && dwChickenLifePercent 
-				&& dwLife*100 <= dwMaxlife*dwChickenLifePercent ){
+			if(dwPlayerHP<dwChickenMaxLife && dwChickenLifePercent 
+				&& dwPlayerHP*100 <= dwPlayerMaxHP*dwChickenLifePercent ){
 				ProtectAction(L"<Hackmap>: Life below chicken threshold,", nChickenLifeAction);
 				fLifeProtectOn = TRUE;
 				return;
@@ -173,7 +173,8 @@ void ChickenLife() {
 		if ( tChickenHostile.isOn ) {
 			for (RosterUnit *pUnit = PLAYERLIST; pUnit; pUnit = pUnit->pNext ) {
 				if ( TestPvpFlag(pUnit->dwUnitId , dwPlayerId) ==0 ){
-					if ( (dwChickenHostileLife && dwLife<=dwChickenHostileLife) || (dwChickenHostileLifePercent && dwLife*100 <= dwMaxlife*dwChickenHostileLifePercent) ){
+					if ( (dwChickenHostileLife && dwPlayerHP<=dwChickenHostileLife) 
+						|| (dwChickenHostileLifePercent && dwPlayerHP*100 <= dwPlayerMaxHP*dwChickenHostileLifePercent) ){
 						ProtectAction(L"<Hackmap>: Life below chicken hostile threshold,",nChickenLifeAction);
 						fLifeProtectOn = TRUE;
 						return;
@@ -182,8 +183,44 @@ void ChickenLife() {
 			}
 		}
 	}
+	if (ceHp) {
+		wchar_t wszbuf[32];char strVal [10] ;
+		DblToStr(ceDis,2,strVal);
+		wsprintfW(wszbuf, L"CE %hs %d%%",strVal,ceHp);
+		SetBottomAlertMsg1(wszbuf,300,1,ceDis<=8);
+	}
+	if (cowKingHp) {
+		wchar_t wszbuf[32];char strVal [10] ;
+		DblToStr(cowKingDis,2,strVal);
+		wsprintfW(wszbuf, L"CowKing %hs %d%%",strVal,cowKingHp);
+		SetBottomAlertMsg2(wszbuf,300,1,ceDis<=33);
+	}
+	ceHp=0;cowKingHp=0;ceDis=12;cowKingDis=1000;
 }
-
+void checkBossMonster( UnitAny  *pUnit ) {
+	MonsterData *pMonsterData = pUnit->pMonsterData;
+	if (LEVELNO==39) {//cow level 
+		int le=0,m=0;
+		for (int i = 0; i < 9; i++) {
+			int enchno = pMonsterData->anEnchants[i];
+			if (enchno==8) m=1;
+			else if (enchno==17) le=1;
+		}
+		if (m&&le) {
+			cowKingHp=D2GetMonsterHpPercent(pUnit);
+			cowKingDis=GetUnitDistanceInSubtiles(pUnit,PLAYER);
+			return;
+		}
+	}
+	for (int i = 0; i < 9; i++) {
+		int enchno = pMonsterData->anEnchants[i];
+		if (enchno==18) { //CE
+			double dis=GetUnitDistanceInSubtiles(pUnit,PLAYER);
+			if (dis<ceDis) {ceDis=dis;ceHp=D2GetMonsterHpPercent(pUnit);}
+			break;
+		}
+	}
+}
 
 void CheckDangerousPlayer( UnitAny  *pUnit ) {
 	if ( fPlayerInTown ){
@@ -192,9 +229,8 @@ void CheckDangerousPlayer( UnitAny  *pUnit ) {
 	}
 	if ( tChickenHostileNearby.isOn && pUnit->dwMode ){
 		if ( fLifeProtectOn==FALSE && TestPvpFlag(dwPlayerId , pUnit->dwUnitId) ==0){
-			DWORD dwLife = D2GetUnitStat(PLAYER, STAT_HP, 0)>>8;
-			DWORD dwMaxlife = D2GetUnitStat(PLAYER, STAT_MAXHP, 0)>>8;
-			if ( (dwChickenHostileNearbyLife && dwLife<=dwChickenHostileNearbyLife) || (dwChickenHostileNearbyLifePercent && dwLife*100 <= dwMaxlife*dwChickenHostileNearbyLifePercent) ){
+			if ( (dwChickenHostileNearbyLife && dwPlayerHP<=dwChickenHostileNearbyLife) 
+				|| (dwChickenHostileNearbyLifePercent && dwPlayerHP*100 <= dwPlayerMaxHP*dwChickenHostileNearbyLifePercent) ){
 				ProtectAction(L"<Hackmap>: Life below chicken hostile nearby threshold,", nChickenLifeAction );
 				fLifeProtectOn = TRUE;
 			}

@@ -61,6 +61,7 @@ FILE *openFile(char *path,char *mode);
 int readFully(FILE *fp,char *buf,int size);
 char *heap_strdup(HANDLE heap,char *s);
 char *loadFile(HANDLE heap,FILE *fp,int *psize);
+void __cdecl gameMessage(char *fmt, ...);
 
 
 #endif

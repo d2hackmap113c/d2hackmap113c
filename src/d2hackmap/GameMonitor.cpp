@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "bitstream.h"
 
+extern int dwNecMana,dwNecInfoExpireMs;
+
 int guessEnchantLevel();
 int guessBOLevel(int debug);
 
@@ -9,34 +11,80 @@ int guessBOLevel(int debug);
 
 void hex(FILE *fp,int addr,void *buf,int n);
 int fState100HP=0,fState106Mana=0;
-unsigned char beltCount[4];
+unsigned char beltCount[4],beltType[4];
+int dwNeedPotionType; //bit 1:HP 2:Mana 3:Rejuvenation
 int beltLayers;
 int dwOakSageLvl;
 int dwGuessBOMs=0;
 int dwGuessEnchantMs=0;
-int dwRecheckBeltMs;
 int dwTownPortalCount=0,dwIdentifyPortalCount=0;
 struct CountDown {
 	const char *name;
-	int skill,cls,type;
+	int skill;
 	int addS,stepS,startMs,endMs;
 	int active,lv,selfskill;
 };
 //werewolf: time 40s
 //Lycanthropy: time+=20+lvl*20
 int fWerewolf,fWerebear;
-static struct CountDown cd_QH={"QH",52,1,0,120,24,0,0,0}; //sor fire enchant
-static struct CountDown cd_BO={"BO",149,4,2,20,10,0,0,0}; //bar warcries battleorder
-static struct CountDown cd_HS={"HS",117,3,0,5,25,0,0,0};//pal combat holyshield
-static struct CountDown cd_werewolf={"Wolf",223,5,1,60,20,0,0,0};//dru shape werewolf
-static struct CountDown cd_werebear={"Bear",228,5,1,60,20,0,0,0};//dru shape werebear
-static struct CountDown cd_Fade={"Fade",267,6,1,108,12,0,0,0};//asn shadow fade
-static struct CountDown cd_Burst={"Burst",258,6,1,108,12,0,0,0};//asn shadow burst of speed
-static struct CountDown cd_Cloak={"Cloak",264,6,1,8,1,0,0,0};//asn shadow Cloak of Shadows
-static struct CountDown cd_KB={"KB",0,0,0,0,0,0,0,0};//KB countdown
+static struct CountDown cd_QH={"QH",52,120,24,0,0,0}; //sor fire enchant
+static struct CountDown cd_BO={"BO",149,20,10,0,0,0}; //bar warcries battleorder
+static struct CountDown cd_HS={"HS",117,5,25,0,0,0};//pal combat holyshield
+static struct CountDown cd_werewolf={"Wolf",223,60,20,0,0,0};//dru shape werewolf
+static struct CountDown cd_werebear={"Bear",228,60,20,0,0,0};//dru shape werebear
+static struct CountDown cd_Fade={"Fade",267,108,12,0,0,0};//asn shadow fade
+static struct CountDown cd_Burst={"Burst",258,108,12,0,0,0};//asn shadow burst of speed
+static struct CountDown cd_Cloak={"Cloak",264,8,1,0,0,0};//asn shadow Cloak of Shadows
+static struct CountDown cd_KD={"KD",0,0,0,0,0,0};//KD countdown
+static struct CountDown cd_KB={"KB",0,0,0,0,0,0};//KB countdown
 struct CountDown *countDowns[]={&cd_QH,&cd_BO,&cd_HS,
 	&cd_werewolf,&cd_werebear,
-	&cd_Fade,&cd_Burst,&cd_Cloak,&cd_KB};
+	&cd_Fade,&cd_Burst,&cd_Cloak,&cd_KD,&cd_KB};
+
+void recheckSelfItems() {
+	static int n=0;
+	if (!fInGame) return;
+	*(int *)beltCount=0;*(int *)beltType=0;dwNeedPotionType=0;
+	leftWeapon=NULL;rightWeapon=NULL;
+	beltLayers=1;
+	for (UnitAny *pUnit = D2GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = D2GetNextItemInInv(pUnit)) {
+		if (pUnit->dwUnitType!=UNITNO_ITEM) continue ;
+		if (pUnit->pItemData->nItemLocation==255) {
+			switch (pUnit->pItemData->nBodyLocation) {
+				case 4:rightWeapon=pUnit;break;
+				case 5:leftWeapon=pUnit;break;
+				case 8: //belt
+					int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
+					if (index==1039||index==1040) beltLayers=2;
+					else if (index==1041||index==1042) beltLayers=3;
+					else beltLayers=4;
+					break;
+			}
+		}
+		if (pUnit->pItemData->nLocation==2) {
+			int x=pUnit->pItemPath->dwPosX;
+			beltCount[x&3]++;
+			if (0<=x&&x<=3) {
+				int type=0;
+				int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
+				switch (index) {
+					case 2008:case 2009:type=3;break;
+					case 2080:case 2081:case 2082:case 2083:case 2084:type=1;break; //H3:100 H5:320
+					case 2085:case 2086:case 2087:case 2088:case 2089:type=2;break; //M4:300 M5:500
+				}
+				beltType[x&3]=type;
+			}
+		}
+	}
+	for (int i=0;i<4;i++) if (beltCount[i]<beltLayers) {
+		if (beltType[i]) dwNeedPotionType|=1<<(beltType[i]-1);
+	}
+	dwRecheckSelfItemMs=0;
+}
+void setKDCountDown(int en) {
+	cd_KD.active=en;
+	cd_KD.endMs=dwCurMs+11750;
+}
 void setKBCountDown(int team,int en) {
 	cd_KB.active=en;
 	cd_KB.lv=team;
@@ -45,7 +93,7 @@ void setKBCountDown(int team,int en) {
 void setCountDownEndTime(struct CountDown *cd) {
 	int time=cd->addS+cd->lv*cd->stepS;
 	if (cd->skill==223||cd->skill==228) { //werewolf werebear
-		int lv=getSkillLevel(PLAYER,224,cd->type,cd->skill); //Lycanthropy
+		int lv=getSkillLevel(PLAYER,224); //Lycanthropy
 		if (lv==0) time=40;
 		else time=cd->addS+lv*cd->stepS;
 	}
@@ -55,7 +103,7 @@ void setCountDownEndTime(struct CountDown *cd) {
 	}
 }
 void setupCountdown(struct CountDown *cd) {
-	cd->lv=getSkillLevel(PLAYER,cd->cls,cd->type,cd->skill); 
+	cd->lv=getSkillLevel(PLAYER,cd->skill); 
 	cd->startMs=dwCurMs;
 	cd->selfskill=1;
 	setCountDownEndTime(cd);
@@ -84,35 +132,6 @@ void onRightSkillUnit(int type,int id) {
 		case 267: setupCountdown(&cd_Fade);break;
 	}
 }
-UnitAny *leftWeapon,*rightWeapon;
-void recheckBelt() {
-	static int n=0;
-	if (!fInGame) return;
-	*(int *)beltCount=0;
-	leftWeapon=NULL;rightWeapon=NULL;
-	beltLayers=1;
-	for (UnitAny *pUnit = D2GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = D2GetNextItemInInv(pUnit)) {
-		if (pUnit->dwUnitType!=UNITNO_ITEM) continue ;
-		if (pUnit->pItemData->nItemLocation==255) {
-			switch (pUnit->pItemData->nBodyLocation) {
-				case 4:rightWeapon=pUnit;break;
-				case 5:leftWeapon=pUnit;break;
-				case 8: //belt
-					int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
-					if (index==1039||index==1040) beltLayers=2;
-					else if (index==1041||index==1042) beltLayers=3;
-					else beltLayers=4;
-					break;
-			}
-		}
-		if (pUnit->pItemData->nLocation==2) {
-			int x=pUnit->pItemPath->dwPosX;
-			beltCount[x&3]++;
-		}
-	}
-	//LOG("recheckBelt %d\n",n++);
-	dwRecheckBeltMs=0;
-}
 void ResetMonitor(){
 	dwGuessBOMs=0;dwOakSageLvl=0;
 	dwGuessEnchantMs=0;
@@ -124,6 +143,7 @@ void ResetMonitor(){
 		sMonitorStr[i].fEnable = 0 ;
 	}
 }
+extern wchar_t wszNpcTradeInfo[256];
 void DrawMonitorInfo(){
 	if (dwGuessBOMs&&dwCurMs>dwGuessBOMs) {
 		dwGuessBOMs=0;
@@ -141,12 +161,76 @@ void DrawMonitorInfo(){
 			setCountDownEndTime(cd);
 		}
 	}
-	if (fScreenSaverActive) return;
+	if (!fWinActive&&tEnableScreenSaver.isOn) {
+		D2DrawText(fScreenSaverActive?L"Screen Saver":L"Scaning Units", 20 , 20, 0, 0);
+		return;
+	}
 	wchar_t wszTemp[512];
 	int xpos = SCREENSIZE.x+dwGameMonitorX;
 	int ypos = SCREENSIZE.y+dwGameMonitorY;
 	DWORD dwTimer = dwCurMs;
 	DWORD dwOldFone = D2SetTextFont(8);
+	if (wszNpcTradeInfo[0]) {
+		D2SetTextFont(3);
+		if (!D2CheckUiStatus(UIVAR_NPCTRADE)) wszNpcTradeInfo[0]=0;
+		else D2DrawText(wszNpcTradeInfo, 120 , SCREENSIZE.y-75, 0, 0);
+		D2SetTextFont(8);
+	}
+	if (tShowSummonInfo.isOn&&dwCurMs<dwNecInfoExpireMs) {
+		D2SetTextFont(3);
+		int pos=0,color=0;
+		pos+=wsprintfW(wszTemp+pos, L"nec %d,%d,%d %d%% %d%% %d",
+			dwSkeletonCount, dwSkeletonMageCount, dwReviveCount, 
+			dwSkeletonHPPercent,dwReviveTimePercent,dwNecMana);
+		int x=xpos-GetTextWidth(wszTemp);if (x<0) x=0;
+		D2DrawText(wszTemp, x , ypos, 0, 0);
+		ypos = ypos-30;
+		D2SetTextFont(8);
+	}
+	UnitAny *pSelectedUnit = D2GetSelectedUnit();
+	if (pSelectedUnit) {
+		int pos=0,color=0;
+		pos+=wsprintfW(wszTemp+pos, L"%d:%d txt%d",  
+			pSelectedUnit->dwUnitType,pSelectedUnit->dwUnitId,pSelectedUnit->dwTxtFileNo);
+		int x0=PLAYER->pMonPath->wPosX;
+		int y0=PLAYER->pMonPath->wPosY;
+		int x1=0,y1=0;
+		switch (pSelectedUnit->dwUnitType) {
+			case UNITNO_PLAYER:
+			case UNITNO_MONSTER:
+				if (pSelectedUnit->pMonPath) {x1=pSelectedUnit->pMonPath->wPosX;y1=pSelectedUnit->pMonPath->wPosY;}
+				break;
+			case UNITNO_OBJECT:
+			case UNITNO_ITEM:
+			case UNITNO_ROOMTILE:
+				if (pSelectedUnit->pItemPath) {x1=pSelectedUnit->pItemPath->dwPosX;y1=pSelectedUnit->pItemPath->dwPosY;}
+				break;
+		}
+		char strVal [10] ;
+		pos+=wsprintfW(wszTemp+pos, L" dis=(%d,%d) ", x1-x0,y1-y0); 
+		double dis=GetUnitDistanceInSubtiles(pSelectedUnit,PLAYER);
+		DblToStr(dis ,2 , strVal);
+		pos+=wsprintfW(wszTemp+pos, L" %hs yards", strVal);
+		dis=sqrt((double)((x1-x0)*(x1-x0)+(y1-y0)*(y1-y0)));
+		int dis10=(int)(dis*20/3+0.5);
+		pos+=wsprintfW(wszTemp+pos, L" %d.%d", dis10/10,dis10%10);
+		if (pSelectedUnit->dwUnitType==1) {
+			if (D2UnitVisionBlocked(PLAYER,pSelectedUnit,2)) {color=1;pos+=wsprintfW(wszTemp+pos, L" notvisible");}
+			MonsterTxt *pMonTxt= pSelectedUnit->pMonsterData->pMonsterTxt;
+			if (pMonTxt->fBoss)
+				pos+=wsprintfW(wszTemp+pos, L" TB");
+			if (pSelectedUnit->pMonsterData->fBoss) 
+				pos+=wsprintfW(wszTemp+pos, L" B");
+			if (pSelectedUnit->pMonsterData->fUnique) 
+				pos+=wsprintfW(wszTemp+pos, L" U");
+			if (pSelectedUnit->pMonsterData->fChamp)
+				pos+=wsprintfW(wszTemp+pos, L" C");
+		}
+
+		int x=xpos-GetTextWidth(wszTemp);if (x<0) x=0;
+		D2DrawText(wszTemp, x , ypos, color, 0);
+		ypos = ypos -15;
+	}
 	if (fTransferClick&&wszTransferClick[0]) {
 		int x=xpos-GetTextWidth(wszTransferClick);if (x<0) x=0;
 		D2DrawText(wszTransferClick, x , ypos, 0, 0);
@@ -254,10 +338,14 @@ void __stdcall SetState( DWORD dwStateNo , BOOL fSet ){
 	struct CountDown *cd=NULL;
 	switch (dwStateNo) {
 		case 16: cd=&cd_QH;break;
+		case 23: if (!fSet&&tAutoSkill.isOn&&dwRightSkill==71) dwAutoSkillCheckMs=0;break; //Dim Vision
 		case 32: cd=&cd_BO;break;
+		case 51: dwSkillChangeCount++;break; //Battle Command
+		case 60: if (!fSet&&tAutoSkill.isOn&&dwRightSkill==87) dwAutoSkillCheckMs=0;break; //Decrepify
 		case 100: fState100HP=fSet;break;
 		case 101: cd=&cd_HS;break;
 		case 106: fState106Mana=fSet;break;
+		case 134: dwSkillChangeCount++;break; //ShrineSkill
 		case 139: fWerewolf=fSet;cd=&cd_werewolf;break;
 		case 140: fWerebear=fSet;cd=&cd_werebear;break;
 		case 149: dwGuessBOMs=dwCurMs+500;break; //Oak Sage
@@ -387,11 +475,16 @@ void itemAction(struct bitstream *bs,char *buf) {
 	int equipped=bitstream_rbit(bs, 4);
 	bitstream_seek(bs,73-16);
 	int location=bitstream_rbit(bs, 3);//bit73-75 0:belt bag:1 cube:4 stash:5
+	if (EXPANSION) {
+		dwSkillChangeCount++;
+	} else {
+		if (equipped) dwSkillChangeCount++;
+	}
 	if (location==0 //belt changed
 		||equipped==4||equipped==5||equipped==11||equipped==12 //weapon changed
 		) {
 		leftWeapon=NULL;rightWeapon=NULL;
-		dwRecheckBeltMs=dwCurMs+300;
+		dwRecheckSelfItemMs=dwCurMs+300;
 	}
 	if (tPacketHandler.isOn&&logfp) {
 		LOG("	RECV %02x_itemAction location=%d equipped=%d\n",buf[0]&0xFF,location,equipped);

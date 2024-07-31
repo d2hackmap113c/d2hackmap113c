@@ -1050,6 +1050,12 @@ struct GameStructInfo{
 };
 
 #pragma pack(1)
+struct WaypointMenuItem {
+	BYTE areaId;
+	BYTE	_1[3];	//+1
+	BYTE enable;	//+4
+};
+#pragma pack(1)
 struct KeyboardSetting {
 /*
 cmd table:

@@ -52,7 +52,7 @@ Socket Protect Toggle:          1, VK_OEM_5        // SOCKET保护，防止不小心把DD
 View Socketables Toggle:        0, VK_OEM_6             // 显示所镶物品开关, 大键盘]}
 Item Basic Stats Toggle:        0, VK_OEM_6             // 显示物品未镶前的原始状态开关, 大键盘]}
 View Socket Base Items Toggle : 0 ,VK_OEM_6             //查看物品所镶物品和基础材料]}
-Item Value Toggle:              1, VK_, 100           //显示卖价35K物品卖出价值(金钱)
+Item Value Toggle:              1, VK_, 1000           //显示卖价35K物品卖出价值(金钱)
 Item Levels Toggle:             0, VK_              // iLvl显示
 Show Item Variable Prop Toggle: 1, -1               //显示装备变量范围(暗金，绿色，神符之语，防具基础防御，武器攻击范围等)
 
@@ -745,10 +745,11 @@ Item Colours[2044,91]:               4, 0x1f,0x1f,0x1f     //Act4
 Item Colours[2137,2139]:             4, 0x1f,0x1f,0x1f     //Act5
 
 //----------------------- 新增或修改的设置 ----------------------------
-EnterGameShowDifficultyMs: 1500 //进入游戏时在中央显示游戏难度1.5秒
+EnterGameShowDifficultyMs: 3000 //进入游戏时显示游戏难度3秒
 //新增Bug号保护
 BugKCountess Toggle: 1, VK_  , 2 //A1 Forgotten Tower Countess 保护刷A1钥匙的号
 Bug Auto Quit Hell Toggle:      0, SHIFT_CTRL_ALT_VK_B          //地狱难度bug保护提示后是否自动退出游戏 0 不退出 1退出
+Bug Auto Quit Hell Act4 Toggle: 0, CTRL_ALT_VK_B  //地狱难度ACT4 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Auto Quit Hell Act5 Toggle: 0, CTRL_ALT_VK_B  //地狱难度ACT5 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug All Hell Alert Toggle: 1, VK_ //地狱难度进入可完成任务的场景时进行提示
 //地狱难度完成第4小队后核对任务状态发送以下消息提示队友,设为空串取消此功能
@@ -792,7 +793,7 @@ Mini Map Scroll Offset[7]: 6,-6
 Mini Map Scroll Keys[8]: VK_NEXT,-1
 Mini Map Scroll Offset[8]: 6,6
 //GameControlKeys[GameControlCenterAutomap]: VK_MBUTTON,-1,-1,-1 //按鼠标中键重置小地图
-Enable Screen Saver: 1 //窗口切换到后台时停止绘制,可节约CPU,0关闭此功能
+Enable Screen Saver Toggle: 1,VK_ //窗口切换到后台时停止绘制,可节约CPU,0关闭此功能
 //自动强化设置
 Auto Enchant Toggle: 1, CTRL_ALT_VK_E
 Renew Enchant Seconds:	300 //5分钟后对玩家重新强化
@@ -823,7 +824,7 @@ Snapshot Path: "snapshot"
 //用于解释装备名称和属性的文件，根据自己需要修改
 Snapshot Names Path: "names.txt"
 //增强的血保设置
-Chicken Max Life:        1000 //最大血量大于此值时才使用绝对值血保,血量小于此值才使用百分比血保
+Chicken Max Life:        1500 //最大血量大于此值时才使用绝对值血保,血量小于此值才使用百分比血保
 Chicken Life:            600 //血保数值
 Chicken Life Min Clevel: 3   //3级以下不使用血保
 ChickenLifeForcedClevel: 85  //超过85级强制血保
@@ -844,6 +845,9 @@ ManaPotionValue: 100 //法力低于此值后喝药
 ManaPotionNTValue: 100 //在尼拉赛克神殿法力低于此值后喝药
 ManaPotionColumn: 0 //使用第几列药,0取消此功能
 ManaPotionDelayMs: 10000 //使用药后10秒内不再检查
+HealingPotionLifePercent: 50
+HealingPotionColumn: 0 //使用第几列药,0取消此功能
+HealingPotionDelayMs: 3000 //使用药后3秒内不再检查
 //在登录页面按设置的键自动输入用户名密码，可设置16组
 // AccountKey[1-16]
 AccountKey[1]: VK_F1
@@ -857,6 +861,7 @@ AccountPassword[2]: ""
 AccountPassword[3]: ""
 Lock Mouse Toggle: 0,CTRL_VK_L //锁定鼠标在窗口内,进入游戏后出城有效
 Full Screen Key: ALT_VK_RETURN //按ALT+回车键可切换窗口和全屏(游戏需用-w选项启动)
+Attract NPC Key: SHIFT_VK_A //吸引鼠标选择的NPC
 Hide Caption Border: 1 //最大化时隐藏标题栏和边框
 //调用游戏内部功能，每个功能可定义四个按键
 //GameControlKeys[GameControlAutomap]: VK_V,-1,-1,-1
@@ -879,21 +884,47 @@ GameControlKeys[GameControlShowPortraits]: ALT_VK_Z,-1,-1,-1
 SinglePlayerMonsterHPToggle: 1, -1 //单人模式显示怪物血量
 SinglePlayerMonsterExpHPToggle: 1, -1 //单人模式显示怪物经验值
 //自动召唤设置
-Auto Summon Toggle: 0, CTRL_ALT_VK_S, 2 //第三个值为2表示只在尼拉赛克神殿使用自动召唤
+Auto Summon Toggle: 0, CTRL_ALT_VK_S //自动召唤
 Auto Summon Mana: 60 //召唤需要法力
-Auto Summon Switch Skill Ms: 60 //切换技能时间
-AutoSummonSkeletonLevelAdjust: 0 //对自动计算的召唤级别进行调整，适合主副武器级别不同的情况
+Switch Skill Ms: 60 //切换技能时间
+AutoSummonSkeletonLevelAdjust: 0 //对自动计算的召唤级别进行调整，适合主副武器级别不同的情况,仅资料片有效
 AutoSummonSkeletonMageLevelAdjust: 0
+AutoSummonReviveLevelAdjust: 0
 //双开设置
 Multi Client Toggle: 1,CTRL_ALT_VK_W
+MultiClientMaxWindowId: 8 //前8个窗口为一组
 MultiClientStartFollowKey: SHIFT_VK_F //要求别的窗口中的人物跟随，需在同一区域
 MultiClientStopFollowKey: SHIFT_VK_T //停止跟随
+MultiClientToggleFollowKey: VK_ //切换跟随和停止
 MultiClientEnterDoorKey: SHIFT_VK_E //进门
 MultiClientRetreatKey: SHIFT_VK_R //回城
-MultiClientTransferClickKey: VK_MENU //将左右键操作发到别的窗口执行，不能使用组合键
+MultiClientTransferClickKey: VK_MENU //按下ALT键时将鼠标左右单次点击操作发到别的窗口执行
+MultiClientTransferClickKey2: VK_XBUTTON2 //按下鼠标侧面键时将鼠标左右单次点击操作发到别的窗口执行
 MultiClientDistance: 6 //跟随的距离
 MultiClientMaxDistance: 100 //超过此距离后停止跟随
 MultiClientMoveDistance: 10 //每次最多可移动距离
+MultiClientCheckInterval: 200 //跟随时每隔200ms检查一次
+//自动使用衰老和微暗灵视技能,适合双开时nec在后台跟随,仅怪物与玩家之间无遮挡时使用
+//衰老仅对boss使用，如果是关底boss则距离小于33yard即使用，其它boss使用AutoSkillDistance设置
+//微暗灵视对小地图颜色设置为0x9b的非boss使用,如冥河娃娃,电鬼,灵魂杀手,自爆人等,当距离小于33yard并且无遮挡时使用
+Auto Skill Toggle: 0, CTRL_ALT_VK_K
+AutoSkillCheckInterval: 500 //在后台时每0.5秒检查一次，在前台时待续检查
+AutoSkillDistance: 20 //对于非关底boss使用衰老的距离
+//自动召唤设置，双开时可在后台自动执行
+Auto Summon Toggle: 1, CTRL_ALT_VK_S 
+Auto Summon Revive Toggle: 0, SHIFT_CTRL_ALT_VK_S //自动重生
+ShowSummonInfoToggle: 1, VK_ //显示召唤统计信息
+//资料片对召唤技能的调整，主副装备技能级别不同时使用
+AutoSummonSkeletonLevelAdjust: -2
+AutoSummonSkeletonMageLevelAdjust: -2
+AutoSummonReviveLevelAdjust: -2
+Auto Summon Mana: 20 //召唤至少需要法力
+//可以重生的怪物
+AutoReviveMonster[Undead Stygian Doll 1,Undead Stygian Doll 2]: 1 //冥河娃娃
+AutoReviveMonster[Gloam 1, Gloam 2, Burning Soul 1, Burning Soul 2, 734, Black Soul 1, Black Soul 2]: 1 //电鬼
+AutoReviveMonster[Soul Killer 3,Soul Killer 4,Undead Soul Killer 2]: 1 //灵魂杀手
+Switch Skill Ms: 60 //切换技能时间
+NpcTradeShowMs: 1 //点击NPC的交易时在下方显示是否有+职业技能的装备可购买
 //装备保护，指定的装备不能够扔在地上或卖掉，通过拦截鼠标左键及检查发送的0x17和0x33包实现
 //打开后+1技能的超大型护身符也不能扔地上,佣兵死亡或有装备时不能进行雇佣。
 Drop Protection Toggle: 1, CTRL_ALT_VK_D
@@ -940,6 +971,8 @@ SwitchSkillRight[2][ClassNec]: SkillLifeTap,-1,-1,-1
 SwitchSkillKeys[3]: SHIFT_VK_S
 SwitchSkillRight[3][ClassNec]: SkillBoneWall,-1,-1,-1
 
+//加载非资料片物品设置
+//Load Config File: "config_classic.txt"
 //加载自己的配置文件,把修改的设置放在自己的文件中,以后更新就不用再核对了
-//Load Config File: "myconfig.txt"
+//Load Config File: "config_my.txt"
 Load Config File: "D:\git\diablo2\my_d2hackmap.txt"

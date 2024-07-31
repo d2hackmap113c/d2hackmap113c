@@ -1,13 +1,10 @@
 #include "stdafx.h"
 
-static wchar_t *wszProgTitle = L"<Hackmap>: Sting's Hackmap For Diablo II fixed by ding (v1.13c.1.4) (20240624)";
-void recheckBelt();
+static wchar_t *wszProgTitle = L"<Hackmap>: Sting's Hackmap For Diablo II fixed by ding (v1.13c.1.4) (20240731)";
 int dwChangeLeftSkill;
-extern int dwRecheckBeltMs;
 static LONGLONG framePerf;
 static int frameN,enterMs;
 static BOOL fImmEnable = 1;
-static int dwClearDifficultyMs;
 #pragma comment(lib,"imm32.lib")   
 void ToggleIMEInput(BOOL fChatInput){
 	static HIMC hIMC = NULL; 
@@ -18,6 +15,7 @@ void ToggleIMEInput(BOOL fChatInput){
 }
 void runOnce() {
 //--- m_pub.h ---
+	dwSkillChangeCount=1;
 	dwCurMs=GetTickCount();
 	dwSinglePlayerContext=0;
 	dwPlayerId = PLAYER->dwUnitId;
@@ -25,7 +23,7 @@ void runOnce() {
 	//LOG("player class=%d\n",dwPlayerClass);
 	if (dwPlayerClass<0) dwPlayerClass=0;
 	if (dwPlayerClass>6) dwPlayerClass=6;
-	dwRecheckBeltMs=dwCurMs+1000;
+	dwRecheckSelfItemMs=dwCurMs+1000;
 	dwChangeLeftSkill=-1;
 	if ( dwGameLng<0 ){
 		if ( fLanguageCheck ){
@@ -90,6 +88,9 @@ void runOnce() {
 //--- m_MultiClient.h ---
 	MultiClientNewGame();
 	AutoSummonNewGame();
+	AutoSkillNewGame();
+//--- m_NpcTrade.h ---
+	NpcTradeNewGame();
 //--- m_CheckDangerous.h ---
 	ChickenLifeNewGame();
 //--- m_PacketHandler.h ---
@@ -97,22 +98,14 @@ void runOnce() {
 //--- m_GameMonitor.h ---
 	ResetMonitor();
 	if (dwEnterGameShowDifficultyMs) {
-		dwClearDifficultyMs=dwCurMs+dwEnterGameShowDifficultyMs;
+		if (EXPANSION) SetBottomAlertMsg1(dwGameLng?L"资料片":L"Expansion",dwEnterGameShowDifficultyMs,2,0);
+		else SetBottomAlertMsg1(dwGameLng?L"经典版":L"Classic",dwEnterGameShowDifficultyMs,2,0);
 		switch (DIFFICULTY) {
-			case 1:
-				SetCenterAlertMsgParam(3,8,500);
-				SetCenterAlertMsg(1,dwGameLng?L"噩梦难度":L"Nightmare Difficulty");
-				break;
-			case 2:
-				SetCenterAlertMsgParam(1,2,500);
-				SetCenterAlertMsg(1,dwGameLng?L"地狱难度":L"Hell Difficulty");
-				break;
-			default:
-				SetCenterAlertMsgParam(0,6,500);
-				SetCenterAlertMsg(1,dwGameLng?L"普通难度":L"Normal Difficulty");
-				break;
+			case 1:SetBottomAlertMsg2(dwGameLng?L"噩梦难度":L"Nightmare Difficulty",dwEnterGameShowDifficultyMs,2,0);break;
+			case 2:SetBottomAlertMsg2(dwGameLng?L"地狱难度":L"Hell Difficulty",dwEnterGameShowDifficultyMs,2,0);break;
+			default:SetBottomAlertMsg2(dwGameLng?L"普通难度":L"Normal Difficulty",dwEnterGameShowDifficultyMs,2,0);break;
 		}
-	} else dwClearDifficultyMs=0;
+	}
 }
 void GameLoopPatch() {
 	LARGE_INTEGER perfFreq,perfStart,perfEnd;
@@ -146,11 +139,12 @@ void GameLoopPatch() {
 	fPlayerInTown = (LEVELNO==actlvls[ACTNO]);
 	dwLeftSkill=PLAYER->pSkill->pLeftSkill->pSkillInfo->wSkillId;
 	dwRightSkill=PLAYER->pSkill->pRightSkill->pSkillInfo->wSkillId;
+	dwPlayerLevel=D2GetUnitStat(PLAYER, STAT_LEVEL, 0);
+	dwPlayerMaxHP = D2GetUnitStat(PLAYER, STAT_MAXHP, 0)>>8;
+	dwPlayerHP = D2GetUnitStat(PLAYER, STAT_HP, 0)>>8;
+	dwPlayerMaxMana = D2GetUnitStat(PLAYER, STAT_MAXMANA, 0)>>8;
+	dwPlayerMana = D2GetUnitStat(PLAYER, STAT_MANA, 0)>>8;
 	if (dwChangeLeftSkill!=-1) {selectSkill(0,dwChangeLeftSkill);dwChangeLeftSkill=-1;}
-	if (dwClearDifficultyMs&&dwCurMs>dwClearDifficultyMs) {
-		dwClearDifficultyMs=0;
-		SetCenterAlertMsg(0,L"");
-	}
 //--- m_AutoMap.h ---
 	if (!afRevealedActs[ACTNO]) RevealAutomapLoop();
 //--- m_QuickBackTown.h ---
@@ -170,7 +164,7 @@ void GameLoopPatch() {
 //--- m_ViewTargetUnitInfo.h ---
 	if (fViewingTargetUnit) SetViewUnit();
 //--- m_CheckDangerous.h ---
-	ChickenLife();
+	ChickenLifeLoop();
 //--- m_QuestProtect.h ---
 	//if (ACTNO==2) CheckUnitKM();
 	ShowBugInfo();
@@ -181,9 +175,15 @@ void GameLoopPatch() {
 	if (pD2WinEditBox) CheckD2WinEditBox();
 //--- m_MultiClient.h ---
 	if (dwMultiClientFollowId||dwMultiClientClickTimeout) MultiClientLoop();
-	if (tAutoSummon.isOn&&(dwRightSkill==70||dwRightSkill==80)) AutoSummonRunLoop();
+	if (dwPlayerClass==2) AutoSummonRunLoop();
+	//if (tAutoSummon.isOn&&(dwRightSkill==70||dwRightSkill==80||tAutoSummonRevive.isOn&&dwRightSkill==95)) AutoSummonRunLoop();
 	else if (dwAutoSummonStartMs) dwAutoSummonStartMs=0;
-	if (dwRecheckBeltMs&&dwCurMs>dwRecheckBeltMs) recheckBelt();
+//--- m_NpcTrade.h ---
+	if (dwNpcTradeCheckMs&&dwCurMs>dwNpcTradeCheckMs) NpcTradeLoop();
+//--- m_AutoSkill.h ---
+	if (tAutoSkill.isOn&&(dwRightSkill==87||dwRightSkill==71)) AutoSkillRunLoop();
+	else if (dwAutoSkillCheckMs) dwAutoSkillCheckMs=0;
+	if (dwRecheckSelfItemMs&&dwCurMs>dwRecheckSelfItemMs) recheckSelfItems();
 	//QueryPerformanceCounter(&perfEnd);
 	//framePerf+=perfEnd.QuadPart-perfStart.QuadPart;
 	frameN++;

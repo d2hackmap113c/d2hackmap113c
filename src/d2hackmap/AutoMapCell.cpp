@@ -151,6 +151,7 @@ void AddAutoMapCell(DrlgRoom2 *pRoom2) {
 	
 extern FILE *dbgFp;
 void __stdcall DrawAutomapCellPatch(CellContext *pCellContext, DWORD xpos, DWORD ypos, RECT *cliprect, DWORD bright) {
+	if (!fWinActive&&tEnableScreenSaver.isOn) return;
 	int cellno = pCellContext->dwCellNo;
 	/*if (enDumpUnit==2&&dbgFp) {
 		fprintf(dbgFp,"cell %d %d %d\n",cellno,xpos,ypos);

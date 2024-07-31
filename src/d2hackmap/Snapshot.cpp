@@ -6,8 +6,8 @@ struct ItemIdName {int id;const char *name;};
 #define MAX_NAMES 512
 int dwMercSeed=0,dwMercNameId;
 char *questNames[41];
-static char *clsNames[8]={"Ama","Sor","Nec","Pal","Bar","Dru","Ass","???"};
-static char *clsSkillNames[8]={"AmaSkill","SorSkill","NecSkill","PalSkill","BarSkill","DruSkill","AssSkill","???"};
+static char *clsNames[8]={"Ama","Sor","Nec","Pal","Bar","Dru","Asn","???"};
+static char *clsSkillNames[8]={"AmaSkill","SorSkill","NecSkill","PalSkill","BarSkill","DruSkill","AsnSkill","???"};
 static char *clsSkills[7][3]={
 	{"bow","passive","javalin"},
 	{"fire","light","cold"},
@@ -446,7 +446,13 @@ static void dumpItem(FILE *fp,UnitAny *pUnit,int level,int loc) {
 		if (debug&&pUnit->pItemData->nItemLocation==255) fprintf(fp, " body=%d", pUnit->pItemData->nBodyLocation);
 		}
 		if (debug) {
-			fprintf(fp," id=%d pItem=%x pItemData=%x pPath=%x",pUnit->dwUnitId,pUnit,pUnit->pItemData,pUnit->pItemPath);
+			fprintf(fp," id=%d pItem=%x next=%x owner=%d pItemData=%x pPath=%x",
+				pUnit->dwUnitId,pUnit,pUnit->pListNext,
+				pUnit->pItemData->dwOwnerId,
+				pUnit->pItemData,pUnit->pItemPath);
+			fprintf(fp," nItemLocation=%x",pUnit->pItemData->nItemLocation);
+			fprintf(fp," nBodyLocation=%x",pUnit->pItemData->nBodyLocation);
+			fprintf(fp," nLocation=%x",pUnit->pItemData->nLocation);
 			fprintf(fp," mode=%x",pUnit->dwMode);
 			fprintf(fp," flags1=%x",pUnit->dwFlags1);
 			fprintf(fp," flags2=%x",pUnit->dwFlags2);
@@ -835,14 +841,25 @@ static void dumpUnit(FILE *fp,UnitAny *pUnit) {
 		char name[64],def='?';BOOL used=FALSE;
 		MonsterTxt *pMonsterTxt = pUnit->pMonsterData->pMonsterTxt;
 		WideCharToMultiByte(CP_ACP,0,pUnit->pMonsterData->wszMonName,-1,name,64,&def,&used);
-		fprintf(fp,"TXT%d ",pUnit->dwTxtFileNo);
-		if ( pMonsterTxt->fNpc ) fprintf(fp,"NPC ");
-		fprintf(fp,"%s ",name);
+		fprintf(fp," TXT%d",pUnit->dwTxtFileNo);
+		if ( pMonsterTxt->fNpc ) fprintf(fp," NPC");
+		fprintf(fp," %s",name);
 		if (pUnit->pStatList) {
 			StatList *plist=pUnit->pStatList;
 			dumpStatList(fp,plist,1);
 		}
 		fflush(fp);
+		if (debug) {
+			MonsterData *pMonsterData=pUnit->pMonsterData; 
+			if (pMonsterData->fUnique) fprintf(fp," unique");
+			if (pMonsterData->fChamp) fprintf(fp," champ");
+			if (pMonsterData->fBoss) fprintf(fp," boss");
+			fprintf(fp," enchants:{");
+			for (int i=0;i<9;i++) {
+				if (pMonsterData->anEnchants[i]) fprintf(fp," %d:%d",i,pMonsterData->anEnchants[i]);
+			}
+			fprintf(fp,"}");
+		}
 		if (debug&&fSinglePlayer) {
 			UnitAny *real=getSinglePlayerUnit(dwUnitId,unitType);
 			if (real) {
@@ -1053,6 +1070,20 @@ int DoSnapshot() {
 		fprintf(fp," owner(type=%d,id=%d)\n",pPetUnit->dwOwerType,pPetUnit->dwOwnerId);
 		hex(fp,0,pPetUnit,0x40);
 	}
+	fclose(fp);
+	fp=openDbgFile("_allitems.txt");
+	debug=1;
+	for (int i=0;i<128;i++) {
+		UnitAny *pUnit=p_D2UnitTable[UNITNO_ITEM*128+i];
+		while (pUnit) {
+			if (IsBadReadPtr(pUnit,sizeof(UnitAny))) break;
+			if (pUnit->dwUnitType!=UNITNO_ITEM) break;
+			if ((pUnit->dwUnitId&0x7f)!=i) break;
+			dumpUnit2(fp,pUnit);
+			pUnit=pUnit->pHashNext;
+		}
+	}
+	debug=0;
 	fclose(fp);
 	dbgFp=openDbgFile("_debug.txt");
 	if (!dbgFp) return 0;

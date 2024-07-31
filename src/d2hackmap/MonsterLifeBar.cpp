@@ -61,7 +61,12 @@ long __fastcall MonsterNamePatch(wchar_t *wszName, long xPos , UnitAny *pMon ,lo
 	}
 
 	if ( tMonsterHPPercent.isOn ){
-		wsprintfW(wszName+wcslen(wszName), L" (%d%%)", D2GetMonsterHpPercent(pMon));
+		//D2GetMonsterHpPercent(pMon)
+		int hp = D2GetUnitStat(pMon, STAT_HP, 0);
+		int maxhp = D2GetUnitStat(pMon, STAT_MAXHP, 0);
+		if (maxhp>=0x10000) {hp>>=16;maxhp>>=16;}
+		int div=hp*10000/maxhp;
+		wsprintfW(wszName+wcslen(wszName), L" (%d.%02d%%)", div/100,div%100);
 	}
 	
 	if (fSinglePlayer&&(tSPMonsterHP.isOn||tSPMonsterExp.isOn)){
@@ -69,6 +74,7 @@ long __fastcall MonsterNamePatch(wchar_t *wszName, long xPos , UnitAny *pMon ,lo
 		if (real) {
 			char buf[64];int pos=0;
 			pos+=sprintf(buf+pos," id%d",pMon->dwUnitId);
+			pos+=sprintf(buf+pos," txt%d",pMon->dwTxtFileNo);
 			if (tSPMonsterHP.isOn) {
 				int hp = D2GetUnitStat(real, STAT_HP, 0)>>8;
 				int maxhp = D2GetUnitStat(real, STAT_MAXHP, 0)>>8;

@@ -30,7 +30,7 @@ SkillChargedStrike:25
 SkillPlagueJavelin:26
 SkillStrafe:27
 SkillImmolationArrow:28
-SkillDopplezon:29
+SkillDecoy:29
 SkillEvade:30
 SkillFend:31
 SkillFreezingArrow:32
@@ -229,7 +229,7 @@ SkillScrollofTownportal:220
 SkillBookofTownportal:221
 //-------- dru --------
 SkillRaven:222 //summon
-SkillPlaguePoppy:223
+SkillPoisonCreeper:223
 SkillWearwolf:224 //shape
 SkillLycanthropy:225 //shape  
 SkillFirestorm:226 //elemental
@@ -238,17 +238,17 @@ SkillSummonSpiritWolf:228 //summon
 SkillWearbear:229 //shape
 SkillMoltenBoulder:230 //elemental
 SkillArcticBlast:231 //elemental
-SkillCycleofLife:232
+SkillCarrionVine:232
 SkillFeralRage:233 //shape
 SkillMaul:234 //shape
-SkillEruption:235
+SkillFissure:235
 SkillCycloneArmor:236 //element
 SkillHeartofWolverine:237
-SkillSummonFenris:238
+SkillSummonDireWolf:238
 SkillRabies:239
 SkillFireClaws:240
 SkillTwister:241
-SkillVines:242
+SkillSolarCreeper:242
 SkillHunger:243
 SkillShockWave:244
 SkillVolcano:245
@@ -259,18 +259,18 @@ SkillFury:249
 SkillArmageddon:250
 SkillHurricane:251
 //-------- asn --------
-SkillFireTrauma:252
+SkillFireBlast:252
 SkillClawMastery:253
 SkillPsychicHammer:254
 SkillTigerStrike:255
 SkillDragonTalon:256
-SkillShockField:257
+SkillShockWeb:257
 SkillBladeSentinel:258
 SkillQuickness:259
 SkillFistsofFire:260
 SkillDragonClaw:261
 SkillChargedBoltSentry:262
-SkillWakeofFireSentry:263
+SkillWakeofFire:263
 SkillWeaponBlock:264
 SkillCloakofShadows:265
 SkillCobraStrike:266
@@ -280,7 +280,7 @@ SkillShadowWarrior:269
 SkillClawsofThunder:270
 SkillDragonTail:271
 SkillLightningSentry:272
-SkillInfernoSentry:273
+SkillWakeofInferno:273
 SkillMindBlast:274
 SkillBladesofIce:275
 SkillDragonFlight:276
@@ -288,7 +288,7 @@ SkillDeathSentry:277
 SkillBladeShield:278
 SkillVenom:279
 SkillShadowMaster:280
-SkillRoyalStrike:281
+SkillPhoenixStrike:281
 SkillWakeOfDestructionSentry:282
 SkillImpInferno:283
 SkillImpFireball:284

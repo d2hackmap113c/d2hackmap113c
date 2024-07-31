@@ -62,8 +62,8 @@ D2VARPTR(D2CLIENT,  0x6FBCC2F4, HasSelectedObject,             BOOL )
 D2VARPTR(D2CLIENT,  0x6FBCC2F8, FlagUnknownC2F8,             BOOL ) 
 D2VARPTR(D2CLIENT,  0x6FBC9D30, SkillHotKeys,             int ) 
 D2VARPTR(D2CLIENT,  0x6FBC9E20, SkillHotKeyLeft,          int ) 
-D2VARPTR(D2CLIENT,  0x6FBCA2E0, KeyboardSettingStart, KeyboardSetting)
-D2VARPTR(D2CLIENT,  0x6FBCA754, KeyboardSettingEnd, KeyboardSetting)
+D2VARPTR(D2CLIENT,  0x6FBCA2E0, KeyboardSettingStart, struct KeyboardSetting)
+D2VARPTR(D2CLIENT,  0x6FBCA754, KeyboardSettingEnd, struct KeyboardSetting)
 
 D2FUNCPTR(D2CLIENT, 0x6FB72790, SetUiStatus,        DWORD __fastcall, (DWORD dwUiNo, DWORD howset, DWORD unknown1))
 
@@ -110,6 +110,9 @@ D2FUNCPTR(D2CLIENT, 0x6FAD9990, UseBelt,         void __fastcall, (UnitInventory
 D2VARPTR(D2CLIENT,  0x6FBBA608, UnitTable,         UnitAny * ) //type*128+(id&0x7f)
 D2VARPTR(D2CLIENT,  0x6FBA23E8, MercData16,         int ) 
 D2VARPTR(D2CLIENT,  0x6FBCC334, MercData32,         int ) 
+D2VARPTR(D2CLIENT,  0x6FBACDD6, WaypointMenuCurTab, int ) //classic(0-3) expansion(0-4)
+D2VARPTR(D2CLIENT,  0x6FBACDDA, WaypointMenuCount, int ) //act1:9 act4:3
+D2VARPTR(D2CLIENT,  0x6FBACD8C, WaypointMenuItems, struct WaypointMenuItem) 
 
 D2VARPTR(D2CLIENT,  0x6FBAADA8, AutomapOn,          DWORD) //小地图是否打开
 D2VARPTR(D2CLIENT,  0x6FBA16B0, Divisor,            long)
@@ -133,6 +136,7 @@ D2VARPTR(D2CLIENT,  0x6FBCC21C, InfoPositionY,      int) //游戏信息显示Y坐标
 D2VARPTR(D2CLIENT,  0x6FBC973B, QuestData,          void *) //玩家任务信息表
 D2VARPTR(D2CLIENT,  0x6FBC973F, GameQuestData,      void *) //房间任务信息表
 D2VARPTR(D2CLIENT,  0x6FBD3395, QuestPage,          int)
+D2VARPTR(D2CLIENT,  0x6FBC97AC, TradeRelated,      int *) 
 
 D2VARPTR(D2CLIENT,  0x6FBCC3A0, MButton,            BOOL )
 D2VARPTR(D2CLIENT,  0x6FBCA76C, XButton1,           BOOL )
@@ -193,6 +197,8 @@ D2FUNCPTR(D2COMMON, -0x289F,   GetMinExpToLevel,     int __stdcall, (DWORD dwCha
 D2FUNCPTR(D2COMMON, -0x2AEB,   EncodeItem, DWORD __stdcall, (UnitAny *pUnit,char *buf,int size,int a,int b,int c) ) 
 D2FUNCPTR(D2COMMON, -10458,   GetMercInfo, DWORD __stdcall, (int seed,int arg,int diff,void *buf)) //ecx=EXPANISION edx=PLAYER 
 
+D2FUNCPTR(D2COMMON, -10839,   UnitVisionBlocked, DWORD __stdcall, (UnitAny *playerUnit,UnitAny *pUnit,int mode)) //mode=2
+
 D2VARPTR(D2COMMON,  0x6FDEFBA0, WeaponsTxts,         int)
 D2VARPTR(D2COMMON,  0x6FDEFBA8, ArmorTxts,           int)
 D2VARPTR(D2COMMON,  0x6FDE9E1C, DataTables,        DWORD)
@@ -208,7 +214,7 @@ D2FUNCPTR(D2GFX,  -0x274B,   MinimizeWindows,        void __stdcall, (DWORD dwFl
 
 D2VARPTR(D2GFX,  0x6FA9D66C, WinState,			DWORD)
 
-D2FUNCPTR(D2WIN,  -0x27A6,   DrawText,               void __fastcall, (wchar_t *wStr, long xPos, long yPos, DWORD dwColor, DWORD dwAlign))
+D2FUNCPTR(D2WIN,  -10150,   DrawText,               void __fastcall, (wchar_t *wStr, long xPos, long yPos, DWORD dwColor, DWORD dwAlign))
 D2FUNCPTR(D2WIN,  -0x2765,   DrawHoverText,          void __fastcall, (wchar_t *wStr, long xPos, long yPos, DWORD dwTran, DWORD dwColor))
 D2FUNCPTR(D2WIN,  -0x2756,   DrawUnitLifeBar,        DWORD __fastcall, (wchar_t *wStr ,long xPos, long yPos, DWORD dwColor, DWORD dwUnk1 ,DWORD dwUnk2) )
 D2FUNCPTR(D2WIN,  -0x277E,   DrawHover,              void __fastcall, ()) //真正显示字符框的地方，上面3个只是设置了变量,显示优先级非常高

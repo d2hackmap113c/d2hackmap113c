@@ -134,7 +134,7 @@ Oak Sage add life: (25+5*lvl)%
 	else {
 		//werewolf +25% werebear +75% Lycanthropy 15+lvl*5
 		if (fWerewolf||fWerebear) {
-			int ly=getSkillLevel(PLAYER,5,1,224); //Lycanthropy
+			int ly=getSkillLevel(PLAYER,224); //Lycanthropy
 			if (debug)
 				LOG("OakSage add %f lycanthropy=%d wolf=%d bear=%d\n",fOakSage_AddPercent,ly,
 					fWerewolf,fWerebear);

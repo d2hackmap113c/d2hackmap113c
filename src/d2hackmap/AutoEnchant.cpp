@@ -55,8 +55,9 @@ static int doEnchant(UnitAny *pUnit) {
 	}
 	if (!needEnchant(*ptime,pUnit->dwUnitId,pUnit,0)) return 0;
 	if (!sameParty(dwPlayerId, dwUnitId )) return 0;
-	int dwMana = D2GetUnitStat(PLAYER, STAT_MANA, 0)>>8;
-	if (dwMana<dwEnchantMana) { //Not enough mana
+	int sLvl=getSkillLevel(PLAYER,52);
+	if (dwPlayerMana<sLvl+24
+		||dwPlayerMana<dwEnchantMana) { //Not enough mana
 		startEnchantMs=dwCurMs+500;//Check mana again after 500ms
 		delayScreenSaver(dwAutoEnchantScreenSaverDelayMs);
 		dwAutoEnchantGroupId=0;

@@ -34,7 +34,7 @@ Quill, qll: 2032
 Soul, sol: 2033
 Scalp, scz: 2034
 Spleen, spe: 2035
-Key, key: 2036
+Key: 2036
 The Black Tower Key, luv: 2037
 Potion of Life, xyz: 2038
 A Jade Figurine, j34: 2039
@@ -47,7 +47,7 @@ Book of Skill, ass: 2045
 Khalim's Eye, qey: 2046
 Khalim's Heart, qhr: 2047
 Khalim's Brain, qbr: 2048
-Ear, ear: 2049
+Ear: 2049
 Chipped Amethyst, gcv: 2050
 Flawed Amethyst, gfv: 2051
 Amethyst, gsv: 2052

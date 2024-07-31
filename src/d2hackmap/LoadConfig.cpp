@@ -171,6 +171,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "AutoHideMinimapKey",				&dwAutoHideMinimapKey,     4},
   {CONFIG_VAR_TYPE_INT, "QuickSwapItemDelayMs",				&dwQuickSwapItemDelayMs,     4},
 	{CONFIG_VAR_TYPE_KEY, "FullScreenKey",			&tFullScreen     },
+	{CONFIG_VAR_TYPE_KEY, "AttractNPCKey",			&tAttractNPC     },
   {CONFIG_VAR_TYPE_INT, "AutoMaximizeWidth",				&dwAutoMaximizeWidth,     4},
   {CONFIG_VAR_TYPE_INT, "AutoMaximizeHeight",				&dwAutoMaximizeHeight,     4},
   {CONFIG_VAR_TYPE_INT, "HideCaptionBorder",				&dwHideCaptionBorder,     4},
@@ -180,7 +181,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "AutoClickLeftUpFs",				&dwAutoClickLeftUpFs,     4},
   {CONFIG_VAR_TYPE_INT, "AutoClickRightDownFs",				&dwAutoClickRightDownFs,     4},
   {CONFIG_VAR_TYPE_INT, "AutoClickRightUpFs",				&dwAutoClickRightUpFs,     4},
-  {CONFIG_VAR_TYPE_INT, "EnableScreenSaver",				&dwEnableScreenSaver,     4},
+	{CONFIG_VAR_TYPE_KEY, "EnableScreenSaverToggle",   &tEnableScreenSaver     },
 	{CONFIG_VAR_TYPE_INT, "LoadLibraryKey",			&dwLoadLibraryKey     ,4},
 	{CONFIG_VAR_TYPE_STR, "LibraryPath",		szLibraryPath, 1,  {256 }},
 	{CONFIG_VAR_TYPE_STR, "LoadLibraryCommand",		szLoadLibraryCmd, 1,  {256 }},
@@ -203,12 +204,22 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "AutoEnchantScreenSaverDelayMs",				&dwAutoEnchantScreenSaverDelayMs,     4},
   {CONFIG_VAR_TYPE_INT, "AutoEnchantGroup",				&dwAutoEnchantGroup,     4},
   {CONFIG_VAR_TYPE_ARRAY, "AutoEnchantMonsterGroup",dwAutoEnchantMonsterGroup,       1, {1024}},
+//--- m_AutoSkill.h ---
+	{CONFIG_VAR_TYPE_KEY, "AutoSkillToggle",   &tAutoSkill     },
+  {CONFIG_VAR_TYPE_INT, "AutoSkillCheckInterval",	&dwAutoSkillCheckInterval,     4},
+  {CONFIG_VAR_TYPE_INT, "AutoSkillDistance",	&dwAutoSkillDistance,     4},
+//--- m_NpcTrade.h ---
+  {CONFIG_VAR_TYPE_INT, "NpcTradeShowMs",	&dwNpcTradeShowMs,     4},
 //--- m_AutoSummon.h ---
 	{CONFIG_VAR_TYPE_KEY, "AutoSummonToggle",   &tAutoSummon     },
+	{CONFIG_VAR_TYPE_KEY, "AutoSummonReviveToggle",   &tAutoSummonRevive     },
+	{CONFIG_VAR_TYPE_KEY, "ShowSummonInfoToggle",   &tShowSummonInfo     },
   {CONFIG_VAR_TYPE_INT, "AutoSummonMana",				&dwAutoSummonMana,     4},
-  {CONFIG_VAR_TYPE_INT, "AutoSummonSwitchSkillMs",				&dwAutoSummonSwitchSkillMs,     4},
+  {CONFIG_VAR_TYPE_INT, "SwitchSkillMs",				&dwSwitchSkillMs,     4},
   {CONFIG_VAR_TYPE_INT, "AutoSummonSkeletonLevelAdjust",				&dwAutoSummonSkeletonLevelAdjust,     4},
   {CONFIG_VAR_TYPE_INT, "AutoSummonSkeletonMageLevelAdjust",				&dwAutoSummonSkeletonMageLevelAdjust,     4},
+  {CONFIG_VAR_TYPE_INT, "AutoSummonReviveLevelAdjust",				&dwAutoSummonReviveLevelAdjust,     4},
+  {CONFIG_VAR_TYPE_ARRAY, "AutoReviveMonster",       &aAutoReviveMonster,       1, {1024}},
 //--- m_Snapshot.h ---
 	{CONFIG_VAR_TYPE_STR, "SnapshotPath",		szSnapshotPath, 1,  {255 }},
 	{CONFIG_VAR_TYPE_STR, "SnapshotNamesPath",		szSnapshotNamesPath, 1,  {255 }},
@@ -364,6 +375,9 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "HirePotionLifePercent",	&dwHirePotionLifePercent,     4},
   {CONFIG_VAR_TYPE_INT, "HirePotionColumn",				&dwHirePotionColumn,     4},
   {CONFIG_VAR_TYPE_INT, "HirePotionDelayMs",			&dwHirePotionDelayMs,     4},
+  {CONFIG_VAR_TYPE_INT, "HealingPotionLifePercent",				&dwHealingPotionLifePercent,     4},
+  {CONFIG_VAR_TYPE_INT, "HealingPotionColumn",				&dwHealingPotionColumn,     4},
+  {CONFIG_VAR_TYPE_INT, "HealingPotionDelayMs",				&dwHealingPotionDelayMs,     4},
   {CONFIG_VAR_TYPE_INT, "ManaPotionMax",				&dwManaPotionMax,     4},
   {CONFIG_VAR_TYPE_INT, "ManaPotionValue",				&dwManaPotionValue,     4},
   {CONFIG_VAR_TYPE_INT, "ManaPotionNTValue",				&dwManaPotionNTValue,     4},
@@ -394,6 +408,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY, "BugKBToggle",          &tBugKB         },
   {CONFIG_VAR_TYPE_KEY, "BugAutoQuitToggle",    &tBugAutoQuit   },
   {CONFIG_VAR_TYPE_KEY, "BugAutoQuitHellToggle",    &tBugAutoQuitHell   },
+  {CONFIG_VAR_TYPE_KEY, "BugAutoQuitHellAct4Toggle",    &tBugAutoQuitHellAct4   },
   {CONFIG_VAR_TYPE_KEY, "BugAutoQuitHellAct5Toggle",    &tBugAutoQuitHellAct5   },
   {CONFIG_VAR_TYPE_KEY, "BugAllHellAlertToggle",    &tBugAllHellAlert   },
   {CONFIG_VAR_TYPE_INT, "BugAlertTimes",        &dwBugAlertTimes ,4 },
@@ -413,14 +428,18 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_KEY, "NoHideToggle",			  &tNoHide     },		
 //--- m_MultiClient.h ---
 	{CONFIG_VAR_TYPE_KEY, "MultiClientToggle",          &tMultiClient         },
+	{CONFIG_VAR_TYPE_KEY, "MultiClientToggleFollowKey",          &tMultiClientToggleFollow         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientStartFollowKey",          &tMultiClientStartFollow         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientStopFollowKey",          &tMultiClientStopFollow         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientEnterDoorKey",          &tMultiClientEnterDoor         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientRetreatKey",          &tMultiClientRetreat         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientTransferClickKey",          &tMultiClientClick         },
+	{CONFIG_VAR_TYPE_KEY, "MultiClientTransferClickKey2",          &tMultiClientClick2         },
+	{CONFIG_VAR_TYPE_INT, "MultiClientMaxWindowId",	   &dwMultiClientMaxWindowId,4},
 	{CONFIG_VAR_TYPE_INT, "MultiClientDistance",	   &dwMultiClientDistance,4},
 	{CONFIG_VAR_TYPE_INT, "MultiClientMaxDistance",	   &dwMultiClientMaxDistance,4},
 	{CONFIG_VAR_TYPE_INT, "MultiClientMoveDistance",	   &dwMultiClientMoveDistance,4},
+	{CONFIG_VAR_TYPE_INT, "MultiClientCheckInterval",	   &dwMultiClientCheckInterval,4},
 	{CONFIG_VAR_TYPE_INT, "MultiClientOverAreaDistance",	   &dwMultiClientOverAreaDistance,4},
 	{CONFIG_VAR_TYPE_KEY, "NecNoAttackInHellToggle",          &tNecNoAttackInHell         },
 //--- m_DropProtection.h ---
@@ -554,7 +573,6 @@ void FixValues(){
 	}else if( szCFGVersion[0][0] ){
 		wsprintfW2(wszCFGVersion[1], "<Hackmap>: %s " , szCFGVersion[0]);
 	}
-	SetCenterAlertMsg(FALSE , L"");
 //--- m_AutoMapCell.h ---
 	if (nCaveNameTextCol>12)nCaveNameTextCol=0;
 //--- m_MinimapPoint.h ---
@@ -624,6 +642,8 @@ void FixValues(){
 //--- m_MultiClient.h ---
 	tMultiClientClick.type=TOGGLEVAR_DOWNUPPARAM;
 	tMultiClientClick.funcUp=MultiClientStopClick;
+	tMultiClientClick2.type=TOGGLEVAR_DOWNUPPARAM;
+	tMultiClientClick2.funcUp=MultiClientStopClick;
 }
 
 static const char *gamecontrol_names[64]={

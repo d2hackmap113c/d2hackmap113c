@@ -3,6 +3,7 @@
 #ifdef MODULE_QUESTPROTECT
 
 void SendChatMessageW(wchar_t *myMsg);
+void setKDCountDown(int en);
 void setKBCountDown(int team,int en);
 static BugQuestInfo aBugInfo[5] ;
 static DWORD BugTimer = 0 ;
@@ -12,7 +13,6 @@ static DWORD dwLastAct = 0 ;
 int ReSetTimer(){
 	BugTimer = GetTickCount();
 	memset(BugTimerSet,	0,	10*sizeof(BYTE));
-	SetCenterAlertMsg(FALSE , L"\0");
 	return 0;
 }
 static void checkQuest(int id,int bitmask1,int bitmask2,char *name) {
@@ -129,6 +129,7 @@ void ShowBugInfo() {
 			// Force quit game
 			if ( tBugAutoQuit.isOn
 				||DIFFICULTY==2&&tBugAutoQuitHell.isOn
+				||DIFFICULTY==2&&ACTNO==3&&tBugAutoQuitHellAct4.isOn
 				||DIFFICULTY==2&&ACTNO==4&&tBugAutoQuitHellAct5.isOn ){
 				#ifdef MODULE_QUICKGAME
 					if ( tQuickNextGame.key !=0 && tQuickNextGame.key != (BYTE)-1 ){
@@ -148,18 +149,12 @@ void ShowBugInfo() {
 					||DIFFICULTY==2&&tBugAutoQuitHell.isOn
 					||DIFFICULTY==2&&ACTNO==4&&tBugAutoQuitHellAct5.isOn ){
 					wsprintfW2(wszTemp, "%s Protect On, Will quit in %d secs", aBugInfo[ACTNO].szMsg, dwBugAlertTimes-mysecs);
-					SetCenterAlertMsgParam(1,2,250);
-					SetCenterAlertMsg(TRUE , wszTemp);
+					SetBottomAlertMsg1(wszTemp,3000,1,1);
 					return;
 				} else {
 					wsprintfW2(wszTemp, "<Hackmap>: Warning!!!!Not A %s Room!!!!(%d)" , aBugInfo[ACTNO].szMsg, dwBugAlertTimes-mysecs);
 					D2ShowGameMessage(wszTemp, 8);
-					if (mysecs >= dwBugAlertTimes-1) {
-						SetCenterAlertMsg(0, wszTemp);
-					} else {
-						SetCenterAlertMsgParam(1,2,250);
-						SetCenterAlertMsg(1, wszTemp);
-					}
+					SetBottomAlertMsg1(wszTemp,1000,1,1);
 				}
 			}
 		}
@@ -182,6 +177,7 @@ void __fastcall BugKDProtect(DWORD param2 ) {
 				aBugInfo[3].nStatus = 2;
 				ReSetTimer();
 			}
+			setKDCountDown(1);
 			D2ShowGameMessage(L"Q43: All seals are open", 2);
 			return;
 		case 0x0E:D2ShowGameMessage(L"Q42 Mephisto's stone is destoried", 2);return;
