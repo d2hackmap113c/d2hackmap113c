@@ -745,7 +745,7 @@ int __cdecl blockSendPacket(int regs) {
 			int type=*(int *)&packet[1];
 			int id=*(int *)&packet[5];
 			dwInteractEntityCount++;
-			if (dwMultiClientCount&&(type==2||type==5)) {
+			if (dwTeamMemberCount&&(type==2||type==5)) {
 				leader_click_object(type,id);
 			}
 			break;

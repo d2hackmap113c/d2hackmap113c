@@ -104,6 +104,25 @@ int getSkillLevel(UnitAny *pUnit,int skillId) {
 	lv+=D2GetUnitStat(pUnit, 127, 0); //all skill
 	return lv;
 }
+float getUnitDistance(UnitAny *pUnit1,UnitAny *pUnit2) {
+	int x1,y1,x2,y2;
+	switch (pUnit1->dwUnitType) {
+		case UNITNO_PLAYER:case UNITNO_MONSTER:
+			x1=pUnit1->pMonPath->wPosX;y1=pUnit1->pMonPath->wPosY;break;
+		case UNITNO_OBJECT:case UNITNO_ITEM:case UNITNO_ROOMTILE:
+			x1=pUnit1->pItemPath->dwPosX;y1=pUnit1->pItemPath->dwPosY;break;
+		default:return 1000;
+	}
+	switch (pUnit2->dwUnitType) {
+		case UNITNO_PLAYER:case UNITNO_MONSTER:
+			x2=pUnit2->pMonPath->wPosX;y2=pUnit2->pMonPath->wPosY;break;
+		case UNITNO_OBJECT:case UNITNO_ITEM:case UNITNO_ROOMTILE:
+			x2=pUnit2->pItemPath->dwPosX;y2=pUnit2->pItemPath->dwPosY;break;
+		default:return 1000;
+	}
+	int dx=x1-x2,dy=y1-y2;
+	return sqrt((float)(dx*dx+dy*dy))*2/3;
+}
 RosterUnit *getRosterUnit(int id) {
 	for (RosterUnit *pRU = PLAYERLIST; pRU; pRU = pRU->pNext ) if (pRU->dwUnitId==id) return pRU;
 	return NULL;
@@ -464,6 +483,7 @@ PetUnit * GetPetByType(UnitAny *pUnit,int type) {
 	return NULL;
 }
 UnitAny *GetUnitFromIdSafe(DWORD id, DWORD type) {
+	//int lastId=-1;
 	for (UnitAny *pUnit=p_D2UnitTable[(type<<7)+(id&0x7F)];pUnit;pUnit=pUnit->pHashNext) {
 		if (IsBadReadPtr(pUnit,sizeof(UnitAny))) return NULL;
 		if (pUnit->dwUnitType!=type) return NULL;

@@ -2,6 +2,7 @@
 #define D2_HELPFUNC_H
 
 UnitAny *GetUnitFromIdSafe(DWORD dwUnitId, DWORD dwUnitType);
+float getUnitDistance(UnitAny *pUnit1,UnitAny *pUnit2);
 PetUnit * GetPetByType(UnitAny *pUnit,int type);
 int getSkillLevel(UnitAny *pUnit, int skillId);
 RosterUnit *getRosterUnit(int id);

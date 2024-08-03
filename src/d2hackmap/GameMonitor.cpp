@@ -15,6 +15,7 @@ unsigned char beltCount[4],beltType[4];
 int dwNeedPotionType; //bit 1:HP 2:Mana 3:Rejuvenation
 int beltLayers;
 int dwOakSageLvl;
+static int fBC=0;
 int dwGuessBOMs=0;
 int dwGuessEnchantMs=0;
 int dwTownPortalCount=0,dwIdentifyPortalCount=0;
@@ -135,7 +136,7 @@ void onRightSkillUnit(int type,int id) {
 void ResetMonitor(){
 	dwGuessBOMs=0;dwOakSageLvl=0;
 	dwGuessEnchantMs=0;
-	fWerewolf=0;fWerebear=0;
+	fBC=0;fWerewolf=0;fWerebear=0;
 	leftWeapon=NULL;rightWeapon=NULL;
 	for (int i=0;i<_ARRAYSIZE(countDowns);i++) countDowns[i]->active=0;
 	for ( int i = 0 ; i < 200 ; i ++ ){	
@@ -171,9 +172,11 @@ void DrawMonitorInfo(){
 	DWORD dwTimer = dwCurMs;
 	DWORD dwOldFone = D2SetTextFont(8);
 	if (wszNpcTradeInfo[0]) {
+		static int bms,bcolor=0;
+		if (dwCurMs>bms) {bcolor=bcolor==1?2:1;bms=(dwCurMs+256)&0xFFFFFF00;}
 		D2SetTextFont(3);
 		if (!D2CheckUiStatus(UIVAR_NPCTRADE)) wszNpcTradeInfo[0]=0;
-		else D2DrawText(wszNpcTradeInfo, 120 , SCREENSIZE.y-75, 0, 0);
+		else D2DrawText(wszNpcTradeInfo, 120 , SCREENSIZE.y-75, bcolor, 0);
 		D2SetTextFont(8);
 	}
 	if (tShowSummonInfo.isOn&&dwCurMs<dwNecInfoExpireMs) {
@@ -340,7 +343,9 @@ void __stdcall SetState( DWORD dwStateNo , BOOL fSet ){
 		case 16: cd=&cd_QH;break;
 		case 23: if (!fSet&&tAutoSkill.isOn&&dwRightSkill==71) dwAutoSkillCheckMs=0;break; //Dim Vision
 		case 32: cd=&cd_BO;break;
-		case 51: dwSkillChangeCount++;break; //Battle Command
+		case 51: 
+			if (fBC!=fSet) {fBC=fSet;dwSkillChangeCount++;}
+			break; //Battle Command
 		case 60: if (!fSet&&tAutoSkill.isOn&&dwRightSkill==87) dwAutoSkillCheckMs=0;break; //Decrepify
 		case 100: fState100HP=fSet;break;
 		case 101: cd=&cd_HS;break;

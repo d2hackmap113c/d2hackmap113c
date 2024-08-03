@@ -785,6 +785,12 @@ static void dumpObject(FILE *fp,UnitAny *pUnit) {
 			) {
 			fprintf(fp," Portal to area %d",pUnit->pObjectData->nShrineNo);
 		}
+		ObjectTxt *pObjectTxt=pUnit->pObjectData->pObjectTxt;
+		char name[128],def='?';BOOL used=FALSE;
+		WideCharToMultiByte(CP_ACP,0,pObjectTxt->wszName,-1,name,64,&def,&used);
+		fprintf(fp," name=%s %s",pObjectTxt->szName,name);
+		fprintf(fp," isdoor=%d",pObjectTxt->nIsDoor);
+		fprintf(fp," nSubClass=%d",pObjectTxt->nSubClass);
 	}
 	fputc('\n',fp);
 	//hex(fp,0,pUnit->pObjectData,64);
@@ -842,7 +848,9 @@ static void dumpUnit(FILE *fp,UnitAny *pUnit) {
 		MonsterTxt *pMonsterTxt = pUnit->pMonsterData->pMonsterTxt;
 		WideCharToMultiByte(CP_ACP,0,pUnit->pMonsterData->wszMonName,-1,name,64,&def,&used);
 		fprintf(fp," TXT%d",pUnit->dwTxtFileNo);
-		if ( pMonsterTxt->fNpc ) fprintf(fp," NPC");
+		fprintf(fp," flags=%02x,%02x,%02x,%02x",
+			pMonsterTxt->nflag1,pMonsterTxt->nflag2,pMonsterTxt->flag3,pMonsterTxt->nflag4);
+		if (pMonsterTxt->fNpc) fprintf(fp," NPC");
 		fprintf(fp," %s",name);
 		if (pUnit->pStatList) {
 			StatList *plist=pUnit->pStatList;
@@ -962,15 +970,14 @@ void dumpUnit2(FILE *fp,UnitAny *pUnit) {
 	fprintf(fp,">>> type=%d id=%d pUnit=0x%x mode=0x%x txt=%d",
 		unitType,dwUnitId,pUnit,pUnit->dwMode,pUnit->dwTxtFileNo);
 	if ((unitType==UNITNO_PLAYER||unitType==UNITNO_MONSTER)&&pUnit->pMonPath) {
-		//fprintf(fp," offset=(%d,%d)",pUnit->pMonPath->wOffsetX,pUnit->pMonPath->wOffsetY);
 		fprintf(fp," pos=(%d,%d)",pUnit->pMonPath->wPosX,pUnit->pMonPath->wPosY);
-		//fprintf(fp," map=(%d,%d)",pUnit->pMonPath->dwMapPosX,pUnit->pMonPath->dwMapPosY);
-		//fprintf(fp," target=(%d,%d)",pUnit->pMonPath->wTargetX,pUnit->pMonPath->wTargetY);
 	} else if ((unitType==UNITNO_OBJECT||unitType==UNITNO_ITEM||unitType==UNITNO_ROOMTILE)&&pUnit->pItemPath) {
 		fprintf(fp," pos=(%d,%d)",pUnit->pItemPath->dwPosX,pUnit->pItemPath->dwPosY);
-		//fprintf(fp," map=(%d,%d)",pUnit->pItemPath->dwMapPosX,pUnit->pItemPath->dwMapPosY);
 	}
+	float d=getUnitDistance(PLAYER,pUnit);
+	fprintf(fp," dis=%.2f",d);
 	if (pUnit->dwUnitType==UNITNO_MONSTER) {
+		fprintf(fp,D2UnitVisionBlocked(PLAYER,pUnit,2)?" blocked":" visible");
 		int owner=D2GetMonsterOwner(pUnit->dwUnitId);
 		if (owner!=-1) fprintf(fp," owner=%d",owner);
 	}
@@ -1102,7 +1109,7 @@ int DoSnapshot() {
 	if (fSinglePlayer) singlePlayerSaveGame("d:\\git\\diablo2\\t\\test.d2s");
 	dumpLayers();
 
-	return 0;
+	return 1;
 }
 void __declspec(naked) __fastcall GetMercInfo(
 	int expansion, UnitAny *player, int seed,int arg,int diff,void *buf) {

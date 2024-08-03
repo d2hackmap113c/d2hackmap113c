@@ -207,9 +207,14 @@ static ConfigVar aConfigVars[] = {
 //--- m_AutoSkill.h ---
 	{CONFIG_VAR_TYPE_KEY, "AutoSkillToggle",   &tAutoSkill     },
   {CONFIG_VAR_TYPE_INT, "AutoSkillCheckInterval",	&dwAutoSkillCheckInterval,     4},
-  {CONFIG_VAR_TYPE_INT, "AutoSkillDistance",	&dwAutoSkillDistance,     4},
+  {CONFIG_VAR_TYPE_INT, "AutoDecripifyBossDistance",	&dwAutoDecripifyBossDistance,     4},
+  {CONFIG_VAR_TYPE_INT, "AutoDecripifyDistance",	&dwAutoDecripifyDistance,     4},
+  {CONFIG_VAR_TYPE_INT, "AutoStaticFieldDistance",	&dwAutoStaticFieldDistance,     4},
+  {CONFIG_VAR_TYPE_INT, "AutoStaticFieldHP",	&dwAutoStaticFieldHP,     4},
+  {CONFIG_VAR_TYPE_INT, "IceBlasterDistance",	&dwIceBlasterDistance,     4},
+  {CONFIG_VAR_TYPE_ARRAY, "AutoDimVisionMonster", &aAutoDimVisionMonster,       1, {1024}},
 //--- m_NpcTrade.h ---
-  {CONFIG_VAR_TYPE_INT, "NpcTradeShowMs",	&dwNpcTradeShowMs,     4},
+	{CONFIG_VAR_TYPE_KEY, "NpcTradeShowInfo",   &tNpcTradeShowInfo     },
 //--- m_AutoSummon.h ---
 	{CONFIG_VAR_TYPE_KEY, "AutoSummonToggle",   &tAutoSummon     },
 	{CONFIG_VAR_TYPE_KEY, "AutoSummonReviveToggle",   &tAutoSummonRevive     },
@@ -367,7 +372,6 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY, "PlayerDistanceToggle",    &tPlayerDistance    },
   {CONFIG_VAR_TYPE_KEY, "PlayerHPPercentToggle",   &tPlayerHPPercent   },
 //--- m_CheckDangerous.h ---
-  {CONFIG_VAR_TYPE_INT, "AutoPotionCheckMs",			&dwAutoPotionCheckMs,     4},
   {CONFIG_VAR_TYPE_INT, "IronGolemLifeAlertPercent",&dwIronGolemLifeAlertPercent,     4},
   {CONFIG_VAR_TYPE_INT, "IronGolemLifeTownPercent",&dwIronGolemLifeTownPercent,     4},
   {CONFIG_VAR_TYPE_INT, "IronGolemLifeExitPercent",&dwIronGolemLifeExitPercent,     4},
@@ -429,13 +433,15 @@ static ConfigVar aConfigVars[] = {
 //--- m_MultiClient.h ---
 	{CONFIG_VAR_TYPE_KEY, "MultiClientToggle",          &tMultiClient         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientToggleFollowKey",          &tMultiClientToggleFollow         },
-	{CONFIG_VAR_TYPE_KEY, "MultiClientStartFollowKey",          &tMultiClientStartFollow         },
+	{CONFIG_VAR_TYPE_KEY, "MultiClientStartFollowKey1",          &tMultiClientStartFollow1         },
+	{CONFIG_VAR_TYPE_KEY, "MultiClientStartFollowKey2",          &tMultiClientStartFollow2         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientStopFollowKey",          &tMultiClientStopFollow         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientEnterDoorKey",          &tMultiClientEnterDoor         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientRetreatKey",          &tMultiClientRetreat         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientTransferClickKey",          &tMultiClientClick         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientTransferClickKey2",          &tMultiClientClick2         },
-	{CONFIG_VAR_TYPE_INT, "MultiClientMaxWindowId",	   &dwMultiClientMaxWindowId,4},
+	{CONFIG_VAR_TYPE_INT, "MultiClientGroupSize1",	   &dwMultiClientGroupSize1,4},
+	{CONFIG_VAR_TYPE_INT, "MultiClientGroupSize2",	   &dwMultiClientGroupSize2,4},
 	{CONFIG_VAR_TYPE_INT, "MultiClientDistance",	   &dwMultiClientDistance,4},
 	{CONFIG_VAR_TYPE_INT, "MultiClientMaxDistance",	   &dwMultiClientMaxDistance,4},
 	{CONFIG_VAR_TYPE_INT, "MultiClientMoveDistance",	   &dwMultiClientMoveDistance,4},
@@ -644,6 +650,12 @@ void FixValues(){
 	tMultiClientClick.funcUp=MultiClientStopClick;
 	tMultiClientClick2.type=TOGGLEVAR_DOWNUPPARAM;
 	tMultiClientClick2.funcUp=MultiClientStopClick;
+//--- m_WinMessage.h ---
+	for ( int i = 0; i < _ARRAYSIZE(tSwitchWindowKeys); i++ ) {
+		tSwitchWindowKeys[i].type=4;
+		tSwitchWindowKeys[i].func=NULL;
+		tSwitchWindowKeys[i].funcUp=SwitchWindow;
+	}
 }
 
 static const char *gamecontrol_names[64]={

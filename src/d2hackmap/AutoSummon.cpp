@@ -64,7 +64,7 @@ void checkSkeletonCount() {
 	dwSkeletonHPPercent=!dwSkeletonCount&&!dwSkeletonMageCount?0:hp/(dwSkeletonCount+dwSkeletonMageCount);
 	dwReviveTimePercent=!nrt?0:time/nrt/1800;
 	dwNecMana=dwPlayerMana;dwNecInfoExpireMs=dwCurMs+1000;
-	if (dwMultiClientFollowId) {
+	if (dwLeaderId) {
 		follower_send_info(0x01000000|(dwSkeletonCount<<16)|(dwSkeletonMageCount<<8)|dwReviveCount);
 		follower_send_info(0x02000000|(dwSkeletonHPPercent<<16)|(dwReviveTimePercent<<8));
 		follower_send_info(0x03000000|dwPlayerMana);

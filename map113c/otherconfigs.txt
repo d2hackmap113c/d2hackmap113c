@@ -51,7 +51,3 @@ SwitchSkillKeys[12]: VK_Q
 SwitchSkillRight[12][ClassNec]: SkillDecrepify
 SwitchSkillKeys[13]: VK_TAB
 SwitchSkillRight[13][ClassNec]: SkillRevive
-//SwitchWindowKeys[1]: VK_F1 //切换窗口按键，可设置8个
-//SwitchWindowKeys[2]: VK_F2
-//SwitchWindowKeys[3]: VK_F3
-//SwitchWindowKeys[4]: VK_F4

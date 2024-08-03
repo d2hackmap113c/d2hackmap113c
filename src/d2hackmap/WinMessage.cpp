@@ -244,21 +244,26 @@ int loadRuntimeInfo(D2Window *pwin,int id) {
 	memset(pwin,0,sizeof(D2Window));
 	return 0;
 }
-int getOtherClients(D2Window *wins,int cap,int area) {
+int find_team_members(D2Window *wins,int cap,int groupSize,int distance) {
 	int n=0;
 	char *ip=(*p_D2GameInfo)->szGameServerIp;
 	char *game=(*p_D2GameInfo)->szGameName;
 	if (!ip[0]||!game[0]) return 0;
 	for (int i=1;i<=8;i++) {
 		if (n>=cap) break;
-		if (dwGameWindowId<=dwMultiClientMaxWindowId&&i>dwMultiClientMaxWindowId
-			||dwGameWindowId>dwMultiClientMaxWindowId&&i<=dwMultiClientMaxWindowId) continue;
 		if (i==dwGameWindowId) continue;
+		if (dwGameWindowId<=groupSize&&i>groupSize||dwGameWindowId>groupSize&&i<=groupSize) continue;
 		D2Window *pwin=&wins[n];
 		if (!loadRuntimeInfo(pwin,i)) continue;
 		if (strcmp(pwin->ip,ip)==0&&strcmp(pwin->game,game)==0) {
-			RosterUnit *pRU=getRosterUnit(pwin->uid);
-			if (!pRU||area>=0&&pRU->dwLevelNo!=area) continue;
+			//RosterUnit *pRU=getRosterUnit(pwin->uid);
+			//if (!pRU||area>=0&&pRU->dwLevelNo!=area) continue;
+			if (distance) {
+				UnitAny *pUnit=D2GetUnitFromId(pwin->uid, UNITNO_PLAYER) ;
+				if (!pUnit) continue;
+				float d=getUnitDistance(PLAYER,pUnit);
+				if (d>distance) continue;
+			}
 			n++;
 		}
 	}
@@ -284,7 +289,8 @@ int SwitchWindow(int id) {
 	if (id==dwGameWindowId) return 0;
 	D2Window win;
 	if (!loadRuntimeInfo(&win,id)) return 0;
-	SwitchToThisWindow(win.hwnd,1);
+	SetForegroundWindow(win.hwnd);
+	//SwitchToThisWindow(win.hwnd,1);
 	return 1;
 }
 void WinMessageNewGame() {
@@ -815,5 +821,26 @@ void __declspec(naked) DrawAutomapCell_Patch_ASM() {
 		//original code
 original:
 		jmp dword ptr [eax+0x98]
+	}
+}
+DWORD newTextBoxData[]={4,567,550,200,20,0,0,0,0,0,0,2};//type,x,y,l,h
+static void createVersionTextBox() {
+	char buf[64];
+	if (*p_D2launchNumChildren>=39) return;
+	void* textbox = D2CreateTextBox(newTextBoxData);
+	sprintf(buf, "d2hackmap %s", szVersion);
+	D2PrintLineOnTextBox(textbox, buf, 4);
+	p_D2launchChildren[*p_D2launchNumChildren]=textbox;
+	p_D2launchNumChildren[0]++;
+}
+//6FA5805B - 68 F011A66F           - push 6FA611F0 { (6) } <--- d2launch
+void __declspec(naked) ShowVersion_Patch_ASM() {
+	__asm {
+		pop esi
+		mov ecx, p_D2createTextBoxParam11F0
+		push ecx
+		push esi
+		call createVersionTextBox
+		ret
 	}
 }

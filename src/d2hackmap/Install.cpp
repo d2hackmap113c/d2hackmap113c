@@ -2,7 +2,8 @@
 
 #include "d2ptrs.h"
 
-void  NpcTradePatch_ASM();
+void ShowVersion_Patch_ASM();
+void NpcTradePatch_ASM();
 void DrawCellFile_Patch_ASM();
 void DrawAutomapCell_Patch_ASM();
 void initSendPacketCheckTable();
@@ -33,6 +34,7 @@ static Patch_t aD2Patchs[] = {
 //--- m_DropProtection.h ---
 	{PatchCALL,   DLLOFFSET(D2CLIENT, 0x6FAF9440),      (DWORD)ClickHireMercMenuItemPatch_ASM, 6 , &fDefault},
 //--- m_WinMessage.h ---
+	{PatchCALL,   DLLOFFSET(D2LAUNCH, 0x6FA5805B),    (DWORD)ShowVersion_Patch_ASM,           5 ,   &fDefault},
 	{PatchCALL,   DLLOFFSET(D2WIN, 0x6F8F7740),    (DWORD)WinMessagePatch_ASM,           5 ,   &fDefault},
 	{PatchCALL,   DLLOFFSET(D2CLIENT, 0x6FAF33D1),    (DWORD)StandStillPatch_ASM,           10 ,   &fDefault},
 	{PatchCALL,   DLLOFFSET(D2CLIENT, 0x6FB5BF86),    (DWORD)ReceiveSwapWeapon_ASM,           6 ,   &fDefault},

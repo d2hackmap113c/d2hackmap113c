@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
-static wchar_t *wszProgTitle = L"<Hackmap>: Sting's Hackmap For Diablo II fixed by ding (v1.13c.1.4) (20240731)";
+char *szVersion="20240802";
+static char *wszProgTitle = "<Hackmap>: Sting's Hackmap For Diablo II fixed by ding (v1.13c.1.4) (%s) https://github.com/d2hackmap113c/d2hackmap113c/";
 int dwChangeLeftSkill;
 static LONGLONG framePerf;
 static int frameN,enterMs;
@@ -25,6 +26,7 @@ void runOnce() {
 	if (dwPlayerClass>6) dwPlayerClass=6;
 	dwRecheckSelfItemMs=dwCurMs+1000;
 	dwChangeLeftSkill=-1;
+	dwRightSkill=-1;fAutoSummonSkill=0;fAutoRightSkill=0;
 	if ( dwGameLng<0 ){
 		if ( fLanguageCheck ){
 			dwGameLng = GetGameLanguage();
@@ -113,7 +115,7 @@ void GameLoopPatch() {
 	if ( fInGame==FALSE ) {
 		fSinglePlayer=!(*p_D2GameInfo)->szRealmName[0];
 		fInGame = TRUE;
-		D2ShowGameMessage( wszProgTitle, 0);
+		gameMessage( wszProgTitle, szVersion);
 		ShowWarningMessage();
 		if(fEnterGameSound) MessageBeep(MB_ICONEXCLAMATION);
 		QueryPerformanceCounter(&perfStart);
@@ -138,7 +140,12 @@ void GameLoopPatch() {
 	}
 	fPlayerInTown = (LEVELNO==actlvls[ACTNO]);
 	dwLeftSkill=PLAYER->pSkill->pLeftSkill->pSkillInfo->wSkillId;
-	dwRightSkill=PLAYER->pSkill->pRightSkill->pSkillInfo->wSkillId;
+	int t=PLAYER->pSkill->pRightSkill->pSkillInfo->wSkillId;
+	if (dwRightSkill!=t) {
+		dwRightSkill=t;
+		fAutoSummonSkill=dwRightSkill==70||dwRightSkill==80||tAutoSummonRevive.isOn&&dwRightSkill==95;
+		fAutoRightSkill=dwRightSkill==87||dwRightSkill==71||dwRightSkill==42&&dwAutoStaticFieldDistance;
+	}
 	dwPlayerLevel=D2GetUnitStat(PLAYER, STAT_LEVEL, 0);
 	dwPlayerMaxHP = D2GetUnitStat(PLAYER, STAT_MAXHP, 0)>>8;
 	dwPlayerHP = D2GetUnitStat(PLAYER, STAT_HP, 0)>>8;
@@ -174,14 +181,14 @@ void GameLoopPatch() {
 //--- m_GameChat.h ---
 	if (pD2WinEditBox) CheckD2WinEditBox();
 //--- m_MultiClient.h ---
-	if (dwMultiClientFollowId||dwMultiClientClickTimeout) MultiClientLoop();
+	if (dwLeaderId||dwMultiClientClickTimeout) MultiClientLoop();
 	if (dwPlayerClass==2) AutoSummonRunLoop();
-	//if (tAutoSummon.isOn&&(dwRightSkill==70||dwRightSkill==80||tAutoSummonRevive.isOn&&dwRightSkill==95)) AutoSummonRunLoop();
+	//if (tAutoSummon.isOn&&fAutoSummonSkill) AutoSummonRunLoop();
 	else if (dwAutoSummonStartMs) dwAutoSummonStartMs=0;
 //--- m_NpcTrade.h ---
 	if (dwNpcTradeCheckMs&&dwCurMs>dwNpcTradeCheckMs) NpcTradeLoop();
 //--- m_AutoSkill.h ---
-	if (tAutoSkill.isOn&&(dwRightSkill==87||dwRightSkill==71)) AutoSkillRunLoop();
+	if (tAutoSkill.isOn&&fAutoRightSkill) AutoSkillRunLoop();
 	else if (dwAutoSkillCheckMs) dwAutoSkillCheckMs=0;
 	if (dwRecheckSelfItemMs&&dwCurMs>dwRecheckSelfItemMs) recheckSelfItems();
 	//QueryPerformanceCounter(&perfEnd);

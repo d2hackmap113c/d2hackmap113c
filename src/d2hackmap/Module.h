@@ -21,6 +21,7 @@ void KeydownPatch_ASM();
 int saveRuntimeInfo();
 #endif
 #ifdef VARIABLE_DEFINE
+	extern char *szVersion;
 	GVAR (int,			dwGameWindowId,					1)
 	GVAR(char,			szRuntimePath[256]	,		"runtime")
 	GVAR (BOOL,		fSinglePlayer,				0)
@@ -231,7 +232,7 @@ GVAR2(int,			miniMapScrollOffset[9][2], 0)
 #endif
 #ifdef VARIABLE_DEFINE
  GVAR (BOOL,			fBackToTown,				FALSE)
- GVAR2(ToggleVar,		tBackToTown,		TOGGLEVAR_DOWN,	0,	-1,		1,	0,		&BackToTown)
+ GVAR2(ToggleVar,		tBackToTown,		TOGGLEVAR_DOWN,	0,	-1,		1,	"Quick Back Town",		&BackToTown)
  GVAR (DWORD,			nTownportalAlertNums,			(DWORD)-1)
 #endif
 //--- m_PartyHelp.h ---
@@ -283,7 +284,7 @@ GVAR2(ToggleVar,	tOutTownSelect,				TOGGLEVAR_ONOFF,	1,	-1,	1,	"Out of town sele
 	int AttractNPC();
 	int LockMouse();
 	void StandStillPatch_ASM();
-	int getOtherClients(D2Window *hwnd,int cap,int area);
+	int find_team_members(D2Window *wins,int cap,int groupSize,int distance);
 	int SwitchWindow(int id);
 #endif
 #ifdef VARIABLE_DEFINE
@@ -297,7 +298,7 @@ GVAR2(ToggleVar,	tOutTownSelect,				TOGGLEVAR_ONOFF,	1,	-1,	1,	"Out of town sele
 	GVAR2(ToggleVar,	tAutoMinimapTeleportToggle,				TOGGLEVAR_ONOFF,	0,	0,	 0,	"Auto Teleport MiniMap")
 	GVAR (int,		dwAutoHideMinimapKey,						0)
 	GVAR2(ToggleVar,	tFullScreen,			TOGGLEVAR_DOWN,	0,	-1,		1, "FullScreen",			&FullScreen,0,0,2)
-	GVAR2(ToggleVar,	tAttractNPC,			TOGGLEVAR_DOWN,	0,	-1,		1, "AttractNPC",			&AttractNPC,0,0,2)
+	GVAR2(ToggleVar,	tAttractNPC,			TOGGLEVAR_DOWN,	0,	-1,		1, "AttractNPC",			&AttractNPC,0,0,0)
 	GVAR(DWORD,	dwAutoMaximizeWidth,				1600)
 	GVAR(DWORD,	dwAutoMaximizeHeight,				900)
 	GVAR(DWORD,	dwHideCaptionBorder,				1)
@@ -351,8 +352,8 @@ void NpcTradeNewGame();
 void NpcTradeLoop();
 #endif
 #ifdef VARIABLE_DEFINE
+GVAR2(ToggleVar,	tNpcTradeShowInfo,				TOGGLEVAR_ONOFF,	0,	-1,	 0,	"Npc Trade Info")
 GVAR(int,	dwNpcTradeCheckMs,				0)
-GVAR(int,	dwNpcTradeShowMs,				0)
 #endif
 //--- m_AutoSkill.h ---
 #ifdef FUNCTION_DECLARE
@@ -362,10 +363,16 @@ void AutoSkillUnit(UnitAny *pUnit);
 #endif
 #ifdef VARIABLE_DEFINE
 GVAR2(ToggleVar,	tAutoSkill,				TOGGLEVAR_ONOFF,	0,	-1,	 0,	"Auto Skill")
-GVAR(int,	dwAutoSkillDistance, 20)
 GVAR(int,	dwAutoSkillCheckInterval,				500)
+GVAR(int,	dwAutoDecripifyBossDistance, 16)
+GVAR(int,	dwAutoDecripifyDistance, 8)
+GVAR(int,	dwAutoStaticFieldDistance, 20)
+GVAR(int,	dwAutoStaticFieldHP, 20)
+GVAR(int,	dwIceBlasterDistance, 3)
 GVAR(int,	dwAutoSkillCheckMs,				0)
 GVAR(int,	dwAutoSkillMode,				0)
+GVAR(int,	fAutoRightSkill,				0)
+GVAR2(char,aAutoDimVisionMonster[1024]	,   0)
 #endif
 //--- m_AutoSummon.h ---
 #ifdef FUNCTION_DECLARE
@@ -393,6 +400,7 @@ GVAR(int,	dwReviveCount,				0)
 GVAR(int,	dwReviveMaxCount,				0)
 GVAR(int,	dwSkeletonHPPercent,				0)
 GVAR(int,	dwReviveTimePercent,				0)
+GVAR(int,	fAutoSummonSkill,				0)
 #endif
 //--- m_Snapshot.h ---
 #ifdef FUNCTION_DECLARE
@@ -907,7 +915,8 @@ GVAR2(ToggleVar,	tKeepGameWindow,		TOGGLEVAR_ONOFF,	0,	-1,		1 , "Keep game windo
 	void MultiClientNewGame();
 	void MultiClientLoop();
 	int MultiClientToggleFollow();
-	int MultiClientStartFollow();
+	int MultiClientStartFollow1();
+	int MultiClientStartFollow2();
 	int MultiClientStopFollow();
 	int MultiClientEnterDoor();
 	int leader_back_to_town();
@@ -929,22 +938,24 @@ GVAR2(ToggleVar,	tKeepGameWindow,		TOGGLEVAR_ONOFF,	0,	-1,		1 , "Keep game windo
 #ifdef VARIABLE_DEFINE
 	GVAR2(ToggleVar,	tMultiClient,				TOGGLEVAR_ONOFF,	0,	-1,	1,  "Auto Follow" )
 	GVAR2(ToggleVar,	tMultiClientToggleFollow,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientToggleFollow",&MultiClientToggleFollow)
-	GVAR2(ToggleVar,	tMultiClientStartFollow,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStartFollow",&MultiClientStartFollow)
+	GVAR2(ToggleVar,	tMultiClientStartFollow1,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStartFollow1",&MultiClientStartFollow1)
+	GVAR2(ToggleVar,	tMultiClientStartFollow2,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStartFollow2",&MultiClientStartFollow2)
 	GVAR2(ToggleVar,	tMultiClientStopFollow,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStopFollow",&MultiClientStopFollow)
 	GVAR2(ToggleVar,	tMultiClientEnterDoor,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientEnterDoor",&MultiClientEnterDoor)
 	GVAR2(ToggleVar,	tMultiClientRetreat,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientRetreat",&leader_back_to_town)
 	GVAR2(ToggleVar,	tMultiClientClick,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientClick",&MultiClientStartClick)
 	GVAR2(ToggleVar,	tMultiClientClick2,	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientClick2",&MultiClientStartClick)
-	GVAR (int,			dwMultiClientMaxWindowId,					8)
+	GVAR (int,			dwMultiClientGroupSize1,					8)
+	GVAR (int,			dwMultiClientGroupSize2,					8)
 	GVAR (int,			fTransferClick,					0)
 	GVAR2 (wchar_t,			wszTransferClick[64],					0)
 	GVAR (int,			dwMultiClientDistance,					5)
-	GVAR (int,			dwMultiClientMaxDistance,					100)
+	GVAR (int,			dwMultiClientMaxDistance,					33)
 	GVAR (int,			dwMultiClientMoveDistance,					20)
 	GVAR (int,			dwMultiClientCheckInterval,					200)
 	GVAR (int,			dwMultiClientOverAreaDistance,					20)
-	GVAR (int,			dwMultiClientCount,					0)
-	GVAR (int,			dwMultiClientFollowId,					0)
+	GVAR (int,			dwTeamMemberCount,					0)
+	GVAR (int,			dwLeaderId,					0)
 	GVAR (int,			dwMultiClientClickUnitType,					0)
 	GVAR (int,			dwMultiClientClickUnitId,					0)
 	GVAR (int,			dwMultiClientClickRight,					0)

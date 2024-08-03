@@ -214,10 +214,22 @@ D2FUNCPTR(D2GFX,  -0x274B,   MinimizeWindows,        void __stdcall, (DWORD dwFl
 
 D2VARPTR(D2GFX,  0x6FA9D66C, WinState,			DWORD)
 
-D2FUNCPTR(D2WIN,  -10150,   DrawText,               void __fastcall, (wchar_t *wStr, long xPos, long yPos, DWORD dwColor, DWORD dwAlign))
-D2FUNCPTR(D2WIN,  -0x2765,   DrawHoverText,          void __fastcall, (wchar_t *wStr, long xPos, long yPos, DWORD dwTran, DWORD dwColor))
-D2FUNCPTR(D2WIN,  -0x2756,   DrawUnitLifeBar,        DWORD __fastcall, (wchar_t *wStr ,long xPos, long yPos, DWORD dwColor, DWORD dwUnk1 ,DWORD dwUnk2) )
-D2FUNCPTR(D2WIN,  -0x277E,   DrawHover,              void __fastcall, ()) //真正显示字符框的地方，上面3个只是设置了变量,显示优先级非常高
+//6f8f8560 D2Win.dll/Ordinal10098 640
+D2FUNCPTR(D2WIN,  -10098,   CreateTextBox,  void *__stdcall, (DWORD* param))
+//6f8e9740 D2Win.dll/Ordinal10022 128
+D2FUNCPTR(D2WIN,  -10022,   PrintLineOnTextBox,  void __fastcall, (void *textbox, char *buf, int color))
+D2VARPTR(D2LAUNCH, 0x6FA611F0, createTextBoxParam11F0,  DWORD *)
+D2VARPTR(D2LAUNCH, 0x6FA65E30, launchNumChildren,  DWORD)
+D2VARPTR(D2LAUNCH, 0x6FA652B8, launchChildren,  void *)
+
+//6f8f2fa0 D2Win.dll/Ordinal10150 64
+D2FUNCPTR(D2WIN,  -10150,   DrawText,            void __fastcall, (wchar_t *wStr, long xPos, long yPos, DWORD dwColor, DWORD dwAlign))
+//6f8f18f0 D2Win.dll/Ordinal10085 832
+D2FUNCPTR(D2WIN,  -10085,   DrawHoverText,          void __fastcall, (wchar_t *wStr, long xPos, long yPos, DWORD dwTran, DWORD dwColor))
+//6f8f2730 D2Win.dll/Ordinal10070 1008
+D2FUNCPTR(D2WIN,  -10070,   DrawUnitLifeBar,        DWORD __fastcall, (wchar_t *wStr ,long xPos, long yPos, DWORD dwColor, DWORD dwUnk1 ,DWORD dwUnk2) )
+//6f8f33a0 D2Win.dll/Ordinal10110 496
+D2FUNCPTR(D2WIN,  -10110,   DrawHover,              void __fastcall, ()) //真正显示字符框的地方，上面3个只是设置了变量,显示优先级非常高
 
 D2FUNCPTR(D2WIN,  -0x27C1,   GetTextAreaSize,        DWORD __fastcall, (wchar_t *wStr, DWORD* pWidth, DWORD* pHeight)) 
 D2FUNCPTR(D2WIN,  -0x27C8,   SetTextFont,            DWORD __fastcall, (DWORD dwFont))

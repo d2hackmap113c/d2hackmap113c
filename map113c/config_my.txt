@@ -76,49 +76,30 @@ Item Colours[1051-1053,1123,1160][1,2,3][1][3,4]: 1, 0x62 , -2 , -2       //3 so
 Snapshot Path: "D:\game\snapshot"
 Message Log Toggle:      2   //记录游戏日志 0不记录日志, 1记录日志  2 不记录聊天信息
 //Auto Reveal Act:                0                   //自动开全部地图
-//Auto Invite Toggle:             0, CTRL_VK_P //             //自动邀请，最早进游戏的人物可以自动激活，U键
-//Auto Party Toggle:              1, -1 //             //自动接受组队邀请，U键
 Auto Skill Toggle: 1, CTRL_ALT_VK_K
-AutoSkillCheckInterval: 500
-AutoSkillDistance: 20
-NpcTradeShowMs: 6000 //点击交易时显示是否有+技能的装备可购买6秒钟
-Auto Summon Toggle: 1, CTRL_ALT_VK_S //自动召唤
-Auto Summon Revive Toggle: 0, SHIFT_CTRL_ALT_VK_S //自动重生
-ShowSummonInfoToggle: 1, VK_
 AutoSummonSkeletonLevelAdjust: -2
 AutoSummonSkeletonMageLevelAdjust: -2
 AutoSummonReviveLevelAdjust: -2
-Auto Summon Mana: 20 //召唤需要法力
-AutoReviveMonster[Undead Stygian Doll 1,Undead Stygian Doll 2]: 1 //冥河娃娃
-AutoReviveMonster[Gloam 1, Gloam 2, Burning Soul 1, Burning Soul 2, 734, Black Soul 1, Black Soul 2]: 1 //电鬼
-AutoReviveMonster[Soul Killer 3,Soul Killer 4,Undead Soul Killer 2]: 1 //灵魂杀手
-Switch Skill Ms: 60 //切换技能时间
+ShowSummonInfoToggle: 1, VK_ //显示召唤统计信息, 包括数量，平均血量，NEC剩余法力等，双开自动跟随时会发到前台显示
 AutoPotionToggle: 1,CTRL_ALT_VK_P
-HirePotionMinCLevel: 67 //当人物级别大于等于此值时给佣兵自动喝药，否则只喊救命
 HirePotionColumn: 1 //佣兵使用第几列药,0取消此功能
-HealingPotionLifePercent: 50
 HealingPotionColumn: 1
-HealingPotionDelayMs: 3000 //使用药后3秒内不再检查
-ManaPotionMax: 500 //当人物法力上限超过此值时启动自动法力药剂
 ManaPotionColumn: 3 //使用第几列药,0取消此功能
-ManaPotionValue: 50 //法力低于此值后喝药
-ManaPotionNTValue: 50 //在尼拉赛克神殿法力低于此值后喝药
 Auto Hide Minimap Toggle: 1, CTRL_ALT_VK_V
-Bug Auto Quit Hell Toggle:      0, SHIFT_CTRL_ALT_VK_B          //地狱难度bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Auto Quit Hell Act4 Toggle: 1, CTRL_ALT_VK_B  //地狱难度ACT4 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Auto Quit Hell Act5 Toggle: 1, CTRL_ALT_VK_B  //地狱难度ACT5 bug保护提示后是否自动退出游戏 0 不退出 1退出
-//LibraryPath: "D:\game\diablo2\D2MultiRes_113c.dll"
-Auto Call To Arm: 200 //切换武器后200ms检查是否全屏并且左手是否CTA,如果是则将左键设为BC,右键设为BO,按住W键时保持站立,松开后自动切换武器回来,设为0取消此功能
 Mini Map Scroll Keys[1]: VK_UP,VK_
 Mini Map Scroll Keys[2]: VK_DOWN,VK_
 Mini Map Scroll Keys[3]: VK_LEFT,VK_
 Mini Map Scroll Keys[4]: VK_RIGHT,VK_
 NecTeleportAttractToggle: 1,VK_ //0:无操作 1:如果是NEC右键切换为传送时将左键切换为吸引,由传送切换为别的技能时将左键切换为普通攻击
 NecNoAttackInHellToggle: 1,VK_  //地狱难度NEC左键技能设为普通攻击时左键点击怪物只移动不攻击
-MultiClientMaxWindowId: 2 //前个窗口为一组
 SwitchSkillKeys[4]: VK_TAB
 SwitchSkillRight[4][ClassSor]: SkillTelekinesis,-1,-1,-1
 SwitchSkillRight[4][ClassNec]: SkillRevive,-1,-1,-1
+MultiClientGroupSize2: 2 //前个窗口为一组
+Auto Summon Toggle: 1, CTRL_ALT_VK_S //自动召唤
+Auto Summon Revive Toggle: 0, SHIFT_CTRL_ALT_VK_S //自动重生
 
 Monitor Packet: 0 //安装接收包监控补丁，可能影响速度
 PacketHandlerToggle: 0,CTRL_ALT_VK_N

@@ -793,7 +793,7 @@ Mini Map Scroll Offset[7]: 6,-6
 Mini Map Scroll Keys[8]: VK_NEXT,-1
 Mini Map Scroll Offset[8]: 6,6
 //GameControlKeys[GameControlCenterAutomap]: VK_MBUTTON,-1,-1,-1 //按鼠标中键重置小地图
-Enable Screen Saver Toggle: 1,VK_ //窗口切换到后台时停止绘制,可节约CPU,0关闭此功能
+Enable Screen Saver Toggle: 1,SHIFT_VK_F12 //窗口切换到后台时停止绘制,可节约CPU,0关闭此功能
 //自动强化设置
 Auto Enchant Toggle: 1, CTRL_ALT_VK_E
 Renew Enchant Seconds:	300 //5分钟后对玩家重新强化
@@ -830,23 +830,23 @@ Chicken Life Min Clevel: 3   //3级以下不使用血保
 ChickenLifeForcedClevel: 85  //超过85级强制血保
 //进入游戏时自动打开保护,换号无忧 0:无操作 1:打开ChickenLife,DropProtection,ResetProtection,SocketProtect,如果设置过Bug Auto Quit Hell和Bug Auto Quit Hell Act5也会打开
 AutoProtectionNewGame:    1   
+//--------------- 自动用药 ---------------
 AutoPotionToggle: 0,CTRL_ALT_VK_P
-AutoPotionCheckMs: 1000 //每秒检查一次人物级别和佣兵石魔
 //以下铁魔血保仅铁魔为神符之语时生效
 IronGolemLifeAlertPercent: 60 //铁魔生命少于60%时喊救命,并在屏幕中央显示警告信息
 IronGolemLifeTownPercent: 30 //铁魔生命少于30%时回城
 IronGolemLifeExitPercent: 0 //铁魔生命少于0%时退出游戏
-HirePotionMinCLevel: 70 //当人物级别大于等于此值时给佣兵自动喝药，否则只喊救命
-HirePotionLifePercent: 30 //佣兵生命少于30%时用药
 HirePotionColumn: 0 //佣兵使用第几列药,0取消此功能
+HirePotionMinCLevel: 67 //当人物级别大于等于此值时给佣兵自动喝药，否则只喊救命
+HirePotionLifePercent: 30 //佣兵生命少于30%时用药
 HirePotionDelayMs: 3000 //佣兵使用药后3秒内不再检查
-ManaPotionMax: 600 //当人物法力上限超过此值时启动自动法力药剂
-ManaPotionValue: 100 //法力低于此值后喝药
-ManaPotionNTValue: 100 //在尼拉赛克神殿法力低于此值后喝药
 ManaPotionColumn: 0 //使用第几列药,0取消此功能
+ManaPotionMax: 500 //当人物法力上限超过此值时启动自动法力药剂
+ManaPotionValue: 50 //法力低于此值后喝药
+ManaPotionNTValue: 50 //在尼拉赛克神殿法力低于此值后喝药
 ManaPotionDelayMs: 10000 //使用药后10秒内不再检查
-HealingPotionLifePercent: 50
 HealingPotionColumn: 0 //使用第几列药,0取消此功能
+HealingPotionLifePercent: 50
 HealingPotionDelayMs: 3000 //使用药后3秒内不再检查
 //在登录页面按设置的键自动输入用户名密码，可设置16组
 // AccountKey[1-16]
@@ -861,8 +861,16 @@ AccountPassword[2]: ""
 AccountPassword[3]: ""
 Lock Mouse Toggle: 0,CTRL_VK_L //锁定鼠标在窗口内,进入游戏后出城有效
 Full Screen Key: ALT_VK_RETURN //按ALT+回车键可切换窗口和全屏(游戏需用-w选项启动)
-Attract NPC Key: SHIFT_VK_A //吸引鼠标选择的NPC
+Attract NPC Key: SHIFT_VK_A //吸引选中的NPC,联网无效 
 Hide Caption Border: 1 //最大化时隐藏标题栏和边框
+SwitchWindowKeys[1]: VK_F1 //切换窗口按键，可设置8个
+SwitchWindowKeys[2]: VK_F2
+SwitchWindowKeys[3]: VK_F3
+SwitchWindowKeys[4]: VK_F4
+SwitchWindowKeys[5]: VK_F5
+SwitchWindowKeys[6]: VK_F6
+SwitchWindowKeys[7]: VK_F7
+SwitchWindowKeys[8]: VK_F8
 //调用游戏内部功能，每个功能可定义四个按键
 //GameControlKeys[GameControlAutomap]: VK_V,-1,-1,-1
 GameControlKeys[GameControlSayHelp]: SHIFT_VK_H,-1,-1,-1
@@ -883,17 +891,12 @@ GameControlKeys[GameControlSkillTree]: ALT_VK_T,-1,-1,-1
 GameControlKeys[GameControlShowPortraits]: ALT_VK_Z,-1,-1,-1
 SinglePlayerMonsterHPToggle: 1, -1 //单人模式显示怪物血量
 SinglePlayerMonsterExpHPToggle: 1, -1 //单人模式显示怪物经验值
-//自动召唤设置
-Auto Summon Toggle: 0, CTRL_ALT_VK_S //自动召唤
-Auto Summon Mana: 60 //召唤需要法力
-Switch Skill Ms: 60 //切换技能时间
-AutoSummonSkeletonLevelAdjust: 0 //对自动计算的召唤级别进行调整，适合主副武器级别不同的情况,仅资料片有效
-AutoSummonSkeletonMageLevelAdjust: 0
-AutoSummonReviveLevelAdjust: 0
-//双开设置
+//--------------- 双开设置 ---------------
 Multi Client Toggle: 1,CTRL_ALT_VK_W
-MultiClientMaxWindowId: 8 //前8个窗口为一组
-MultiClientStartFollowKey: SHIFT_VK_F //要求别的窗口中的人物跟随，需在同一区域
+MultiClientGroupSize1: 8 //前8个窗口为一组
+MultiClientStartFollowKey1: SHIFT_VK_F //要求别的窗口中的人物跟随，需在同一区域
+MultiClientGroupSize2: 8 //前8个窗口为一组
+MultiClientStartFollowKey2: SHIFT_VK_G //要求别的窗口中的人物跟随，需在同一区域
 MultiClientStopFollowKey: SHIFT_VK_T //停止跟随
 MultiClientToggleFollowKey: VK_ //切换跟随和停止
 MultiClientEnterDoorKey: SHIFT_VK_E //进门
@@ -901,30 +904,42 @@ MultiClientRetreatKey: SHIFT_VK_R //回城
 MultiClientTransferClickKey: VK_MENU //按下ALT键时将鼠标左右单次点击操作发到别的窗口执行
 MultiClientTransferClickKey2: VK_XBUTTON2 //按下鼠标侧面键时将鼠标左右单次点击操作发到别的窗口执行
 MultiClientDistance: 6 //跟随的距离
-MultiClientMaxDistance: 100 //超过此距离后停止跟随
+MultiClientMaxDistance: 33 //超过此距离后停止跟随
 MultiClientMoveDistance: 10 //每次最多可移动距离
 MultiClientCheckInterval: 200 //跟随时每隔200ms检查一次
 //自动使用衰老和微暗灵视技能,适合双开时nec在后台跟随,仅怪物与玩家之间无遮挡时使用
 //衰老仅对boss使用，如果是关底boss则距离小于33yard即使用，其它boss使用AutoSkillDistance设置
-//微暗灵视对小地图颜色设置为0x9b的非boss使用,如冥河娃娃,电鬼,灵魂杀手,自爆人等,当距离小于33yard并且无遮挡时使用
+//--------------- 自动使用右键技能 ---------------
 Auto Skill Toggle: 0, CTRL_ALT_VK_K
-AutoSkillCheckInterval: 500 //在后台时每0.5秒检查一次，在前台时待续检查
-AutoSkillDistance: 20 //对于非关底boss使用衰老的距离
-//自动召唤设置，双开时可在后台自动执行
+AutoSkillCheckInterval: 500 //在后台时每0.5秒检查一次，在前台时持续检查
+AutoDecripifyBossDistance: 16 //对于小boss自动使用衰老的距离
+AutoDecripifyDistance: 0 //对于普通怪物自动使用衰老的距离
+AutoStaticFieldDistance: 12 //自动使用静态力场的距离,仅在后台时使用
+AutoStaticFieldHP: 6 //怪物的HP最小值0-128
+IceBlasterDistance: 6 //右键为静态力场左键为冰风暴时如怪物距离太近则使用冰风暴
+//自动使用微暗灵视的怪物,仅对非boss使用,当距离小于33yard并且无遮挡时使用
+AutoDimVisionMonster[Frenzied Ice Spawn]: 1 //自爆人
+AutoDimVisionMonster[Undead Stygian Doll 1,Undead Stygian Doll 2]: 1 //冥河娃娃
+AutoDimVisionMonster[Gloam 1, Gloam 2, Burning Soul 1, Burning Soul 2, 734, Black Soul 1, Black Soul 2]: 1 //电鬼
+AutoDimVisionMonster[Soul Killer 3,Soul Killer 4,Undead Soul Killer 2]: 1 //灵魂杀手
+//--------------- 自动召唤设置，双开时可在后台自动执行 ---------------
+//当前右键设定召满后自动切换右键技能,召唤顺序:骷髅,骷髅法师,重生
+Auto Summon Toggle: 0, CTRL_ALT_VK_S //自动召唤
+Auto Summon Mana: 20 //召唤至少需要法力
 Auto Summon Toggle: 1, CTRL_ALT_VK_S 
 Auto Summon Revive Toggle: 0, SHIFT_CTRL_ALT_VK_S //自动重生
-ShowSummonInfoToggle: 1, VK_ //显示召唤统计信息
-//资料片对召唤技能的调整，主副装备技能级别不同时使用
-AutoSummonSkeletonLevelAdjust: -2
-AutoSummonSkeletonMageLevelAdjust: -2
-AutoSummonReviveLevelAdjust: -2
-Auto Summon Mana: 20 //召唤至少需要法力
+ShowSummonInfoToggle: 0, VK_ //显示召唤统计信息, 包括数量，平均血量，NEC剩余法力等，双开自动跟随时会发到前台显示
+AutoSummonSkeletonLevelAdjust: 0 //对自动计算的召唤级别进行调整，适合主副武器级别不同的情况,仅资料片有效
+AutoSummonSkeletonMageLevelAdjust: 0
+AutoSummonReviveLevelAdjust: 0
 //可以重生的怪物
+AutoReviveMonster[Hell Bovine]: 1 //牛
 AutoReviveMonster[Undead Stygian Doll 1,Undead Stygian Doll 2]: 1 //冥河娃娃
 AutoReviveMonster[Gloam 1, Gloam 2, Burning Soul 1, Burning Soul 2, 734, Black Soul 1, Black Soul 2]: 1 //电鬼
 AutoReviveMonster[Soul Killer 3,Soul Killer 4,Undead Soul Killer 2]: 1 //灵魂杀手
 Switch Skill Ms: 60 //切换技能时间
-NpcTradeShowMs: 1 //点击NPC的交易时在下方显示是否有+职业技能的装备可购买
+//--------------- 装备保护 ---------------
+NpcTradeShowInfo: 1,VK_ //显示NPC交易窗口时在下方显示是否有+职业技能的装备可购买，没装备时不要错过
 //装备保护，指定的装备不能够扔在地上或卖掉，通过拦截鼠标左键及检查发送的0x17和0x33包实现
 //打开后+1技能的超大型护身符也不能扔地上,佣兵死亡或有装备时不能进行雇佣。
 Drop Protection Toggle: 1, CTRL_ALT_VK_D
@@ -952,7 +967,7 @@ Auto Hide Minimap Toggle: 0, CTRL_ALT_VK_V
 Auto Teleport Minimap Toggle: 1, CTRL_VK_V
 Auto Hide Minimap Key: VK_V
 //战争召唤设置
-//Auto Call To Arm: 200 //切换武器后200ms检查是否全屏并且左手是否CTA,如果是则将左键设为BC,右键设为BO,按住W键时保持站立,松开后自动切换武器回来,设为0取消此功能
+Auto Call To Arm: 200 //切换武器后200ms检查是否全屏并且左手是否CTA,如果是则将左键设为BC,右键设为BO,按住W键时保持站立,松开后自动切换武器回来,设为0取消此功能
 NecTeleportAttractToggle: 0,VK_ //0:无操作 1:如果是NEC右键切换为传送时将左键切换为吸引,由传送切换为别的技能是将左键切换为普通攻击
 NecNoAttackInHellToggle: 0,VK_  //地狱难度NEC左键技能设为普通攻击时左键点击怪物只移动不攻击
 

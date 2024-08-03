@@ -193,7 +193,7 @@ void ChickenLifeLoop() {
 		wchar_t wszbuf[32];char strVal [10] ;
 		DblToStr(cowKingDis,2,strVal);
 		wsprintfW(wszbuf, L"CowKing %hs %d%%",strVal,cowKingHp);
-		SetBottomAlertMsg2(wszbuf,300,1,ceDis<=33);
+		SetBottomAlertMsg2(wszbuf,300,1,1);
 	}
 	ceHp=0;cowKingHp=0;ceDis=12;cowKingDis=1000;
 }

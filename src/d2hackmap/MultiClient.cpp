@@ -24,7 +24,7 @@ static const int waypointAreas[5][9]={
 {109,111,112,113,115,123,117,118,129},
 };
 void MultiClientNewGame() {
-	dwMultiClientCount=0;dwMultiClientFollowId=0;waitToMs=0;enterRoomAttempts=0;followState=0;followHWND=0;fSendInfoErr=0;
+	dwTeamMemberCount=0;dwLeaderId=0;waitToMs=0;enterRoomAttempts=0;followState=0;followHWND=0;fSendInfoErr=0;
 	dwMultiClientClickUnitId=0;fTransferClick=0;wszTransferClick[0]=0;followerInteractType=0;followerInteractId=0;fAutoFollowMoving=0;followerClickCount=0;
 }
 extern int dwScreenBlockMask;
@@ -89,13 +89,13 @@ mouse=112, 137+36*[0-8]
 	PostMessage(hwnd, WM_MOUSEMOVE, wParam, MAKELONG(xpos, ypos));
 	PostMessage(hwnd, WM_LBUTTONDOWN, wParam, MAKELONG(xpos, ypos));
 	PostMessage(hwnd, WM_LBUTTONUP, wParam, MAKELONG(xpos, ypos));
-	PostMessage(hwnd, WM_MOUSEMOVE, wParam, mouseL);
+	if (fWinActive) PostMessage(hwnd, WM_MOUSEMOVE, wParam, mouseL);
 	return ret;
 }
 void leader_click_object(int type,int id) {
 	int lParam=((type&0xF)<<28)|(id&0xFFFFFFF);
 	int err=0;
-	for (int i=0;i<dwMultiClientCount;i++) {
+	for (int i=0;i<dwTeamMemberCount;i++) {
 		if (!PostMessageA(d2wins[i].hwnd,WM_KEYUP,VK_AUTOFOLLOW_CLICK_OBJECT,lParam)) err++;
 	}
 	if (err) gameMessage("MultiClient error: %d",err);
@@ -122,12 +122,12 @@ void leader_recv_info(int info) {
 	}
 }
 void follower_send_info(int info) {
-	if (fSendInfoErr||!dwMultiClientFollowId) return;
+	if (fSendInfoErr||!dwLeaderId) return;
 	if (!followHWND) {
 		D2Window d2wins[8];
-		int n=getOtherClients(d2wins,8,-1);
+		int n=find_team_members(d2wins,8,8,0);
 		for (int i=0;i<n;i++) {
-			if (d2wins[i].uid==dwMultiClientFollowId) {followHWND=d2wins[i].hwnd;break;}
+			if (d2wins[i].uid==dwLeaderId) {followHWND=d2wins[i].hwnd;break;}
 		}
 	}
 	if (!followHWND) {fSendInfoErr=1;gameMessage("Multiclient send info no target");return;}
@@ -138,15 +138,12 @@ void follower_send_info(int info) {
 	}
 }
 void follower_stop_follow() {
-	dwMultiClientFollowId=0;enterRoomAttempts=0;followerInteractType=0;followerInteractId=0;followState=0;fAutoFollowMoving=0;followHWND=0;
+	dwLeaderId=0;enterRoomAttempts=0;followerInteractType=0;followerInteractId=0;followState=0;fAutoFollowMoving=0;followHWND=0;
 	gameMessage("stop follow");
 }
 void follower_click_object(int type,int id) {
-	switch (type) {
-		case 2:case 5:followerWaypointToArea=0;break;
-		case 8: type=2;followerWaypointToArea=0;break; //waypoint
-		case 9: followerWaypointToArea=id;return;//waypoint to level
-	}
+	if (type==9) {followerWaypointToArea=id;return;}//waypoint to level
+	else followerWaypointToArea=0;
 	followerInteractType=type;followerInteractId=id;followerInteractTimeout=dwCurMs+6000;
 	followState=FS_CLICK_OBJECT;followerClickCount=0;
 	waitToMs=dwCurMs+dwMultiClientCheckInterval;
@@ -155,11 +152,31 @@ static void interactObject() {
 	static int dwInteractEntityCountVerify=0;
 	switch (followState) {
 		case FS_CLICK_OBJECT: {
-			UnitAny *portal=GetUnitFromIdSafe(followerInteractId,followerInteractType);
-			if (!portal) {followState=0;gameMessage("can't find type=%d id=%d",followerInteractType,followerInteractId);return;}
-			if (portal&&portal->dwTxtFileNo==267) {followState=0;return;} //stash
+			int type=followerInteractType;
+			if (type==8) type=2;
+			UnitAny *pUnit=GetUnitFromIdSafe(followerInteractId,type);
+			if (!pUnit) {followState=0;gameMessage("can't find type=%d id=%d",type,followerInteractId);return;}
+			int notclick=0;
+			if (followerInteractType==2) {
+				switch (pUnit->pObjectData->pObjectTxt->nSubClass) {
+					case 0: 
+						switch (pUnit->dwTxtFileNo) {
+							case 192:break;//Arcane Sanctuary teleport pad
+							case 267:notclick=1;break; //stash
+						}
+						break;
+					//case 1: //shrine
+					case 16: //txt298 Palace Cellar Level 3<->Arcane Sanctuary portal
+					case 4: //portal txt59:blue txt60:red
+						break;
+					case 64: //waypoint
+						notclick=1;
+						break;
+				}
+			}
+			if (notclick) {followState=0;return;}
 			if (fScreenSaverActive) delayScreenSaver(80);
-			fAutoFollowMoving=1;dwInteractEntityCountVerify=dwInteractEntityCount;LeftClickObject(portal);
+			fAutoFollowMoving=1;dwInteractEntityCountVerify=dwInteractEntityCount;LeftClickObject(pUnit);
 			followState=FS_CLICKED_OBJECT;followerClickCount++;
 			break;
 		}
@@ -202,14 +219,14 @@ void MultiClientLoop() {
 		dwMultiClientClickTimeout--;
 		if (!dwMultiClientClickTimeout) dwMultiClientClickUnitId=0;
 	}
-	if (!dwMultiClientFollowId) return;
-	if (fWinActive) {if (dwMultiClientFollowId&&fPlayerInTown) follower_stop_follow();return;}
+	if (!dwLeaderId) return;
+	if (fWinActive) {if (dwLeaderId&&fPlayerInTown) follower_stop_follow();return;}
 	if (waitToMs&&dwCurMs<waitToMs) return;
 	if (followState) {interactObject();waitToMs=dwCurMs+dwMultiClientCheckInterval;return;}
 	int targetX=0,targetY=0;
-	RosterUnit *pRU=getRosterUnit(dwMultiClientFollowId);
+	RosterUnit *pRU=getRosterUnit(dwLeaderId);
 	if (!pRU) {follower_stop_follow();return;}
-	UnitAny *pUnit=D2GetUnitFromId(dwMultiClientFollowId , UNITNO_PLAYER) ;
+	UnitAny *pUnit=D2GetUnitFromId(dwLeaderId , UNITNO_PLAYER) ;
 	if (pUnit) {
 		targetX=pUnit->pMonPath->wPosX;
 		targetY=pUnit->pMonPath->wPosY;
@@ -247,11 +264,11 @@ void MultiClientLoop() {
 	enterRoomAttempts=0;
 }
 void follower_start_follow(int uid) {
-	dwMultiClientFollowId=uid;waitToMs=0;enterRoomAttempts=0;followState=0;fAutoFollowMoving=0;fSendInfoErr=0; followerWaypointToArea=0;
-	gameMessage("Start follow %d",dwMultiClientFollowId);
+	dwLeaderId=uid;waitToMs=0;enterRoomAttempts=0;followState=0;fAutoFollowMoving=0;fSendInfoErr=0; followerWaypointToArea=0;
+	gameMessage("Start follow %d",dwLeaderId);
 }
 void follower_enter_door(int uid,int area) {
-	dwMultiClientFollowId=0;enterRoomAttempts=0;
+	dwLeaderId=0;enterRoomAttempts=0;
 	if (!tMultiClient.isOn||!fInGame) return;
 	if (!canRemoteControl()) return;
 	RosterUnit *pRU=getRosterUnit(uid);
@@ -267,16 +284,11 @@ void follower_enter_door(int uid,int area) {
 		portal=getPortalToArea(-1,pRU->szName);
 		name=pRU->szName;
 	}
-	wchar_t wszbuf[256];int pos=0;
-	if (portal) {
-		LeftClickObject(portal);
-		pos+=wsprintfW(wszbuf+pos, L"Auto Follow: enter portal to %d name %hs",pRU->dwLevelNo,name);
-	} else
-		pos+=wsprintfW(wszbuf+pos, L"Auto Follow: can't find portal to %d name %hs",pRU->dwLevelNo,name);
-	D2ShowGameMessage(wszbuf, 0);
+	if (portal) LeftClickObject(portal);
+	else gameMessage("Auto Follow: can't find portal to %d name %s",pRU->dwLevelNo,name);
 }
 void follower_back_to_town(int uid) {
-	dwMultiClientFollowId=0;enterRoomAttempts=0;
+	dwLeaderId=0;enterRoomAttempts=0;
 	if (!tMultiClient.isOn||!fInGame) return;
 	UnitAny *portal=getPortalToArea(0,NULL);
 	if (portal) {
@@ -322,10 +334,10 @@ void follower_right_client_unit(int type,int id) {
 int MultiClientEnterDoor() {
 	if (!tMultiClient.isOn||!fInGame) return 0;
 	D2Window d2wins[8];
-	int dwMultiClientCount=getOtherClients(d2wins,8,-1);
+	int n=find_team_members(d2wins,8,8,0);
 	int err=0;
 	int lParam=((LEVELNO&0xFF)<<24)|(dwPlayerId&0xFFFFFF);
-	for (int i=0;i<dwMultiClientCount;i++) {
+	for (int i=0;i<n;i++) {
 		if (!PostMessageA(d2wins[i].hwnd,WM_KEYUP,VK_MULTICLIENT_ENTER_DOOR,lParam)) err++;
 	}
 	if (err) LOG("MultiClient error: %d\n",err);
@@ -334,9 +346,9 @@ int MultiClientEnterDoor() {
 int leader_back_to_town() {
 	if (!tMultiClient.isOn||!fInGame) return 0;
 	D2Window d2wins[8];
-	int dwMultiClientCount=getOtherClients(d2wins,8,-1);
+	int n=find_team_members(d2wins,8,8,0);
 	int err=0;
-	for (int i=0;i<dwMultiClientCount;i++) {
+	for (int i=0;i<n;i++) {
 		if (!PostMessageA(d2wins[i].hwnd,WM_KEYUP,VK_MULTICLIENT_BACK_TO_TOWN,dwPlayerId)) err++;
 	}
 	if (err) LOG("MultiClient error: %d\n",err);
@@ -346,15 +358,15 @@ int MultiClientStartClick(int param) {fTransferClick=1;return 1;}
 int MultiClientStopClick(int param) {fTransferClick=0;return 1;}
 int MultiClientInitClick() {
 	if (!tMultiClient.isOn||!fInGame) return 0;
-	if (!dwMultiClientCount) {
-		dwMultiClientCount=getOtherClients(d2wins,8,dwCurrentLevel);
-		if (!dwMultiClientCount) {
+	if (!dwTeamMemberCount) {
+		dwTeamMemberCount=find_team_members(d2wins,8,8,dwMultiClientMaxDistance);
+		if (!dwTeamMemberCount) {
 			D2ShowGameMessage(L"Transfer Click: No client found",   0 );
 			return 0;
 		}
 		int pos=0;
 		pos+=wsprintfW(wszTransferClick+pos, L"->");
-		for (int i=0;i<dwMultiClientCount;i++) {
+		for (int i=0;i<dwTeamMemberCount;i++) {
 			if (pos>32) {wsprintfW(wszTransferClick+pos, L"...");break;}
 			pos+=wsprintfW(wszTransferClick+pos, L" %hs",d2wins[i].name);
 		}
@@ -362,49 +374,51 @@ int MultiClientInitClick() {
 	}
 	return 1;
 }
-void refreshFollowClient() {
-	dwMultiClientCount=getOtherClients(d2wins,8,dwCurrentLevel);
-}
-int MultiClientStartFollow() {
+int MultiClientStopFollow() {
 	if (!tMultiClient.isOn||!fInGame) return 0;
-	refreshFollowClient();
-	if (!dwMultiClientCount) {
-		D2ShowGameMessage(L"Auto Follow: No client found",   0 );
+	for (int i=0;i<dwTeamMemberCount;i++) {
+		PostMessageA(d2wins[i].hwnd,WM_KEYUP,VK_AUTOFOLLOW_STOP,dwPlayerId);
+	}
+	dwTeamMemberCount=0;
+	D2ShowGameMessage(L"Auto Follow disabled",   0 );
+	return 1;
+}
+static int curGrpSize;
+int MultiClientStartFollow(int groupSize) {
+	if (!tMultiClient.isOn||!fInGame) return 0;
+	if (dwTeamMemberCount&&curGrpSize!=groupSize) MultiClientStopFollow();
+	dwTeamMemberCount=find_team_members(d2wins,8,groupSize,dwMultiClientMaxDistance);
+	if (!dwTeamMemberCount) {
+		D2ShowGameMessage(L"Auto Follow: No team member found",   0 );
 		return 0;
 	}
 	wchar_t wszbuf[256];int pos=0;
 	pos+=wsprintfW(wszbuf+pos, L"Auto Follow:");
-	for (int i=0;i<dwMultiClientCount;i++) {
+	for (int i=0;i<dwTeamMemberCount;i++) {
 		pos+=wsprintfW(wszbuf+pos, L" %hs",d2wins[i].name);
 	}
 	D2ShowGameMessage(wszbuf, 0);
 	int err=0;
-	for (int i=0;i<dwMultiClientCount;i++) {
+	for (int i=0;i<dwTeamMemberCount;i++) {
 		if (!PostMessageA(d2wins[i].hwnd,WM_KEYUP,VK_AUTOFOLLOW_START,dwPlayerId)) err++;
 	}
 	if (err) LOG("MultiClient error: %d\n",err);
+	curGrpSize=groupSize;
 	return 1;
 }
-int MultiClientStopFollow() {
-	if (!tMultiClient.isOn||!fInGame) return 0;
-	for (int i=0;i<dwMultiClientCount;i++) {
-		PostMessageA(d2wins[i].hwnd,WM_KEYUP,VK_AUTOFOLLOW_STOP,dwPlayerId);
-	}
-	dwMultiClientCount=0;
-	D2ShowGameMessage(L"Auto Follow disabled",   0 );
-	return 1;
-}
+int MultiClientStartFollow1() {return MultiClientStartFollow(dwMultiClientGroupSize1);}
+int MultiClientStartFollow2() {return MultiClientStartFollow(dwMultiClientGroupSize2);}
 int MultiClientToggleFollow() {
-	if (dwMultiClientCount) return MultiClientStopFollow();
-	else return MultiClientStartFollow();
+	if (dwTeamMemberCount) return MultiClientStopFollow();
+	else return MultiClientStartFollow(curGrpSize);
 }
 int IsKeyDown(int keyCode);
 int transferClick(int right,UnitAny *pUnit,int x,int y) {
 	if (!IsKeyDown(tMultiClientClick.key)&&!IsKeyDown(tMultiClientClick2.key)) {fTransferClick=0;return 0;}
 	for (int runId=0;runId<2;runId++) {
-		if (!dwMultiClientCount) {
+		if (!dwTeamMemberCount) {
 			MultiClientInitClick();
-			if (!dwMultiClientCount) {fTransferClick=0;return 0;}
+			if (!dwTeamMemberCount) {fTransferClick=0;return 0;}
 		}
 		int err=0;
 		int w,l;
@@ -416,7 +430,7 @@ int transferClick(int right,UnitAny *pUnit,int x,int y) {
 			w=right?VK_MULTICLIENT_RIGHT_XY:VK_MULTICLIENT_LEFT_XY;
 			l=(x&0xFFFF)|((y&0xFFFF)<<16);
 		}
-		for (int i=0;i<dwMultiClientCount;i++) {
+		for (int i=0;i<dwTeamMemberCount;i++) {
 			int uid=d2wins[i].uid;
 			RosterUnit *pRU=getRosterUnit(uid);
 			if (!pRU) {err++;continue;}
@@ -435,7 +449,7 @@ int transferClick(int right,UnitAny *pUnit,int x,int y) {
 		}
 		if (err) {
 			D2ShowGameMessage(L"MultiClient post message error",0);
-			dwMultiClientCount=0;
+			dwTeamMemberCount=0;
 			fTransferClick=0;
 		} else break;
 	}
