@@ -166,7 +166,8 @@ void getSnapshotPath(char *buf,char *realm,char *account,char *name,
 			sprintf(buf+len,"\\%s.%s",name,ext);
 		} else {
 			int len=strlen(buf);
-			sprintf(buf+len,"\\%s_%s.%s",account,name,ext);
+			if (name) sprintf(buf+len,"\\%s_%s.%s",account,name,ext);
+			else sprintf(buf+len,"\\%s.%s",account,ext);
 		}
 	} else {
 		if (subfolder) {
@@ -640,6 +641,15 @@ struct myItem {
 static int compareItem(const void *arg1,const void *arg2) {
 	return ((struct myItem *)arg1)->sort - ((struct myItem *)arg2)->sort;
 }
+static int isStartEq(UnitAny *pUnit) {
+	if (pUnit->pItemData->dwQuality!=ITEM_QUALITY_NORMAL) return 0;
+	int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
+	switch (index) {
+		case 11:case 26:case 48:case 64:case 1023:
+			return 1;
+	}
+	return 0;
+}
 static void dumpItems(FILE *fp,UnitAny *pUnit,int level) {
 	static struct myItem items[512];
 	if (!pUnit) return;
@@ -648,6 +658,7 @@ static void dumpItems(FILE *fp,UnitAny *pUnit,int level) {
 	while (pUnit) {
 		if (pUnit->dwUnitType!=UNITNO_ITEM) goto next;
 		int index = GetItemIndex(pUnit->dwTxtFileNo)+1;//all config arrays are based 1
+		DWORD dwQuality = pUnit->pItemData->dwQuality;
 		if (2103<=index&&index<=2135) { //runes
 			hasValuableEquipment++;
 		} else if (2050<=index&&index<=2079) { //gems
@@ -659,7 +670,9 @@ static void dumpItems(FILE *fp,UnitAny *pUnit,int level) {
 		} else if (2080<=index&&index<=2089) { //potions
 		} else {
 			BYTE color=GetItemColour(pUnit,0);
-			if (color!=(BYTE)-2) hasValuableEquipment++;
+			if (color!=(BYTE)-2) {
+				if (!isStartEq(pUnit)) hasValuableEquipment++;
+			}
 		}
 		ItemTxt *pItemTxt = d2common_GetItemTxt( pUnit->dwTxtFileNo );
 		int location= pUnit->pItemData->nItemLocation;
@@ -681,7 +694,6 @@ static void dumpItems(FILE *fp,UnitAny *pUnit,int level) {
 			if (2050<=index&&index<=2079) goto next;//gem
 			if (2090<=index&&index<=2094) goto next;//skull
 		}
-		DWORD dwQuality = pUnit->pItemData->dwQuality;
 		if (pUnit->pItemData->nItemLocation==255) { //equipped
 			sort=pUnit->pItemData->nBodyLocation&0xFF;
 			if (!sort) sort=100;

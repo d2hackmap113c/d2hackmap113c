@@ -7,7 +7,7 @@
 #define MAX_MONSTERS 4096
 #define NOT_ENCHANTED 0x33333333
 
-int getMonsterOwnerId(int id);
+int getUnitOwnerId(UnitAny *pUnit);
 static int playerEnchantMs[MAX_PLAYERS];
 static int monsterEnchantMs[MAX_MONSTERS];
 static int checkMs,needHelpId;
@@ -81,7 +81,7 @@ player_end:
 		if (dwUnitId==needHelpId) {needHelpId=0;enchant=2;}
 	} else if ( pUnit->dwUnitType==UNITNO_MONSTER ){
 		if (0<=pUnit->dwTxtFileNo&&pUnit->dwTxtFileNo<1024) enchant=dwAutoEnchantMonster[pUnit->dwTxtFileNo];
-		dwUnitId = getMonsterOwnerId(pUnit->dwUnitId);
+		dwUnitId = getUnitOwnerId(pUnit);
 		if (dwUnitId == (DWORD)-1) return 0; //not owned by player
 		ms=monsterEnchantMs[pUnit->dwUnitId%MAX_MONSTERS];
 		passed=dwCurMs-ms;

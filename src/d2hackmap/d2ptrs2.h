@@ -197,7 +197,7 @@ struct D2Character {
 	char name[16]; //+00
 	char off10[0xF0]; //+10
 	wchar_t realm[16]; //+100
-	char off110[0x23C]; //+110
+	char off110[0x22C]; //+120
 	struct D2Character *next; //+34C
 };
 #endif
@@ -207,10 +207,12 @@ struct D2Character {
 	D2FUNCADDR(d2launch,0x6FA4DB60,DeleteSelectedCharacter,int,__stdcall,(int arg)) //return 0:failed 1:deleted
 	D2VARADDR(d2launch,0x6FA64DB0,SelectedCharIndex,int)
 	D2VARADDR(d2launch,0x6FA65EC8,D2Characters,D2Character *)
+	D2VARADDR(d2launch,0x6FA65ED0,charCount,int)
 #undef d2launch_ADDR
 
 #define fog_ADDR 0x6FF50000
 	D2FUNCNAME(fog,0x6FF6CD50,10045,allocMemory,void *,__fastcall,(int arg0,int size,char *source,int line,int arg4))
+	D2FUNCNAME(fog,0x6FF6CCC0,10046,freeMemory,int,__fastcall,(int arg0,void *ptr,char *source,int line,int arg4))
 #undef fog_ADDR
 //----------------------------------------
 

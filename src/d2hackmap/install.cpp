@@ -201,6 +201,8 @@ static int installD2Patches() {
 		installPatch(PatchCALL,DLL_ADDR(d2client,0x6FAE8AE1),(DWORD)KeyupPatch_ASM,6);
 		installPatch(PatchCALL,DLL_ADDR(d2win,0x6F8F87E3),(DWORD)SkipDrawMenuPatch_ASM,5);
 		installPatch(PatchCALL,DLL_ADDR(d2client,0x6FAF423C),(DWORD)SkipAllDrawingPatch_ASM,5);
+installPatch(PatchVALUE,DLL_ADDR(d2common,0x6FD7F384),0xFC,1);//unit size 0xF4 -> 0xFC
+installPatch(PatchVALUE,DLL_ADDR(d2common,0x6FD7F394),0x3F,1);//zero unit 0xF4 -> 0xFC
 	}
 	if (installedPatches) return 1;
 	pPatchList=&installedPatches;
@@ -213,8 +215,8 @@ installPatch(PatchVALUE,DLL_ADDR(d2client,0x6FACAB88),0xEB,1);//取消进出传送门时
 	else installPatch(PatchCALL,DLL_ADDR(d2win,0x6F8F881F),(DWORD)InstallPatchAfterLoad_ASM,5);
 //--- login ---
 installPatch(PatchCALL,DLL_ADDR(d2launch,0x6FA59539),(DWORD)LastBNet_Patch,5);
-//installPatch(PatchCALL,DLL_ADDR(d2launch,0x6FA4D19B),(DWORD)InitSelectCharPatch_ASM,6);
 installPatch(PatchCALL,DLL_ADDR(d2launch,0x6FA4E1B1),(DWORD)SelectCharPatch_ASM,5);
+installPatch(PatchCALL,DLL_ADDR(d2launch,0x6FA4CBF6),(DWORD)OpenCharMenuPatch_ASM,6);
 //--- winmsg.h ---
 installPatch(PatchCALL,DLL_ADDR(d2launch,0x6FA5805B),(DWORD)ShowVersion_Patch_ASM,5);
 installPatch(PatchCALL,DLL_ADDR(d2client,0x6FAF33D1),(DWORD)StandStillPatch_ASM,10);
@@ -232,6 +234,7 @@ installPatch(PatchCALL,DLL_ADDR(d2client,0x6FAFA2A1),(DWORD)ResetSkillPatch_ASM,
 installPatch(PatchCALL,DLL_ADDR(d2client,0x6FAF9440),(DWORD)ClickHireMercMenuItemPatch_ASM,6);
 installPatch(PatchCALL,DLL_ADDR(d2launch,0x6FA4F3D0),(DWORD)DeleteCharacter_Patch_ASM,5);
 installPatch(PatchCALL,DLL_ADDR(d2launch,0x6FA4DB9F),(DWORD)DeleteSelectedCharacter_Patch_ASM,6);
+installPatch(PatchCALL,DLL_ADDR(d2win,0x6F8EF4E6),(DWORD)ClickMenuItem_Patch_ASM,5);
 //--- m_AutoMapCell.h ---
 installPatch(PatchCALL,DLL_ADDR(d2client,0x6FB11354),(DWORD)OverrideShrinePatch_ASM,7);
 installPatch(PatchCALL,DLL_ADDR(d2client,0x6FB11D83),(DWORD)AddShrinePatch_ASM,6);
@@ -561,6 +564,7 @@ static int installPatchToggle() {
 	return 1;
 }
 extern BYTE fAutomapPartyDefault,fAutomapNamesDefault;
+void saveCharMenu();
 BOOL Install(){
 	if (!init_d2_ptrs()) return 0;
 	if(!LoadConfig()) return FALSE;
@@ -580,6 +584,11 @@ BOOL Install(){
 	//HMODULE module = GetModuleHandle(path);
 	initSendPacketCheckTable();
 	//MessageBox(NULL,"Press to continue","PauseAtStartup",MB_OK);
+	if (dwGameLng<0) {
+		dwGameLng=GetGameLanguage();
+		if (dwGameLng==2) dwGameLng = 1;
+	}
+	if (*d2launch_pD2Characters) saveCharMenu();
 	return TRUE;
 }
 

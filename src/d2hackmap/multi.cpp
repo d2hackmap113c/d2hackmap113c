@@ -250,6 +250,7 @@ void multiclient_recv_info(int info) {
 			int hwnd16=(info>>8)&0xFFFF;
 			int uid8=info&0xFF;
 			if (!pwin->hwnd
+				||!pwin->sameGame
 				||gid>d2winLastId
 				||type==MCI_WinActiveL&&((int)pwin->hwnd&0xFFFF)!=hwnd16
 				||type==MCI_WinActiveL&&((int)pwin->uid&0xFF)!=uid8
@@ -674,6 +675,7 @@ int __fastcall shouldLeftClick(int *args) {
 		LOG("left click arg=0x%x x=%d y=%d unit=%x\n",args[0],x,y,pUnit);
 	}
 	if (fTransferClick&&canTranferClick()) {
+		if (dwTeamMemberCount) MultiClientStopFollow();
 		transferClick(0,pUnit,x,y);
 		if (fTransferClick) return 0;
 	}

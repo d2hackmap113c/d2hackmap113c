@@ -30,6 +30,7 @@ ToggleVar tBugKD={TOGGLEVAR_ONOFF,	0,	-1,	1, "Bug KD Protect" , &ReSetTimer};
 ToggleVar tBugKB={TOGGLEVAR_ONOFF,	0,	-1,	1, "Bug KB Protect" , &ReSetTimer};
 ToggleVar tBugAutoQuit={TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle"	,&ReSetTimer};
 ToggleVar tBugAutoQuitHell={TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(Hell)"	,&ReSetTimer};
+ToggleVar tBugAutoQuitHellAct1={TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(HellAct1)"	,&ReSetTimer};
 ToggleVar tBugAutoQuitHellAct3={TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(HellAct3)"	,&ReSetTimer};
 ToggleVar tBugAutoQuitHellAct4={TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(HellAct4)"	,&ReSetTimer};
 ToggleVar tBugAutoQuitHellAct5={TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(HellAct5)"	,&ReSetTimer};
@@ -42,6 +43,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY, "BugKBToggle",          &tBugKB         },
   {CONFIG_VAR_TYPE_KEY, "BugAutoQuitToggle",    &tBugAutoQuit   },
   {CONFIG_VAR_TYPE_KEY, "BugAutoQuitHellToggle",    &tBugAutoQuitHell   },
+  {CONFIG_VAR_TYPE_KEY, "BugAutoQuitHellAct1Toggle",    &tBugAutoQuitHellAct1   },
   {CONFIG_VAR_TYPE_KEY, "BugAutoQuitHellAct3Toggle",    &tBugAutoQuitHellAct3   },
   {CONFIG_VAR_TYPE_KEY, "BugAutoQuitHellAct4Toggle",    &tBugAutoQuitHellAct4   },
   {CONFIG_VAR_TYPE_KEY, "BugAutoQuitHellAct5Toggle",    &tBugAutoQuitHellAct5   },
@@ -216,6 +218,7 @@ static void questAlert() {
 	if (alertCount<=0) {
 		if (tBugAutoQuit.isOn
 			||DIFFICULTY==2&&tBugAutoQuitHell.isOn
+			||DIFFICULTY==2&&ACTNO==0&&tBugAutoQuitHellAct1.isOn
 			||DIFFICULTY==2&&ACTNO==2&&tBugAutoQuitHellAct3.isOn
 			||DIFFICULTY==2&&ACTNO==3&&tBugAutoQuitHellAct4.isOn
 			||DIFFICULTY==2&&ACTNO==4&&tBugAutoQuitHellAct5.isOn) {

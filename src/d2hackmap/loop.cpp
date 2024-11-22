@@ -60,6 +60,14 @@ void ToggleIMEInput(BOOL fChatInput){
 	else hIMC=ImmAssociateContext(d2gfx_GetHwnd(), NULL); 
 	fImmEnable = fChatInput;
 }
+extern ToggleVar tBugAutoQuitHellAct1,tBugAutoQuitHellAct3,tBugAutoQuitHellAct4,tBugAutoQuitHellAct5;
+static void checkTag(char *tag) {
+	if (_stricmp(tag,"bugKM")==0) tBugAutoQuitHellAct3.isOn=1;
+	else if (_stricmp(tag,"bugKD")==0) tBugAutoQuitHellAct4.isOn=1;
+	else if (_stricmp(tag,"bugKB")==0) tBugAutoQuitHellAct5.isOn=1;
+	else if (_stricmp(tag,"bugKCountess")==0) tBugAutoQuitHellAct1.isOn=1;
+}
+char *getCharTag(char *name);
 static void gameStart() {
 //--- m_pub.h ---
 	dwPlayerFcrMs=600;dwSkillChangeCount=1;dwSkillChangeCountVerify=0;
@@ -73,14 +81,6 @@ static void gameStart() {
 	dwRecheckSelfItemMs=dwCurMs+1000;
 	dwChangeLeftSkill=-1;
 	dwRightSkill=-1;fAutoSummon=0;fAutoSkill=0;fAutoEnchant=0;
-	if (dwGameLng<0) {
-		if (fLanguageCheck) {
-			dwGameLng=GetGameLanguage();
-			if (dwGameLng==2) dwGameLng = 1;
-		} else {
-			dwGameLng = 0 ;
-		}
-	}
 	if (tAutoMap.isOn) d2client_ShowMap();
 	AutoRouteNewGame();
 	AutoMapNewGame();PartyHelpNewGame();WinMessageNewGame();AutoEnchantNewGame();AutoWarCryNewGame();
@@ -98,6 +98,13 @@ static void gameStart() {
 	}
 	if (tPacketHandler.isOn) SetBottomAlertMsg3(L"Warning: Network Packet Patch Installed",6000,1,1);
 	dwSendPacketCount=0;
+	char *name=(*d2client_pGameInfo)->szCharName;
+	char *tag=getCharTag(name);
+	while (tag&&*tag) {
+		char *e=strchr(tag,',');
+		if (e) {*e=0;checkTag(tag);*e=',';tag=e+1;}
+		else {checkTag(tag);break;}
+	}
 }
 
 void GameLoopPatch() {

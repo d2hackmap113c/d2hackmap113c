@@ -259,6 +259,7 @@ int GameSound(int snd) {
 	return 1;
 }
 extern int fLoadedLib;
+char *getCharTag(char *name);
 static void setWinTitle(HWND hwnd,int inGame) {
 	char buf[256];
 	char *realm=(*d2client_pGameInfo)->szRealmName;
@@ -266,17 +267,19 @@ static void setWinTitle(HWND hwnd,int inGame) {
 	char *name=(*d2client_pGameInfo)->szCharName;
 	char *ip=(*d2client_pGameInfo)->szGameServerIp;
 	char *game=(*d2client_pGameInfo)->szGameName;
+	char *tag=getCharTag(name);
+	if (!tag) tag="";
 	if (!inGame) {
 		if (realm[0]&&account[0]) {
-			sprintf(buf,"[%d]%s@%s Diablo II",dwGameWindowId,name,account);
+			sprintf(buf,"[%d]%s@%s %s Diablo II",dwGameWindowId,name,account,tag);
 		} else {
-			sprintf(buf,"[%d]%s Diablo II",dwGameWindowId,name);
+			sprintf(buf,"[%d]%s %s Diablo II",dwGameWindowId,name,tag);
 		}
 	} else {
 		if (realm[0]&&account[0]) {
-			sprintf(buf,"[%d]%s@%s %s Diablo II",dwGameWindowId,name,account,game);
+			sprintf(buf,"[%d]%s@%s %s %s Diablo II",dwGameWindowId,name,account,game,tag);
 		} else {
-			sprintf(buf,"[%d]%s Diablo II",dwGameWindowId,name);
+			sprintf(buf,"[%d]%s %s Diablo II",dwGameWindowId,name,tag);
 		}
 	}
 	SetWindowTextA(hwnd,buf);
@@ -899,12 +902,14 @@ skip:
 	}
 }
 int get_cpu_usage(int *ucpu,int *kcpu);
-extern int dwAutoLoginMs;
+extern int dwAutoLoginMs,dwAutoSelectCharMs;
 void autoLogin();
+void autoSelectChar();
 static void mainMenuLoop() {
 	static int calFpsMs=0,dwLoopCount=0,ln=0;
 	dwLoopCount++;dwCurMs=GetTickCount();
-	if (dwAutoLoginMs&&dwCurMs>dwAutoLoginMs) {dwAutoLoginMs=0;autoLogin();}
+	if (dwAutoLoginMs&&dwCurMs>dwAutoLoginMs&&(*d2win_pFocusedControl)) {dwAutoLoginMs=0;autoLogin();}
+	if (dwAutoSelectCharMs&&dwCurMs>dwAutoSelectCharMs) {dwAutoSelectCharMs=0;autoSelectChar();}
 	if (fSkipPaintingMenu&&need_paint) {need_paint=0;clearScreen();}
 }
 //6F8F87E3 - E8 10F0FEFF           - call 6F8E77F8 { ->->6FA888B0 D2gfx.Ordinal10043}
@@ -923,11 +928,17 @@ skip:
 	}
 }
 void drawMainMenuMessages();
+extern int nCurCharTags;
+void drawCharTags();
+static void mainmenuFlushFramebuf() {
+	drawMainMenuMessages();
+	if (nCurCharTags) drawCharTags();
+}
 //6F8F896C - E8 51EEFEFF           - call 6F8E77C2 { ->->6FA8ADD0 d2gfx_flushFramebuf} //put to screen
 void __declspec(naked) MainMenuFlushFramebufPatch_ASM() {
 	__asm {
 		pushad
-		call drawMainMenuMessages
+		call mainmenuFlushFramebuf
 		popad
 		jmp d2gfx_flushFramebuf
 	}

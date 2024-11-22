@@ -60,14 +60,14 @@ quitcode:
 
 //技能点击玩家会跑过去，这里修正
 
-int getMonsterOwnerId(int id);
+int getUnitOwnerId(UnitAny *pUnit);
 BOOL __stdcall CheckOutTownSelected( UnitAny *pUnit )
 {
 	if ( tOutTownSelect.isOn ==0 ) return FALSE;
 	if ( fPlayerInTown ) return FALSE;
 	if ( pUnit ){
 		if ( pUnit->dwUnitType == UNITNO_PLAYER ) return TRUE;
-		if ( pUnit->dwUnitType==UNITNO_MONSTER && getMonsterOwnerId(pUnit->dwUnitId)!= (DWORD)-1 ) return TRUE;
+		if ( pUnit->dwUnitType==UNITNO_MONSTER && getUnitOwnerId(pUnit)!= (DWORD)-1 ) return TRUE;
 	}
 	return FALSE;
 }

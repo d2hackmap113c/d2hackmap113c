@@ -362,8 +362,7 @@ UnitAny *getPortalToArea(int level,char *owner) {
 				int lvl=pUnit->pObjectData->nShrineNo;
 				if (level!=0&&level!=-1&&lvl!=level) continue;
 				if (level==0&&lvl!=1&&lvl!=40&&lvl!=75&&lvl!=103&&lvl!=109) continue;
-				char *name=(char *)pUnit->pObjectData;name+=0x28;
-				if (!owner||strcmp(owner,name)==0) return pUnit;
+				if (!owner||strcmp(owner,pUnit->pObjectData->owner)==0) return pUnit;
 			}
 		}
 	}
@@ -978,10 +977,20 @@ BOOL IsFullWindow() {
 struct Pet {int id,owner;};
 static Pet *pets=NULL;
 int nPet=0,petCap=0;
-int fPetListValid=0;
+int dwPetListChangeCount=1;
+int dwPetListChangeVerify=0;
+struct UnitExtra {int changeCount,owner;};
 static int comparePet(const void *a,const void *b) {return ((Pet *)a)->id-((Pet *)b)->id;}
-int getMonsterOwnerId(int id) {
-	if (!fPetListValid) {
+int getUnitOwnerId(UnitAny *pUnit) {
+	static int refreshMs=0;
+	if (!pUnit) return -1;
+	if (dwCurMs>refreshMs) {
+		refreshMs=dwCurMs+3000;
+		dwPetListChangeCount++;
+	}
+	UnitExtra *extra=(UnitExtra *)(((char *)pUnit)+0xF4);
+	if (extra->changeCount==dwPetListChangeCount) return extra->owner;
+	if (dwPetListChangeVerify!=dwPetListChangeCount) {
 		if (!pets) {petCap=64;pets=(Pet *)HeapAlloc(dllHeap,0,petCap*sizeof(Pet));}
 		nPet=0;
 		for (PetUnit *pPetUnit=*d2client_pPetUnitList;pPetUnit;pPetUnit=pPetUnit->pNext) {
@@ -991,12 +1000,15 @@ int getMonsterOwnerId(int id) {
 			p->owner=pPetUnit->dwOwnerId;
 		}
 		qsort(pets,nPet,sizeof(Pet),comparePet);
-		fPetListValid=1;
+		dwPetListChangeVerify=dwPetListChangeCount;
 	}
-	Pet pet;pet.id=id;
+	Pet pet;pet.id=pUnit->dwUnitId;
+	int owner=-1;
 	Pet *p=(Pet *)bsearch(&pet,pets,nPet,sizeof(Pet),comparePet);
-	if (!p) return -1;
-	return p->owner;
+	if (p) owner=p->owner;
+	extra->changeCount=dwPetListChangeCount;
+	extra->owner=owner;
+	return owner;
 }
 struct Pvp {int id,pvp;};
 static Pvp pvps[16];
@@ -1026,6 +1038,10 @@ int testPvpFlag(int dwUnitId) {
 		}
 		qsort(pvps,nPvp,sizeof(Pvp),comparePvp);
 		fPartyListValid=1;
+	}
+	if (nPvp<=4) {
+		Pvp *p=&pvps[0];
+		for (int i=0;i<nPvp;i++,p++) if (p->id==dwUnitId) return p->pvp;
 	}
 	Pvp pvp;pvp.id=dwUnitId;
 	Pvp *p=(Pvp *)bsearch(&pvp,pvps,nPvp,sizeof(Pvp),comparePvp);

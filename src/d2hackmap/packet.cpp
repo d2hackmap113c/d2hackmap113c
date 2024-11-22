@@ -845,9 +845,12 @@ int __cdecl blockSendPacket(int regs) {
 			if (id!=1) break;
 			UnitAny *pUnit=d2client_GetUnitFromId(id,type);
 			if (!pUnit) break;
-			switch (pUnit->dwTxtFileNo) {
-				case Mon_Jerhyn:if (QUESTDATA[0][14]==0x102D) dwUpdateQuestMs=dwCurMs+500;break;
-				case Mon_Meshif1:if (QUESTDATA[0][14]==0x1035) dwUpdateQuestMs=dwCurMs+500;break;
+			if (dwCurrentLevel==Level_LutGholein) {
+				int q=QUESTDATA[0][14];
+				switch (pUnit->dwTxtFileNo) {
+					case Mon_Jerhyn:if (q==0x102D||q==0x112D) dwUpdateQuestMs=dwCurMs+500;break;
+					case Mon_Meshif1:if (q==0x1035||q==0x1135) dwUpdateQuestMs=dwCurMs+500;break;
+				}
 			}
 			break;
 		}
@@ -857,11 +860,27 @@ int __cdecl blockSendPacket(int regs) {
 			int param=*(int *)&packet[9];
 			UnitAny *pUnit=d2client_GetUnitFromId(id,1);
 			if (!pUnit) break;
-			gameMessage("Entity action txt=%d action=%d param=%d\n",pUnit->dwTxtFileNo,action,param);
 			switch (pUnit->dwTxtFileNo) {
-				case Mon_Larzuk:
-					if (action==0&&param==0x16c) dwUpdateQuestMs=dwCurMs+500; //socket
+				case Mon_Akara:
+				case Mon_Ormus:
+				case Mon_Jamella:
+				case Mon_Halbu:
+					//action 1: trade/repair
+					break;	
+				case Mon_Kashya:
+					//action 3: revive 
 					break;
+				case Mon_Larzuk:
+					if (action==0) dwUpdateQuestMs=dwCurMs+500; //socket param=itemId
+					break;
+				case Mon_Meshif1:
+					//action 0: go to Act3 param=75
+					break;
+				case Mon_QualKehk:
+					//action 3: revive param=playerId
+					break;
+				default:
+					gameMessage("Entity action txt=%d action=%d param=%d\n",pUnit->dwTxtFileNo,action,param);
 			}
 			break;
 		}

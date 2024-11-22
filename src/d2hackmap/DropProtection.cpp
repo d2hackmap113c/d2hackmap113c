@@ -221,7 +221,7 @@ protect:
 	}
 }
 */
-static void unicode2win(char *dst,wchar_t *src,int size) {
+void unicode2win(char *dst,wchar_t *src,int size) {
 	char *end=dst+size;dst[size-1]=0;while (dst<end) {char c=(char)(*src++);*dst++=c;if (!c) break;}
 }
 void removeSnapshot(char *realm,char *account,char *charname);
@@ -314,5 +314,48 @@ skip:
 		pop eax
 		sub eax,0x15
 		jmp eax
+	}
+}
+struct MenuItem {
+	int off00,off04,off08;
+	int x,y,w,h;
+};
+static int __fastcall skipMenuItem(MenuItem *m) {
+	if (m->x==433&&m->y==528&&m->w==168&&m->h==60) {
+		//delete character
+		int idx=*d2launch_pSelectedCharIndex;
+		D2Character *pchar=*d2launch_pD2Characters;
+		if (!pchar) return 0;
+		for (int i=0;i<idx&&pchar;i++) {
+			pchar=pchar->next;
+			if (IsBadReadPtr(pchar,sizeof(D2Character))) return 0;
+		}
+		if (!pchar) return 0;
+		LOG("delete char %x\n",pchar);
+		if (!canDeleteCharacter(pchar)) return 1;
+	}
+	return 0;
+}
+/*
+6F8EF4E6 - 8B 33                 - mov esi,[ebx]
+6F8EF4E8 - 83 3E 06              - cmp dword ptr [esi],06 { 6 }
+*/
+void __declspec(naked) ClickMenuItem_Patch_ASM() {
+	__asm {
+		mov esi,[ebx]
+		pushad
+		mov ecx,esi
+		call skipMenuItem
+		cmp eax,0
+		popad
+		jne skip
+		cmp dword ptr [esi],6
+		ret
+skip:
+		pop eax
+		pop esi
+		pop ebx
+		xor eax,eax
+		ret 4
 	}
 }

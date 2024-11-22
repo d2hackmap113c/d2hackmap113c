@@ -2,7 +2,7 @@
 #include "map.h"
 #include "d2ptrs.h"
 
-int getMonsterOwnerId(int id);
+int getUnitOwnerId(UnitAny *pUnit);
 BYTE GetItemColour(UnitAny *pItem,int arridx);
 void AutoMapRoute();
 void AutoRouteDrawMinimapPath();
@@ -846,7 +846,7 @@ void __declspec(naked) DrawPlayerTextPatch_ASM() {
 	}
 }
 void __fastcall MonsterBlobDesc( UnitAny *pMon ){
-	if (pMon->dwMode && pMon->dwMode!=0x0C && getMonsterOwnerId(pMon->dwUnitId)==-1){
+	if (pMon->dwMode && pMon->dwMode!=0x0C && getUnitOwnerId(pMon)==-1){
 		wchar_t temp[1024];
 		memset(temp, L'\0' , sizeof(temp));
 		MonsterData *pMonsterData = pMon->pMonsterData;
@@ -910,7 +910,7 @@ void __declspec(naked) MonsterBlobDescPatch_ASM() {
 }
 BYTE __fastcall MonsterBlobCol(UnitAny *pMon) {
 	if ( tAutomapMonsters.isOn ) {
-		int dwOwnerId=getMonsterOwnerId(pMon->dwUnitId);
+		int dwOwnerId=getUnitOwnerId(pMon);
 		BYTE color=anMonsterColours[pMon->dwTxtFileNo];
 		if (color != (BYTE)-1) return color;
 		if (dwOwnerId!=-1) {
@@ -986,7 +986,7 @@ BYTE __fastcall MissileBlobCol(UnitAny *pMissile){
 			if ( pMissile->dwOwnerType == UNITNO_PLAYER ){
 				dwOwnerId =  pMissile->dwOwnerId;
 			}else if ( pMissile->dwOwnerType ==UNITNO_MONSTER ){
-				dwOwnerId =  getMonsterOwnerId(pMissile->dwOwnerId);
+				dwOwnerId =  getUnitOwnerId(pMissile);
 			}
 			if ( (int)dwOwnerId > 0 ) {
 				BYTE fPvPFlag = testPvpFlag(dwOwnerId);
@@ -1108,6 +1108,7 @@ int AddRectToMinimap(AreaRectInfo *pInfo,int revealed) {
 		}
 		if (!isConnected(pInfo,pNInfo,&path)) continue;
 		int unitX=pInfo->tileX*5+path.x,unitY=pInfo->tileY*5+path.y;
+		if (dstLvl==Level_ChaosSanctuary) unitY-=30;
 		addMinimapTarget(pInfo,srcLvl,dstLvl,unitX,unitY,0,0);
 		int needHide=0;
 		if (!pNInfo->pAreaRectData) {mapReveal(pNInfo);needHide=1;}

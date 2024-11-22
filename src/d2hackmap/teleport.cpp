@@ -12,11 +12,13 @@ int RerouteRectPath();
 POINT TPtarget;
 AreaRectData *TPtargetRect,*TPfailedRect;
 int dwTpMs,dwTpDoneMs;
-static int dwTpAvoiding,dwLastTpMs;
+static int fTpAvoiding,fTpAutoTarget,dwLastTpMs;
 static char aMonYard[32][2];
 static int defMonYard,maxTpYard,tpDelayMs,tpMinStep,stepInvalidMs,avoidEdge=0,dwAutoTeleportSafeDistance;
 static int reachDis=6;
 static ToggleVar tLogTP={TOGGLEVAR_ONOFF,0,-1,1,"Log TP Toggle"};
+static int dwAutoTeleportTelekinesisDistance,dwAutoTeleportTelekinesisSafeDistance;
+static int dwAutoTeleportTelekinesisEnterDoor;
 int maxTpDisRaw;
 static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportSafeDistance",&dwAutoTeleportSafeDistance,4 },
@@ -26,6 +28,9 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportAvoidEdge",&avoidEdge,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportMinStep",&tpMinStep,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportStepInvalidMs",&stepInvalidMs,4 },
+	{CONFIG_VAR_TYPE_INT,"AutoTeleportTelekinesisEnterDoor",&dwAutoTeleportTelekinesisEnterDoor,4 },
+	{CONFIG_VAR_TYPE_INT,"AutoTeleportTelekinesisDistance",&dwAutoTeleportTelekinesisDistance,4 },
+	{CONFIG_VAR_TYPE_INT,"AutoTeleportTelekinesisSafeDistance",&dwAutoTeleportTelekinesisSafeDistance,4 },
 	{CONFIG_VAR_TYPE_CHAR_ARRAY0,"AutoTeleportMonsterDistance",&aMonYard,2,{32}},
 	{CONFIG_VAR_TYPE_KEY, "LogTPToggle",  &tLogTP		},
 };
@@ -45,12 +50,15 @@ static TPPos *tposs=NULL;
 static int nPos=0,posCap=0;
 static Mon *mons=NULL,*mons_end;
 static int monCap=0,nMons=0,maxTpDisM256;
+static Mon *prevMons=NULL;
+static int prevMonCap=0,nPrevMons=0;
 static char monMap[32][32];
 static int monMapX,monMapY;
 static int maxDisM256;
 static POINT bestP;
 static AreaRectData *bestRect;
 static int rectCountFromTarget=0;
+static RECT curActiveBox,searchBox;
 
 static int comparePos(const void *a,const void *b) {return ((TPPos *)a)->disM256-((TPPos *)b)->disM256;}
 static int dis(POINT *p1,POINT *p2) {return getDistanceM256(p1->x-p2->x,p1->y-p2->y)>>8;}
@@ -70,7 +78,7 @@ static void resetMonsters() {
 	monMapX=dwPlayerX-64;monMapY=dwPlayerY-64;
 	nMons=0;mons_end=mons;
 }
-int getMonsterOwnerId(int id);
+int getUnitOwnerId(UnitAny *pUnit);
 static void findMonsters() {
 	resetMonsters();
 	for (int i=0;i<128;i++) {
@@ -78,7 +86,7 @@ static void findMonsters() {
 			if (pMon->dwUnitType!=UNITNO_MONSTER) break;
 			if (pMon->dwMode==MonsterMode_Death) continue; //dying?
 			if (pMon->dwMode==MonsterMode_Dead) continue; //already dead
-			int owner=getMonsterOwnerId(pMon->dwUnitId);if (owner!=-1) continue; 
+			int owner=getUnitOwnerId(pMon);if (owner!=-1) continue; 
 			int mtype=aAutoSkillMonsterType[pMon->dwTxtFileNo];
 			if (mtype&MONSTER_TYPE_NEUTRAL) continue;
 			if (nMons>=monCap) {monCap*=2;mons=(Mon *)HeapReAlloc(dllHeap,0,mons,sizeof(Mon)*monCap);}
@@ -90,7 +98,39 @@ static void findMonsters() {
 			addMonMap(x-2,y-2);addMonMap(x-2,y+2);addMonMap(x+2,y-2);addMonMap(x+2,y+2);
 		}
 	}
+	if (nPrevMons) {
+		Mon *mend=prevMons+nPrevMons;
+		for (Mon *p=prevMons;p<mend;p++) {
+			int x=p->p.x,y=p->p.y;
+			if (curActiveBox.left<=x&&x<curActiveBox.right&&curActiveBox.top<=y&&y<curActiveBox.bottom) continue;
+			if (nMons>=monCap) {monCap*=2;mons=(Mon *)HeapReAlloc(dllHeap,0,mons,sizeof(Mon)*monCap);}
+			mons[nMons++]=*p;
+			addMonMap(x-2,y-2);addMonMap(x-2,y+2);addMonMap(x+2,y-2);addMonMap(x+2,y+2);
+		}
+	}
 	mons_end=mons+nMons;
+}
+static void calBoundingBox() {
+	int x1,y1,x2,y2;x1=y1=0x7fffffff;x2=y2=-0x7ffffffe;
+	AreaRectData *pData = PLAYER->pMonPath->pAreaRectData;
+	for (int i=0;i<pData->nearbyRectCount;i++) {
+		AreaRectData *pNData=pData->paDataNear[i];
+		int x=pNData->unitX,y=pNData->unitY,w=pNData->unitW,h=pNData->unitH;
+		if (x<x1) x1=x;if (y<y1) y1=y;
+		x+=w;y+=h;if (x>x2) x2=x;if (y>y2) y2=y;
+	}
+	curActiveBox.left=x1;curActiveBox.top=y1;curActiveBox.right=x2;curActiveBox.bottom=y2;
+	searchBox.left=x1+avoidEdge;searchBox.top=y1+avoidEdge;searchBox.right=x2-avoidEdge;searchBox.bottom=y2-avoidEdge;
+}
+static void savePrevMonsters() {
+	if (!prevMons) {
+		prevMonCap=4096;if (prevMonCap<nMons) prevMonCap=monCap;
+		prevMons=(Mon *)HeapAlloc(dllHeap,0,sizeof(Mon)*prevMonCap);
+	} else if (prevMonCap<nMons) {
+		prevMonCap=monCap;HeapFree(dllHeap,0,prevMons);
+		prevMons=(Mon *)HeapAlloc(dllHeap,0,sizeof(Mon)*prevMonCap);
+	}
+	nPrevMons=nMons;memcpy(prevMons,mons,sizeof(Mon)*nMons);
 }
 static int getMonDis(POINT *src) {
 	int minDis=0x7FFFFFFF;
@@ -100,10 +140,26 @@ static int getMonDis(POINT *src) {
 	}
 	return minDis;
 }
+static int addPossiblePoint(AreaRectData *pData,POINT p) {
+	int w=pData->bitmap->unitW,h=pData->bitmap->unitH;
+	int rx=p.x-pData->unitX,ry=p.y-pData->unitY;
+	if (rx<0||rx>=w||ry<0||ry>=h) return 0;
+	unsigned short *bitmap=pData->bitmap->bitmap;
+	unsigned short *ptr=bitmap+ry*w+rx;
+	if (((*ptr++)&0x1527)!=0) return 1;
+	if (hasMon(p.x,p.y)) return 1;
+	if (disM256(&src,&p)>maxTpDisM256) return 1;
+	if (nPos>=posCap) {posCap*=2;tposs=(TPPos *)HeapReAlloc(dllHeap,0,tposs,sizeof(TPPos)*posCap);}
+	int dstM256=0;//disM256(&dst,&p);
+	TPPos *pp=&tposs[nPos++];pp->p=p;pp->disM256=dstM256;pp->pData=pData;
+	return 1;
+}
+
 static void addPossiblePostions(AreaRectData *pCenter,AreaRectData *pData,POINT *p,int step) {
 	if (!pData||!pData->bitmap) return;
 	if (pData==TPfailedRect) return;
 	unsigned short *bitmap=pData->bitmap->bitmap;
+	int ux=pData->bitmap->unitX,uy=pData->bitmap->unitY;
 	int w=pData->bitmap->unitW,h=pData->bitmap->unitH;
 	unsigned short *end=bitmap+w*h;
 	int x0=0,x1=w,y0=0,y1=h;
@@ -114,12 +170,20 @@ static void addPossiblePostions(AreaRectData *pCenter,AreaRectData *pData,POINT 
 		y1=p->y-pData->unitY+step;if (y1>h) y0=h;
 		step=1;
 	}
-	if (pCenter!=pData) {
+	if (ux+x0>=searchBox.right||ux+x1<=searchBox.left) return;
+	if (uy+y0>=searchBox.bottom||uy+y1<=searchBox.top) return;
+	if (ux+x0<searchBox.left) x0=searchBox.left-ux;
+	if (ux+x1>searchBox.right) x1=searchBox.right-ux;
+	if (uy+y0<searchBox.top) y0=searchBox.top-uy;
+	if (uy+y1>searchBox.bottom) y1=searchBox.bottom-uy;
+	if (x0<0) x0=0;if (x1>w) x1=w;
+	if (y0<0) y0=0;if (y1>h) y1=h;
+	/*if (pCenter!=pData) {
 		if (pData->tileX<pCenter->tileX) {if (x0<avoidEdge) x0=avoidEdge;}
 		else if (pData->tileX>pCenter->tileX) {if (x1>w-avoidEdge) x1=w-avoidEdge;}
 		if (pData->tileY<pCenter->tileY) {if (y0<avoidEdge) y0=avoidEdge;}
 		else if (pData->tileY>pCenter->tileY) {if (y1>h-avoidEdge) y1=h-avoidEdge;}
-	}
+	}*/
 	for (int ty=y0;ty<y1;ty+=step) {
 		for (int tx=x0;tx<x1;tx+=step) {
 			unsigned short *ptr=bitmap+ty*w+tx;
@@ -214,13 +278,19 @@ static void interact(POINT *src,int type,int txt) {
 	}
 }
 extern int dwTotalMonsterCount;
-static int autoTeleportStartMs;
-int unexpectedMonCount=0,unexpectedMonTotalMs=0;
+static int autoTeleportStartMs,leftSkill;
+int fAutoTeleporting=0,unexpectedMonCount=0,unexpectedMonTotalMs=0;
 int AutoTeleportStart() {
-	autoTeleportStartMs=dwCurMs;dwTpAvoiding=0;
+	fAutoTeleporting=1;autoTeleportStartMs=dwCurMs;fTpAvoiding=0;fTpAutoTarget=0;nPrevMons=0;
+	leftSkill=-1;
+	//if (dwPlayerClass==1&&hasSkill(Skill_Telekinesis)) {
+		//leftSkill=dwLeftSkill;switchLeftSkill(Skill_Telekinesis);
+	//}
 	return 0;
 }
 int AutoTeleportEnd() {
+	fAutoTeleporting=0;
+	if (leftSkill>=0) switchLeftSkill(leftSkill);
 	if (unexpectedMonCount) {
 		switch (dwCurrentLevel) {
 			case Level_TheWorldstoneChamber:break;
@@ -282,6 +352,19 @@ static int teleportForward() {
 	SetBottomAlertMsg3(buf,dwPlayerFcrMs+50, 2,0);
 	return 1;
 }
+static int findTelekinesisPosition() {
+	TPPos *end=tposs+nPos;int maxDis=0;
+	for (TPPos *p=tposs;p<end;p++) {
+		int monDis=getMonDis(&p->p);
+		if ((getDistanceM256(p->p.x-src.x,p->p.y-src.y)>>8)>dwAutoTeleportTelekinesisDistance) continue;
+		if (d2common_IsLineBlocked(PLAYER->pMonPath->pAreaRectData,&src,&p->p,4)) continue;
+		if (monDis<dwAutoTeleportTelekinesisSafeDistance) continue;
+		if (monDis>maxDis) {
+			maxDis=monDis;bestRect=p->pData;bestP=p->p;
+		}
+	}
+	return maxDis;
+}
 static int findSafestPosition() {
 	TPPos *end=tposs+nPos;int maxDis=0;
 	for (TPPos *p=tposs;p<end;p++) {
@@ -307,6 +390,7 @@ static int teleportToSafety() {
 	nPos=0;addPossiblePostions(pData,bestRect,&bestP,5);
 	monDis=findSafestPosition();
 	if (abs(src.x-bestP.x)<=3&&abs(src.y-bestP.y)<=3) {startProcessMs=dwCurMs+300;return 0;}
+	if (bestRect!=pData) savePrevMonsters();
 	if (tLogTP.isOn) 
 		LOG("TP find safe (%d,%d) curdis=%d monDis=%d\n",bestP.x,bestP.y,curdis,monDis);
 	tpMonCount=dwTotalMonsterCount;
@@ -316,6 +400,62 @@ static int teleportToSafety() {
 		(dwCurMs-autoTeleportStartMs)/1000);
 	SetBottomAlertMsg3(buf,dwPlayerFcrMs+50, 2,1);
 	return 1;
+}
+static int telekinesisTarget(UnitAny *pObject) {
+	if (dwLeftSkill!=Skill_Telekinesis) return teleportToSafety()?0:1;
+	wchar_t buf[128];
+	if ((int)getPlayerDistanceRaw(pObject)<=dwAutoTeleportTelekinesisDistance) {
+		POINT p2;p2.x=pObject->pMonPath->wUnitX;p2.y=pObject->pMonPath->wUnitY;
+		if (!d2common_IsLineBlocked(PLAYER->pMonPath->pAreaRectData,&src,&p2,4)) {
+			ShiftLeftClickUnit(pObject);startProcessMs=dwCurMs+100;
+			return 0;
+		}
+	}
+	AreaRectData *pData = PLAYER->pMonPath->pAreaRectData;
+	maxDisM256=0x7FFFFFFF;nPos=0;
+	addPossiblePostions(pData,pData,NULL,5);
+	for (int i=0;i<pData->nearbyRectCount;i++) {
+		AreaRectData *pNData=pData->paDataNear[i];if (pNData==pData) continue;
+		addPossiblePostions(pData,pNData,NULL,5);
+	}
+	int monDis=findTelekinesisPosition();
+	if (abs(src.x-bestP.x)<=3&&abs(src.y-bestP.y)<=3) {startProcessMs=dwCurMs+300;return 0;}
+	if (bestRect!=pData) savePrevMonsters();
+	if (tLogTP.isOn) 
+		LOG("TP telekinesis (%d,%d) curdis=%d monDis=%d\n",bestP.x,bestP.y,curdis,monDis);
+	tpMonCount=dwTotalMonsterCount;
+	dwTpMs=dwCurMs;TPtarget=bestP;TPtargetRect=bestRect;dwTpDoneMs=0;TPfailedRect=NULL;
+	RightSkillPos(bestP.x,bestP.y);
+	wsprintfW(buf,dwGameLng?L"法师之手%d 时间%d秒":L"evade %d time %d",rectCountFromTarget,
+		(dwCurMs-autoTeleportStartMs)/1000);
+	SetBottomAlertMsg3(buf,dwPlayerFcrMs+50, 2,1);
+	return 1;
+}
+extern int dwDuranceOfHateLevel3TeleportShift[2];
+static int autoDuranceofHateLevel3() {
+	int scanX=dst.x-dwDuranceOfHateLevel3TeleportShift[0]-18;
+	int scanY1=dst.y-dwDuranceOfHateLevel3TeleportShift[1]-24;
+	int scanY2=dst.y-dwDuranceOfHateLevel3TeleportShift[1]+8;
+	if (searchBox.left<scanX) {
+		if (searchBox.right>scanX) searchBox.right=scanX;
+	}
+	return teleportToSafety()?0:1;
+}
+//return 1 if auto skill can be used
+static int autoTarget() {
+	switch (dwCurrentLevel) {
+		/*case Level_StonyField: {
+			if (dwAutoTeleportTelekinesisEnterDoor) {
+				UnitAny *portal=getPortalToArea(Level_Tristram,NULL);
+				if (portal) return telekinesisTarget(portal);
+			}
+			break;
+		}
+		*/
+		case Level_DuranceofHateLevel3:
+			return autoDuranceofHateLevel3();
+	}
+	return teleportToSafety()?0:1;
 }
 //return 1 if auto skill can be used
 int AutoTeleport() {
@@ -342,9 +482,9 @@ int AutoTeleport() {
 	if (PLAYER->dwMode==PlayerMode_Attacking1||PLAYER->dwMode==PlayerMode_Attacking2||PLAYER->dwMode==PlayerMode_Cast)
 		return 0;
 	switch (dwCurrentLevel) {
-		case Level_TowerCellarLevel5:
-		case Level_ArcaneSanctuary:
-		case Level_HallsofVaught:
+		//case Level_TowerCellarLevel5:
+		//case Level_ArcaneSanctuary:
+		//case Level_HallsofVaught:
 		case Level_TheWorldstoneChamber:
 			for (int i=0;i<128;i++) {
 				for (UnitAny *pUnit=d2client_pUnitTable[UNITNO_MONSTER*128+i];pUnit;pUnit=pUnit->pHashNext) {
@@ -360,6 +500,7 @@ int AutoTeleport() {
 	}
 	maxTpDisM256=maxTpYard*256*3/2;
 	src.x=dwPlayerX;src.y=dwPlayerY;
+	calBoundingBox();
 	if (hasTarget) {
 		AreaRectData *pData = PLAYER->pMonPath->pAreaRectData;
 		int curdisM256=disM256(&src,&dst);
@@ -380,7 +521,7 @@ int AutoTeleport() {
 	}
 	for (int retries=0;retries<6;retries++) {
 		dstType=AutoTeleportGetTarget(&dst,&targetType,&targetTxt,&rectCountFromTarget);
-		//0:noTarget 1:continue 2:end 3:interact 4:forceEnter >=5:keep safe distance
+		//0:noTarget 1:continue 2:end 3:interact 4:forceEnter 5:auto >=6:keep safe distance
 		if (!dstType) {startProcessMs=dwCurMs+200;return 1;}
 		if (dstType!=4) findMonsters();
 		else resetMonsters();
@@ -388,9 +529,13 @@ int AutoTeleport() {
 		if (curdis<reachDis&&dstType==3) {
 			interact(&src,targetType,targetTxt);startProcessMs=dwCurMs+300;return 0;
 		}
-		if (dwTpAvoiding||dstType>=5&&curdis<dstType) { //find safe place
-			dwTpAvoiding=1;
+		if (fTpAvoiding||dstType>=6&&curdis<dstType) { //find safe place
+			fTpAvoiding=1;
 			return teleportToSafety()?0:1;
+		}
+		if (fTpAutoTarget||dstType==5&&curdis<20) {
+			fTpAutoTarget=1;
+			return autoTarget();
 		}
 		if (dstType>=2&&curdis<reachDis) { //reached
 			int monDis=getMonDis(&src);

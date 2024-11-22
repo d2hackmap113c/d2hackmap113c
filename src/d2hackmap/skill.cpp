@@ -305,6 +305,7 @@ static int canUse(struct AutoSkillInfo *info) {
 int AutoTeleport();
 int AutoTeleportStart();
 int AutoTeleportEnd();
+extern int fAutoTeleporting;
 int AutoSkillNow() {
 	if (!fAutoSkillNow&&dwRightSkill==Skill_Teleport) AutoTeleportStart();
 	fAutoSkillNow=1;checkAutoSkillStatus();return 0;
@@ -321,8 +322,10 @@ void AutoSkillRunLoop() {
 		if (rightSkill.valid) updateSkill(&rightSkill,dwRightSkill);
 		dwSkillChangeCountVerify=dwSkillChangeCount;
 	}
-	if (fAutoSkillNow&&dwRightSkill==Skill_Teleport) {
-		if (!AutoTeleport()) return;
+	if (fAutoSkillNow) {
+		if (dwRightSkill==Skill_Teleport) {
+			if (!AutoTeleport()) return;
+		} else if (fAutoTeleporting) AutoTeleportEnd();
 	}
 	if (dwBackToTownTimeout) return;
 	if (dwCurMs<dwAutoSkillCheckMs) return;
@@ -388,12 +391,12 @@ loopend:
 		dwAutoSkillCheckMs=dwCurMs+dwAutoSkillCheckInterval;
 	}
 }
-int getMonsterOwnerId(int id);
+int getUnitOwnerId(UnitAny *pUnit);
 static void checkUnit(UnitAny *pMon) {
 	if (pMon->dwUnitType!=UNITNO_MONSTER) return;
 	if (pMon->dwMode==MonsterMode_Death) return; //dying?
 	if (pMon->dwMode==MonsterMode_Dead) return; //already dead
-	int owner=getMonsterOwnerId(pMon->dwUnitId);
+	int owner=getUnitOwnerId(pMon);
 	if (owner!=-1) return; //Íæ¼ÒËæ´Ó
 	MonsterTxt *pMonTxt= pMon->pMonsterData->pMonsterTxt;
 	MonsterData *pMonsterData = pMon->pMonsterData;
@@ -450,7 +453,13 @@ static void checkUnit(UnitAny *pMon) {
 	if (curSkill->delayState&&dwCurMs<ms+curSkill->delayState) return;
 	if (curSkill->notState&&d2common_CheckUnitState(pMon, curSkill->notState)) {
 		if (!curSkill->needKeep) return;
-		if (dwCurMs<ms+curSkill->ms-dwPlayerFcrMs-dwAutoSkillCheckInterval-50) return;
+		int passed=dwCurMs-ms;
+		if (isActBoss) {
+			switch (curSkill->id) {
+				case Skill_LifeTap:case Skill_Decrepify:passed<<=1;break;
+			}
+		}
+		if (passed<curSkill->ms-dwPlayerFcrMs-dwAutoSkillCheckInterval-50) return;
 	}
 	if (curSkill->notImmune&&d2common_GetUnitStat(pMon, curSkill->notImmune, 0)>=100) return;
 	if (curSkill->id==Skill_DimVision&&!aAutoDimVisionMonster[pMon->dwTxtFileNo]) return;

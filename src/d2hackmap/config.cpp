@@ -39,7 +39,6 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT, "EnterGameSound",			&fEnterGameSound  ,   4 },
 	{CONFIG_VAR_TYPE_INT, "ShowCFGCheckInfo",			&fShowCheckInfo  ,   4 },
 	{CONFIG_VAR_TYPE_STR, "RuntimePath",			szRuntimePath, 1,  {255 }},
-	{CONFIG_VAR_TYPE_INT, "EnableLanguageCheck",		&fLanguageCheck  ,   4 },
 	{CONFIG_VAR_TYPE_INT, "LocalizationSupport",      &fLocalizationSupport,  4},
 	{CONFIG_VAR_TYPE_INT, "LoadItemColours",        &fLoadItemColours,  4},
 	{CONFIG_VAR_TYPE_INT, "EnterGameShowDifficultyMs",&dwEnterGameShowDifficultyMs,  4},
@@ -272,7 +271,8 @@ void filterSpace(char *s) {
 	char *src=s,*dst=s;int quote = 0;
 	while(1){
 		char c=*src++;if (!c) break;
-		if(isspace(c)&&!quote) continue;
+		//if(isspace(c)&&!quote) continue;
+		if((c==' '||c=='\t')&&!quote) continue;
 		if(c=='/'&&*src=='/') break;
 		if(isquote(c)) quote = !quote;
 		*dst++=c;
@@ -725,6 +725,30 @@ static int isNumber(char *s) {
 	}
 	return number;
 }
+void clearCharacterTag();
+void addCharacterTag(char *name,char *tag);
+void doneCharacterTag();
+static void loadTagFile(char *path) {
+	char *charname,*tag;
+	FILE *fp=openFile(path,"rb");
+	if (!fp) {LOG("load tag file %s failed\n",path);return;}
+	int size=0;char *p=loadFile(confHeap,fp,&size);if (!p) {fclose(fp);return;}
+	char *end=p+size;
+	int n=0;
+	while (p<end) {
+		char *e=strchr(p,'\n');if (!e) e=end;
+		char *line=p;p=e+1;
+		*e=0;if (e[-1]=='\r') {e--;*e=0;}
+		int len=e-line;
+		if (line[0]=='/'&&line[1]=='/') continue;
+		if (line[0]=='#') continue;
+		splitLine(line,&charname,&tag);
+		if (charname&&charname[0]) {addCharacterTag(charname,tag);n++;}
+	}
+	doneCharacterTag();
+	LOG("load %d tags from %s\n",n,path);
+	fclose(fp);
+}
 static void loadSymbolFile(char *path) {
 	char *names,*value;
 	FILE *fp=openFile(path,"rb");
@@ -740,6 +764,7 @@ static void loadSymbolFile(char *path) {
 		*e=0;if (e[-1]=='\r') {e--;*e=0;}
 		int len=e-line;
 		if (line[0]=='/'&&line[1]=='/') continue;
+		if (line[0]=='#') continue;
 		splitLine(line,&names,&value);
 		if (names&&names[0]&&value&&value[0]) {
 			if (!isNumber(value)) value=replaceSymbols(value);
@@ -797,6 +822,7 @@ static void loadConfig(char *path) {
 		__try {
 			char *name,*value;
 			if (line[0]=='/'&&line[1]=='/') continue;
+			if (line[0]=='#') continue;
 			splitLine(line,&name,&value);
 			if (!name&&!value) continue;
 			if (!name||!value||!name[0]||!value[0]) {
@@ -824,6 +850,7 @@ static void loadConfig(char *path) {
 					continue;
 				}
 				if (_stricmp(name,"LogPath")==0&&value[0]) {dwGameWindowId=changeLogPath(value);continue;}
+				if (_stricmp(name,"LoadTagFile")==0&&value[0]) {loadTagFile(value);continue;}
 				ConfigVar *pcv=findConfigVar(name);
 				if (pcv) {
 					pcv->useCount++;
@@ -856,6 +883,7 @@ BOOL LoadConfig() {
 	}
 	LARGE_INTEGER perfFreq,perfStart,perfEnd;
 	QueryPerformanceCounter(&perfStart);
+	clearCharacterTag();
 	if (confHeap) HeapDestroy(confHeap);
 	confHeap=HeapCreate(0,128*1024,0);
 	if (logfp) {fclose(logfp);logfp=NULL;}

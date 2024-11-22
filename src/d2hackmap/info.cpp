@@ -663,19 +663,17 @@ int SwitchStatPage(int nStep){
 	return 0;
 }
 
-void DrawUnitStat(int align , int unitstat, int xpos, int ypos, char *szFormat ,char* szSuffix, char* szDesc, DWORD dwColor=0 , int desclen =0, int vallen=0) {
+void DrawUnitStat(int align,int unitstat,int xpos,int ypos,char *szFormat,char* szSuffix,
+	char* szDesc,DWORD dwColor=0 , int desclen =0, int vallen=0) {
 	wchar_t wszTemp[256];
 	xpos = xpos + DRAWOFFSET.x;
 	ypos = ypos - DRAWOFFSET.y;
-
 	if (*szDesc){
 		wsprintfW(wszTemp, L"%hs", szDesc);
 		d2win_DrawText(wszTemp, xpos, ypos, dwColor, 0);
 		xpos += desclen ;
-
 		d2win_DrawText(L":", xpos, ypos, dwColor, 0);
 		xpos += vallen;
-
 	}
 	wsprintfW2(wszTemp, szFormat ,unitstat,szSuffix);
 	DrawDefaultFontText(wszTemp,	xpos ,	ypos ,	dwColor , align);
@@ -725,24 +723,18 @@ void __fastcall ViewUnitStatPatch(UnitAny *pUnit){
 		if( j==2 && blStatButton ) yPos+=25;
 		int unitstat = d2common_GetUnitStat(pUnit, aPlayerStats[i].dwStatNo, 0) ;
 		DrawUnitStat(0, unitstat , xPos, yPos+j*13 ,szFormat , aPlayerStats[i].szSuffix , aPlayerStats[i].szDesc , 0 , 33 , 45 );
-
 	}
 	DrawUnitStat(0, d2common_GetUnitStat(pUnit, STAT_MAGIC_FIND, 0)  ,	 xPos,	196 , "%4d%s" , "%" , "MF" , 2 , 25 , 54 );
 	DrawUnitStat(0, d2common_GetUnitStat(pUnit, STAT_EXTRA_GOLD, 0)  ,	 xPos,	213 , "%4d%s" , "%" , "EG" , 4 , 25 , 54 );
-
 	DrawUnitStat(1, d2common_GetUnitStat(pUnit, STAT_DAMAGE_REDUCED, 0) , 175,	330 , "%d%s" , "%" , "DR" , 0 , 25 , 25 );
 	DrawUnitStat(0, d2common_GetUnitStat(pUnit, STAT_PLR, 0)  ,		   250,	330 , "%d"	 ,  "" , "PLR", 0 , 30 , 30 );
-
 	xPos = 187;
 	yPos = 350;
-	
 	DrawUnitStat(1, GetUnitResist(pUnit,STAT_FIRE_RESIST),    xPos,	yPos,      "%d" , "" ,"", 1);
 	DrawUnitStat(1, GetUnitResist(pUnit,STAT_COLD_RESIST),    xPos,	yPos+23,   "%d" , "" ,"", 3);
 	DrawUnitStat(1, GetUnitResist(pUnit,STAT_LIGHTING_RESIST),xPos,	yPos+23*2, "%d" , "" ,"", 9);
 	DrawUnitStat(1, GetUnitResist(pUnit,STAT_POSION_RESIST),  xPos,	yPos+23*3, "%d" , "" ,"",12);
- 
 	if ( tShowBaseStat.isOn ){
-
 		xPos = blStatButton ? 95 : 140 ;
 		yPos = blStatButton ? 118 : 100 ;
 		DrawUnitStat(1, d2common_GetUnitBaseStat( pUnit,STAT_STRENGTH ,  0 ),    xPos,	yPos, "[%d]" , "" ,"");
@@ -756,7 +748,6 @@ void __fastcall ViewUnitStatPatch(UnitAny *pUnit){
 		//+25  +63
 		yPos = yPos + (blStatButton? 25 : 63) ;
 		DrawUnitStat(1, d2common_GetUnitBaseStat( pUnit,STAT_ENERGY ,    0 ),    xPos,	yPos, "[%d]" , "" ,"");
-
 	}
 	
 	d2win_SetTextFont(dwOldFone);

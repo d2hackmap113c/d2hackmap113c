@@ -349,7 +349,7 @@ int addr2=0x10007a60;
 int addr3;
 void onProcess() {
 	//addr1=0x7C831EC5;installBp(addr1); //DeleteFileA
-	addr2=0x6FC2C2B0;installBp(addr2); 
+	addr2=0x6FA4CBD8;installBp(addr2); 
 	//addr3=0x77d561b3;installBp(addr3);
 	//installBp(START); //start
 	//installBp(END); //end
@@ -400,9 +400,9 @@ void bpt(int threadId,int addr,CONTEXT *pc) {
 		args=3;
 		exitFlag=1;
 	} else if (addr==addr2) {
-		rbuf(handle,espV[1],buf,128);
-		rbuf(handle,espV[2],buf2,128);
-		printf("ret=%x %s %s\n",espV[0],buf,buf2);
+		//rbuf(handle,espV[1],buf,128);
+		//rbuf(handle,espV[2],buf2,128);
+		printf("ret=%x\n",espV[0]);
 		args=0;
 	} else {
 		args=3;

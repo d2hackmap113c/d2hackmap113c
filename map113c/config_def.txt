@@ -41,7 +41,6 @@ Reveal Act Automap Key: CTRL+ALT+VK_L         //开整幕地图
 Reveal Level Automap Key: ALT+VK_F                  //开当前区域地图
 
 Show CFGCheck Info:     1   //CFG校验 0 开启 1 关闭
-Enable Language Check:  1   //语言校验 1 开启 0 关闭 游戏内无法重新加载
 GameFilterSupport:       1   //游戏列表过滤器 游戏内无法重新加载
 Localization Support:    1   //中文支持 1 简体 2 繁体D2但使用简体聊天 3 繁体D2简体输入自动转繁体 游戏内无法重新加载
 FixSocketError:  1        //修正Socket出错判定，用于多开时防止出错
@@ -226,8 +225,11 @@ CachedRouteData: 6 //保持最近6个目标的导航数据
 Minimap Size:                   6                 //指示线大小
 MinimapDirectLineToggle: 0,VK_ //直线指示开关
 AutoTeleportSafeDistance: 20 //在这个距离内没有怪物就停止传送
+AutoTeleportTelekinesisEnterDoor: 0 //服务器是否支持用法师之手进门
+AutoTeleportTelekinesisDistance: 40 //在这个距离内可以使用法师之手
+AutoTeleportTelekinesisSafeDistance: 5 //使用法师之手的距离加5
 //MapTargets[src level][dest level]: type,EnglishName,中文名称
-//type: 1:点击 2:不管怪物强行靠近 10-120:距离目标小于此值则找安全位置
+//type: 1:点击 2:不管怪物强行靠近 3:自动 10-120:距离目标小于此值则找安全位置
 //Act1
 MapTargets[Blood Moor][Den of Evil]:1  
 MapTargets[Blood Moor][Cold Plains]:0 
@@ -323,7 +325,7 @@ MapTargets[Kurast Causeway][Travincal]:0
 MapTargets[Travincal][Durance of Hate Level 1]:0
 MapTargets[Durance of Hate Level 1][Durance of Hate Level 2]:0
 MapTargets[Durance of Hate Level 2][Durance of Hate Level 3]:1
-MapTargets[Durance of Hate Level 3][339]:20,"Teleport","传送点"
+MapTargets[Durance of Hate Level 3][339]:3,"Teleport","传送点"
 DuranceOfHateLevel3TeleportShift: -20,0
 //Act4
 MapTargets[Outer Steppes][Plains of Despair]:0
