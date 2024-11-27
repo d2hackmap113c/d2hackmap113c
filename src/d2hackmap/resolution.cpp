@@ -14,10 +14,9 @@ static int resW,resH,resH1;
 static int resDx,resDy,resDy2;
 
 extern ToggleVar tResizeWindowBar;
-void HightResolution();
-ToggleVar tHighResolution={TOGGLEVAR_ONOFF,1,-1,1,"Change Resolution",&HightResolution};
+ToggleVar tHighResolution={TOGGLEVAR_ONOFF,1,-1,1,"Change Resolution"};
 static ConfigVar aConfigVars[] = {
-  {CONFIG_VAR_TYPE_KEY, "HighResolutionToggle",       &tHighResolution        },
+  {CONFIG_VAR_TYPE_KEY, "HighResolutionToggle",&tHighResolution},
 };
 void Resolution_AddConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
@@ -580,12 +579,13 @@ drawall:
 	}
 }
 //6FA8A9EF - 3B 35 68D4A96F        - cmp esi,[6FA9D468] { (553) } //draw a piece of ground or not
-void __declspec(naked) DrawBottomGroundPiecePatch_ASM() {
+/*void __declspec(naked) DrawBottomGroundPiecePatch_ASM() {
 	__asm {
 		cmp esi, resH1
 		ret
 	}
 }
+*/
 //6FB3A4F8 - A1 48BCB86F           - mov eax,[6FB8BC48] { (640) } //ScreenWidth
 //6FB3A4FD - 83 C2 D1              - add edx,-2F { 209 } //ScreenHeight-47
 void __declspec(naked) BottomBoundPatch_ASM() {

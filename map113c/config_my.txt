@@ -1,3 +1,4 @@
+AutoTeleportTelekinesisEnterChamber: 1 //服务器是否支持用法师之手进都瑞尔的房间
 LogTPToggle: 1,VK_ //将每次传送的数据记录到runtime/d2hackmap*.log中
 Monster TC Toggle: 0,VK_ //怪物TC等级显示开关
 Monster Death Anims[1+]:0//怪物死亡动画开关 0关闭 1开启

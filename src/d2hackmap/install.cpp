@@ -168,7 +168,8 @@ installPatch(PatchCALL,DLL_ADDR(d2gfx,0x6FA883F0),(DWORD)IsNeedResizeWindowPatch
 installPatch(PatchCALL,DLL_ADDR(d2gfx,0x6FA88403),(DWORD)IsNeedResizeWindowPatchH_ASM,6);
 installPatch(PatchCALL,DLL_ADDR(d2gfx,0x6FA88442),(DWORD)AdjustWindowRectExPatch_ASM,6);
 installPatch(PatchCALL,DLL_ADDR(d2gfx,0x6FA88005),(DWORD)SetDisplayWidthAndHeightPatch_ASM,6);
-installPatch(PatchCALL,DLL_ADDR(d2gfx,0x6FA8A9EF),(DWORD)DrawBottomGroundPiecePatch_ASM,6);
+//installPatch(PatchCALL,DLL_ADDR(d2gfx,0x6FA8A9EF),(DWORD)DrawBottomGroundPiecePatch_ASM,6);
+installPatch(PatchVALUE,DLL_ADDR(d2gfx,0x6FA8A9F1),(DWORD)d2client_pScreenHeight,4);
 installPatch(PatchCALL,DLL_ADDR(d2gfx,0x6FA889D9),(DWORD)DrawGroundHeightPatch_ASM,6);
 installPatch(PatchCALL,DLL_ADDR(d2client,0x6FAC0E13),(DWORD)SetGeneralDisplayWidthAndHeightPatch_ASM,10);
 installPatch(PatchCALL,DLL_ADDR(d2client,0x6FAD7459),(DWORD)DrawLeftOrbImagePatch_ASM,5);
@@ -315,8 +316,9 @@ installPatch(PatchJMP,DLL_ADDR(d2client,0x6FB126FE),(DWORD)DrawGameInfoPatch,5);
 if (fGameFilter) 
 installPatch(PatchCALL,DLL_ADDR(d2win,0x6F8F8911),(DWORD)DrawGameListPatch_ASM,5);
 //--- m_PartyInfo.h ---
-installPatch(PatchCALL,DLL_ADDR(d2client,0x6FB0B582),(DWORD)DrawPetHeadPath_ASM,7);
-installPatch(PatchCALL,DLL_ADDR(d2client,0x6FB0BBE0),(DWORD)DrawPartyHeadPath_ASM,6);
+installPatch(PatchCALL,DLL_ADDR(d2client,0x6FB0B582),(DWORD)DrawPetHeadPatch_ASM,7);
+installPatch(PatchCALL,DLL_ADDR(d2client,0x6FB0BA9F),(DWORD)StartDrawPartyHeadPatch_ASM,8);
+installPatch(PatchCALL,DLL_ADDR(d2client,0x6FB0BBE0),(DWORD)DrawPartyHeadPatch_ASM,6);
 installPatch(PatchCALL,DLL_ADDR(d2client,0x6FB0B86B),(DWORD)DrawSkeletonHeadPatch_ASM,5);
 //--- m_GameCount.h ---
 installPatch(PatchCALL,DLL_ADDR(d2client,0x6FB5D8A1),(DWORD)KillCountPatch_ASM,6);
@@ -526,8 +528,8 @@ org:
 		jmp ecx
 	}
 }
-void HightResolution() {
-	if (tHighResolution.isOn) {
+void setResolutionPatch(int install) {
+	if (install) {
 		if (!resolutionPatches) installResolutionPatches();
 	} else {
 		if (resolutionPatches) {
@@ -574,7 +576,7 @@ BOOL Install(){
 		return 0;
 	}
 	if (tPacketHandler.isOn) MonitorPacket();
-	if (tHighResolution.isOn) HightResolution();
+	//if (tHighResolution.isOn) HightResolution();
 	LOG("Install %d patches done\n",patchCount);
 	InitCellFiles();
 	LOG("Loading minimap bitmaps done\n");
@@ -596,7 +598,9 @@ static int *pReloadFlag=NULL,*pExitFlag=NULL;
 extern "C" void __fastcall SetReloadFlag(int *reload_flag,int *exit_flag) {
 	pReloadFlag=reload_flag;pExitFlag=exit_flag;
 }
-void Uninstall(){
+void ToggleIMEInput(BOOL fChatInput);
+void Uninstall() {
+	ToggleIMEInput(1);
 	RemoveMyAutomapNodes();
 	DeleteCellFiles();
 	removePatches(&keyPatches);

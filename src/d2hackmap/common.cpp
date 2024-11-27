@@ -985,7 +985,7 @@ int getUnitOwnerId(UnitAny *pUnit) {
 	static int refreshMs=0;
 	if (!pUnit) return -1;
 	if (dwCurMs>refreshMs) {
-		refreshMs=dwCurMs+3000;
+		refreshMs=dwCurMs+10000;
 		dwPetListChangeCount++;
 	}
 	UnitExtra *extra=(UnitExtra *)(((char *)pUnit)+0xF4);
@@ -1017,7 +1017,12 @@ int fPartyListValid=0;
 static int comparePvp(const void *a,const void *b) {return ((Pvp *)a)->id-((Pvp *)b)->id;}
 // 0 敌对  1 中立 2 队友 3 自身
 int testPvpFlag(int dwUnitId) {
+	static int refreshMs=0;
 	if (dwUnitId==dwPlayerId) return 3;
+	if (dwCurMs>refreshMs) {
+		refreshMs=dwCurMs+10000;
+		fPartyListValid=0;
+	}
 	if (!fPartyListValid) {
 		nPvp=0;
 		for (RosterUnit *pUnit=PLAYERLIST;pUnit;pUnit=pUnit->pNext) {

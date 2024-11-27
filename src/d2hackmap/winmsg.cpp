@@ -49,7 +49,7 @@ ToggleVar tEnableScreenSaver={TOGGLEVAR_ONOFF, 0, 0, 0, "EnableScreenSaver",&ref
 ToggleVar tEnableMenuScreenSaver={TOGGLEVAR_ONOFF, 0, 0, 0, "EnableMenuScreenSaver",&refreshMenuScreenSaver,0,0,2};
 int dwGameControlKeys[64][4] ={0};
 int dwGameSoundKeys[128]={0};
-ToggleVar tSwitchWindowKeys[8][2]={0};
+ToggleVar tSwitchWindowKeys[16][2]={0};
 int dwSwitchSkillKeyCount={0};
 int dwSwitchSkillKeys[32]={0};
 int dwSwitchSkillLeft[32][8][4]={0};
@@ -80,7 +80,7 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_KEY, "EnableMenuScreenSaverToggle",   &tEnableMenuScreenSaver     },
   {CONFIG_VAR_TYPE_INT_ARRAY1, "GameControlKeys",    &dwGameControlKeys,  4, {64} },
   {CONFIG_VAR_TYPE_INT_ARRAY1, "GameSoundKeys",    &dwGameSoundKeys,  1, {128} },
-  {CONFIG_VAR_TYPE_KEY_ARRAY1,"SwitchWindowKeys", tSwitchWindowKeys,2,{8},2,"SwitchWindowKeys[%d]", SwitchWindow  },
+  {CONFIG_VAR_TYPE_KEY_ARRAY1,"SwitchWindowKeys", tSwitchWindowKeys,2,{16},2,"SwitchWindowKeys[%d]", SwitchWindow  },
   {CONFIG_VAR_TYPE_ACCOUNT, "Account",},
   {CONFIG_VAR_TYPE_SWITCH_SKILL, "SwitchSkillKeys",    &dwSwitchSkillKeys,  1, {32} },
   {CONFIG_VAR_TYPE_SWITCH_SKILL, "SwitchSkillLeft",    &dwSwitchSkillLeft,  4, {32,8} },
@@ -285,6 +285,7 @@ static void setWinTitle(HWND hwnd,int inGame) {
 	SetWindowTextA(hwnd,buf);
 }
 void fitResolution();
+void setResolutionPatch(int install);
 int FullScreen() {
 	WINDOWPLACEMENT wp;
 	HWND hwnd=d2gfx_GetHwnd();
@@ -297,7 +298,9 @@ int FullScreen() {
 			SetWindowLongA(hwnd,GWL_STYLE,style);
 		}
 		ShowWindow(hwnd,SW_SHOWNORMAL);
+		setResolutionPatch(0);
 	} else {
+		setResolutionPatch(1);
 		if (tFullScreenNoCaption.isOn&&(style&WS_CAPTION)) {
 			style=style&(~(WS_CAPTION|WS_THICKFRAME));
 			SetWindowLongA(hwnd,GWL_STYLE,style);
@@ -513,6 +516,8 @@ static int __fastcall keyUp(int vk,int winMsg) {
 	}
 	return handled;
 }
+int getGameWinId(int mouseX);
+void toggle_follower(int gameId);
 int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 	static int savedRuntime=0;
 	if (! *d2win_pRunningFlag) return 0;
@@ -570,6 +575,15 @@ int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 						//click map on left half screen
 						if (!(d2client_pScreenBlocked[0]&2)&&d2client_pMousePos->y<=SCREENSIZE.x/2)
 							dwQuickSwapItemMs=0;
+					}
+					if (18<=*d2client_pMouseY&&*d2client_pMouseY<60) {
+						if (GetKeyState(VK_MENU)&0x8000) { //ALT switch window
+							int gid=getGameWinId(*d2client_pMouseX);
+							if (gid) {SwitchWindow(gid-1);return 0;}
+						} else if (GetKeyState(VK_CONTROL)&0x8000) { //CTRL add/remove follower
+							int gid=getGameWinId(*d2client_pMouseX);
+							if (gid) {toggle_follower(gid);return 0;}
+						}
 					}
 					fLeftBtnDown=1;fUserOperating=1;mouseW=w;mouseL=l;
 					checkAutoSkillStatus();

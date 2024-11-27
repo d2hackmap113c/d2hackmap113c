@@ -357,10 +357,10 @@ static void countGemRunes(FILE *fp,UnitAny *pUnit) {
 	static char *gemNames[7]={"Ame×Ï","Top»Æ","SapÀ¶","EmeÂÌ","Rubºì","Dia×ê","Sku÷¼"};
 	int nRune[34]={0};
 	int nGem[5][7]={0},hasGem[5]={0};
-	int hasLRune=0,hasHRune=0;
+	int hasLRune=0,hasHRune=0,rpotions=0;
 	while (pUnit) {
 		if (pUnit->dwUnitType!=UNITNO_ITEM) goto next;
-		int index = GetItemIndex(pUnit->dwTxtFileNo)+1;//?
+		int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
 		if ( index >2999 ) index= 2999;
 		if (2103<=index&&index<=2135) {
 			int r=index-2102;nRune[r]++;
@@ -374,6 +374,8 @@ static void countGemRunes(FILE *fp,UnitAny *pUnit) {
 			int t=index-2090;
 			nGem[t][6]++;
 			hasGem[t]++;
+		} else if (index==2008||index==2009) {
+			rpotions++;
 		}
 next:
 		pUnit = d2common_GetNextItemInInv(pUnit);
@@ -409,6 +411,8 @@ next:
 		}
 		fprintf(fp,"\n");
 	}
+	if (rpotions) fprintf(fp,"RPotions: %d\n",rpotions);
+	fprintf(fp,"Gold: %d\n",d2common_GetUnitStat(PLAYER, 14, 0)+d2common_GetUnitStat(PLAYER, 15, 0));
 }
 static int lastLocation=0;
 static int nLoc[8];

@@ -225,7 +225,7 @@ CachedRouteData: 6 //保持最近6个目标的导航数据
 Minimap Size:                   6                 //指示线大小
 MinimapDirectLineToggle: 0,VK_ //直线指示开关
 AutoTeleportSafeDistance: 20 //在这个距离内没有怪物就停止传送
-AutoTeleportTelekinesisEnterDoor: 0 //服务器是否支持用法师之手进门
+AutoTeleportTelekinesisEnterChamber: 0 //服务器是否支持用法师之手进都瑞尔的房间
 AutoTeleportTelekinesisDistance: 40 //在这个距离内可以使用法师之手
 AutoTeleportTelekinesisSafeDistance: 5 //使用法师之手的距离加5
 //MapTargets[src level][dest level]: type,EnglishName,中文名称
@@ -294,15 +294,15 @@ MapTargets[Harem Level 2][Harem Level 1]:1
 MapTargets[Harem Level 2][Palace Cellar Level 1]:1
 MapTargets[Harem Level 1][Lut Gholein]:0
 MapTargets[Harem Level 1][Harem Level 2]:1
-MapTargets[Arcane Sanctuary][Horazon's Journal]:60,"Horazon's Journal","赫拉森的日记"
+MapTargets[Arcane Sanctuary][Horazon's Journal]:3,"Horazon's Journal","赫拉森的日记"
 MapTargets[Canyon of the Magi][300]:1,"Tal Rasha's Tomb","塔拉夏的古墓"
-MapTargets[Tal Rasha's Tomb 1][300]:60,"Izual","祭台"
-MapTargets[Tal Rasha's Tomb 2][300]:60,"Izual","祭台"
-MapTargets[Tal Rasha's Tomb 3][300]:60,"Izual","祭台"
-MapTargets[Tal Rasha's Tomb 4][300]:60,"Izual","祭台"
-MapTargets[Tal Rasha's Tomb 5][300]:60,"Izual","祭台"
-MapTargets[Tal Rasha's Tomb 6][300]:60,"Izual","祭台"
-MapTargets[Tal Rasha's Tomb 7][300]:60,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 1][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 2][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 3][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 4][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 5][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 6][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 7][300]:3,"Izual","祭台"
 //Act3
 MapTargets[Spider Forest][Spider Cavern]:1
 MapTargets[Spider Forest][Flayer Jungle]:0
@@ -358,7 +358,7 @@ MapTargets[Frozen Tundra][Ancients Way]:0
 MapTargets[Ancients Way][Arreat Summit]:0
 MapTargets[Halls of Anguish][Halls of Pain]:1
 MapTargets[Halls of Pain][Halls of Vaught]:1
-MapTargets[Halls of Vaught][Nihlathak on Minimap]:120,"Nihlathak","尼拉赛克"
+MapTargets[Halls of Vaught][Nihlathak on Minimap]:3,"Nihlathak","尼拉赛克"
 MapTargets[Worldstone Keep Level 1][Worldstone Keep Level 2]:1
 MapTargets[Worldstone Keep Level 2][Worldstone Keep Level 3]:1
 MapTargets[Worldstone Keep Level 3][Throne of Destruction]:1
@@ -571,6 +571,7 @@ EnterGameShowDifficultyMs: 3000 //进入游戏时显示游戏难度3秒
 //新增Bug号保护
 BugKCountess Toggle: 1, VK_  , 2 //A1 Forgotten Tower Countess 保护刷A1钥匙的号
 Bug Auto Quit Hell Toggle:      0, SHIFT+CTRL+ALT+VK_B          //地狱难度bug保护提示后是否自动退出游戏 0 不退出 1退出
+Bug Auto Quit Hell Act1 Toggle: 0, VK_  //地狱难度ACT1 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Auto Quit Hell Act3 Toggle: 0, CTRL+ALT+VK_B  //地狱难度ACT3 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Auto Quit Hell Act4 Toggle: 0, CTRL+ALT+VK_B  //地狱难度ACT4 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Auto Quit Hell Act5 Toggle: 0, CTRL+ALT+VK_B  //地狱难度ACT5 bug保护提示后是否自动退出游戏 0 不退出 1退出
@@ -675,6 +676,8 @@ GameControlKeys[GameControlShowPortraits]: ALT+VK_Z,-1,-1,-1
 SinglePlayerMonsterHPToggle: 1, -1 //单人模式显示怪物血量
 SinglePlayerMonsterExpHPToggle: 1, -1 //单人模式显示怪物经验值
 //--------------- MultiClientSection 多开设置 ---------------
+// 按住Alt键左键点击头像可切换到对应窗口
+// 按住Ctrl键左键点击头像可设置跟随
 Multi Client Toggle: 1,CTRL+ALT+VK_W
 MultiClientMaxWindowId: 8 //最多8个窗口
 MultiClientGroupSize1: 8 //第一组为前8个窗口
@@ -820,3 +823,7 @@ SwitchSkillLeft[SHIFT+VK_C][ClassAma]: SkillImpale,-1,-1,-1
 SwitchSkillRight[SHIFT+VK_D][ClassNec]: SkillLowerResist,-1,-1,-1
 SwitchSkillRight[SHIFT+VK_C][ClassNec]: SkillLifeTap,-1,-1,-1
 SwitchSkillRight[SHIFT+VK_S][ClassNec]: SkillBoneWall,-1,-1,-1
+//--------------- CharacterTag 人物标签 ---------------
+//在人物选择界面显示标签, LoadTagFile加载标签文件,标签文件的格式可参考sample_tag.txt
+//LoadTagFile: "d:\git\diablo2\tag.txt"
+

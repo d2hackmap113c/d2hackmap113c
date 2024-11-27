@@ -465,7 +465,8 @@ void DrawMonitorInfo(){
 		}
 	}
 	if (fMonitorQuantity) {
-		int qx=550,qy=555;
+		int qx=(SCREENSIZE.x>>1)+150;
+		int qy=SCREENSIZE.y-45;
 		d2win_SetTextFont(8);
 		if (dwHPotionCount) {
 			wsprintfW(wszTemp,L"%d",dwHPotionCount);d2win_GetTextAreaSize(wszTemp, &sw, &sh);
@@ -482,6 +483,7 @@ void DrawMonitorInfo(){
 		if (fUsingBow||fUsingCrossBow||fUsingThrow||dwRightSkill==35) {
 			int pos=0,n=d2common_GetUnitStat(PLAYER, 70, 0); //quantity
 			if (n) {
+				d2win_SetTextFont(3);
 				pos+=wsprintfW(wszTemp+pos, L"%d",  n);
 				n=0;
 				if (fUsingBow) n=dwArrowCount;
@@ -493,7 +495,8 @@ void DrawMonitorInfo(){
 				d2win_GetTextAreaSize(wszTemp, &sw, &sh);
 				int x=xpos-sw;
 				d2gfx_DrawRectangle(x,ypos-12,x+sw,ypos,0x10,5);d2win_DrawText(wszTemp, x , ypos, 0, 0);
-				ypos = ypos-15;
+				ypos = ypos-25;
+				d2win_SetTextFont(8);
 			}
 		}
 		if (!d2client_CheckUiStatus(UIVAR_BELT)) {

@@ -110,7 +110,7 @@ void __fastcall DrawGameInfoPatch(int dwFont) {
 extern int dwSkeletonMageHPPercent;
 extern int dwEnchantSkeletonCount;
 
-void __fastcall DrawPetHeadPath(int xpos , UnitAny *pUnit){
+void __fastcall DrawPetHeadPatch(int xpos , UnitAny *pUnit){
 	if ( tShowPartyLevel.isOn ){
 		wchar_t wszTemp[512];
 		wsprintfW( wszTemp, L"%d" ,  d2common_GetUnitStat(pUnit, STAT_LEVEL, 0) );
@@ -118,14 +118,14 @@ void __fastcall DrawPetHeadPath(int xpos , UnitAny *pUnit){
 	}
 }
 
-void __declspec(naked) DrawPetHeadPath_ASM() {
+void __declspec(naked) DrawPetHeadPatch_ASM() {
 	//ecx  xpos
 	//eax  ypos
 	//ebx  pPet
 	__asm {
 		push esi
 		mov edx , ebx 
-		call DrawPetHeadPath
+		call DrawPetHeadPatch
 		pop esi
 //org
 		mov [esp+0x56], 0
@@ -133,58 +133,84 @@ void __declspec(naked) DrawPetHeadPath_ASM() {
 	}
 }
 
-void __fastcall DrawPartyHeadPath(int xpos , RosterUnit *pRosterUnit){
+extern ToggleVar tSwitchWindowKeys[16][2];
+static D2Window *partyHeadCache[16]={0};
+struct PartyHeadPos {int x,gameId;};
+static PartyHeadPos partyHeadPos[16];
+static int partyHeadCachePos=0;
+int getGameWinId(int mouseX) {
+	for (int i=0;i<partyHeadCachePos;i++) {
+		int x=partyHeadPos[i].x;
+		if (x<=mouseX&&mouseX<=x+46) return partyHeadPos[i].gameId;
+	}
+	return 0;
+}
+void __fastcall DrawPartyHeadPatch(int xpos , RosterUnit *pRosterUnit){
 	wchar_t wszTemp[32];
 	if ( tShowPartyLevel.isOn ){
 		wsprintfW( wszTemp, L"%d" , pRosterUnit->wLevel );
 		DrawD2Text(1, wszTemp ,	xpos+5 ,	57 ,	0 );
 	}
 	if (d2winLastId) {
-		for (int i=1;i<=d2winLastId;i++) {
-			D2Window *pwin=&d2wins[i];
-			if (pwin->uid==pRosterUnit->dwUnitId) {
-				if (!pwin->manaMax) break;
-				if (!pwin->infoMs||dwCurMs>pwin->infoMs) break;
-				int rw=46*pwin->mana/pwin->manaMax;if (rw>46) rw=46;
-				d2gfx_DrawRectangle(xpos,8,xpos+rw,13,0x91,5);
-				d2gfx_DrawRectangle(xpos+rw,8,xpos+46,13,0,5);
-				int x=xpos,y=92;
-				if (pwin->isTeam) {
-					wszTemp[0]='T';wszTemp[1]=0;
-					x+=drawBgText(wszTemp,x,y,0,0x76)+3;
+		D2Window *pwinC=partyHeadCache[partyHeadCachePos];
+		if (!pwinC||pwinC->uid!=pRosterUnit->dwUnitId) {
+			pwinC=NULL;
+			for (int i=1;i<=d2winLastId;i++) {
+				D2Window *pwin=&d2wins[i];
+				if (pwin->uid==pRosterUnit->dwUnitId) {
+					pwinC=pwin;partyHeadCache[partyHeadCachePos]=pwin;
+					break;
 				}
-				if (pwin->hPotion) {
-					wsprintfW(wszTemp,L"%d",pwin->hPotion);
-					x+=drawBgText(wszTemp,x,y,0,0x0A)+3;
+			}
+		}
+		partyHeadPos[partyHeadCachePos].x=xpos;
+		partyHeadPos[partyHeadCachePos].gameId=pwinC?pwinC->index:0;
+		if (pwinC&&pwinC->manaMax&&pwinC->infoMs&&dwCurMs<pwinC->infoMs) {
+			if (!pwinC->switchkey[0]&&pwinC->index>=1&&tSwitchWindowKeys[pwinC->index][0].key>0) {
+				formatKey(pwinC->switchkey,tSwitchWindowKeys[pwinC->index-1][0].key);
+			}
+			int rw=46*pwinC->mana/pwinC->manaMax;if (rw>46) rw=46;
+			d2gfx_DrawRectangle(xpos,8,xpos+rw,13,0x91,5);
+			d2gfx_DrawRectangle(xpos+rw,8,xpos+46,13,0,5);
+			int x=xpos,y=92;
+			if (pwinC->isTeam) {
+				wszTemp[0]='T';wszTemp[1]=0;
+				x+=drawBgText(wszTemp,x,y,0,0x76)+3;
+			}
+			if (pwinC->hPotion) {
+				wsprintfW(wszTemp,L"%d",pwinC->hPotion);
+				x+=drawBgText(wszTemp,x,y,0,0x0A)+3;
+			}
+			if (pwinC->mPotion) {
+				wsprintfW(wszTemp,L"%d",pwinC->mPotion);
+				x+=drawBgText(wszTemp,x,y,0,0x91)+3;
+			}
+			if (pwinC->rPotion) {
+				wsprintfW(wszTemp,L"%d",pwinC->rPotion);
+				x+=drawBgText(wszTemp,x,y,0,0x4B)+3;
+			}
+			x=xpos;y=105;
+			if (pwinC->minions) {
+				if (pwinC->enMinions) {
+					wsprintfW(wszTemp,L"%d/",pwinC->enMinions);
+					x+=drawBgText(wszTemp,x,y,1,0x76);
 				}
-				if (pwin->mPotion) {
-					wsprintfW(wszTemp,L"%d",pwin->mPotion);
-					x+=drawBgText(wszTemp,x,y,0,0x91)+3;
-				}
-				if (pwin->rPotion) {
-					wsprintfW(wszTemp,L"%d",pwin->rPotion);
-					x+=drawBgText(wszTemp,x,y,0,0x4B)+3;
-				}
-				x=xpos;y=105;
-				if (pwin->minions) {
-					if (pwin->enMinions) {
-						wsprintfW(wszTemp,L"%d/",pwin->enMinions);
-						x+=drawBgText(wszTemp,x,y,1,0x76);
-					}
-					wsprintfW(wszTemp,L"%d",pwin->minions);
-					x+=drawBgText(wszTemp,x,y,0,0x76)+3;
-				}
-				if (pwin->quantity) {
-					wsprintfW(wszTemp,L"%d",pwin->quantity);
-					x+=drawBgText(wszTemp,x,y,0,0x68)+3;
-				}
-				y=106;
-				if (pwin->minionsHp) {
-					int rw=46*pwin->minionsHp/100;if (rw>46) rw=46;
-					d2gfx_DrawRectangle(xpos,y,xpos+rw,y+5,0x76,5);
-					d2gfx_DrawRectangle(xpos+rw,y,xpos+46,y+5,0,5);
-				}
-				break;	
+				wsprintfW(wszTemp,L"%d",pwinC->minions);
+				x+=drawBgText(wszTemp,x,y,0,0x76)+3;
+			}
+			if (pwinC->quantity) {
+				wsprintfW(wszTemp,L"%d",pwinC->quantity);
+				x+=drawBgText(wszTemp,x,y,0,0x68)+3;
+			}
+			y=106;
+			if (pwinC->minionsHp) {
+				int rw=46*pwinC->minionsHp/100;if (rw>46) rw=46;
+				d2gfx_DrawRectangle(xpos,y,xpos+rw,y+5,0x76,5);
+				d2gfx_DrawRectangle(xpos+rw,y,xpos+46,y+5,0,5);
+			}
+			if (pwinC->switchkey[0]) {
+				wsprintfW( wszTemp, L"%hs",pwinC->switchkey);
+				d2win_DrawText(wszTemp, xpos+46-GetTextWidth(wszTemp), 57, 4, 1);
 			}
 		}
 	}
@@ -192,9 +218,23 @@ void __fastcall DrawPartyHeadPath(int xpos , RosterUnit *pRosterUnit){
 		wsprintfW( wszTemp, L"%d" , pRosterUnit->dwLevelNo );
 		DrawCenterText(1, wszTemp ,	xpos+20 ,	15 ,	4 ,1,1);
 	}
+	partyHeadCachePos++;
 }
-
-void __declspec(naked) DrawPartyHeadPath_ASM() {
+/*
+6FB0BA99 - 56                    - push esi
+6FB0BA9A - 8B F0                 - mov esi,eax
+6FB0BA9C - 85 F6                 - test esi,esi
+6FB0BA9E - 57                    - push edi
+6FB0BA9F - C7 44 24 14 00000000  - mov [esp+14],00000000 { 0 }
+*/
+void __declspec(naked) StartDrawPartyHeadPatch_ASM() {
+	__asm {
+		mov partyHeadCachePos,0
+		mov dword ptr [esp+0x18],0
+		ret
+	}
+}
+void __declspec(naked) DrawPartyHeadPatch_ASM() {
 	//[ebx]  xpos
 	//eax  ypos
 	//[esp+0C]  pRosterUnit
@@ -206,7 +246,7 @@ void __declspec(naked) DrawPartyHeadPath_ASM() {
 		push edi
 		push eax
 		
-		call DrawPartyHeadPath
+		call DrawPartyHeadPatch
 		
 		pop eax
 		pop edi

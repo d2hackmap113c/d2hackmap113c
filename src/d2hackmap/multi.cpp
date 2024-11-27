@@ -146,6 +146,7 @@ int loadRuntimeInfo(D2Window *pwin,int id) {
 	makeRuntimeInfoPath(path,id);
 	if (!fileExist(path)) return 0;
 	memset(pwin,0,sizeof(D2Window));
+	pwin->index=id;
 	FILE *fp=fopen(path,"r");if (!fp) return 0;
 	while (1) {
 		char *line=fgets(buf,256,fp);if (!line) break;
@@ -464,6 +465,13 @@ void refresh_followers(int groupSize) {
 		if (d2>d2raw) continue;
 		pwin->isTeam=1;dwTeamMemberCount++;
 	}
+}
+void toggle_follower(int gameId) {
+	if (gameId>d2winLastId) refresh_clients();
+	D2Window *pwin=&d2wins[gameId];
+	if (gameId==dwGameWindowId||!pwin->hwnd||!pwin->sameGame) return;
+	pwin->isTeam=!pwin->isTeam;
+	if (pwin->isTeam) dwTeamMemberCount++;else dwTeamMemberCount--;
 }
 void follower_stop_follow() {
 	if (dwLeaderId&&dwLeaderGameId) {

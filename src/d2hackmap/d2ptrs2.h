@@ -28,6 +28,10 @@
 #define d2multi_ADDR 0x6F9D0000
 	D2VARADDR(d2multi,0x6F9E9C60, EditboxPreferences,    void *)  //6F9E9C5C+4
 	D2VARADDR(d2multi,0x6FA09CC0, GameListControl,       D2EditBox *)
+	D2VARADDR(d2multi,0x6FA09D2C, GameName,       D2EditBox *)
+	D2VARADDR(d2multi,0x6FA09D30, GamePassword,       D2EditBox *)
+	D2VARADDR(d2multi,0x6FA09D34, GameDescription,       D2EditBox *)
+
 #undef d2multi_ADDR
 
 #ifdef DEFINE_D2PTR

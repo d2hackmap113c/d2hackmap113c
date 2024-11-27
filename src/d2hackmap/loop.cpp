@@ -3,7 +3,7 @@
 #include "multi.h"
 #include "auto.h"
 
-char *szVersion="20241022";
+char *szVersion="20241127";
 static char *wszProgTitle = "<Hackmap>: Sting's Hackmap For Diablo II fixed by ding (v1.13c.1.4) (%s) https://github.com/d2hackmap113c/d2hackmap113c/";
 int fDebugMs=0;
 int dwChangeLeftSkill;
@@ -68,7 +68,9 @@ static void checkTag(char *tag) {
 	else if (_stricmp(tag,"bugKCountess")==0) tBugAutoQuitHellAct1.isOn=1;
 }
 char *getCharTag(char *name);
+extern int fPartyListValid,dwPetListChangeCount,dwPetListChangeVerify;
 static void gameStart() {
+	fPartyListValid=0;dwPetListChangeCount=1;dwPetListChangeVerify=0;
 //--- m_pub.h ---
 	dwPlayerFcrMs=600;dwSkillChangeCount=1;dwSkillChangeCountVerify=0;
 	dwCurMs=GetTickCount();
