@@ -329,10 +329,10 @@ MapTargets[Durance of Hate Level 3][339]:3,"Teleport","传送点"
 DuranceOfHateLevel3TeleportShift: -20,0
 //Act4
 MapTargets[Outer Steppes][Plains of Despair]:0
-MapTargets[Plains of Despair][City of the Damned]:0
 MapTargets[Plains of Despair][Izual on Minimap]:0
-MapTargets[City of the Damned][River of Flame]:0
+MapTargets[Plains of Despair][City of the Damned]:0
 MapTargets[City of the Damned][Plains of Despair]:0
+MapTargets[City of the Damned][River of Flame]:0
 MapTargets[River of Flame][Chaos Sanctuary]:0
 MapTargets[River of Flame][Hellforg on Minimap]:0,"Hellforg","Hellforg"
 MapTargets[Chaos Sanctuary][255]:30,"Center","中心点"
@@ -679,8 +679,8 @@ SinglePlayerMonsterExpHPToggle: 1, -1 //单人模式显示怪物经验值
 // 按住Alt键左键点击头像可切换到对应窗口
 // 按住Ctrl键左键点击头像可设置跟随
 Multi Client Toggle: 1,CTRL+ALT+VK_W
-MultiClientMaxWindowId: 8 //最多8个窗口
-MultiClientGroupSize1: 8 //第一组为前8个窗口
+MultiClientMaxWindowId: 10 //最多10个窗口
+MultiClientGroupSize1: 10 //第一组为前8个窗口
 MultiClientStartFollowKey1: SHIFT+VK_F //要求第一组跟随，需在周围
 MultiClientGroupSize2: 3 //第二组为前3个窗口
 MultiClientStartFollowKey2: SHIFT+VK_G //要求第二组跟随，需在周围

@@ -3,7 +3,7 @@
 #include "multi.h"
 #include "auto.h"
 
-char *szVersion="20241127";
+char *szVersion="20241211";
 static char *wszProgTitle = "<Hackmap>: Sting's Hackmap For Diablo II fixed by ding (v1.13c.1.4) (%s) https://github.com/d2hackmap113c/d2hackmap113c/";
 int fDebugMs=0;
 int dwChangeLeftSkill;

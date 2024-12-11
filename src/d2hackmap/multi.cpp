@@ -466,12 +466,24 @@ void refresh_followers(int groupSize) {
 		pwin->isTeam=1;dwTeamMemberCount++;
 	}
 }
+static int sendStartFollowCmd(D2Window *pwin) {
+	return PostMessageA(pwin->hwnd,WM_KEYUP,VK_AUTOFOLLOW_CMD,(MCC_StartFollow<<24)|dwGameWindowId);
+}
+static int sendStopFollowCmd(D2Window *pwin) {
+	return PostMessageA(pwin->hwnd,WM_KEYUP,VK_AUTOFOLLOW_CMD,(MCC_StopFollow<<24)|dwGameWindowId);
+}
 void toggle_follower(int gameId) {
 	if (gameId>d2winLastId) refresh_clients();
 	D2Window *pwin=&d2wins[gameId];
 	if (gameId==dwGameWindowId||!pwin->hwnd||!pwin->sameGame) return;
 	pwin->isTeam=!pwin->isTeam;
-	if (pwin->isTeam) dwTeamMemberCount++;else dwTeamMemberCount--;
+	if (pwin->isTeam) {
+		dwTeamMemberCount++;
+		sendStartFollowCmd(&d2wins[gameId]);
+	} else {
+		dwTeamMemberCount--;
+		sendStopFollowCmd(&d2wins[gameId]);
+	}
 }
 void follower_stop_follow() {
 	if (dwLeaderId&&dwLeaderGameId) {
@@ -568,7 +580,7 @@ int MultiClientStartFollow(int groupSize) {
 	for (int i=1;i<=d2winLastId;i++) {
 		D2Window *pwin=&d2wins[i];
 		if (i==dwGameWindowId||!pwin->hwnd||!pwin->sameGame||!pwin->isTeam) continue;
-		if (!PostMessageA(pwin->hwnd,WM_KEYUP,VK_AUTOFOLLOW_CMD,(MCC_StartFollow<<24)|dwGameWindowId)) continue;
+		sendStartFollowCmd(pwin);
 	}
 	curGrpSize=groupSize;
 	return 1;
@@ -578,7 +590,7 @@ int MultiClientStopFollow() {
 	for (int i=1;i<=d2winLastId;i++) {
 		D2Window *pwin=&d2wins[i];
 		if (i==dwGameWindowId||!pwin->hwnd||!pwin->sameGame) continue;
-		PostMessageA(pwin->hwnd,WM_KEYUP,VK_AUTOFOLLOW_CMD,(MCC_StopFollow<<24)|dwGameWindowId);
+		sendStopFollowCmd(pwin);
 		pwin->isTeam=0;
 	}
 	dwTeamMemberCount=0;

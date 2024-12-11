@@ -99,7 +99,8 @@ void QuestNewLevel() {
 		unsigned short *game=*GAMEQUESTDATA;
 		if ((!(game[14]&0x8000))&&(player[14]&1)) { //game not done, player done
 			//use key to pass ACT2
-			//102D->1035->1025
+			//102D->1035->1025,1125,1845
+			//
 			//Q23 A000 Q24 A000 Q25 8000
 			if (QUESTDATA[0][14]&0x18) { //player not reset
 				d2client_ShowGameMessage(

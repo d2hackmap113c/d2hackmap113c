@@ -28,12 +28,15 @@ Item Colours[2050,2055,2060,2065,2070,2075,2090]:         -1,-2 ,-2,-2       //C
 //Item Colours[59-63,152-156,255-259][1,2,3][1,2][5]: 1,0x62,0x62,0x62 //4 sockets polearms
 //Item Colours[59-60][1,2,3][1][5]: 1,0x62,0x62,0x62       //4 sockets polearms
 
+Item Colours[1001-1004,1047-1049,1117,1044,1090,1113,1114][1,2,3][1][3]: 1,0x62 ,0x62,0x62 //2 sockets cap STR60
+Item Colours[2055-2059]:         1,0x62 ,0x62,0x62       //»Æ
+Item Colours[2060-2064]:         1,0x62 ,0x62,0x62       //À¶
+
 Item Colours[1068][3][1][1,4]: 1,0x62 ,0x62,0x62 //mage plate 3 sockets body armor
 Item Colours[1068,1124-1127,1138][1,2,3][1][4,5]: 1,0x62 ,0x62,0x62 //3,4 sockets body armor
-//Item Colours[1001-1004,1047-1049,1117,1044,1090,1113,1114][1,2,3][1][3]: 1,0x62 ,0x62,0x62 //2 sockets cap STR60
 Item Colours[1005-1007,1053,1115,1116][1,2,3][1][4]: 1,-2,0x62,-2       //3 sockets cap STR63·Ç×Ê
 //Item Colours[1007,1115,1116][1,2,3][1][1,4]: 1,0x62,0x62,0x62       //3 sockets cap STR63
-Item Colours[1007][1,2,3][1][1]: 1,0x62,-2,0x62       //max 3 sockets cap STR63
+//Item Colours[1007][1,2,3][1][1]: 1,0x62,-2,0x62       //max 3 sockets cap STR63
 Item Colours[1007][1,2,3][1][4]: 1,0x62,0x62,0x62       //3 sockets cap STR63
 //Item Colours[1024,1091,1045,1046][1,2,3][1][3]: 1,0x62 ,0x62,0x62 //2 sockets shield
 Item Colours[1025,1026,1028][1,2,3][1][4,5]: 1,-2,0x62,-2 //3 sockets shield·Ç×Ê
@@ -53,8 +56,6 @@ Item Colours[201][1,2,3][1,2][5]: 1,0x62 ,0x62,0x62       //Berserker Axe¿ñÕ½Ê¿¸
 //Item Colours[68,161][1,2,3][1][5]: 1,0x62 ,0x62,0x62       //4 sockets stave
 Item Colours[1193-1197][1,2,3][1,2][1,4,5]: 1,0x62 ,0x62,0x62       //pal¶Ü
 //Item Colours[1085,1087,1156][1,2,3][1,2][1]: 1,0x62 ,0x62,0x62 //belt
-//Item Colours[2055-2059]:         1,0x62 ,0x62,0x62       //»Æ
-//Item Colours[2062-2064]:         1,0x62 ,0x62,0x62       //À¶
 //Item Colours[2077]:         1,0x62 ,0x62,0x62       //°×Diamond 27->28
 
 AutoSummonSkeletonLevelAdjust: 0

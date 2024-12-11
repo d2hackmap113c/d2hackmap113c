@@ -132,21 +132,8 @@ void d2s_init(struct d2s_file *pfile) {
 	h->npcMagic=0x7701;
 	h->npcSize=52;
 	h->attrMagic=0x6667;
-	pfile->attrs[0]=256;
-	pfile->attrs[1]=256;
-	pfile->attrs[2]=256;
-	pfile->attrs[3]=256;
-	pfile->attrs[6]=256<<8;
-	pfile->attrs[7]=256<<8;
-	pfile->attrs[8]=256<<8;
-	pfile->attrs[9]=256<<8;
-	pfile->attrs[10]=256<<8;
-	pfile->attrs[11]=256<<8;
-	pfile->attrs[12]=h->charLevel;
-	pfile->attrs[13]=1000000000;
-	pfile->attrs[14]=10000;
-	pfile->attrs[15]=2500000;
-	//memset(pfile->skills,20,30);
+	for (int i=0;i<16;i++) pfile->attrs[i]=0;
+	memset(pfile->skills,0,30);
 }
 int d2s_write(struct d2s_file *pfile,char *outbuf,int size) {
 	struct bitstream bs={0};

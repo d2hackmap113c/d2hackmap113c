@@ -848,8 +848,8 @@ int __cdecl blockSendPacket(int regs) {
 			if (dwCurrentLevel==Level_LutGholein) {
 				int q=QUESTDATA[0][14];
 				switch (pUnit->dwTxtFileNo) {
-					case Mon_Jerhyn:if (q==0x102D||q==0x112D) dwUpdateQuestMs=dwCurMs+500;break;
-					case Mon_Meshif1:if (q==0x1035||q==0x1135) dwUpdateQuestMs=dwCurMs+500;break;
+					case Mon_Jerhyn:if (q&0x1008) dwUpdateQuestMs=dwCurMs+500;break;
+					case Mon_Meshif1:if (q&0x1010) dwUpdateQuestMs=dwCurMs+500;break;
 				}
 			}
 			break;
@@ -880,7 +880,8 @@ int __cdecl blockSendPacket(int regs) {
 					//action 3: revive param=playerId
 					break;
 				default:
-					gameMessage("Entity action txt=%d action=%d param=%d\n",pUnit->dwTxtFileNo,action,param);
+					if (tShowTestInfo.isOn) 
+						gameMessage("Entity action txt=%d action=%d param=%d\n",pUnit->dwTxtFileNo,action,param);
 			}
 			break;
 		}
