@@ -1,0 +1,140 @@
+//Misc items, internal id + 2001
+Elixir, elx: 2001
+hpo: 2002
+mpo: 2003
+hpf: 2004
+mpf: 2005
+Stamina Potion, vps: 2006
+Antidote Potion, yps: 2007
+Rejuvenation Potion, rvs: 2008
+Full Rejuvenation Potion, rvl: 2009
+Thawing Potion, wms: 2010
+Tome of Town Portal, tbk: 2011
+Tome of Identify, ibk: 2012
+Amulet, amu: 2013
+Viper Amulet, Top of the Horadric Staff, vip: 2014
+Ring, rin: 2015
+Item Gold, gld: 2016
+Scroll of Inifuss 1, bks: 2017
+Scroll of Inifuss 2, Key to the Cairn Stones, bkd: 2018
+Arrows, aqv: 2019
+Torch, tch: 2020
+Bolts, cqv: 2021
+Scroll of Town Portal, tsc: 2022
+Scroll of Identify, isc: 2023
+Heart, hrt: 2024
+Brain, brz: 2025
+Jawbone, jaw: 2026
+Eye, eyz: 2027
+Horn, hrn: 2028
+Tail, tal: 2029
+Flag, flg: 2030
+Fang, fng: 2031
+Quill, qll: 2032
+Soul, sol: 2033
+Scalp, scz: 2034
+Spleen, spe: 2035
+Key: 2036
+The Black Tower Key, luv: 2037
+Potion of Life, xyz: 2038
+A Jade Figurine, j34: 2039
+The Golden Bird, g34: 2040
+Lam Esen's Tome, bbb: 2041
+Horadric Cube, box: 2042
+Horadric Scroll, tr1: 2043
+Mephisto's Soulstone, mss: 2044
+Book of Skill, ass: 2045
+Khalim's Eye, qey: 2046
+Khalim's Heart, qhr: 2047
+Khalim's Brain, qbr: 2048
+Ear: 2049
+Chipped Amethyst, gcv: 2050
+Flawed Amethyst, gfv: 2051
+Amethyst, gsv: 2052
+Flawless Amethyst, gzv: 2053
+Perfect Amethyst, gpv: 2054
+Chipped Topaz, gcy: 2055
+Flawed Topaz, gfy: 2056
+Topaz, gsy: 2057
+Flawless Topaz, gly: 2058
+Perfect Topaz, gpy: 2059
+Chipped Sapphire, gcb: 2060
+Flawed Sapphire, gfb: 2061
+Sapphire, gsb: 2062
+Flawless Sapphire, glb: 2063
+Perfect Sapphire, gpb: 2064
+Chipped Emerald, gcg: 2065
+Flawed Emerald, gfg: 2066
+Emerald, gsg: 2067
+Flawless Emerald, glg: 2068
+Perfect Emerald, gpg: 2069
+Chipped Ruby, gcr: 2070
+Flawed Ruby, gfr: 2071
+Ruby, gsr: 2072
+Flawless Ruby, glr: 2073
+Perfect Ruby, gpr: 2074
+Chipped Diamond, gcw: 2075
+Flawed Diamond, gfw: 2076
+Diamond, gsw: 2077
+Flawless Diamond, glw: 2078
+Perfect Diamond, gpw: 2079
+Minor Healing Potion, hp1: 2080
+Light Healing Potion, hp2: 2081
+Healing Potion, hp3: 2082
+Greater Healing Potion, hp4: 2083
+Super Healing Potion, hp5: 2084
+Minor Mana Potion, mp1: 2085
+Light Mana Potion, mp2: 2086
+Mana Potion, mp3: 2087
+Greater Mana Potion, mp4: 2088
+Super Mana Potion, mp5: 2089
+Chipped Skull, skc: 2090
+Flawed Skull, skf: 2091
+Skull, sku: 2092
+Flawless Skull, skl: 2093
+Perfect Skull, skz: 2094
+Herb, hrb: 2095
+Small Charm, cm1: 2096
+Large Charm, cm2: 2097
+Grand Charm, cm3: 2098
+rps: 2099
+rpl: 2100
+bps: 2101
+bpl: 2102
+El Rune, r01: 2103
+Eld Rune, r02: 2104
+Tir Rune, r03: 2105
+Nef Rune, r04: 2106
+Eth Rune, r05: 2107
+Ith Rune, r06: 2108
+Tal Rune, r07: 2109
+Ral Rune, r08: 2110
+Ort Rune, r09: 2111
+Thul Rune, r10: 2112
+Amn Rune, r11: 2113
+Sol Rune, r12: 2114
+Shael Rune, r13: 2115
+Dol Rune, r14: 2116
+Hel Rune, r15: 2117
+Io Rune, r16: 2118
+Lum Rune, r17: 2119
+Ko Rune, r18: 2120
+Fal Rune, r19: 2121
+Lem Rune, r20: 2122
+Pul Rune, r21: 2123
+Um Rune, r22: 2124
+Mal Rune, r23: 2125
+Ist Rune, r24: 2126
+Gul Rune, r25: 2127
+Vex Rune, r26: 2128
+Ohm Rune, r27: 2129
+Lo Rune, r28: 2130
+Sur Rune, r29: 2131
+Ber Rune, r30: 2132
+Jah Rune, r31: 2133
+Cham Rune, r32: 2134
+Zod Rune, r33: 2135
+Jewel, jew: 2136
+Malah's Potion, ice: 2137
+Scroll of Knowledge, 0sc: 2138
+Scroll of Resistance, tr2: 2139

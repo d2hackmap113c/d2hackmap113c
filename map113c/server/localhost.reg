@@ -1,0 +1,11 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\Blizzard Entertainment\Diablo II]
+"bnetip"="localhost"
+"MAX_PLAYER"="8"
+"Always Run"="1"
+"Resolution"="1"
+"Last BNet"="name"
+"Preferred Realm"="D2GS"
+"Save Path"=""
+"InstallPath"=""
