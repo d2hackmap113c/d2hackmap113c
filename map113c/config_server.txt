@@ -1,3 +1,4 @@
+//本功能只支持单机或TCPIP或连接由..\d2server113c\d2server.exe创建的battle.net服务器才能生效
 //If hackmap has patched d2game.dll, then sending special message can active admin commands described in admin.txt
 #Load Symbols File: "symbols\keycodes.txt"
 ServerEnableSlainCowKing: 1

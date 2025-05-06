@@ -79,8 +79,31 @@ int DropProtection(UnitAny *pUnit) {
 			} else {
 				int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
 				//LOG("drop %d\n",index);
+				if (index==2153) {
+					if (pUnit->pStatList) {
+						StatList *plist=pUnit->pStatList;
+						if (plist->dwListFlag&0x80000000) {
+							if (plist->sFullStat.pStats) {
+								Stat *stat=&plist->sFullStat;
+								int n=stat->wStats;
+								if (n<511) {
+									StatEx *se=stat->pStats;
+									for (int i=0;i<n;i++) {
+										int id=se[i].wStatId;if (id!=359) continue;
+										int value=se[i].dwStatValue;
+										int param=se[i].wParam&0xFFFF;
+										index=GetItemIndex(param)+1;
+										break;
+									}
+								}
+							}
+						}
+					}
+				}
 				if (2103<=index&&index<=2135) { //rune
 					if (aDropProtectRune[index-2103]) return 1;
+				} else if (index==2098) { //grand charm
+					if (hasProp(pUnit,188,1)) return 1; //+1 skill
 				} else if (index==2098) { //grand charm
 					if (hasProp(pUnit,188,1)) return 1; //+1 skill
 				}

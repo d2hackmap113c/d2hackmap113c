@@ -574,9 +574,14 @@ int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 				if (PLAYER->pInventory->pCursorItem) {
 					if (tDropProtectionToggle.isOn) {
 						if (
-							(!(d2client_pScreenBlocked[0]&1)&&*d2client_pMouseX>SCREENSIZE.x/2) //x,y is inverted
+							(!(d2client_pScreenBlocked[0]&1)&&*d2client_pMouseX>SCREENSIZE.x/2)
 							||
-							(*d2client_pMouseX<SCREENSIZE.x/2&&(!(d2client_pScreenBlocked[0]&2)||d2client_CheckUiStatus(UIVAR_NPCTRADE)))
+							(*d2client_pMouseX<SCREENSIZE.x/2&&
+								!(*d2client_pUiModItemOn)
+								&&(!(d2client_pScreenBlocked[0]&2)
+								||(*d2client_pUiNpcTradeOn)
+								)
+							)
 							) {
 							if (DropProtection(PLAYER->pInventory->pCursorItem)) {
 								char keyname[256];formatKey(keyname,tDropProtectionToggle.key);
@@ -589,7 +594,8 @@ int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 					}
 				} else {
 					dwQuickSwapItemMs=0;
-					if ((*d2client_pScreenBlocked&1) &&(GetKeyState(VK_SHIFT)&0x8000||GetKeyState(VK_MENU)&0x8000)) {
+					if ((*d2client_pScreenBlocked&1) 
+						&&(GetKeyState(VK_SHIFT)&0x8000||GetKeyState(VK_MENU)&0x8000||GetKeyState(VK_CONTROL)&0x8000)) {
 						if (d2client_CheckUiStatus(UIVAR_INVENTORY)||d2client_CheckUiStatus(UIVAR_CUBE)
 							||d2client_CheckUiStatus(UIVAR_STASH)||d2client_CheckUiStatus(UIVAR_PPLTRADE))
 							dwQuickSwapItemMs=dwCurMs+(fIsSinglePlayer?0:dwQuickSwapItemDelayMs);

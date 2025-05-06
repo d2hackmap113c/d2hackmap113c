@@ -401,6 +401,7 @@ World *getSinglePlayerWorld() {
 	return singlePlayerWorld;
 }
 int singlePlayerSaveGame(char *path) {
+	if (!fIsSinglePlayer) return 0;
 	char dumpbuf[8192];
 	int size;
 	getSinglePlayerWorld();
@@ -976,8 +977,14 @@ int getFcrFrame(int type,UnitAny *pUnit) {
 	return 23;
 }
 /*IAS
-ama(Long Bow): 0:13 10:12 20:11 40:10 65:9 105:8 200:7
 ama(Hunter Bow): 0:12 10:11 25:10 45:9 75:8 145:7
+ama(Long Bow): 0:13 10:12 20:11 40:10 65:9 105:8 200:7
+bar(Long Bow): 0:14 10:13 20:12 35:11 55:10 90:9 155:8 
+pal(Long Bow): 0:15 10:14 20:13 30:12 50:11 75:10 125:9 
+dru(Long Bow): 0:15 10:14 20:13 30:12 50:11 75:10 125:9 
+sor(Long Bow): 0:16 10:15 20:14 30:13 45:12 65:11 105:10 175:9 
+asn(Long Bow): 0:16 10:15 20:14 30:13 45:12 65:11 105:10 175:9 
+nec(Long Bow): 0:17 10:16 15:15 30:14 40:13 60:12 90:11 140:10
 */
 BOOL IsFullWindow() {
   WINDOWINFO wi;

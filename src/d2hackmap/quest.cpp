@@ -276,7 +276,8 @@ void __fastcall BugKDProtect(DWORD param2 ) {
 			d2client_ShowGameMessage(L"Q43: All seals are open", 2);
 			return;
 		case 0x0D:d2client_ShowGameMessage(L"Q43 Diablo is dead", 2);return;
-		case 0x0E:d2client_ShowGameMessage(L"Q42 Mephisto's stone is destoried", 2);return;
+		case 0x0E:d2client_ShowGameMessage(L"Q42 (89 0E) Mephisto's stone is destoried", 2);
+			dwUpdateQuestMs=dwCurMs+500;return;
 		case 0x0F:d2client_ShowGameMessage(L"Q51 Overseer is dead", 2);return;
 		case 0x10:d2client_ShowGameMessage(L"Q53 Anya is saved", 2);return;
 		case 0x11:d2client_ShowGameMessage(L"Q54 Nihlathak is dead", 2);return;
@@ -363,6 +364,8 @@ Q41
 	5D 16 00 02 00 00 //get close
 	5D 16 00 03 00 00 //killed
 	5D 16 02 00 00 00 //got skill points
+Q42
+	5D 18 00 0D 00 00 //Mephisto's stone is destoried
 Q43
 	5D 17 00 01 00 00 //enter Chaos Sanctuary
 	5D 17 00 0D 00 00 //killed Diablo
@@ -414,6 +417,11 @@ Q52
 				//QuestNewLevel();
 			}
 			break;
+		case 0x18:
+			if (aPacket[2] == 0x00&&aPacket[3]==0x0D) {
+				d2client_ShowGameMessage(L"Q42 (5D 18) Mephisto's stone is destoried", 2);
+				dwUpdateQuestMs=dwCurMs+500;return;
+			}
 		case 0x20:
 			switch (aPacket[1]) {
 				case 0x20:
@@ -424,6 +432,9 @@ Q52
 						} else if (aPacket[3]==0x03) {
 							d2client_ShowPartyMessage(L"Q52: All barbrian rescued",2);
 						}
+					} else if (aPacket[2]==0x2) { 
+						partyMessage("got runes");
+						dwUpdateQuestMs=dwCurMs+500;
 					}
 					break;
 				case 2:dwUpdateQuestMs=dwCurMs+500;break;

@@ -384,12 +384,9 @@ static void countGemRunes(FILE *fp,UnitAny *pUnit) {
 	while (pUnit) {
 		if (pUnit->dwUnitType!=UNITNO_ITEM) goto next;
 		int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
+		int count=1;
 		if ( index >2999 ) index= 2999;
-		if (2103<=index&&index<=2135) {
-			int r=index-2102;nRune[r]++;
-			if (r<22) hasLRune++;
-			else hasHRune++;
-		} else if (index==2153) {
+		if (index==RUNE_COLLECTOR_ID) {
 			if (pUnit->pStatList) {
 				StatList *plist=pUnit->pStatList;
 				if (plist->dwListFlag&0x80000000) {
@@ -402,25 +399,34 @@ static void countGemRunes(FILE *fp,UnitAny *pUnit) {
 								int id=se[i].wStatId;if (id!=359) continue;
 								int value=se[i].dwStatValue;
 								int param=se[i].wParam&0xFFFF;
-								int r=param-609;
+								index=GetItemIndex(param)+1;
+								count=value;
+								break;
+								/*int r=param-609;
 								if (1<=r&&r<=33) nRune[r]+=value;
 								if (r<22) hasLRune+=value;
 								else hasHRune+=value;
+								*/
 							}
 						}
 					}
 				}
 			}
+		}
+		if (2103<=index&&index<=2135) {
+			int r=index-2102;nRune[r]+=count;
+			if (r<22) hasLRune+=count;
+			else hasHRune+=count;
 		} else if (2050<=index&&index<=2079) {
 			int t=index-2050;
-			nGem[t%5][t/5]++;
-			hasGem[t%5]++;
+			nGem[t%5][t/5]+=count;
+			hasGem[t%5]+=count;
 		} else if (2090<=index&&index<=2094) {
 			int t=index-2090;
-			nGem[t][6]++;
-			hasGem[t]++;
+			nGem[t][6]+=count;
+			hasGem[t]+=count;
 		} else if (index==2008||index==2009) {
-			rpotions++;
+			rpotions+=count;
 		}
 next:
 		pUnit = d2common_GetNextItemInInv(pUnit);

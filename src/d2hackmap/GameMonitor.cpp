@@ -12,6 +12,7 @@ int dwHPotionCount=0,dwMPotionCount=0,dwRPotionCount=0,dwArrowCount=0,dwCArrowCo
 
 void ShowGameCount();
 ToggleVar 		tCountDown={	TOGGLEVAR_ONOFF,	0,	-1,	1,	"Count Down"};
+ToggleVar 		tDrawRuneCollectorCount={	TOGGLEVAR_ONOFF,	0,	-1,	1,	"Draw Rune Collector Count"};
 int 				dwGameMonitorX=			-10;
 int 				dwGameMonitorY=			-110;
 int 				dwCountDownFontSize=			3;
@@ -33,6 +34,7 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT, "MonitorQuantity",     &fMonitorQuantity,  4},
 	{CONFIG_VAR_TYPE_INT, "MonitorDurability",     &fMonitorDurability,  4},
 	{CONFIG_VAR_TYPE_KEY, "CountDown",		&tCountDown},
+	{CONFIG_VAR_TYPE_KEY, "DrawRuneCollectorCount",		&tDrawRuneCollectorCount},
 	{CONFIG_VAR_TYPE_INT, "CountDownFontSize",		&dwCountDownFontSize,4},
 	{CONFIG_VAR_TYPE_INT, "GameMonitorX",		&dwGameMonitorX,4},
 	{CONFIG_VAR_TYPE_INT, "GameMonitorY",		&dwGameMonitorY,4},
@@ -93,6 +95,7 @@ int beltLayers;
 int dwNextHPotionId,dwNextMPotionId;
 static int minHPotionType,minMPotionType;
 static int throwWeaponIdx;
+static int hasRuneCollectorInv,hasRuneCollectorStash;
 int dwThrowWeaponId,dwNextStackingId,dwNextStackX,dwNextStackY,dwNextStackLoc;
 
 static void checkWeapon(UnitAny *pUnit) {
@@ -192,17 +195,27 @@ void recheckSelfItems() {
 			}
 		} 
 	}
+	hasRuneCollectorInv=0;hasRuneCollectorStash=0;
 	for (UnitAny *pUnit = d2common_GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = d2common_GetNextItemInInv(pUnit)) {
 		if (pUnit->dwUnitType!=UNITNO_ITEM) continue ;
 		switch (pUnit->pItemData->nLocation) { 
 			case 0:break;//ground
-			case 1: //cube/stash/inv
+			case 1: {//cube/stash/inv
+				int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
 				switch (pUnit->pItemData->nItemLocation) {
-					case 0:checkItem(pUnit,0);break;//bag
+					case 0: {//bag
+						if (index==RUNE_COLLECTOR_ID) hasRuneCollectorInv++;
+						checkItem(pUnit,0);
+						break;
+					}
 					//case 3:checkItem(pUnit,2);break;//cube
-					case 4:break;//stash
+					case 4: {//stash
+						if (index==RUNE_COLLECTOR_ID) hasRuneCollectorStash++;
+						break;
+					}
 				}
 				break;
+			}
 			case 2:checkItem(pUnit,1);break; //belt
 			case 3:break;//body
 		}
@@ -350,6 +363,61 @@ org:
 		ret 
 	}
 }
+void drawRuneCollectorCount() {
+	wchar_t wbuf[32];
+	InventoryBIN* pInvs=*d2common_pInventoryTxt;if (!pInvs) return;
+	InventoryBIN *pInv=pInvs+16+12;
+	int nGridWidth=pInv->grid.w;
+	int nGridHeight=pInv->grid.h;
+	int dx=(SCREENSIZE.x-800)/2;
+	int dy=(SCREENSIZE.y-600)/2;
+	d2win_SetTextFont(8);
+	for (UnitAny *pUnit = d2common_GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = d2common_GetNextItemInInv(pUnit)) {
+		if (pUnit->dwUnitType!=UNITNO_ITEM) continue;
+		if (pUnit->pItemData->nItemLocation!=0&&pUnit->pItemData->nItemLocation!=4) continue;
+		int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
+		if (index!=RUNE_COLLECTOR_ID) continue;
+		if (!pUnit->pStatList) continue;
+		StatList *plist=pUnit->pStatList;
+		if (!(plist->dwListFlag&0x80000000)) continue;
+		if (!plist->sFullStat.pStats) continue;
+		Stat *stat=&plist->sFullStat;
+		int n=stat->wStats;
+		if (n>=511) continue;
+		InventoryBIN *pInv=pInvs+16;
+		if (pUnit->pItemData->nItemLocation==4) pInv+=12; //stash
+		int left=pInv->grid.x0+3;
+		int bottom=pInv->grid.y0+nGridHeight-1;
+		StatEx *se=stat->pStats;
+		for (int i=0;i<n;i++) {
+			int id=se[i].wStatId;if (id!=359) continue;
+			int count=se[i].dwStatValue;
+			int txt=se[i].wParam&0xFFFF;
+			int x=pUnit->pItemPath->unitX;
+			int y=pUnit->pItemPath->unitY;
+			int xpos = left+x*nGridWidth+dx;
+			int ypos = bottom+y*nGridHeight+dy;
+			int index = GetItemIndex(txt)+1;
+			if (2103<=index&&index<=2135) {
+				int r=index-2102;
+				wsprintfW(wbuf,L"R%d",r);
+				drawBgText(wbuf,xpos,ypos-14,0,0x10);
+			} else if (2050<=index&&index<=2079) {
+				static char *gemNames[6]={"紫","黄","蓝","绿","红","白"};
+				int t=index-2050;
+				wsprintfW(wbuf,L"%hs%d",gemNames[t/5],(t%5)+1);
+				drawBgText(wbuf,xpos,ypos-14,0,0x10);
+			} else if (2090<=index&&index<=2094) {
+				int t=index-2090;
+				wsprintfW(wbuf,L"骷%d",t+1);
+				drawBgText(wbuf,xpos,ypos-14,0,0x10);
+			}
+			wsprintfW(wbuf,L"%d",count);
+			drawBgText(wbuf,xpos,ypos,0,0x10);
+			break;
+		}
+	}
+}
 
 extern wchar_t wcsLevelTargetName[128];
 extern int dwTargetDistance,dwTargetDistanceMs;
@@ -400,6 +468,7 @@ void DrawMonitorInfo(){
 	}
 	int xpos = SCREENSIZE.x+dwGameMonitorX;
 	int ypos = SCREENSIZE.y+dwGameMonitorY;
+	if (*d2client_pUiNewSkillOn) ypos-=45;
 	DWORD dwTimer = dwCurMs;
 	DWORD dwOldFone = d2win_SetTextFont(8);
 	if (wszNpcTradeInfo[0]) {
@@ -568,6 +637,11 @@ void DrawMonitorInfo(){
 			int x=xpos-sw;
 			d2gfx_DrawRectangle(x,ypos-12,x+sw,ypos,0x10,5);d2win_DrawText(wszTemp, x , ypos, 0, 0);
 			ypos = ypos-dwCountDownGap;
+		}
+	}
+	if (tDrawRuneCollectorCount.isOn) {
+		if (hasRuneCollectorStash&&*d2client_pUiStashOn||hasRuneCollectorInv&&*d2client_pUiInventoryOn) {
+			drawRuneCollectorCount();
 		}
 	}
 	d2win_SetTextFont(dwOldFone);

@@ -101,6 +101,7 @@ int 			dwScreenScrollOffset[16][2]={ {0}};
 ToggleVar tMiniMapScrollKeys[16]={ 0};
 int 			dwMiniMapScrollOffset[16][2]={ 0};
 int dwDuranceOfHateLevel3TeleportShift[2];
+static int dwTravincalShift[2];
 static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_KEY, "RevealActAutomapKey",      &tRevealAct       },
 	{CONFIG_VAR_TYPE_KEY, "RevealLevelAutomapKey",    &tRevealLevel     },
@@ -212,6 +213,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "RescueBarDx",&dwRescueBarDx      , 4 },
   {CONFIG_VAR_TYPE_INT, "RescueBarDy",&dwRescueBarDy      , 4 },
   {CONFIG_VAR_TYPE_INT_ARRAY1, "DuranceOfHateLevel3TeleportShift",&dwDuranceOfHateLevel3TeleportShift,2,{0}},
+  {CONFIG_VAR_TYPE_INT_ARRAY1, "TravincalShift",&dwTravincalShift,2,{0}},
 
 };
 void automap_addConfigVars() {
@@ -467,6 +469,18 @@ static void modifySealTarget() {
 		}
 	}
 }
+static void modifyTempleTarget() {
+	MinimapLevel *pMapLevel=&minimapLevels[Level_Travincal];if (!pMapLevel->targets) return;
+	for (MinimapLevelTarget *pTarget=pMapLevel->targets;pTarget;pTarget=pTarget->next) {
+		if (pTarget->dstLvl==Level_DuranceofHateLevel1) {
+				pTarget->p.unitX+=dwTravincalShift[0];
+				pTarget->p.unitY+=dwTravincalShift[1];
+				pTarget->ready|=2;
+				pTarget->p.drawX=(pTarget->p.unitX-pTarget->p.unitY)*16;
+				pTarget->p.drawY=(pTarget->p.unitX+pTarget->p.unitY)*8;
+		}
+	}
+}
 static void modifyTeleportTarget() {
 	MinimapLevel *pMapLevel=&minimapLevels[Level_DuranceofHateLevel3];if (!pMapLevel->targets) return;
 	for (MinimapLevelTarget *pTarget=pMapLevel->targets;pTarget;pTarget=pTarget->next) {
@@ -600,9 +614,10 @@ void RevealAutomapLevel(DrlgLevel *pDrlgLevel,int mode) {
 	}
 	pMapLevel->revealed=mode;
 	switch (pDrlgLevel->dwLevelNo) {
-		case Level_FrigidHighlands: modifyRescueBarTarget();break;
-		case Level_ChaosSanctuary: modifySealTarget();break;
+		case Level_Travincal: modifyTempleTarget();break;
 		case Level_DuranceofHateLevel3: modifyTeleportTarget();break;
+		case Level_ChaosSanctuary: modifySealTarget();break;
+		case Level_FrigidHighlands: modifyRescueBarTarget();break;
 	}
 	LOG("RevealAutomapLevel %d mode=%d time=%d ms\n",pDrlgLevel->dwLevelNo,mode,GetTickCount()-ms);
 	if (pDrlgLevel->dwLevelNo==dwCurrentLevel) {updateTargetName();AutoMapRoute();}

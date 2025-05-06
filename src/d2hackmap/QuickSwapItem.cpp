@@ -43,6 +43,28 @@ static UnitAny *getCube() {
 	}
 	return pUnit;
 }
+static UnitAny *findRuneCollector(int txtNo) {
+	for (UnitAny *pUnit = d2common_GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = d2common_GetNextItemInInv(pUnit)) {
+		if (pUnit->dwUnitType!=UNITNO_ITEM) continue;
+		int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
+		if (index!=RUNE_COLLECTOR_ID) continue;
+		if (!pUnit->pStatList) continue;
+		StatList *plist=pUnit->pStatList;
+		if (!(plist->dwListFlag&0x80000000)) continue;
+		if (!plist->sFullStat.pStats) continue;
+		Stat *stat=&plist->sFullStat;
+		int n=stat->wStats;
+		if (n>=511) continue;
+		StatEx *se=stat->pStats;
+		for (int i=0;i<n;i++) {
+			int id=se[i].wStatId;if (id!=359) continue;
+			int count=se[i].dwStatValue;
+			int txt=se[i].wParam&0xFFFF;
+			if (txt==txtNo) return pUnit;
+		}
+	}
+	return NULL;
+}
 extern int dwInvType; //0:4*10 1:8*10
 static void updateInv(InventoryType *inv, int id) {
 	InventoryBIN* pInvs=*d2common_pInventoryTxt;if (!pInvs) return;
@@ -85,6 +107,31 @@ int PutItemIntoCube(D2MSG *pMsg,int dx,int dy) {
 	SendMessage(pMsg->hwnd, WM_MOUSEMOVE, pMsg->wParam, pMsg->lParam);
 	return 1;
 }
+static void putIntoRuneCollector(UnitAny *pItem,D2MSG *pMsg,int dx,int dy) {
+	UnitAny *rc=findRuneCollector(pItem->dwTxtFileNo);if (!rc) return;
+	int nItemLocation=rc->pItemData->nItemLocation;
+	InventoryType *pInvType=NULL;
+	int invtype=0;
+	if (nItemLocation==0) { //inv
+		pInvType=&invTypes[0];updateInv(pInvType,0);
+	} else if (nItemLocation==4) { //stash
+		if (!d2client_CheckUiStatus(UIVAR_STASH)) return;
+		int invtype=EXPANSION?1:3;
+		pInvType=&invTypes[invtype];
+		updateInv(pInvType,EXPANSION?12:8);
+	} else return;
+	int x=rc->pItemPath->unitX;
+	int y=rc->pItemPath->unitY;
+	int bottom=pInvType->bottom;
+	int left=pInvType->left;
+	int xpos = left + x*pInvType->nGridWidth+dx;
+	int ypos = bottom + y*pInvType->nGridHeight+dy;
+	SendMessage(pMsg->hwnd, WM_MOUSEMOVE, pMsg->wParam, MAKELONG(xpos, ypos));
+	LOG("Put into rune collector %x %x (%d,%d) %d %d\n",pMsg->hwnd,pMsg->wParam,x,y,xpos,ypos);
+	SendMessage(pMsg->hwnd, WM_LBUTTONDOWN, pMsg->wParam, MAKELONG(xpos, ypos));
+	SendMessage(pMsg->hwnd, WM_LBUTTONUP, pMsg->wParam, MAKELONG(xpos, ypos));
+	SendMessage(pMsg->hwnd, WM_MOUSEMOVE, pMsg->wParam, pMsg->lParam);
+}
 void MoveItem(D2MSG *pMsg) {
 	int dx=(SCREENSIZE.x-800)/2;
 	int dy=(SCREENSIZE.y-600)/2;
@@ -96,8 +143,17 @@ void MoveItem(D2MSG *pMsg) {
 		else if (2080<=index&&index<=2089) ; //healing and mana potion
 		else if (PutItemIntoCube(pMsg,dx,dy)) return;
 	}
+	if (GetKeyState(VK_CONTROL)&0x8000) {
+		int index = GetItemIndex(pItem->dwTxtFileNo)+1;//all config arrays are based 1
+		if (2103<=index&&index<=2135 //runes
+			||2050<=index&&index<=2079 //gems
+			||2090<=index&&index<=2094) { //skeleton
+			putIntoRuneCollector(pItem,pMsg,dx,dy);
+			return;
+		}
+	}
 	int invtype = 0;
-	if ( d2client_CheckUiStatus(UIVAR_STASH) ) {
+	if (d2client_CheckUiStatus(UIVAR_STASH)) {
 		if ( EXPANSION ) invtype = 1; 
 		else invtype = 3; //非资箱子
 		updateInv(&invTypes[invtype],EXPANSION?12:8);
@@ -119,16 +175,6 @@ void MoveItem(D2MSG *pMsg) {
 			int gridX=*d2client_pCursorInvGridX;
 			int gridY=*d2client_pCursorInvGridY;
 			if (gridX<0&&gridY<0) {LOG("swap error\n");return;}
-			//if (gridX) {nx+=gridX;left-=gridX*pInvType->nGridWidth;}
-			//if (gridY) {ny+=gridY;bottom-=gridY*pInvType->nGridHeight;}
-			/*switch (invtype) {
-				case 1: //stash
-					if (gridX==2) {nx=10;ny=10;}
-					break;
-				case 2: //cube
-					if (gridX==4) {nx=10;ny=8;}
-					break;
-			}*/
 			if (gridX||gridY) LOG("box %d (%d,%d) size %d*%d\n",invtype,gridX,gridY,nx,ny);
 			DWORD dwBoxType = d2common_GetBoxType(PLAYER, pInvType->invType, EXPANSION);
 			for (int x = 0; x < nx; ++x) {

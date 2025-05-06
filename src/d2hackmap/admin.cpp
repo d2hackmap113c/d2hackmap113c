@@ -799,7 +799,7 @@ int __fastcall skipServerPacket15(World *world,UnitAny *player,char *packet,int 
 					if (sk>=0) {
 						int maxSocket=d2common_getItemMaxSocket(pItem);if (sk>maxSocket) sk=maxSocket;
 						d2common_setItemFlag(pItem,ITEMFLAG_SOCKETED,sk>0);
-						d2common_setItemSocket(pItem,sk);
+						if (sk) d2common_setItemSocket(pItem,sk);
 					}
 					if (flags&4) d2common_setItemEthereal(pItem);
 					if (socketStat.n) {

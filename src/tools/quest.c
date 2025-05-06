@@ -159,14 +159,21 @@ static void loadTagFile(char *path) {
 	doneCharacterTag();
 }
 static int compareNames(const void *a,const void *b) {return strcmp(*(char **)a,*(char **)b);}
-void check(FILE *fp,char *realm,char *account,char *name) {
+typedef struct {
+	int lv;char *acc,*name,*line;
+} Char;
+Char chars[128];int nchar=0;
+void check(char *realm,char *account,char *name) {
 	static int attrBits[16]={10,10,10,10,10,8,21,21,21,21,21,21,7,32,25,25,};
+	static char *diffName[3]={"pt","em","dy"};
 	struct d2s_header header;
 	char path[512];
 	short quest[48];
+	char buf[1024];int pos=0;
 	sprintf(path,"%s\\%s\\%s\\%s.d2s",snapshotPath,realm,account,name);
 	int size;char *dat=load(path,&size);
-	if (!dat) {fprintf(fp,"can't find %s\n",path);return;}
+#define PRT(...) pos+=_snprintf(buf+pos,1024-pos,__VA_ARGS__)
+	if (!dat) {PRT("can't find %s\n",path);return;}
 	memcpy(&header,dat,sizeof(struct d2s_header));
 	struct bitstream bs={0};
 	bs.buf=dat+767;
@@ -193,28 +200,28 @@ void check(FILE *fp,char *realm,char *account,char *name) {
 		FILE *fp2=fopen(path,"rb");
 		if (fp2) {fread((char *)quest,96,1,fp2);fclose(fp2);}
 		else {
-			fprintf(fp,d<2?"  --------":"  -----");
+			PRT(d<2?"  --------":"  -----");
 			continue;
 		}
-		fprintf(fp,"  ");
-		if (quest[27]&3) fprintf(fp,"  ");
-		else fprintf(fp,"g%d",d);
+		PRT("  ");
+		if (quest[27]&3) PRT("  ");
+		else PRT("g%d",d);
 		if (d<2) {
-			fprintf(fp," ");
-			if (quest[35]&1) fprintf(fp,"  ");
-			else if (quest[35]&2) fprintf(fp,"S%d",d);
-			else fprintf(fp,"s%d",d);
-			fprintf(fp," ");
-			if (quest[36]&1) fprintf(fp,"  ");
-			else fprintf(fp,"r%d",d);
+			PRT(" ");
+			if (quest[35]&1) PRT("  ");
+			else if (quest[35]&2) PRT("S%d",d);
+			else PRT("s%d",d);
+			PRT(" ");
+			if (quest[36]&1) PRT("  ");
+			else PRT("r%d",d);
 		} else {
-			fprintf(fp," ");if (quest[20]&1) fprintf(fp,"  ");else fprintf(fp,"G%d",d);
-			//fprintf(fp," ");if (!exp||quest[37]&0x100) fprintf(fp,"  ");else fprintf(fp,"resist%d:%04X",d,quest[37]);
+			PRT(" ");if (quest[20]&1) PRT("  ");else PRT("G%d",d);
+			//PRT(" ");if (!exp||quest[37]&0x100) PRT("  ");else PRT("resist%d:%04X",d,quest[37]);
 		}
 		if (d==2) {
-		fprintf(fp," ");if (!exp||quest[1]&1) fprintf(fp,"  ");else fprintf(fp,"skillA%d",d,quest[1]);
-		fprintf(fp," ");if (!exp||quest[9]&0x8001) fprintf(fp,"  ");else fprintf(fp,"skillB%d",d,quest[9]);
-		fprintf(fp," ");if (!exp||quest[25]&1) fprintf(fp,"  ");else fprintf(fp,"skillC%d",d,quest[25]);
+		PRT(" ");if (!exp||quest[1]&1) PRT("  ");else PRT("skillA%d",d,quest[1]);
+		PRT(" ");if (!exp||quest[9]&0x8001) PRT("  ");else PRT("skillB%d",d,quest[9]);
+		PRT(" ");if (!exp||quest[25]&1) PRT("  ");else PRT("skillC%d",d,quest[25]);
 		}
 		dL=d;act=1;
 		if (quest[7]&1) act=2;
@@ -223,15 +230,27 @@ void check(FILE *fp,char *realm,char *account,char *name) {
 		if (quest[28]&1) act=5;
 		if (quest[40]&1) act=6;
 	}
-	fprintf(fp," %cL%d",header.charStatus&0x20?' ':'c',header.charLevel);
-	if (header.charLevel<10) fputc(' ',fp);
-	fprintf(fp," %d-%d",dL,act);
-	fprintf(fp," %s/%s",account,name);
+	PRT(" %cL%d",header.charStatus&0x20?' ':'c',header.charLevel);
+	if (header.charLevel<10) PRT(" ");
+	
+	PRT(" %s%d",diffName[dL],act);
+	PRT(" %s/%s",account,name);
 	struct CharTag ct;ct.name=name;
 	struct CharTag *pct=(struct CharTag *)bsearch(&ct,charTags,nCharTag,sizeof(struct CharTag),compareCharTag);
-	fprintf(fp," %dK",(gold+goldstash)/1000);
-	if (pct) fprintf(fp,"  %s",pct->tag);
-	fprintf(fp,"\n");
+	PRT(" %dK",(gold+goldstash)/1000);
+	if (pct) PRT("  %s",pct->tag);
+	Char *p=&chars[nchar++];
+	p->lv=header.charLevel;
+	p->acc=account;
+	p->name=name;
+	p->line=strdup(buf);
+}
+int compareChar(const void *a,const void *b) {
+	Char *c1=(Char *)a;
+	Char *c2=(Char *)b;
+	int t=c1->lv-c2->lv;if (t) return -t;
+	//t=strcmp(c1->acc,c2->acc);if (t) return t;
+	return strcmp(c1->name,c2->name);
 }
 void scan_realm(char *realm) {
 	WIN32_FIND_DATAA fd;
@@ -248,8 +267,6 @@ void scan_realm(char *realm) {
 	}
 	if (accountN==0) return;
 	qsort(accounts,accountN,sizeof(char *),compareNames);
-	sprintf(path,"%s\\%s\\report.txt",snapshotPath,realm);
-	FILE *reportFp=fopen(path,"w+");assert(reportFp);
 	for (int i=0;i<accountN;i++) {
 		sprintf(path,"%s\\%s\\account\\%s.txt",snapshotPath,realm,accounts[i]);
 		FILE *fp=fopen(path,"r");assert(fp);
@@ -261,8 +278,15 @@ void scan_realm(char *realm) {
 		}
 		qsort(names,nameN,sizeof(char *),compareNames);
 		for (int j=0;j<nameN;j++) {
-			check(reportFp,realm,accounts[i],names[j]);
+			check(realm,accounts[i],names[j]);
 		}
+	}
+	sprintf(path,"%s\\%s\\z_report.txt",snapshotPath,realm);
+	FILE *reportFp=fopen(path,"w+");assert(reportFp);
+	printf("output %s\n",path);
+	qsort(chars,nchar,sizeof(Char),compareChar);
+	for (int i=0;i<nchar;i++) {
+		fputs(chars[i].line,reportFp);fputc('\n',reportFp);
 	}
 	fclose(reportFp);
 }

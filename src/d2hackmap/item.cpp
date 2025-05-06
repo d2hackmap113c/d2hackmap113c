@@ -48,7 +48,10 @@ ToggleVar 	tSocketProtect={				TOGGLEVAR_ONOFF,	0,	-1,	1 , "Socket protect"};
 char 			szItemExtInfoCfgName[2][256]	={			{'\0'}};
 ToggleVar 	tItemExtInfo={			TOGGLEVAR_ONOFF,	0,	-1,	1 , "ItemExtInfo" , &LoadExtInfo};
 BYTE 			nDefaultExtInfoColour=				8;
+int maxTownPortalCount=20,maxIdentifyPortalCount=20;
 static ConfigVar aConfigVars[] = {
+  {CONFIG_VAR_TYPE_INT, "MaxTownPortalCount", &maxTownPortalCount,     4 },
+  {CONFIG_VAR_TYPE_INT, "MaxIdentifyPortalCount", &maxIdentifyPortalCount,     4 },
 //--- m_ItemDefine.h ---
   {CONFIG_VAR_TYPE_CHAR_ARRAY1, "ItemColours",       &anItemColours,       4, {3000 , 8 , 2 , 7}},
   //{CONFIG_VAR_TYPE_CHAR_ARRAY1, "WeaponColours",     &anItemColours,       4, {1000 , 8 , 2 , 7}},
@@ -199,8 +202,8 @@ BYTE GetItemColour(UnitAny *pItem,int isMinimap) {
 	char color = anItemColours[index][dwQuality][!!d2common_CheckItemFlag(pItem, ITEMFLAG_ETHEREAL, 0, "?")][socknum][arridx];
 	if (color==-2) {
 		if (fMonitorQuantity) {
-			if (index==2021&&dwTownPortalCount<20) return (BYTE)-1;
-			if (index==2022&&dwIdentifyPortalCount<20) return (BYTE)-1;
+			if (index==2021&&dwTownPortalCount<maxTownPortalCount) return (BYTE)-1;
+			if (index==2022&&dwIdentifyPortalCount<maxIdentifyPortalCount) return (BYTE)-1;
 		}
 		if (fUsingBow&&index==2018) {
 			return (BYTE)-1;

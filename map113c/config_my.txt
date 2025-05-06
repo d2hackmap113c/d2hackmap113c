@@ -9,6 +9,8 @@ AlertNoBug: 0,VK_
 Item ExtInfo Toggle :          0,-1               //开启命令
 Item Indexs Toggle:             0, -1               // 物品索引开关(map索引)
 Item FileIndexs Toggle:         0, -1               // 物品文件索引及类别等
+MaxTownPortalCount:  100 //剩余回城卷轴少于100时显示地上的回城卷轴
+MaxIdentifyPortalCount: 100 //剩余辨识卷轴少于100时显示地上的辨识卷轴
 
 Snapshot Path: "D:\snapshot"
 Enable Snapshot: 1,VK_ //快照总开关
@@ -40,8 +42,8 @@ ShowTestInfoToggle: 0,SHIFT+CTRL+ALT+VK_T //显示调试信息
 DoTestKey: SHIFT+CTRL+ALT+VK_T
 ServerTestKey: SHIFT+CTRL+ALT+VK_T
 
-ManaPotionMax: 75 //当人物法力上限超过此值时使用自动法力药剂
-ManaPotionValue: 10 //法力低于此值后喝药
+ManaPotionMax: 100 //当人物法力上限超过此值时使用自动法力药剂
+ManaPotionValue: 30 //法力低于此值后喝药
 AutoEnchantMana: 100 //法力低于100不强化
 //ManaPotionValue: 20 //法力低于此值后喝药
 
