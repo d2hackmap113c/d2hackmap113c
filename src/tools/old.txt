@@ -1,0 +1,137 @@
+
+void compare_mpq() {
+	char *names[]={
+		"patch_d2",
+		//"patch113",
+		"patch2020",
+		0,
+	};
+	globalListPath="d:/d2hackmap/map113c/runtime/mpqlist.txt";
+	globalListPath="d:/game/mpq/all_names.txt";
+	struct mpq *pmpqs[8];
+	for (int i=0;names[i];i++) {
+		char path[256],listprefix[256];
+		sprintf(path,"D:/code/git/d2/%s.mpq",names[i]);
+		sprintf(listprefix,"D:/code/git/d2/%s",names[i]);
+		pmpqs[i]=mpq_open(path,listprefix);
+	}
+	mpq_compare(pmpqs[0],pmpqs[1]);
+}
+void testD2charPath() {
+	char path[256],listprefix[256],spath[256];
+	char *name="d2char";
+	name="d2exp";
+	name="d2data";
+	sprintf(path,"D:/game/diablo2/%s.mpq",name);
+	sprintf(listprefix,"D:/game/diablo2/mpq/%s",name);
+	struct mpq *pmpq=mpq_open(path,listprefix);
+	char *PlrType[]={
+		//"AM","SO","NE","PA","BA",
+		"DZ","AI",
+		0};
+	char *Locations[]={"HD","TR","LG","RA","LA","RH","LH","SH","S1","S2","S3","S4","S5","S6","S7","S8",0};
+	char *items[]={
+	/*
+		"nil","lit","med","hev","hvy","des","brv","axe","fla","hax","mac","scm","buc","lrg","kit","sml",
+		"lsd","wnd","ssd","clb","tch","btx","hal","lax","mau","scy","whm","whp","jav","opl","gpl","sbw",
+		"lbw","lbb","sbb","pik","spr","tri","flc","sbr","glv","pax","bsd","flb","wax","wsc","wsd","clm",
+		"smc","fir","lht","cld","pos","rsp","lsp","unh","rsg","bld","shr","lhr","hbd","tkt","bab","pha",
+		"fan","pon","hd1","hd2","hd3","hd4","zz1","zz2","zz3","zz4","zz5","zz6","zz7","red","th2","th3",
+		"th4","th5","fbl","fsp","yng","old","brd","got","fez","rol","bsk","buk","sak","ban","fsh","snk",
+		"brn","blk","srt","lng","dln","btp","mtp","stp","svt","col","hod","hrn","lnk","tur","mlk","fhm",
+		"ghm","bhn","hed",
+		*/
+		"lit","med","hvy",
+		//alternateGfx armor
+"aar", "ba1", "ba3", "ba5", "bhm", "brs", "bsh", "buc", "cap", "chn", "crn", "dr1", "dr3", "dr4", "fhl", "fld", "ful", "ghm", "gth", "hbl", "hbt", "hgl", "hla", "hlm", "kit", "lbl", "lbt", "lea", "lgl", "lit", "lrg", "ltp", "mbl", "mbt", "mgl", "msk", "ne1", "ne2", "ne3", "pa1", "pa3", "pa5", "plt", "qlt", "rng", "scl", "skp", "spk", "spl", "stu", "tow", "vbl", "vbt", "vgl",
+		//alternateGfx weapon
+"am1", "am2", "am3", "axe", "axf", "brn", "bsd", "bst", "btx", "bwn", "clb", "clm", "clw", "crs", "cst", "dgr", "dir", "fla", "flc", "gix", "glv", "gpl", "gps", "gsd", "hal", "hax", "hxb", "jav", "ktr", "lax", "lbb", "lbw", "lsd", "lst", "lxb", "mac", "mau", "ob1", "ob3", "ob4", "opl", "ops", "pax", "pik", "pil", "sbb", "sbw", "scm", "scy", "skr", "spr", "ssd", "sst", "tri", "whm", "wnd", "ywn",
+		//"","lit","med","hvy","hlm", "skp","crs","crn","msk","bwn","spk","bst","bwn","cst","lst",
+		//"ghm","lbb","sbb","axe","brn","bsd","btx","lbw","sbw","clb","clm","fla","flc","glv","gpl",
+		//"hal","hax","jav","lax","lsd","mac","mau","opl","pax","pik","scm","scy","spr","ssd","tri",
+		//"whm",
+		0};
+	char *PlrMode[]={"DT","NU","WL","RN","GH","TN","TW","A1","A2","BL","SC","TH","KK","S1","S2","S3","S4","DD","SQ","KB",0};
+	char *ObjCode[]={
+"11","12","15","18","19","1R","1g","1y","25","29","2R","2n","2o","2p","2q","2s","2u","2v","2w","2x",
+"2y","2z","30","31","32","33","34","35","3L","3R","3a","3b","3c","3d","3f","3g","3h","3i","3j","3k",
+"3m","3n","3o","3p","3q","3s","3t","3u","3v","3w","3x","3y","3z","4R","4a","4b","4c","4u","4x","55",
+"5L","5a","5b","5c","5d","5e","5f","5g","5h","5i","5j","5k","5m","5n","5o","5q","5r","5s","5t","5u",
+"5v","5w","5x","5y","5z","60","61","62","6L","6a","6b","6c","6d","6e","6f","6g","6h","6i","6j","6k",
+"6m","6n","6o","6p","6q","6r","6s","6t","6u","6v","6w","6x","6y","70","7a","7b","7c","7d","7e","7f",
+"7g","7h","7y","7z","8L","8a","8b","8c","8d","8e","8f","8g","8h","8i","8j","8k","8m","8n","8o","8p",
+"8q","8r","8s","8t","8u","8v","8w","8x","8y","8z","98","99","9b","9c","9f","9g","9h","9i","A1","A2",
+"A3","A4","A7","AD","AF","B1","B2","B3","BC","BE","BF","BP","BR","BX","C1","C2","C3","C4","C5","C6",
+"CA","CB","CC","CL","CN","CT","D1","D2","D3","D4","D5","D6","D7","D8","D9","DA","DB","DD","DO","DX",
+"F1","F2","F3","F4","F5","F6","FB","FL","FN","FX","FY","FZ","GC","GF","GI","GP","GS","HA","HI","HL",
+"HM","HS","HW","IT","JC","JH","JT","L1","L2","MB","MC","MD","MF","MH","MJ","Mi","Mk","N1","N2","OB",
+"P2","PP","QC","QS","QX","Qt","Qy","Qz","R1","R2","R3","R4","R5","RB","RY","RZ","S1","S2","S3","S4",
+"S5","S6","SF","SG","SH","SJ","SN","SQ","SS","SY","SZ","T1","T2","TD","TL","TO","TP","TR","TS","TT",
+"TU","U1","U2","U3","U4","U5","V1","V2","W1","W2","WT","X1","X2","YD","Z1","Z2","Z3","Z4","Z5","a5",
+"aa","ab","ao","ap","au","ax","ay","az","b4","b5","b6","bd","bi","bj","bm","bo","bq","by","bz","c0",
+"c7","c8","c9","cd","ce","cf","cg","cj","cp","cq","cu","cx","cy","cz","de","df","dg","dj","dk","dl",
+"dn","dp","dt","dv","e1","e2","e3","e4","e5","e6","e7","e8","ea","ew","f8","f9","fh","ga","gd","h2",
+"hb","hc","hd","he","hg","hn","ho","hq","ht","hu","hv","ia","ib","ir","is","iu","iv","iw","ix","iy",
+"iz","jb","jd","jf","jq","jr","js","ju","jv","jw","jx","jy","jz","lw","lx","mr","mt","mu","mv","mw",
+"mx","my","mz","n5","n6","n7","oz","pp","px","py","q1","q2","q3","q4","q5","q6","q7","q8","q9","qa",
+"qb","qd","qe","qf","qg","qh","qi","qj","qk","ql","qm","qn","qo","qw","ra","rn","rw","s0","s9","ss",
+"ss ","sv","sx","tm","tp","tt","ub","ud","ux","uy","vb","ve","vf","vg","w3","w4","w5","w6","w7","wb",
+"wc","wd","we","wg","wh","wi","wj","wk","wl","wm","wn","wp","ws","wv","wy","wz","xb","xc","xd","xe",
+"xf","xg","xh","xi","xj","xk","xl","xm","xn","xo","xp","xq","xx","y1","y2","y3","y4","y6","y7","y8",
+"y9","ya","yb","yc","yf","yg","yi","ym","yn","yo","yp","yq","yr","ys","yt","yu","yv","yw","yx","yy",
+"yz","za","zc","zd","ze","zl","zq","zr","zs","zv","zw","zy",0,
+	};
+	char *ObjMode[]={"NU","OP","ON","S1","S2","S3","S4","S5",0};
+	char *weaponClass[]={"","hth","bow","1hs","1ht","stf","2hs","2ht","xbw","1js","1jt","1ss","1st","ht1","ht2",0};
+#define SSS(a) (sizeof(a)-1)/sizeof(a[0])
+	force_overwrite_path_name=1;
+	int match=0,not_match=0,n=0,nm=100000;
+	if (1) {
+		//DATA\GLOBAL\OBJECTS\SJ\TR\SJTRlitONhth.dcc
+		//DATA\GLOBAL\OBJECTS\55\COF\55NUhth.COF
+		printf("total %d\n",SSS(ObjCode)*SSS(ObjMode)*SSS(Locations));
+		for (char **objcode=ObjCode;*objcode;objcode++) {
+			for (char **pmode=ObjMode;*pmode;pmode++) {
+				for (char **loc=Locations;*loc;loc++) {
+					sprintf(spath,"data\\global\\objects\\%s\\%s\\%s%slit%shth.dcc",*objcode,*loc,*objcode,*loc,*pmode);
+					if (mpq_add_path(pmpq,spath)) match++;else not_match++;
+				}
+				sprintf(spath,"data\\global\\objects\\%s\\cof\\%s%shth.cof",*objcode,*objcode,*pmode);
+				if (mpq_add_path(pmpq,spath)) match++;else not_match++;
+				if (n++ > nm) {printf("(%d/%d),",match,not_match);fflush(stdout);nm=n+100000;}
+			}
+		}
+	}
+	if (0) {
+		//DATA\GLOBAL\CHARS\AM\COF\AMA11ht.COF
+		printf("total %d\n",SSS(PlrType)*SSS(PlrMode)*SSS(weaponClass));
+		for (char **plr=PlrType;*plr;plr++) {
+			for (char **pmode=PlrMode;*pmode;pmode++) {
+				for (char **cls=weaponClass;*cls;cls++) {
+					sprintf(spath,"data\\global\\chars\\%s\\cof\\%s%s%s.cof",*plr,*plr,*pmode,*cls);
+					if (mpq_add_path(pmpq,spath)) match++;else not_match++;
+					if (n++ > nm) {printf("(%d/%d),",match,not_match);fflush(stdout);nm=n+100000;}
+				}
+			}
+		}
+	}
+	if (0) {
+		//DATA\GLOBAL\CHARS\AM\LG\AMLGhvyWL1ht.dcc
+		printf("total %d\n",SSS(PlrType)*SSS(Locations)*SSS(items)*SSS(PlrMode)*SSS(weaponClass));
+		for (char **plr=PlrType;*plr;plr++) {
+			for (char **loc=Locations;*loc;loc++) {
+				for (char **item=items;*item;item++) {
+					for (char **pmode=PlrMode;*pmode;pmode++) {
+						for (char **cls=weaponClass;*cls;cls++) {
+							sprintf(spath,"data\\global\\chars\\%s\\%s\\%s%s%s%s%s.dcc",*plr,*loc,*plr,*loc,*item,*pmode,*cls);
+							if (mpq_add_path(pmpq,spath)) match++;else not_match++;
+							if (n++ > nm) {printf("(%d/%d),",match,not_match);fflush(stdout);nm=n+100000;}
+						}
+					}
+				}
+			}
+		}
+	}
+	printf("match=%d not_match=%d\n",match,not_match);
+	if (!fileExist(pmpq->listpath)||pmpq->modified) mpq_save_list(pmpq);
+}

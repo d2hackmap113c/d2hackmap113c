@@ -1,0 +1,38 @@
+VK_BACK:    退格键←
+VK_TAB:     Tab键
+VK_PAUSE:   PauseBreaK键
+VK_SPACE:   空格键
+VK_END:     End键
+VK_HOME:    Home键
+VK_INSERT:  Insert键
+VK_DELETE:  Delete键
+VK_UP:      上↑
+VK_DOWN:    下↓
+VK_LEFT:    左←
+VK_RIGHT:   右→
+
+VK_0 ~~ VK_9  : 大键盘 0 ~~ 9
+
+VK_A ~~ VK_Z : A ~~ Z
+
+VK_NUMPAD0 ~~ VK_NUMPAD9 : 小键盘0~9
+VK_MULTIPLY: 小键盘  *  号 
+VK_ADD: 小键盘 + 号
+VK_SUBTRACT: 小键盘 - 号
+VK_DIVIDE: 小键盘 / 号
+
+VK_F1 ~~ VK_F12 : F1 ~~ F12
+
+VK_SCROLL: SCROLL Lock键
+
+VK_OEM_1: ';:' 
+VK_OEM_PLUS: '+' 
+VK_OEM_MINUS: '-' 
+VK_OEM_COMMA: ', <' 
+VK_OEM_PERIOD: '. >' 
+VK_OEM_2: '/?'
+VK_OEM_3: '`~'
+VK_OEM_4: '[{' 
+VK_OEM_5: '\|' 
+VK_OEM_6: ']}' 
+VK_OEM_7: ''"' 

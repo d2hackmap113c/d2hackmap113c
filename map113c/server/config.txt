@@ -1,0 +1,37 @@
+mpq_path: d:\game\diablo2
+# original d2hackmap.dll
+d2hackmap_path0: "..\dll\d2hackmap.dll"
+# copy and loaded d2hackmapS.dll, so the original d2hackmap can be recompiled while running
+d2hackmap_path: "..\runtime\d2hackmapS.dll"
+d2hackmap_cfg_path: "..\"
+AutoUpdate: 0
+AutoUpdateUrl: http://your.website.url/for.update
+AutoUpdateVer: 0
+AutoUpdateTimeout: 30000
+D2CSIP: 127.0.0.1
+D2CSPort: 6113
+D2DBSIP: 127.0.0.1
+D2DBSPort: 6114
+MaxGames: 50
+MaxGameLife: 14400
+AdminPassword: 9e75a42100e1b9e0b5d3873045084fae699adcb0
+AdminPort: 8888
+AdminTimeout: 3600
+D2CSSecrect: 
+EnableNTMode: 1
+EnablePreCacheMode: 0
+IdleSleep: 1
+BusySleep: 1
+CharPendingTimeout: 600
+DebugNetPacket: 0
+DebugEventCallback: 0
+EnableGSLog: 1
+EnableGELog: 1
+EnableGEMsg: 0
+EnableGEPatch: 1
+IntervalReconnectD2CS: 50
+MultiCPUMask: 1
+MaxPreferUsers: 180
+MaxPacketPerSecond: 1200
+ServerConfFile: D2Server.ini
+MOTD: "Hello world!"

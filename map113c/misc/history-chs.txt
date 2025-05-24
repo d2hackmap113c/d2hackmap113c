@@ -1,0 +1,204 @@
+2005.10.30 2.24
+  1, 修正d2hackimap.exe在windows 9x下不能运行的bug
+
+2005.10.28 2.23
+  1, 修正d2hackmap.dll对Socketable Item Stats不能正确显示BUG
+
+2005.10.17 2.22
+  1, 修正d2hackmap.exe不能在9x下运行的Bug
+  2, 修正d2hackmap.dll不能记住上次游戏名字和密码的bug
+
+2005.10.14 2.21
+  1, 修正几个小Bug
+  2, d2hackmap.exe的Anti-detection有小改进
+
+2005.10.13 2.20
+  1, 改进Anti-detection
+  2, 改进完整性检查算法
+  3, 大幅度重构hackmap.exe
+
+2005.09.14 2.10 Lite
+  1, 2.10轻量级版，支持diablo II 1.11b。
+  2, 只支持安全开地图功能。
+
+2005.09.12 2.00
+  1, 修正全屏模式下Keep Game Window设为On时切换到桌面不能正常操作的BUG
+  2, 修正偷窥时点击装备导致游戏崩溃的BUG
+  3, 修改hackmap.exe界面，增加安全开地图配置选项
+  4, d2hackmap.cfg中"Quick Back Town Key" 重命名为"Quick Back To Town Key"
+
+2005.08.24 2.00 beta 3.1
+  1, 修正minimap不能显示地狱熔炉路线的问题
+  2, 修正Automap Active Room Toggle不能正常工作的问题
+  3, 修正在1.11新增场景开地图导致游戏崩溃的BUG
+
+
+2005.08.21 2.00 beta 3
+  1, 增强安全开地图功能。支持特殊地点位置显示，支持自定义地点位置显示。具体请参考d2hackmap.ini中的设置
+Bugfixes:
+  1, 修正在某些操作系统及安装了较高的service pack后hackmap.exe不能正常工作
+  2, 显示物品价格时引起游戏崩溃
+  3, Perm Show Orbs Toggle关闭时造成游戏崩溃
+  4, 启用危险怪物保护功能时造成游戏崩溃
+  5, 反复加载/卸载hackmap会引起游戏崩溃
+
+2005.08.13 2.00 beta 2
+---------------
+  1, 支持diablo II 1.11。
+  2, 不支持中文输入
+  3, 包括简单的Anti-detection
+
+Bugfixes:
+  1, 小地图waypoint，shrine等显示位置不正确
+  2 游戏中聊天功能不能使用
+  3, 打开quest对话框游戏崩溃
+  4, 镶嵌保护功能不能工作
+  5, 快速建立下次游戏功能不能工作
+  6, scroll lock功能不正常
+
+2004.11.19 1.16
+---------------
+  1, 修正几处hackmap loader的bug
+  2, 改进中文输入支持，可以在游戏中随时打开/关闭中文显示支持，缺省热键为U。不需要显示中文时最好设为关闭状态，以免LAG。
+
+2004.06.20 1.15
+---------------
+  1, 增加右键倒换物品功能。由"Right Click Swap Toggle"控制
+  2, 增强中文输入支持（支持繁体输入/显示）
+  3, 修正被敌对时不能自动退出的bug
+  4, 对minimap显示有很小改进
+  5, 增加"Auto Next Game Name"选项
+  6, 增加"Auto Next Game Password"选项
+
+2004.06.06 1.14
+---------------
+  1, 增加中文输入支持
+  2, 增加Version Checking Dll Action选项，把version checking和extrawork dll处理分开，方便自动加载。
+
+2004.05.27 1.13
+---------------
+  1, 修正了某些条件下不能重复加载 hackmap的bug。
+  2, 打开游戏崩溃时自动生成crashdump文件功能(需要dbghelp.dll)。
+  3, Anti-detection功能有少许改进。
+
+2004.05.22 1.12
+---------------
+  1, 增加自动开地图功能(Auto Reveal Act)。
+  2, 增加怪物4防显示 (Monster Resists Toggle"开关)。
+  3, 改进Quick Next Game算法。
+  4, 修正敌对玩家显示bug。
+  5, 修正Minimap不能显示Claw Viper Temple和Hellforge bug。
+
+2004.03.29 1.11
+---------------
+  1, 增加Quick Next Game Toggle。可以快速退出游戏，并对当前游戏名自动加1，方便run baal
+  2, 增加危险怪物定义，增强保护HC玩家。当遇见危险怪物（如black soul）且你的4r低于临界值时，可自动退出游戏或回城。具体用法见d2hackmap.cfg
+  3, 修正了一个加载/卸载d2hackmap时可能导致游戏进程崩溃的bug
+
+2004.03.12 1.10
+---------------
+  1, 修正了紫瓶、宝石等物品显示的兼容性问题
+  2, 增加了对一些特殊地点（如anya，izual等）的小地图支持
+
+2004.02.13 1.09
+---------------
+  1, 修正箱子的显示bug
+  2, 修正Item Index显示bug
+  3, 修正1.08和d2hackit的兼容性问题
+  4, 增加物品孔数设定，格式为：Item Colours[code][level][ethereal][sockets+1]
+  5, 增加一键回城（必须带回城书）功能，默认为退格键
+  6, 增加进入刚刚进入过的GAME的功能
+
+2004.02.11 1.08
+---------------
+  1, 修正箱子颜色bug
+  2, 修改了d2hackmap.vcb的一些内容。
+
+2004.02.07 1.07
+---------------
+  1, 增加自动升级配置文件功能，可将旧版本配置文件自动升级到最新版本，旧版本中已有的配置升级后不会改变。
+
+2004.02.04 1.06
+---------------
+  1, 增加百分比形式的Chicken Life：当life小于max life的一定百分比或某一固定值时自动退出
+  2, 配置名字变更："Perm Show Orb Toggle" to "Perm Show Orbs Toggle"
+  3, 增加中文界面语言包
+
+2004.02.01 1.05
+---------------
+   1, 增加显示game server ip功能
+
+2004.01.15 1.04
+---------------
+   1, 改进Integrity scan算法
+   2, 增加Anti-detection功能：包括防64/65检测，防version/extrawork dlls检查
+   3, 增加切换场景时自动安全开地图功能
+   4, 增加检测基于maphack 5.1 edited version改造的faked maphack检测功能
+   5, 修正了不能穿墙看怪物的bug
+   6, 修正了不能偷窥Valkyrie/golems等的装备的bug
+
+2004.01.13 1.03
+---------------
+   1, 增加了Integrity scan
+   2, 增加了安全开地图功能
+
+2004.01.10 1.02
+---------------
+   1, 增加了Hackmap Loader，可以不用D2Loader加载
+   2, 修正了一个卸载Hackmap时导致big error的bug
+
+2003.12.29 1.01 beta 2
+---------------------
+changes:
+  调整了目标提示配置:
+   1.01 beta 1               1.01 beta 2+
+   Automap Prompt Toggle --> Minimap Toggle
+   Automap Prompt Objects--> Minimap Cells
+   Automap Prompt Colour --> Minimap Cell Colour
+
+new features:
+  1, Enter Game Sound:进入游戏后声音提示，默认不提示
+  2, 出现big error时在d2hackmap.dll所在目录下自动生成d2hackmap.dmp文件,请压缩后寄给我。
+     
+
+2003.12.28 1.01 beta 1
+---------------------
+new feature:
+  Automap目标提示
+新增设置：
+Automap Prompt Toggle:		0,VK_P
+Automap Prompt Colour:		12
+// format: Automap Prompt Objects[level name][object no.1, object no.2, object no.3, ...] : 1
+// 1 for enable, -1 for disable
+//example 1, Prompt entry of Durance of Hate Level 3 when player is in Durance of Hate Level 2:
+Automap Prompt Objects[Durance of Hate Level 2][Durance of Hate Level 3]: 1
+//example 2, prompt entrys of Worldstone Keep Level 1 and Worldstone Keep Level 3 when player is in Worldstone Keep Level 2:
+Automap Prompt Objects[Worldstone Keep Level 2][Worldstone Keep Level 1, Worldstone Keep Level 3]: 1
+// 注意：VCB文件增加了level names部分，如果想使用原来的vcb文件需要把新增内容加进去。
+
+
+2003.12.28 1.0 beta 4
+---------------------
+bugfix:
+  1, unique monster tc显示问题
+
+2003.12.27 1.0 beta 3
+---------------------
+bugfix:
+  1, input line toggle crashes game
+  2, scroll lock方框不能正常显示
+调整了几个hotkey名称，和maphack保持一致
+
+
+2003.12.27 1.0 beta 2
+---------------------
+bugfix:
+  有些怪物颜色显示不正确
+
+2003.12.26 1.0 beta 1
+---------------------
+features:
+  1, 兼容maphack 5.1
+  2, 增加对ias/fhr/fbr等很多属性的显示，在角色状态窗口中可以看到。cfg里的缺省热健：VK_5--第一个属性；VK_6--前一个属性；VK_7--后一个属性
+  3, 偷窥属性点。cfg里的缺省热健为VK_9。不过好多地方不准确，只能作参考用。比如不包括charm的加成，anya的4r奖励看不到，vit/eng/life/mana只能看到装备的加成。
+  4, 增加keep Game Window开关，打开时禁止窗口模式运行时最小化窗口。

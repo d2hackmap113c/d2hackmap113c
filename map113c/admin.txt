@@ -1,0 +1,79 @@
+If hackmap has patched d2game.dll, then sending special message can active the following admin commands:
+,up: maximize character attributes
+,pass[1-5]: pass act1-5 and enable all waypoints
+,sleep: All monster stop moving
+,move: All monster start moving
+,lv<1-99>: set character level
+,waypoints: enable all waypoints
+,p<level 1-136>: open portal to level
+,ub
+stat{<stat0-356>[:param[:param2]]=value,...}: set stat values
+q<quality0-9>: Set quality: 0:random 1:low 2:normal 3:superior 4:magic 5:set 6:rare 7:unique 8:crafted 9:tampered
+e: Set ethereal flag设置无形物品
+i<item_id 1-306,1001-1202,2001-2151>: Create item specified by d2hackmap index掉落指定物品
+l<itemLevel 1-99>: Set item level 设置物品级别
+o<socket 1-6>: Set number of sockets设置孔数
+r<rune_id 1-33>: Create rune掉落符文
+s<set_id 0-126>: Create set item掉落套装物品
+u<unique_id 0-400>: Create unique item掉落暗金物品
+w<runeword_id 0-168>i<item_id 1-306,1001-1202,2001-2151>: drop runeword with item
+*/
+,q3i1002b1
+发送,i2042,stat{253,254},i2011,i2012掉落回城书辨识书和盒子
+发送,l66q3o4i1142r7r10r9r11 掉落66级超强统治者大盾和7,10,9,11符文(精神盾)
+发送,stat{7},l90q3o4ei256r30r23r30r24 掉落90级无形超强锐利之斧和30,23,30,24符文(无限)
+发送,u122 掉落乔丹之石
+
+粘贴以下内容至消息框发送得到相应的小护身符
+,stat{hp,mana},i2096   +479HP+223Mana
+,stat{def},i2096   +511ED增强防御+2037DEF防御
+,stat{LL,LM},i2096   127LL,127LM偷取生命(需5级)
+,stat{IAS,FRW,FHR,FBR,FCR},i2096   +107%IAS +107%FRW +107%FCR +107%FHR(需5级)
+,stat{ITD,PHM,OW,CB,slow},i2096   ITD忽视目标防御PHM防止敌人自疗127OW 127CB使目标减速99%(需6级)
+,stat{198:24:63=100},i2096 击中时有100%放出63级Charged Strike(需8级)
+,stat{198:35:63=100},i2096 击中时有100%放出63级Lightning Fury(需8级)
+,stat{str,dex},i2096   +223力量+95敏捷(需9级)
+,stat{aura-123=31},i2096   31级信念灵气(需14级) 
+,stat{skills},i2096   +7技能(需15级) 
+,stat{resist},i2096   +205所有抗性(需15级) 
+,stat{76=53,77=53},i2096  增加生命法力上限53%(需14级) 
+,stat{85=461},l1i2096   +461%经验(需15级) 
+,stat{97:54=63},i2096  +63至传送(需24级) 
+,stat{97:149=20},i2096  +20至BO
+
+  
+Bow猎弓: 
+	+511ED,+255-511火焰伤害,需求-100%,+107%IAS,+7技能,100OW,100CB,无法破坏的,无法被冻结,穿透攻击,箭矢或弓弹火焰爆炸,
+	击中时有100%放出63级Charged Strike,
+	使敌人减少255%火电抗,+461%火电伤害
+,i2019b5,socket{hp,mana,dam,IAS,skills},stat{dam,req,IAS,ITD,skills,OW,CB,indest,notFrozen,pierce,explode},l99o6q3i70b4  
+
+Throwing-Spear飞矛
+,socket{hp,mana,dam,IAS,skills},stat{dam,req,IAS,ITD,skills,OW,CB,indest,notFrozen,pierce,253,254},l99o6q3i52b4  
+
+Shield盾:
+,socket{hp,mana,dam,IAS,skills},stat{107:97=7,107:117=1,dam,req,198:24:63=100,198:35:63=100,198:82:63=15},l1q3o6i1046b5  
+,stat{indest,107:97=7,107:117=1,dam,req,198:24:63=100,198:35:63=100,198:82:63=15},l99q3o6ei1197b5  
+,w1i1026b5  
+
+Sword剑:
+,socket{hp,mana,dam,IAS,skills},stat{dam,req,IAS,ITD,skills,OW,CB,indest,notFrozen},l99o6q3i30b4  
+
+Jewel增强伤害的珠宝放到猎弓上:
+,stat{hp,mana,dam,IAS,skills},l1i2136i2136i2136i2136   
+
+Belt腰带Glove手套Cap帽子: +479生命+223法力
+,stat{hp,mana,dam,def,req,skills},l99q3o6i1006i1043i1029b8   
+Armor衣服: +479生命+223法力,物理伤害减少255%DR,+205所有抗性,+31所有抗性最大值,127LL,需求-100%,+7技能
+,stat{hp,mana,dam,def,resist,LL,LM,req,skills},l99q3o6i1021b3  
+Boot靴
+,stat{vit,hp,dam,mana,def,IAS,FRW,FHR,FBR,FCR,skills,aura:123=31},q3i1034b9   
+
+,stat{def,resist,LL,req,IAS,skills,indest,notFrozen},l99q3o6i1001,i1008 掉落+511ED增强防御+2037DEF防御,127LL,需求-100%,+107%IAS,+7技能,无法破坏的,无法被冻结,的帽子
+,stat{LL,req,IAS,ITD,PHM,OW,CB,slow,skills,indest,notFrozen},l99q3o6ei256 掉落511ED,127LL,需求-100%,+107%IAS,+491DAM,ITD忽视目标防御PHM防止敌人自疗127OW 127CB使目标减速99%,+7技能,无法破坏的,无法被冻结,的锐利之斧
+  2140-2145:key钥匙 
+  Gem 宝石: 紫2050-2054 黄2055-2059 蓝2060-2064 绿2065-2069 红2070-2074 白2075-2079 骷髅2090-2094
+  Charm: 2096-2098
+
+,stat{39,40},i2096 
+,stat{99},i2096

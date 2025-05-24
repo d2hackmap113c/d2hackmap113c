@@ -1,0 +1,903 @@
+﻿// vim*键快速导航
+// MapTargetSection 自动导航
+// 2024NewConfigSection 2024年新增或修改的设置
+// AutoEnchantSection 自动强化
+// AutoPotionSection 自动用药
+// MultiClientSection 多开设置
+// AutoSkillSection 自动使用技能 
+// AutoTeleportSection 自动传送
+// AutoSummonSection 自动召唤
+// DropProtectionSection 装备保护
+// Undo撤消
+
+Load Symbols File: "symbols\weapons.txt"
+Load Symbols File: "symbols\armors.txt"
+Load Symbols File: "symbols\misc.txt"
+Load Symbols File: "symbols\monster.txt"
+Load Symbols File: "symbols\missiles.txt"
+Load Symbols File: "symbols\levels.txt"
+Load Symbols File: "symbols\keycodes.txt"
+Load Symbols File: "symbols\skills.txt"
+Load Symbols File: "symbols\sets.txt" //这个符号文件需最后加载
+
+Visual Effect Mode: 0 //游戏特效 0:Original原特效 1:Infravision透视 2:LightOn透视+关闭灯光效果
+Visual Effect Key: VK_8 //切换游戏特效
+
+//0:No auto reveal不自动开图
+//1:Auto reveal important places当人物级别足够或过关后自动开重要区域块和导引线,省CPU不碍眼
+//2:Auto reveal current level当人物级别足够或过关后自动开当前level地图
+//3:Auto reveal curent act当人物级别足够或过关后自动开当前act地图
+Auto Reveal Mode: 1 //Only reveal important places
+Auto Reveal Character Level: 0  //当人物级别大于等于此值或过关后自动开图
+Reveal Act Automap Key: CTRL+ALT+VK_L         //开整幕地图
+Reveal Level Automap Key: ALT+VK_F                  //开当前区域地图
+
+Show CFGCheck Info:     1   //CFG校验 0 开启 1 关闭
+GameFilterSupport:       1   //游戏列表过滤器 游戏内无法重新加载
+Localization Support:    1   //中文支持 1 简体 2 繁体D2但使用简体聊天 3 繁体D2简体输入自动转繁体 游戏内无法重新加载
+FixSocketError:  1        //修正Socket出错判定，用于多开时防止出错
+SocketTimeOutValue: 100   //Socket超时时间，单位秒，游戏默认是100秒,用于特殊网络情况
+//-------------------------------常用快捷键设置-----------------------------
+
+Reload Config Key:              CTRL+VK_R          //游戏内重新加载配置0
+Reload Dll Key:              SHIFT+CTRL+ALT+VK_R          //游戏内重新加载配置0
+InstallPatchesToggle:				1,SHIFT+CTRL+ALT+VK_I //是否加载除键盘屏保之外的补丁
+Quick Exit Game Key:            VK_6        				//快速退出游戏,大键盘"6"
+Quick Next Game Key:            VK_OEM_PLUS         //快速退出游戏，游戏名自动+1,大键盘"+"
+Quick Next Game Key2:           -1                  //快速退出游戏，游戏名自动+2,未设置
+Quick Back To Town Key:         VK_5             //一键回城,大键盘"5"
+TakeWaypointToTownDis: 6 //如果在这个距离内有传送站，则使用传送站回城
+Use Custom Font Toggle:         2, -1               //中文输入
+Auto Invite Toggle:             1, -1 //             //自动邀请，最早进游戏的人物可以自动激活
+Auto Party Toggle:              1, -1 //             //自动接受组队邀请
+Auto Loot Permit :              1, -1 //       //HC自动开锁，小键盘4
+Wisper Notice Toggle:           0, -1 //       //收到密语时以聊天方式提示，小键盘5
+View Equipment Key:             VK_K //                //查看其他玩家装备(鼠标点中其他玩家的情况下启用)
+View Player Stats Key:          -1  //            //查看其它玩家属性(很多属性不准)"/ ?"键
+First Player Stat Key:          -1                  //查看玩家首个特殊属性
+Next Player Stat Key:           VK_7 //        //查看玩家下一页属性 "<"
+Previous Player Stat Key:       -1 // VK_OEM_COMMA        //查看玩家上一页属性 ">"
+Perm Show Items Toggle:         1, ALT+VK_S             //强制显示物品开关,不按ALT显示物品,抢DD方便,Y键
+Monster Resists Toggle:         1, -1 //             //怪物4R显示,D键
+Socket Protect Toggle:          1, VK_OEM_5        // SOCKET保护，防止不小心把DD镶到不应该镶的地方.\|键
+View Socketables Toggle:        0, VK_OEM_6             // 显示所镶物品开关, 大键盘]}
+Item Basic Stats Toggle:        0, VK_OEM_6             // 显示物品未镶前的原始状态开关, 大键盘]}
+View Socket Base Items Toggle : 0 ,VK_OEM_6             //查看物品所镶物品和基础材料]}
+Item Value Toggle:              1, VK_, 1000           //显示卖价35K物品卖出价值(金钱)
+Item Levels Toggle:             0, VK_              // iLvl显示
+Show Item Variable Prop Toggle: 1, -1               //显示装备变量范围(暗金，绿色，神符之语，防具基础防御，武器攻击范围等)
+
+//Bug 保护 ， 第3位  1 为进游戏校验  2 为触发任务时校验(巴尔转身，封印开完，老墨房间)
+BugKD Toggle:                   1, -1  , 2          //bugkd保护,通过后面设置仅提示不退出，所以不设置快捷键
+BugKM Toggle:                   1, -1  , 2          //bugkm保护,通过后面设置仅提示不退出，所以不设置快捷键
+BugKB Toggle:                   1, -1  , 2          //bugkb保护,通过后面设置仅提示不退出，所以不设置快捷键
+
+//以下4个为洗dd相关等级参考，当然也可用来加强kd room抢dd的速度
+Item QLevel Toggle:             0, -1 //VK_NUMPAD6       // 该种物品的Qlevel显示,非暗金qlevel，小键盘7
+Item MLevel Toggle:             0, -1 //VK_NUMPAD6       // Magic level显示，小键盘7
+Item ALevel Toggle:             0, -1 //VK_NUMPAD6       // 当前Alevel,仅黄金和蓝色物品显示，小键盘7
+Item After Cube Toggle:         0, -1 //VK_NUMPAD6       // cube后新的ilvl和alvl显示,只针对蓝色和黄金物品，小键盘7
+
+
+//Hidden Items Toggle:            0, VK_CONTROL       // 地面垃圾物品隐藏开关，CTRL键
+Hidden Items Toggle:            0, ALT+VK_G       // 地面垃圾物品隐藏开关，CTRL键
+Switch Item Show Mode:          VK_BACK                // 模式切换按键,大键盘退格键
+Show Identified Item :          1, -1               //显示已辨识物品，已辨识物品不做隐藏
+Show Base Stat:                 1, -1 //VK_OEM_4         //显示人物基础属性,'[{'
+
+
+//小地图图标开关VK_DIVIDE,小键盘 /
+//场景特效开关VK_MULTIPLY->],小键盘 *  
+//血保开关VK_OEM_7," '" "键 
+//地图卷动VK_SCROLL(Scroll Lock键),卷动复位VK_PAUSE(Pause Break键)
+//-----------------------------------------------------------------------------------------------            
+
+//-------------------以下设置如无特殊说明，均为1开启，0关闭--------------
+Default Game Name:              ""                  //设置默认游戏名,注意引号必须有
+Default Game Password:          ""                  //设置默认游戏密码
+Default Game Description:       ""                  //设置默认游戏描述
+ULC Mask Toggle:                1, -1               //屏蔽ULC动画, 1屏蔽 0不屏蔽
+Bug Auto Quit Toggle:           0, -1               //bug保护提示后是否自动退出游戏 0 不退出 1退出
+Bug Alert Times:                3                   //bug提示次数 
+Townportal Nums Alert :         10                   //回城卷轴数量提示
+Skip Quest Message:             6                   //跳过NPC任务提示 0 不跳过 非0跳过速度
+
+//物品额外信息显示
+Item ExtInfo Toggle :          1, -1               //开启命令
+Item ExtInfo File Eng:    "ItemInfo_Eng.cfg"             //英文文档
+Item ExtInfo File Chi:    "ItemInfo_Chi.cfg"             //中文文档
+Default ExtInfo Colour :       8                     //默认颜色
+
+Show Exp Toggle:                1, -1 , 2           //显示经验获取,第3位 1为单行 2为双行
+Show Ping Toggle:               0, -1               //显示ping和fps值
+Out Town Select Toggle:         0, VK_J               //城外开关，默认开启
+
+Kill Count Toggle:              0, -1, 3            //杀怪数统计(自身，不含pet)，第3位为颜色+1
+GetHit Count Toggle:            0, -1, 2            //被打出FHR数统计，第3位为颜色+1
+
+Show Base ED Toggle :           1, -1               //神符之语材料基础ed
+Show Party Position Toggle:     1, -1               //头像上显示场景编号
+Show Party Level Toggle:        1, -1               //头像上显示等级
+
+// 地图上各种图标显示
+Player Blob File:               "blobplayer"        // 游戏者
+Monster Blob File:              "blobmonster"       // 怪物
+Dim Vision Blob File:           "blobdimvision"     // 被微暗灵视的怪物
+Object Blob File:               "blobchest"         // 箱子等
+Missile Blob File:              "blobdot"           // 发射物
+Item Blob File:                 "blobitem"          // 物品
+Boss Blob File:                 "blobBoss"          // boss
+Npc Blob File:                  "blobNpc"           // npc
+My Blob File:                   "blobMe"            // 玩家自身
+Corpse Blob File:               "blobCorpse"        // 尸体
+
+Weather Toggle:                 0, VK_      //天气开关 0开启天气 1关闭天气
+Screen Shake Toggle:            1, VK_      //地震开关 0开启地震 1关闭地震
+
+//有关根据life和敌对状况自动退出的一些配置
+Chicken Life Action:            1                   //1:exit game 2:back to town
+Chicken Life Toggle:            1, VK_OEM_7         //血保开关，''"'
+Chicken Hostile Toggle:         0, -1               //敌对血保开关
+Chicken Hostile Nearby Toggle:  0, -1               //敌对在附近血保开关
+// 一些关于如何保命的数字定义，HC玩家要充分利用^^
+Chicken Life:                   600                   //血保数值
+Chicken Life Percent:           30                  //血保百分比0~100
+Chicken Hostile Life:           0                   //血保数值
+Chicken Hostile Life Percent:   60                  //百分比 0~100  
+Chicken Hostile Nearby Life:    600                   //血保数值
+Chicken Hostile Nearby Life Percent:  60            //百分比0~100
+
+AutoMap Toggle:                 1, -1               //开始游戏时自动显示小地图
+Auto Next Game Name:            1                   //自动记忆上一游戏名
+Auto Next Game Password:        1                   //自动记忆上一游戏密码
+Auto Next Game Description:     1                   //自动记忆上一游戏描述
+
+//Locale MPQ:"d2locale.mpq"                         //加载中文字库
+Input Line Toggle:              1, -1               //GAME中的聊天编辑功能(复制粘贴)
+
+
+//Extrawork Dll Action:         0                   // extrawork.dll protect ,for Battle.Net
+//Version Checking Dll Action:  0                   // keep loaded when logging into Battle.Net
+
+Right Click Swap Toggle:        1, -1               //鼠标右健快速移动物品
+//Ctrl Click Swap Toggle :        1 ,-1               //Ctrl+点击移动物品
+Quick Swap Item Delay Ms: 			300
+Quick Drop Toggle :             1 ,-1               //快速移动时可以扔地上
+
+Message Log Toggle:             1                   //记录游戏日志 0不记录日志, 1记录日志  2 不记录聊天信息
+Message Log File Size :         1000                //日志文件大小上限,单位K
+
+Game Time Toggle:               1, -1               //游戏时间显示 开
+Clock Toggle:                   1, -1               //实际时间显示 开
+Layer Level No Toggle :         0, -1               //显示场景编号
+Server Ip Toggle:               1, -1               //显示GAME IP
+Area Level Toggle:              1, -1               //显示场景等级
+
+
+Automap Active Rects Toggle:    0,VK_               //活动区域显示,3*3矩形
+Automap Ready Rects Toggle:     0,VK_               //地图场景缓冲
+Automap Screen Area Toggle:     0,VK_        //地图上显示屏幕区域,配合Scroll复位使用
+
+
+Automap Active Rects Colour:    0x7F                //地图上活动区域颜色
+Automap Ready Rects Colour:     0x77                //地图上已准备区域颜色
+Automap Screen Area Colour:     0x55                //地图上屏幕区域颜色  
+Mini Shrines Toggle:            1, -1               //地图上显示神殿开关
+  
+Life Bar Transparency:          2                   //血槽透明度
+Life Bar Colour:                0x08                //血槽颜色
+
+Perm Show Orbs Toggle:          1, VK_               //永久显示life/mana 开
+
+// 当遇见危险怪物（如black soul）且你的4r低于临界值时，可自动退出游戏或回城。 
+Dangerous Monster Action:   back to town  //危险时采取的动作,exit game或back to town (数值1和2)
+Dangerous Monster Chicken Toggle: 0, VK_
+//格式Dangerous Monster[Monster Index 1, Monster Index 2]: resistance type, resistance threshold 
+// resistance type can be one of fr, cr, lr, pr; resistance thresold ranges between -127 and 128
+// for example:
+DangerousMonster[BurningSoul2, BlackSoul2]: lr,-30 // fr, cr, lr, pr
+
+
+//---------------MapTargetSection 自动导航 ------------
+Automap Level Names Toggle:     1, -1             //场景入口名字开关，一般为洞穴
+Level Name Colour:              White             //场景名字颜色
+Staff Tomb Level Desc:          "%2<==Tomb Here"  //A2正确古墓显示
+NextMapTarget: VK_WHEELDOWN //向上滚轮时切换到上一个导航目标
+PrevMapTarget: VK_WHEELUP //向下滚轮时时切换到下一个导航目标
+MinimapGuideLength:	6 //小地图绘制引导线穿越的区域块
+ScreenGuideToggle: 1,VK_ //不开小地图时在屏幕上绘制引导线
+ScreenGuideLength: 2 //屏幕绘制引导线穿越的区域块
+ScreenGuidePlayerYard: 8 //屏幕绘制引导线从距离人物8码的位置开始
+TargetNameColor: 0 //在屏幕右下角显示的目标信息颜色
+RouteLineColor:  0x84 //指示线颜色
+AutomapRouteInfoToggle: 0,SHIFT+VK_K //小地图上显示路由表
+RouteDebugLineColor: 0x99 //路由表方向颜色
+CachedRouteData: 6 //保持最近6个目标的导航数据
+Minimap Size:                   6                 //指示线大小
+MinimapDirectLineToggle: 0,VK_ //直线指示开关
+AutoTeleportSafeDistance: 20 //在这个距离内没有怪物就停止传送
+AutoTeleportTelekinesisEnterChamber: 0 //服务器是否支持用法师之手进都瑞尔的房间
+AutoTeleportTelekinesisDistance: 40 //在这个距离内可以使用法师之手
+AutoTeleportTelekinesisSafeDistance: 5 //使用法师之手的距离加5
+WayPointRandom: 5 //Shift the waypoint target randomly. It doesn't look too realistic to teleport exactly to the center on battle.net.
+//MapTargets[src level][dest level]: type,EnglishName,中文名称
+//type: 1:Click点击 2:ForceEnter不管怪物强行靠近 3:Auto自动 10-120:DistanceToFindSafety距离目标小于此值则找安全位置
+//Act1
+MapTargets[Blood Moor][Den of Evil]:1  
+MapTargets[Blood Moor][Cold Plains]:0 
+MapTargets[Cold Plains][Burial Grounds]:0
+MapTargets[Cold Plains][Stony Field]:0
+MapTargets[Burial Grounds][Mausoleum]:1
+MapTargets[Burial Grounds][Crypt]:1
+MapTargets[Mausoleum][318]:1
+MapTargets[Crypt][318]:1
+MapTargets[Stony Field][Cairn Stone]:30,"Cairn Stone","石塚"
+MapTargets[Stony Field][Underground Passage Level 1]:0
+MapTargets[Tristram][3000]:1,"Wirt","维特"
+MapTargets[Underground Passage Level 1][Dark Wood]:0
+MapTargets[Dark Wood][Tree of Inifuss]:0,"Tree of Inifuss","艾尼弗斯之树"
+MapTargets[Dark Wood][Black Marsh]:0
+MapTargets[Black Marsh][Forgotten Tower]:1
+MapTargets[Black Marsh][Tamoe Highland]:0
+MapTargets[Forgotten Tower][Tower Cellar Level 1]:1
+MapTargets[Tower Cellar Level 1][Tower Cellar Level 2]:1
+MapTargets[Tower Cellar Level 2][Tower Cellar Level 3]:1
+MapTargets[Tower Cellar Level 3][Tower Cellar Level 4]:1
+MapTargets[Tower Cellar Level 4][Tower Cellar Level 5]:1
+//MapTargets[Tower Cellar Level 5][1472]:60
+MapTargets[Tamoe Highland][Monastery Gate]:0
+MapTargets[Tamoe Highland][Pit Level 1]:0
+MapTargets[Pit Level 1][Pit Level 2]:0
+MapTargets[Monastery Gate][Outer Cloister]:0
+MapTargets[Outer Cloister][Barracks]:0
+MapTargets[Barracks][Jail Level 1]:0
+MapTargets[Barracks][316]:0
+MapTargets[Jail Level 1][Jail Level 2]:0
+MapTargets[Jail Level 2][Jail Level 3]:0
+MapTargets[Jail Level 3][Inner Cloister]:0
+MapTargets[Inner Cloister][Cathedral]:0
+MapTargets[Cathedral][Catacombs Level 1]:0
+MapTargets[Catacombs Level 1][Catacombs Level 2]:0
+MapTargets[Catacombs Level 2][Catacombs Level 3]:1
+MapTargets[Catacombs Level 3][Catacombs Level 4]:0
+MapTargets[The Secret Cow Level][3000]:60,"Corner","Corner"
+MapTargets[The Secret Cow Level][3001]:60,"Corner","Corner"
+MapTargets[The Secret Cow Level][3002]:60,"Corner","Corner"
+MapTargets[The Secret Cow Level][3003]:60,"Corner","Corner"
+//Act2
+MapTargets[Sewers Level 1][Sewers Level 2]:1
+MapTargets[Sewers Level 2][Sewers Level 3]:1
+MapTargets[Sewers Level 3][318]:60
+MapTargets[Rocky Waste][Dry Hills]:0
+MapTargets[Dry Hills][Halls of the Dead Level 1]:1
+MapTargets[Dry Hills][Far Oasis]:0
+MapTargets[Halls of the Dead Level 1][Halls of the Dead Level 2]:1
+MapTargets[Halls of the Dead Level 2][Halls of the Dead Level 3]:1
+MapTargets[Halls of the Dead Level 3][318]:30
+MapTargets[Far Oasis][Maggot Lair Level 1]:1
+MapTargets[Far Oasis][Lost City]:0
+MapTargets[Maggot Lair Level 1][Maggot Lair Level 2]:1
+MapTargets[Maggot Lair Level 2][Maggot Lair Level 3]:1
+MapTargets[Maggot Lair Level 3][318]:60
+MapTargets[Lost City][Valley of Snakes]:1
+MapTargets[Lost City][Ancient Tunnels]:0
+MapTargets[Valley of Snakes][Claw Viper Temple Level 1]:1
+MapTargets[Claw Viper Temple Level 1][Claw Viper Temple Level 2]:1
+MapTargets[Palace Cellar Level 1][Harem Level 2]:1
+MapTargets[Palace Cellar Level 1][Palace Cellar Level 2]:1
+MapTargets[Palace Cellar Level 2][Palace Cellar Level 3]:1
+MapTargets[Harem Level 2][Harem Level 1]:1
+MapTargets[Harem Level 2][Palace Cellar Level 1]:1
+MapTargets[Harem Level 1][Lut Gholein]:0
+MapTargets[Harem Level 1][Harem Level 2]:1
+MapTargets[Arcane Sanctuary][Horazon's Journal]:3,"Horazon's Journal","赫拉森的日记"
+MapTargets[Canyon of the Magi][300]:1,"Tal Rasha's Tomb","塔拉夏的古墓"
+MapTargets[Tal Rasha's Tomb 1][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 2][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 3][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 4][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 5][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 6][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Tomb 7][300]:3,"Izual","祭台"
+//Act3
+MapTargets[Spider Forest][Spider Cavern]:1
+MapTargets[Spider Forest][Flayer Jungle]:0
+MapTargets[Spider Forest][Great Marsh]:0
+MapTargets[Great Marsh][Flayer Jungle]:0
+MapTargets[Flayer Jungle][Flayer Dungeon Level 1]:1
+MapTargets[Flayer Jungle][Lower Kurast]:0
+MapTargets[Flayer Jungle][315]:0,"","吉得宾"
+MapTargets[Flayer Dungeon Level 1][Flayer Dungeon Level 2]:1
+MapTargets[Flayer Dungeon Level 2][Flayer Dungeon Level 3]:1
+MapTargets[Flayer Dungeon Level 3][318]:60
+MapTargets[Lower Kurast][Kurast Bazaar]:0
+MapTargets[Kurast Bazaar][Upper Kurast]:0
+MapTargets[Kurast Bazaar][Kurast Sewers Level 1]:0
+MapTargets[Kurast Bazaar][Ruined Temple]:0
+MapTargets[Upper Kurast][Kurast Causeway]:0
+MapTargets[Upper Kurast][Kurast Sewers Level 1]:0
+MapTargets[Kurast Sewers Level 1][Kurast Sewers Level 2]:0
+MapTargets[Kurast Causeway][Travincal]:0
+MapTargets[Travincal][Durance of Hate Level 1]:0
+TravincalShift: -30,-38 //目标改到庙后面
+MapTargets[Durance of Hate Level 1][Durance of Hate Level 2]:0
+MapTargets[Durance of Hate Level 2][Durance of Hate Level 3]:1
+MapTargets[Durance of Hate Level 3][339]:3,"Teleport","传送点"
+DuranceOfHateLevel3TeleportShift: -20,0,3  //dx,dy,random
+//Act4
+MapTargets[Outer Steppes][Plains of Despair]:0
+MapTargets[Plains of Despair][Izual on Minimap]:0
+MapTargets[Plains of Despair][City of the Damned]:0
+MapTargets[City of the Damned][Plains of Despair]:0
+MapTargets[City of the Damned][River of Flame]:0
+MapTargets[River of Flame][Chaos Sanctuary]:0
+MapTargets[River of Flame][Hellforg on Minimap]:0,"Hellforg","Hellforg"
+MapTargets[Chaos Sanctuary][255]:30,"Center","中心点"
+MapTargets[Chaos Sanctuary][3000]:60,"TopSeal","封印上"
+MapTargets[Chaos Sanctuary][3001]:60,"LeftTopSeal","封印左上"
+MapTargets[Chaos Sanctuary][3002]:60,"LeftBottomSeal","封印左下"
+MapTargets[Chaos Sanctuary][3003]:60,"RightTopSeal","封印右上"
+MapTargets[Chaos Sanctuary][3004]:60,"RightBottomSeal","封印右下"
+//Act5
+MapTargets[Bloody Foothills][Frigid Highlands]:0
+MapTargets[Frigid Highlands][3000]:2,"5 Barb","5个野蛮人"
+MapTargets[Frigid Highlands][3001]:2,"5 Barb","5个野蛮人"
+MapTargets[Frigid Highlands][3002]:2,"5 Barb","5个野蛮人"
+RescueBarDx: -18 //对野蛮人目标进行更改,如果没完成任务只改最后一个,如果完成了三个都改
+RescueBarDy: 0
+MapTargets[Frigid Highlands][Arreat Plateau]:0
+MapTargets[Arreat Plateau][Crystalline Passage]:0
+MapTargets[Crystalline Passage][Frozen River]:1
+MapTargets[Crystalline Passage][Glacial Trail]:0
+MapTargets[Frozen River][Anya on Minimap]:120,"Anya","安亚"
+MapTargets[Glacial Trail][Frozen Tundra]:0
+MapTargets[Frozen Tundra][Ancients Way]:0
+MapTargets[Ancients Way][Arreat Summit]:0
+MapTargets[Halls of Anguish][Halls of Pain]:1
+MapTargets[Halls of Pain][Halls of Vaught]:1
+MapTargets[Halls of Vaught][Nihlathak on Minimap]:3,"Nihlathak","尼拉赛克"
+MapTargets[Worldstone Keep Level 1][Worldstone Keep Level 2]:1
+MapTargets[Worldstone Keep Level 2][Worldstone Keep Level 3]:1
+MapTargets[Worldstone Keep Level 3][Throne of Destruction]:1
+MapTargets[Throne of Destruction][The Worldstone Chamber]:70
+//----------------------------------------------玩家和怪物----------------------------------------
+Monster Death Anims[1+]:        1                   //怪物死亡动画开关 0关闭 1开启
+Monster Level Toggle:           1, -1               //物MLVL等级显示开关 开
+Monster TC Toggle:              1, -1               //怪物TC等级显示开关 开
+Monster Rune TC Toggle:         0, -1               //怪物Rune TC等级显示开关 开
+Monster HPPercent Toggle:       1, -1               //怪物血量百分比显示
+Monster Distance Toggle:        0, -1               //怪物距离显示
+Player Level Toggle:            0, -1               //玩家等级显示
+Player Distance Toggle:         0, -1               //玩家距离显示
+Player HPPercent Toggle:        0, -1               //玩家血量百分比显示
+Boss Name Toggle:               0, -1               //几个boss的小地图名字显示
+
+Automap Party Default:          1                   //小地图显示队友
+Automap Names Default:          1                   //小地图队友名字
+
+
+Hidden Corpses Toggle:          0, -1               //地面隐藏尸体开关 1 隐藏 0 不隐藏
+Automap Corpses Toggle: 0, -1               //小地图显示怪物尸体显示开关
+NecAutomapCorpsesToggle: 1, VK_ //Show corpose on map and minimap for nec
+DrawBossHpToggle: 1, VK_ //draw HP percent on boss
+DrawBossLineColor: 0x62
+Normal Corpse Colour:         0x08                //普通怪物尸体颜色
+//Boss Corpse Colour:           0x08                //boss尸体颜色
+//Minion Corpse Colour:         0x08                //随从尸体颜色
+//Champion Corpse Colour:       0x08                //金怪尸体颜色
+//Monster Corpse Colours[0+]:   0x08                //指定怪物尸体颜色
+//Monster Corpses[0+]:          1                   //指定怪物地面尸体隐藏设置,1显示,0隐藏
+
+Party Player Text Colour:       2                   //组队玩家小地图名字颜色
+Neutral Player Text Colour:     9                   //中立玩家小地图名字颜色
+Hostile Player Text Colour:     1                   //敌对玩家小地图名字颜色
+Neutral Player Colour:          0x6f                //中立玩家小地图图标颜色
+Hostile Player Colour:          0x5b                //敌对玩家小地图图标颜色
+Friend Minion Colour :          0x7f                //队友随从颜色
+Player Minion Colour:           0xcb                //自己的随从颜色
+
+Automap Monsters Toggle:        1, VK_DIVIDE        //小地图显示怪物开关 
+Normal Monster Colour:          0x62                //普通怪物颜色
+Boss Monster Colour:            0x5b                //boss颜色
+Minion Monster Colour:          0x66                //随从颜色
+Champion Monster Colour:        0x68                //金怪颜色
+Act5 Barbarian Colour:          0x9f                //act5野蛮人颜色
+Super Unique Colour :           0x6f                //超级金怪颜色
+
+
+
+//一些危险怪物特别显示
+MonsterColours[Undead Stygian Doll 1]: 0x9b        //冥河娃娃  
+MonsterColours[Undead Stygian Doll 2]: 0x9b        //冥河娃娃
+MonsterColours[Gloam 1]:               0x9b        //电鬼
+MonsterColours[Gloam 2]:               0x9b        //电鬼
+MonsterColours[Burning Soul 1]:        0x9b        //电鬼
+MonsterColours[Burning Soul 2]:        0x9b        //电鬼
+MonsterColours[733]:                   0x9b        //电鬼
+MonsterColours[Black Soul 1]:          0x9b        //电鬼
+MonsterColours[Black Soul 2]:          0x9b        //电鬼
+MonsterColours[Soul Killer 3]:         0x9b        //灵魂杀手
+MonsterColours[Soul Killer 4]:         0x9b        //灵魂杀手
+MonsterColours[Frenzied Ice Spawn]:    0x9b        //自爆人
+MonsterColours[Tomb viper 1]:          0x9b        //毒蛇
+MonsterColours[Tomb Viper 2]:          0x9b        //毒蛇
+MonsterColours[Undead Soul Killer 2]:  0x9b        //灵魂杀手
+
+// 防PK，地图上显示一些陷阱，刺客的和女巫的火龙，白色
+MonsterColours[410]:           0x20  //wake of fire
+MonsterColours[411]:           0x20  //Charged Bolt Sentry
+MonsterColours[412]:           0x20  //Lightning Sentry
+MonsterColours[416]:           0x20  //Death Sentry
+MonsterColours[351-353]:       0x20  //Hydra1-Hydra3 火龙一次3头，分别对应1,2,3
+
+Monster Desc Colour:            Red
+// 特殊属性怪物的显示的如下:    
+Enchantment Descs: 0            
+Extra Strong Desc:              "S"
+Extra Fast Desc:                "F"
+Cursed Desc:                    "%2C"
+Magic Resistant Desc:           "%8m"
+Fire Enchanted Desc:            "%1FE"
+Lightning Enchanted Desc:       "%9LE"
+Cold Enchanted Desc:            "%3CE"
+Thief Desc:                     0
+Mana Burn Desc:                 "%3MB"
+Teleportation Desc:             "T"
+Spectral Hit Desc:              "H"
+Stone Skin Desc:                "%4SS"
+Multiple Shots Desc:            "%12MS"
+Ghostly Desc:                   0
+Fanatic Desc:                   "%11F"
+Possessed Desc:                 0
+Berserker Desc:                 "%4B"
+Champion Desc:      0
+// Auras Enhanted:光环附着
+Aura Descs : 0
+Might Aura Desc:                "%4a"
+Holy Fire Aura Desc:            "%1a"
+Blessed Aim Aura Desc:          "%0a"
+Holy Freeze Aura Desc:          "%3a"
+Holy Shock Aura Desc:           "%9a"
+Conviction Aura Desc:           "%11a"
+Fanaticism Aura Desc:           "%5a"
+// Immunities:免疫属性          
+Immunity Descs : 0              
+Physical Immunity Desc:         "%4i"
+Magic Immunity Desc:            "%8i"
+Fire Immunity Desc:             "%1i"
+Lightning Immunity Desc:        "%9i"
+Cold Immunity Desc:             "%3i"
+Poison Immunity Desc:           "%2i"
+//-------------------------------------------------------------------------------------------------
+
+//----------------------------------------------箱子和发射物小地图显示------------------------------
+Automap Chests Toggle:          1, VK_DIVIDE        //小地图显示箱子开关 
+Closed Chest Colour:            0x09                //箱子颜色
+Locked Chest Colour:            0x97                //带锁箱子的颜色
+
+Automap Missiles Toggle:        1, VK_DIVIDE        // 地图上显示敌人的发射物攻击(向导箭、骨精灵等)
+Hostile Missile Colour:         0x62                // 敌人发射物的颜色
+Guided Missile Colour:          0x5b                // 制导型发射物的颜色
+Tracer Missile Colour:          0x97                // 玩家发射物的颜色
+Other Missile Colour:           0x84                // 其他发射物颜色
+
+//Missile Colours[Firewall, FireSmall, FireMedium]: -2 //单独设置，-2则按以上设置 
+//Missile Colours[FrozenOrbBolt, FrozenOrbNova]:  -2
+Missile Colours[All Arrows]:  -2
+Missile Colours[Javelin missile]:  -2
+Missile Colours[BattleOrders,BattleCommand,BattleCry,Shout,warcry,Howl]: -2
+Missile Colours[BoneSpear]:                             0x20
+Missile Colours[teeth]:                                 0x20
+Missile Colours[BoneSpirit]:                            0x20
+Missile Colours[PoisonNova]:                            0x84
+Missile Colours[BlessedHammer 1]:                       0x20
+Missile Colours[Tornado,Twister]:                       0x20
+Missile Colours[BladeFury1, BladeFury2, BladeFury3, BladeFragment1, BladeFragment2, BladeFragment3]:    0x20
+
+//-------------------------------------------------------------------------------------------------
+
+//----------------------------------------------物品区总设置----------------------------------------
+
+Automap Items Toggle:           1, VK_DIVIDE        // 小地图物品隐藏开关  
+Rune Numbers Toggle:            1, -1               // RUNE编号显示
+Socket Numbers Toggle:          1, -1               // 孔数显示 
+Unit Numbers Toggle:            0, -1               // 单元数字开关(物品内部代码) 
+Item Indexs Toggle:             0, -1               // 物品索引开关(map索引)
+Item FileIndexs Toggle:         0, -1               // 物品文件索引及类别等
+Item Life Per Level Toggle:     1,-1                // 按等级增加血量属性基础值显示(限于神符之语)
+Quest Item Colour:              4                   // 任务物品颜色
+
+Ethereal Item Prefix:           "[Eth]"             // Eth物品前缀 
+Ethereal Item Postfix:          ""                  // Eth物品后缀 
+
+Good Gold Number:               2000                // 优质gold定义
+Good Gold Colour:               0                   // 优质gold颜色
+Poor Gold Colour:               -1,-2,-2,-2         // 稀少gold
+Item Hide Lvl[0+][0+]:          0                   // 物品显示级别下限
+
+//================================ 2024NewConfigSection 2024年新增或修改的设置 ================================
+//--------------- 显示设置 ---------------
+//联网时D2会占满单核全速跑，FPS很容易到200以上，消耗CPU太多，
+//通过设置以下几个值可以限制最大FPS
+MinFrameMs: 10 //在城外如果两帧间隔小于这个时跳过绘图
+MinFrameMsInTown: 10 //在城内如果两帧间隔小于这个时跳过绘图
+MinHackmapMs: 10 //在城外如果两帧间隔小于这个时跳过hackmap的处理
+MinHackmapMsInTown: 10 //在城内如果两帧间隔小于这个时跳过hackmap的处理
+MinLoopMs: 0 //两帧间隔最小时间,如果不够则调用Sleep,20ms对应50FPS,多开时限制CPU使用
+Full Screen Key: ALT+VK_RETURN //按ALT+ENTER可切换窗口和最大化(游戏需用-w选项启动)
+FullScreenNoCaption: 1, VK_ //最大化时移除窗口标题和边框
+ResizeWindowBar: 0, VK_ //可调整窗口大小，进入游戏后通过拖拽左上右上两个角调整
+//高分辨率补丁,仅在游戏中设置为800*600时生效,分辨率根据窗口大小自动调节，代码resolution.cpp
+EnableHighResolutionPatch: 0 //0:不安装 1:安装高分辨率补丁
+HighResolutionToggle: 0,CTRL+ALT+VK_H //0:不安装 1:安装高分辨率补丁,如果打开此选项,不要使用别的分辨率插件以免发生冲突
+EnableScreenSaverToggle: 1,SHIFT+VK_F12 //窗口切换到后台时跳过绘图,可节约CPU,0关闭此功能,建议打开,多开时其余窗口CPU消耗几乎为0
+EnableMenuScreenSaverToggle: 1,SHIFT+VK_F11 //在主菜单时也启动屏保
+NoBackgroundImage: 0 //打开背包任务等面板时不显示背景图片
+Lock Mouse Toggle: 0,CTRL+VK_L //锁定鼠标在窗口内,进入游戏后出城有效
+SwitchWindowKeys[1]: VK_F1,ALT+VK_1 //切换窗口按键，可设置8个
+SwitchWindowKeys[2]: VK_F2,ALT+VK_2
+SwitchWindowKeys[3]: VK_F3,ALT+VK_3
+SwitchWindowKeys[4]: VK_F4,ALT+VK_4
+SwitchWindowKeys[5]: VK_F5,ALT+VK_5
+SwitchWindowKeys[6]: VK_F6,ALT+VK_6
+SwitchWindowKeys[7]: VK_F7,ALT+VK_7
+SwitchWindowKeys[8]: VK_F8,ALT+VK_8
+//偏移屏幕
+Center Map Scroll Key:          VK_MBUTTON            //Scroll复位 
+Scroll Mode:  3   //偏移模式 1 单次 2 切换 3 按住生效，松开复位
+//Screen Scroll Offset[CTRL+VK_G]:320,192
+//Screen Scroll Offset[CTRL+VK_F]:-320,192
+//Screen Scroll Offset[CTRL+VK_R]:-320,-192
+//Screen Scroll Offset[CTRL+VK_T]:320,-192
+Screen Scroll Offset[VK_G]:400,240
+Screen Scroll Offset[VK_XBUTTON2]:-400,240
+Screen Scroll Offset[VK_R]:-400,-240
+Screen Scroll Offset[VK_T]:400,-240
+//开启小地图时移动小地图,否则移动屏幕
+MiniMap Scroll Offset[VK_UP]: 0,-200
+MiniMap Scroll Offset[VK_DOWN]: 0,200
+MiniMap Scroll Offset[VK_LEFT]: -200,0
+MiniMap Scroll Offset[VK_RIGHT]: 200,0
+MiniMap Scroll Offset[VK_HOME]: -200,-200
+MiniMap Scroll Offset[VK_END]: -200,200
+MiniMap Scroll Offset[VK_PRIOR]: 200,-200
+MiniMap Scroll Offset[VK_NEXT]: 200,200
+//自动隐藏小地图，通过右键为传送技能或按下V时开关
+Auto Hide Minimap Toggle: 0, CTRL+ALT+VK_V
+Auto Teleport Minimap Toggle: 1, CTRL+VK_V
+Auto Hide Minimap Key: VK_V
+//GameControlKeys[GameControlCenterAutomap]: VK_MBUTTON,-1,-1,-1 //按鼠标中键重置小地图
+//--------------- 任务保护 ---------------
+EnterGameShowDifficultyMs: 3000 //进入游戏时显示游戏难度3秒
+//新增Bug号保护
+BugKCountess Toggle: 1, VK_  , 2 //A1 Forgotten Tower Countess 保护刷A1钥匙的号
+Bug Auto Quit Hell Toggle:      0, SHIFT+CTRL+ALT+VK_B          //地狱难度bug保护提示后是否自动退出游戏 0 不退出 1退出
+Bug Auto Quit Hell Act1 Toggle: 0, VK_  //地狱难度ACT1 bug保护提示后是否自动退出游戏 0 不退出 1退出
+Bug Auto Quit Hell Act3 Toggle: 0, CTRL+ALT+VK_B  //地狱难度ACT3 bug保护提示后是否自动退出游戏 0 不退出 1退出
+Bug Auto Quit Hell Act4 Toggle: 0, CTRL+ALT+VK_B  //地狱难度ACT4 bug保护提示后是否自动退出游戏 0 不退出 1退出
+Bug Auto Quit Hell Act5 Toggle: 0, CTRL+ALT+VK_B  //地狱难度ACT5 bug保护提示后是否自动退出游戏 0 不退出 1退出
+BugAutoQuitAct5Toggle: 0,CTRL+ALT+VK_B //ACT5 bug保护提示后是否自动退出游戏 0 不退出 1退出(无非资战网使用)
+Bug All Hell Alert Toggle: 1, VK_ //地狱难度进入可完成任务的场景时进行提示
+//地狱难度完成第4小队后核对任务状态发送以下消息提示队友,设为空串取消此功能
+BugKBAlertMessage: "(d2hackmap提示)本游戏巴尔任务未完成,完成最后一队后BugKB号要及时退出哟"
+BugKBAlertMessage: ""
+//--------------- 增强的血保设置 ---------------
+Chicken Max Life:        1500 //最大血量大于此值时才使用绝对值血保,血量小于此值才使用百分比血保
+Chicken Life:            600 //血保数值
+Chicken Life Min Clevel: 3   //3级以下不使用血保
+ChickenLifeForcedClevel: 85  //超过85级强制血保
+//进入游戏时自动打开保护,换号无忧 0:无操作 1:打开ChickenLife,DropProtection,ResetProtection,SocketProtect,如果设置过Bug Auto Quit Hell和Bug Auto Quit Hell Act5也会打开
+AutoProtectionNewGame:    1   
+//--------------- 根据人物级别显示物品 ---------------
+Item Show CLvl[2006]: 15,-1  //Stamina Mina Light Healing
+Item Show CLvl[2080-2081]: 15,1  //Stamina Mina Light Healing
+Item Show CLvl[2082]:           20,1  //Healing
+Item Show CLvl[2083]:           30,1  //Greater Healing
+Item Show CLvl[2084]:           60,1  //Super Healing
+//Item Show CLvl[2019]:           40  //Arrow
+Simplified Potion Name: 1 //使用以下名称显示药剂:疗1 疗2 疗3 疗4 疗 法1 法2 法3 法4 法 紫 全紫
+ShowValuableItem: 30000 //显示卖价超过此值的物品
+//--------------- 右下角显示信息 ---------------
+GameMonitorX: -10  //显示状态监控的起始X坐标(相对于右下角)
+GameMonitorY: -110 //显示状态监控的起始Y坐标(相对于右下角)
+Monitor Quantity: 1 //屏幕右下角显示剩余数量(仅右键技能为投掷或闪电之怒时显示)
+Monitor Durability: 1 //屏幕右下角显示剩余耐久度
+CountDown: 1, VK_ //显示QH(强化),BO(Battle Order, HS(Holy Shield)的倒计时
+//QH级别根据火焰伤害推测,只有强化,暧气和支配火焰级别相同并且大于等于20级才能正确推测
+//BO级别根据法力变化推测
+CountDownFontSize: 8 //倒计时显示字体
+CountDownGap: 15 //每行倒计时的高度
+CountDownFlashSecond: 30 //剩余30秒时开始闪烁
+MaxTownPortalCount:  20 //剩余回城卷轴少于20时显示地上的回城卷轴
+MaxIdentifyPortalCount: 20 //剩余辨识卷轴少于20时显示地上的辨识卷轴
+//--------------- AutoEnchantSection 自动强化 ---------------
+Auto Enchant Toggle: 1, CTRL+ALT+VK_E
+AutoEnchantMana: 50 //法力低于50不强化
+RenewEnchantMs:	180000 //3分钟后重新强化
+RenewEnchantMana:	80 //如果法力超过80则重新强化
+Auto Enchant Player Level: 40 //在噩梦难度对40级以下玩家强化，普通难度全强化，玩家装备弓也会强化。
+AutoEnchantMonster[Act1Hireling,Act2Hireling,Act5Hireling1hs,Act5Hireling2hs]:1//雇佣兵
+AutoEnchantMonster[ClayGolem,BloodGolem,FireGolem,Necroskeleton]:1//NEC召唤物,不强化铁魔
+AutoEnchantMonster[SpiritWolf,DireWolf,HeartofWolverine,Grizzly]:1//DRU召唤物
+AutoEnchantMonster[ShadowWarrior,ShadowMaster]:1//ASN召唤物
+//AutoEnchantMonster[Valkyrie]:2//AMA召唤物
+AutoEnchantMonster[HellBovine]:1//cow
+//--------------- 自动BO,BC ---------------
+Auto WarCry Toggle: 1, VK_
+AutoWarCryRenewPercent: 80 //当时间超过80%时重新BO,BC
+//--------------- 装备快照设置 ---------------
+//可将人物装备信息保存在文本文件中，详情参见代码Snapshot.cpp
+Enable Snapshot: 1,VK_ //快照总开关
+Snapshot New Game: 0,VK_ //进入游戏时保存装备快照
+Snapshot End Game: 1,VK_ //退出游戏时保存装备快照
+Snapshot Log: 1,VK_ //退出游戏时保存日志（时间和等级变化）
+Snapshot Save D2s: 1,VK_ //快照时生成d2s文件
+Snapshot Key: SHIFT+CTRL+ALT+VK_S
+//保存快照到此目录下
+Snapshot Path: "snapshot"
+//Snapshot Path: "D:\snapshot"
+//用于解释装备名称和属性的文件，根据自己需要修改
+Snapshot Names Path: "names.txt"
+//--------------- AutoPotionSection 自动用药 ---------------
+AutoPotionToggle: 0,CTRL+ALT+VK_P
+//以下铁魔血保仅铁魔为神符之语时生效
+IronGolemLifeAlertPercent: 60 //铁魔生命少于60%时喊救命,并在屏幕中央显示警告信息
+IronGolemLifeTownPercent: 30 //铁魔生命少于30%时回城
+IronGolemLifeExitPercent: 0 //铁魔生命少于0%时退出游戏
+HirePotionColumn: 0 //佣兵使用第几列药,0取消此功能
+HirePotionMinCLevel: 67 //当人物级别大于等于此值时给佣兵自动喝药，否则只喊救命
+HirePotionLifePercent: 30 //佣兵生命少于30%时用药
+HirePotionDelayMs: 3000 //佣兵使用药后3秒内不再检查
+ManaPotionToggle: 0,VK_ ////是否自动使用法力药剂
+ManaPotionMax: 500 //当人物法力上限超过此值时启动自动法力药剂
+ManaPotionValue: 50 //法力低于此值后喝药
+ManaPotionNTValue: 50 //在尼拉赛克神殿法力低于此值后喝药
+ManaPotionDelayMs: 6000 //使用药后6秒内不再检查
+HealingPotionToggle: 0,VK_ //是否自动使用治疗药剂
+HealingPotionLifePercent: 50
+HealingPotionDelayMs: 3000 //使用药后3秒内不再检查
+//--------------- 在登录页面输入用户名密码 ---------------
+//Account[VK_F1]: "username","password"
+//Account[VK_F2]: "bunny",""
+//Account[VK_F3]: "rabbit",""
+//--------------- 调用游戏内部功能 ---------------
+//，每个功能可定义四个按键
+//GameControlKeys[GameControlAutomap]: VK_V,-1,-1,-1
+GameControlKeys[GameControlSayHelp]: CTRL+VK_H,-1,-1,-1
+GameControlKeys[GameControlSayFollowme]: CTRL+VK_F,-1,-1,-1
+GameControlKeys[GameControlSayThisisforyou]: CTRL+VK_Y,-1,-1,-1
+GameControlKeys[GameControlSayThanks]: CTRL+VK_T,-1,-1,-1
+GameControlKeys[GameControlSaySorry]: CTRL+VK_S,-1,-1,-1
+GameControlKeys[GameControlSayBye]: CTRL+VK_B,-1,-1,-1
+GameControlKeys[GameControlSayNowyoudie]: CTRL+VK_D,-1,-1,-1
+GameControlKeys[GameControlSayRetreat]: SHIFT+VK_R,-1,-1,-1
+//GameControlKeys[GameControlHireUseBelt1]: VK_,-1,-1,-1
+//GameControlKeys[GameControlHireUseBelt2]: VK_,-1,-1,-1
+//GameControlKeys[GameControlHireUseBelt3]: VK_,-1,-1,-1
+//GameControlKeys[GameControlHireUseBelt4]: VK_,-1,-1,-1
+GameControlKeys[GameControlCharacterScreen]: ALT+VK_A,ALT+VK_C,-1,-1
+GameControlKeys[GameControlQuestLog]: ALT+VK_Q,-1,-1,-1
+GameControlKeys[GameControlSkillTree]: ALT+VK_T,-1,-1,-1
+GameControlKeys[GameControlShowPortraits]: ALT+VK_Z,-1,-1,-1
+Save Game Key: CTRL+VK_S //保存游戏
+SinglePlayerMonsterHPToggle: 1, -1 //单人模式显示怪物血量
+SinglePlayerMonsterExpHPToggle: 1, -1 //单人模式显示怪物经验值
+//--------------- MultiClientSection 多开设置 ---------------
+// 按住Alt键左键点击头像可切换到对应窗口
+// 按住Ctrl键左键点击头像可设置跟随
+Multi Client Toggle: 1,CTRL+ALT+VK_W
+MultiClientMaxWindowId: 10 //最多10个窗口
+MultiClientGroupSize1: 10 //第一组为前8个窗口
+MultiClientStartFollowKey1: SHIFT+VK_F //要求第一组跟随，需在周围
+MultiClientGroupSize2: 3 //第二组为前3个窗口
+MultiClientStartFollowKey2: VK_ //SHIFT+VK_G //要求第二组跟随，需在周围
+MultiClientStopFollowKey: SHIFT+VK_T //停止跟随
+MultiClientToggleFollowKey: VK_ //切换跟随和停止
+MultiClientEnterDoorKey: SHIFT+VK_E //进门
+MultiClientRetreatKey: SHIFT+VK_R //回城
+MultiClientTransferClickKey: VK_MENU //按下ALT键时将鼠标左右单次点击操作发到别的窗口执行
+//MultiClientTransferClickKey2: VK_XBUTTON2 //按下鼠标侧面键时将鼠标左右单次点击操作发到别的窗口执行
+AutoFollowDistance: 4 //跟随的距离, 单位yard
+AutoFollowMaxDistance: 33 //超过此距离后停止跟随,单位yard
+AutoFollowMoveDistance: 10 //每次最多可移动距离, 单位yard
+AutoFollowCheckInterval: 200 //跟随时每隔200ms检查一次
+AutoFollowClickObjectDelayMs: 600 //跟随点击非蓝色传送门时的延迟时间，以防止同时进入场景时死锁(A屏上被B挡住,B屏上被A挡住)
+WaitTeamEnterPortalMaxDelayMs: 3000 //在城中进入队长的门时等待队友先进入的最长等待时间
+//可跟随点击的物体,如果遇到不能跟随进入的地方，打开调试信息，将鼠标移动到入口上，看屏幕右下角显示的txt编号
+ShowTestInfoToggle: 0,SHIFT+CTRL+ALT+VK_T //显示调试信息
+AutoFollowClickObject[74]: 1 //Lut Gholein sewer door,鲁高因下水道入口
+AutoFollowClickObject[100]: 1 //Entrance to Tal Rasha's Chamber
+AutoFollowClickObject[195]: 1 //Entrance to Ruined Temple
+AutoFollowClickObject[342]: 1 //Red portal to The Pandemonium Fortress
+AutoFollowClickObject[366]: 1 //Kurast sewer level 1 to level 2 door
+AutoFollowClickObject[386]: 1 //Enterance to Hate of Durance Level 1
+AutoFollowClickObject[547]: 1 //Entrance to Worldstone Keep
+AutoFollowClickObject[563]: 1 //Entrance to Worldstone Chamber
+AutoFollowClickObject[566]: 1 //Red portal to Act 5
+//--------------- AutoSkillSection 自动使用技能  ---------------
+//自动使用衰老,微暗灵视,静态力场等技能,详见AutoSkill.cpp
+AutoBackgroundSkillToggle: 0, CTRL+ALT+VK_K //窗口在后台时自动使用技能
+AutoForegroundSkillToggle: 0, VK_H //窗口在前台时自动使用技能
+AutoForegroundSkillKey: VK_F //窗口在前台时按住F键自动使用技能
+AutoForegroundSkillKey2: VK_ //VK_XBUTTON1 //窗口在前台时按住鼠标侧面后面的键自动使用技能
+AutoSkillIdleDelay: 600 //如果找开前台技能，则鼠标松开0.6秒后开始自动技能
+AutoSkillCheckInterval: 500 //每0.5秒检查一次
+UseLeftSkillFirst: 0 //0:先使用右键技能 1:先使用左键技能
+//设置自动技能距离，小于第一个距离则攻击最近的怪物，在两个距离之间则依次攻击
+AutoSkillDistance[SkillAttack,SkillThrow,SkillExplodingArrow]: 15,30
+AutoSkillDistance[SkillLowerResist]: 16,0
+AutoSkillDistance[SkillLifeTap]: 30,0
+AutoSkillDistance[SkillAmplifyDamage]: 30,0
+AutoSkillDistance[SkillDimVision]: 33,0
+AutoSkillDistance[SkillDecrepify]: 30,0
+AutoSkillDistance[SkillStaticField]: 16,0
+AutoSkillDistance[SkillIceBlast]: 8,8 
+AutoSkillDistance[SkillGlacialSpike]: 5,10
+AutoSkillDistance[SkillFrostNova,SkillNova]: 8,0
+AutoSkillDistance[SkillLightning,SkillChainLightning]: 8,24
+AutoSkillDistance[SkillFireBolt,SkillFireBall]: 5,10 //8,31
+AutoSkillDistance[SkillBlizzard]: 20,30 //8,33
+AutoSkillDistance[SkillChargedStrike]: 5,5
+AutoSkillDistance[SkillLightningFury]: 10,30
+AutoSkillDistance[SkillZeal,SkillSmite,SkillSacrifice]: 5,5
+AutoSkillMonsterType[DeathMauler1]: 1 //1:monster 2:dangerous 4:revive 8:mf 0x10:actboss 0x80:neutral
+AutoStaticFieldHPPercent: 3 //静态力场在非资料片用到3%
+AutoThrowMinQuantity: 3 //剩余3个标枪后不再投掷，扔光了就不能修理了
+AutoReloadThrowing: 1 //标枪用到最少数量时自动更换
+//自动使用微暗灵视的怪物,仅对非boss使用,当距离小于33yard并且无遮挡时使用
+AutoDimVisionMonster[Frenzied Ice Spawn]: 1 //自爆人
+AutoDimVisionMonster[UndeadStygianDoll1,UndeadStygianDoll2]:1//冥河娃娃
+AutoDimVisionMonster[Gloam1,Gloam2,BurningSoul1,BurningSoul2,733,BlackSoul1,BlackSoul2]:1//电鬼
+AutoDimVisionMonster[SoulKiller3,SoulKiller4,UndeadSoulKiller2]:1//灵魂杀手
+AutoDimVisionMonster[Heirophant1,Heirophant2]:1//崔凡克用闪电的法师
+AutoDimVisionMonster[NightLord1]:1//崔凡克用陨石的法师
+AutoDimVisionMonster[VileArcher2]:1//冰冻高地弓箭手
+AutoDimVisionMonster[DemonGremlin,DemonTrickster1]:1//冰冻高地放火弹
+AutoDimVisionMonster[Slinger 3]: 1 //冰冻高地扔标枪
+RescueBarSafeDistance: 16 //救野蛮人时打开牢门而不完成任务的安全距离,大于此距离并且无遮挡技能为暴风雪陨石火墙九头海蛇按住AutoForegroundSkillKey会优先攻击牢门,手操作用冰封球效率最高
+//------------- AutoTeleportSection 自动传送设置-------------
+//当右键为传送时,按下AutoForegroundSkillKey时自动传送
+AutoTeleportDelayMs: 60 //当位置改变后过60毫秒再传送,网络有延迟,如果开始传送后怪物才出现就危险了
+AutoTeleportAvoidEdge: 3 //只有9个区域块120*120范围内的怪物会显示,传送到边缘不一定安全
+AutoTeleportMaxDistance: 30 //每次最多传送30yard
+AutoTeleportMinStep: 5 //每次至少前进5最小单位,否则更换路径
+AutoTeleportStepInvalidMs: 3000 //如果无法前进,此路径3秒内不再使用
+AutoTeleportRescueBarAvoid: 10 //如果已经完成了任务救野蛮人时离牢门最小距离，防止佣兵打开牢门
+TPLineColor: 0x62 //传送时显示目标线,设为0不显示
+RerouteKey: ALT+VK_H //重新路由
+LogTPToggle: 0,VK_ //将每次传送的数据记录到runtime/d2hackmap*.log中
+//自动传送时怪物距离的设定,传送时会选择满足条件的点,怪物距离设置越小可选择空间越大传送越快
+//FcrFrame是施法帧数,sor和bar的FCR=105时是8帧0.32秒,ama的FCR=48时是14帧0.56秒
+//AutoTeleportMonsterDistance[FcrFrame]: 普通怪物距离,危险怪物距离
+//以下配置是用14帧的亚马逊测试的,跑图基本上不会被打到,但偶尔也会被电鬼打到,施法实在太慢了,别的职业应该很轻松。
+AutoTeleportMonsterDefaultDistance: 6 //未设置的用此距离
+AutoTeleportMonsterDistance[1-8]: 5,7 
+AutoTeleportMonsterDistance[9-33]: 6,8 
+//------------- AutoSummonSection 自动召唤设置，双开时可在后台自动执行 ---------------
+//当前右键设定召满后自动切换右键技能,召唤顺序:骷髅,骷髅法师,重生
+Auto Summon Toggle: 1, CTRL+ALT+VK_S //自动召唤
+Auto Summon Mana: 20 //召唤至少需要法力
+Auto Summon Revive Toggle: 0, VK_ //SHIFT+CTRL+ALT+VK_S //自动重生
+ShowSummonInfoToggle: 0, VK_ //显示召唤统计信息, 包括数量，平均血量
+AutoSummonSkeletonLevelAdjust: 0 //对自动计算的召唤级别进行调整，适合主副武器级别不同的情况,仅资料片有效
+AutoSummonSkeletonMageLevelAdjust: 0
+AutoSummonReviveLevelAdjust: 0
+//可以重生的怪物
+AutoReviveMonster[HellBovine]:1//牛
+AutoReviveMonster[UndeadStygianDoll1,UndeadStygianDoll2]:1//冥河娃娃
+AutoReviveMonster[Gloam1,Gloam2,BurningSoul1,BurningSoul2,733,BlackSoul1,BlackSoul2]:1//电鬼
+AutoReviveMonster[SoulKiller3,SoulKiller4,UndeadSoulKiller2]:1//灵魂杀手
+Switch Skill Ms: 60 //切换技能时间
+//--------------- DropProtectionSection 装备保护 ---------------
+NpcTradeShowInfo: 1,VK_ //显示NPC交易窗口时在下方显示是否有+职业技能的装备可购买，没装备时不要错过
+//装备保护，指定的装备不能够扔在地上或卖掉，通过拦截鼠标左键及检查发送的0x17和0x33包实现
+//打开后+1技能的超大型护身符也不能扔地上,佣兵死亡或有装备时不能进行雇佣。
+Drop Protection Toggle: 1, CTRL+ALT+VK_D
+Drop Protection Rune[24-33]: 1 //24-33号符文或者包含24-33号符文的装备
+Drop Protection Runeword[49]: 35 //35FCR精神
+Drop Protection Unique[122]: 1 //乔丹之石 The Stone of Jordan
+Drop Protection Unique[241]: 1 //蚀肉骑士 Gore Rider
+Drop Protection Unique[246]: 1 //雷神之力 Thundergod's Vigor
+Drop Protection Unique[248]: 1 //谐角之冠 Harlequin Crest
+Drop Protection Unique[268]: 1 //布尔凯索之戒 Bul-Kathos' Wedding Band
+Drop Protection Unique[272]: 1 //马拉的万花筒 Mara's Kaleidoscope
+Drop Protection Unique[281]: 1 //泰坦的复仇 Titan's Revenge
+Drop Protection Unique[285]: 1 //撒卡兰姆使者 Herald of Zakarum
+Drop Protection Unique[336]: 1 //格利风之眼 Griffon's Eye
+Drop Protection Unique[345]: 1 //安达利尔的面貌 Andariel's Visage
+Drop Protection Unique[364]: 1 //卓古拉之握 Dracul's Grasp
+Drop Protection Unique[371]: 1 //天堂之光 Heaven's Light
+Drop Protection Unique[373]: 1 //蜘蛛之网 Arachnid Mesh
+Drop Protection Unique[381]: 1 //毁灭 Annihilus
+Drop Protection Unique[400]: 1 //地狱火炬 Hellfire Torch
+Drop Protection Set[83]: 1 //格瑞斯华尔德的救赎Griswolds's Redemption
+Drop Protection Set[104]: 1 //吉永之脸 Guillaume's Face
+SimpleItemProtectionCount: 1 
+RunewordProtectToggle: 1,CTRL+VK_OEM_5 //Check if there is a matching runeword when puting rune into equipment.Ctrl+|\. Can't protect equipment on body. New feature. Don't rely on it. 放入符文时检查神符之语，不能检查在身上的装备，不要依赖此功能。
+Reset Protection Toggle: 1, SHIFT+CTRL+VK_R //重置技能保护
+//战争召唤设置
+Auto Call To Arm: 200 //切换武器后200ms检查是否全屏并且左手是否CTA,如果是则将左键设为BC,右键设为BO,按住W键时保持站立,松开后自动切换武器回来,设为0取消此功能
+NecTeleportAttractToggle: 0,VK_ //0:无操作 1:如果是NEC右键切换为传送时将左键切换为吸引,由传送切换为别的技能是将左键切换为普通攻击
+NecNoAttackInHellToggle: 0,VK_  //地狱难度NEC左键技能设为普通攻击时左键点击怪物只移动不攻击
+
+//附加切换技能按键，可定义32组，技能按键不够用时可使用组合按键，每个职业可进行不同设置
+//按下时左键技能SwitchSkillLeft[按键][职业]: 技能编号1,技能编号2,技能编号3,技能编号4,实际切换时选择第一个可用技能
+//按下时右键技能SwitchSkillRight[按键][职业]: 技能编号1,技能编号2,技能编号3,技能编号4
+//松开时左键技能SwitchSkillLeftUp[按键][职业]: 技能编号,PreviousSkill表示恢复原先的技能
+//松开时右键技能SwitchSkillRightUp[按键][职业]: 技能编号
+//SwitchSkillStandStill[按键]: 1:按住键时站在原地不动
+//职业:ClassAma:1 ClassSor:2 ClassNec:3 ClassPal:4 ClassBar:5 ClassDru:6 ClassAsn:7 ClassAll:1-7
+//技能请查阅symbols/skills.txt
+SwitchSkillLeft[SHIFT+VK_S][ClassSor]: SkillTelekinesis,-1,-1,-1
+SwitchSkillLeft[SHIFT+VK_S][ClassAma]: SkillJab,-1,-1,-1
+SwitchSkillLeft[SHIFT+VK_D][ClassAma]: SkillChargedStrike,-1,-1,-1
+SwitchSkillLeft[SHIFT+VK_C][ClassAma]: SkillImpale,-1,-1,-1
+SwitchSkillRight[SHIFT+VK_D][ClassNec]: SkillLowerResist,-1,-1,-1
+SwitchSkillRight[SHIFT+VK_C][ClassNec]: SkillLifeTap,-1,-1,-1
+SwitchSkillRight[SHIFT+VK_S][ClassNec]: SkillBoneWall,-1,-1,-1
+//--------------- CharacterTag 人物标签 ---------------
+//在人物选择界面显示标签, LoadTagFile加载标签文件,标签文件的格式可参考sample_tag.txt
+//LoadTagFile: "d:\git\diablo2\tag.txt"
+//--------------- Undo撤消 ---------------
+//If PlugY is installed, undo patches will be disabled to avoid conflict
+//本功能只支持单机或TCPIP或连接由..\d2server113c\d2server.exe创建的battle.net服务器才能生效
+//其余1.13c服务器需加载d2hackmap.dll并调用里面的PatchServer接口才能支持,参考..\src\server\patch.cpp
+//在人物属性面板按住Ctrl+Alt再点击减少力敏活力能量换取属性点数，按Ctrl+Alt+Shift批量减少
+//在技能面板按住Ctrl+Alt再点击减少技能换取技能点数，按Ctrl+Alt+Shift批量减少
+//在任务面板按住Shift+Ctrl+Alt点击任务可重置任务,如果已经从任务中得到了技能点数属性点数HP,则必须有相应的点数扣除才能重置该任务
+BatchUndoStatPoints: 5 //批量减少属性点数的数量
+BatchUndoSkillPoints: 5 //批量减少技能点数的数量
+BatchAddSkillPoints: 5 //按Shift键批量使用技能点数
+AddStatMaxCount: 5 //限制每次最多使用5个属性点(原版游戏按住Shift一次会用掉全部属性点数)
+//---------2025年新增补丁--------
+//----------mcp.cpp------------
+//对游戏列表按照人数和难度进行排序并显示游戏难度
+GameListShowDifficultyToggle: 1, VK_ //show game list difficulty H:hell,N:nightmare
+SortGamesToggle: 1,VK_ //sort game list based on difficulty and num of players
+GameListSortByPlayersToggle: 1,VK_ //sort by players first then difficulty
+GameDifficultyChars: " nH" //This character will be added before num of players
+//---------quick chat------
+PasteMessageOnly: 1, VK_ //copy the message to clipboard and open chat
+//SendMessageKey[CTRL+VK_F12]: "Example message"
+//--- 以下是2025异次元专用补丁 ---
+// 多页支持，所有页中的装备的信息都放到snapshot中的txt文件中便于文本搜索
+ChangeStashPageCmd: 0x9D //only support 9C and 9D, change to other value to disable
+ChangeStashPageCmdOffset: 1
+ChangeStashPageCmdValue: 0x2c
+ChangeStashPageValueOffset: 0x15
+DrawMultiPageStashCount: 1,VK_ 
+DrawMultiPageStashXY: 80,-95
+//按住Ctrl键点击把符文或宝石放到对应的玉净瓶中,按住Alt键放到盒子里,按住Shift键放箱子里或扔掉
+SimpleItemStackTxt: 660
+SimpleItemStackIdx: 2153
+SimpleItemStackStatId: 359
+DrawSimpleItemStackCount: 1,VK_ //显示玉净瓶的内容和数量
+DrawInvItemInfoToggle: 1, VK_ //在暗金绿色神符之语物品上显示名称，方便在集市上快速找装备
+//---Some server has different resist offset
+ResistOffsetClassic: 0,-20,-50 //only for display
+ResistOffsetExpansion: 0,-40,-100 //only for display
+//---Skip drawing selected monster 
+SkipDrawToggle: 0, CTRL+VK_M
+SlowMs: 100 //if each frame is more than 100ms
+SlowSkipMs: 1000 //skip drawing selected monsters for the next 1000ms
+// 0: skip only if SkipDrawToggle is on
+// 1: skip if fps is too slow or SkipDrawToggle is on
+// 2: don't skip
+SkipDrawMonsters[563]:1
+SkipDrawMonsters[146,148,150,154,155,176-178,198,201,210,244-246,254,255,265,338,367,405,257,511-513,515,520,]:2 //NPC
+//在玩家头上显示名称和血量，本机号也显示法力，仅关闭小地图时显示
+DrawPlayerNameToggle: 1, VK_
+DrawPlayerNameDy: 66
+SelfNameColor:6,0x84,0x79  //自己是绿色
+LocalNameColor:6,0x84,0x79 //本机号是绿色
+PartyNameColor:6,0x20,0x5b //陌生人是白色
+NeutralNameColor:0,0x5b,0x10 //未结盟是黄色
+HostileNameColor:6,0x62,0x6f //敌对是红色
+//---switch skill from teleport/telekinesis/townPortal when switch to background
+//TpSwitchBackground[ClassSor]: SkillBlizzard
+//---switch skill to when enter door in background
+//EnterDoorInBackgroundSkill[ClassNec][The Worldstone Chamber]: SkillDimVision
+QuickToLevelKey: SHIFT+VK_G
+QuickToLevel: Kurast Docks,Durance of Hate Level 2
+MultiClientTalkToNpcKey: SHIFT+VK_B //talk to NPC to go to next act
+EnableGemAutoMerge: 1, VK_ //在打开盒子时按住自动技能键F时自动合并背包中的宝石，速度极快。

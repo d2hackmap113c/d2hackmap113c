@@ -1,0 +1,41 @@
+//本功能只支持单机或TCPIP或连接由..\d2server113c\d2server.exe创建的battle.net服务器才能生效
+//If hackmap has patched d2game.dll, then sending special message can active admin commands described in admin.txt
+#Load Symbols File: "symbols\keycodes.txt"
+ServerEnableSlainCowKing: 1
+ServerEnableNihlathakPortal: 1
+ServerInfiniteSocket: 1 //无限任务打孔
+ServerInfiniteIdentify: 1 //无限辨识书
+ServerInfinitePortal: 1 //无限回城书
+ServerInfiniteArrow: 1 //无限箭标枪投掷物
+ServerInfiniteMana: 0 //无限法力
+ServerInfiniteDurability: 1 //无限耐久度
+//--------------- Undo撤消 ---------------
+//Press Ctrl+Alt or Ctrl+Alt+Shift(Batch) when clicking to undo stats and skills
+//Press Shift+Ctrl+Alt and click a quest to undo that quest
+UndoPrefix: ",,,undo" // Message prefix for undo command
+ServerUndoStat: 1
+ServerUndoSkill: 1
+ServerUndoQuest: 1
+BatchUndoStatPoints: 5 //批量减少属性点数的数量
+BatchUndoSkillPoints: 5 //批量减少技能点数的数量
+BatchAddSkillPoints: 5 //按Shift键批量使用技能点数
+AddStatMaxCount: 5 //限制每次最多使用5个属性点(原版游戏按住Shift一次会用掉全部属性点数)
+//--------------- BigStash大箱子 ---------------
+//Conflict with PlugY, don't enable if PlugY is installed
+EnableBigStash: 0
+ServerInvType: 1 //0,1:4x10 2:8x10
+ServerStashType: 1 //0,1:exp8x6|classic4x6 2:10x10
+ServerCubeType: 1 //0,1:4x3 2:8x10 3:10x10
+ClientInvType: 1 //0:autoDetect 1:4x10 2:8x10
+ClientStashType: 1 //0:autoDetect 1:exp8x6|classic4x6 2:10x10
+ClientCubeType: 1 //0:autoDetect 1:4x3 2:8x10 3:10x10
+//--------------- AdminCommand服务器命令 admin.cpp---------------
+//See admin.txt
+AdminCmdPrefix: "," // Message prefix for admin commands
+EnableAdminCmd: 1
+RepeatAdminCmdKey: 0xBC //VK_OEM_COMMA
+//--------------- Uber Quest ---------------
+UberMephistoPos: 25130,5195 //25130,5143
+UberDiabloPos: 25139,5195 //25139,5139
+UberBaalPos:  25153,5195 //25139,5135
+ActiveUberMinions: 0

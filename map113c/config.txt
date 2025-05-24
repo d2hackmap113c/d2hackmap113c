@@ -1,0 +1,9 @@
+﻿//加载默认配置文件
+Load Config File: "config_def.txt"
+//加载物品配置文件
+Load Config File: "itemconf_def.txt"
+//加载服务器端补丁,仅单机或连接由..\d2server113c\d2server.exe创建的battle.net服务器才有效
+Load Config File: "config_server.txt"
+//加载自己的配置文件,把修改的设置放在自己的文件中,以后更新就不用再核对了
+//Load Config File: "config_my.txt"
+//Load Config File: "D:\my_d2hackmap.txt"

@@ -1,0 +1,194 @@
+
+
+All, Everything: 0+
+
+Yes, True, On: 1
+No, False, Off, None, Null: 0
+
+Default: -1
+Hide, No Show: -2
+
+White: 0
+Red: 1
+Green, Green 1: 2
+Blue: 3
+Gold, Gold 1: 4
+Grey: 5
+Black: 6
+Gold 2: 7
+Orange: 8
+Yellow: 9
+Green 2: 10
+Purple: 11
+Green 3: 12
+
+Low Quality, Inferior, Crude, Cracked, Damaged: 1
+Normal: 2
+High Quality, Superior: 3
+Magical, Magic: 4
+Set: 5
+Rare: 6
+Unique: 7
+Crafted, Craft: 8
+
+Not Ethereal, Not Ethreal, Real: 1
+Ethereal, Ethreal, Unreal: 2
+
+Chipped, Lesser: 1
+Flawed, Light: 2
+Flawless, Strong: 4
+Perfect, Greater: 5
+
+Junk: Stamina Potion, Antidote Potion, Thawing Potion-Tome of Identify, Arrows, Bolts-Scroll of Identify, Key, Ear, Rancid Gas Potion-Fulminating Potion, Mephisto's Soulstone, Minor Healing Potion-Greater Healing Potion, Minor Mana Potion-Greater Mana Potion
+Headbands: Circlet-Diadem
+Normal Armor: Cap-Spiked Shield, Wolf Head-Coronet
+Normal Weapons: Hand Axe-Shaft of the Horadric Staff, Katar-Scissors Katar, Eagle Orb-Maiden Javelin
+Normal Items: Normal Armor, Normal Weapons
+Exceptional Armor: War Hat-Barbed Shield, Tiara, Alpha Helm-Heirophant Trophy
+Exceptional Weapons: Hatchet-Chu Ko Nu, Quhab-Scissors Quhab, Glowing Orb-Ceremonial Javelin
+Exceptionals, Exceptional Items: Exceptional Armor, Exceptional Weapons
+Elite Armor: Diadem-Blade Barrier, Blood Spirit-Bloodlord Skull
+Elite Weapons: Suwayyah-Demon Crossbow, Heavenly Stone-Matriarchal Javelin
+Elites, Elite Items: Elite Armor, Elite Weapons
+
+All Arrows: Arrow missile, FireArrow, MagicArrow, IceArrow, Bolt missile, ColdArrow, ExplodingArrow, ImmolationArrow, GuidedArrow, FreezingArrow, MultipleShotArrow, MultipleShotBolt
+
+//*Compatibility*
+Automap Missles Toggle: Automap Missiles Toggle
+Missle Blob File: Missile Blob File
+Hostile Missle Colour: Hostile Missile Colour
+Guided Missle Colour: Guided Missile Colour
+Chicken Hit Points: Chicken Life
+Chicken Hostile Nearby: Chicken Hostile Nearby Toggle
+Item Unitids Toggle: Unit Numbers Toggle
+Corpse Toggle: Hidden Corpse Toggle
+Show Shenk Death Anim: Monster Death Anims[Shenk]
+Rare Item Colour: Item Colours[All][Rare]
+Unique Item Colour: Item Colours[All][Unique]
+Jewel Colour: Item Colours[Jewel]
+View Inventory Key: View Equipment Key
+
+//*35000 item*
+Gold_Armor: Ancient Armor,Tigulated Mail-Mage Plate,Dusk Shroud-Archon Plate
+Gold_Helm: Winged Helm,Grand Crown,Grim Helm,Tiara-Demonhead 2,Bone Visage
+Gold_Shield: Heater-Ward,Troll Nest,Blade Barrier
+Gold_Belt: Spiderweb Sash-Colossus Girdle
+Gold_Boots: Scarabshell Boots-Myrmidon Greaves
+Gold_Gloves: Vambraces-Ogre Gauntlets
+Gold_Class: Totemic Mask,Savage Helmet,Slayer Guard,Guilded Shield,Royal Shield,Heirophant Trophy,Blood Spirit-Bloodlord Skull
+Gold_Items: Gold_Armor,Gold_Helm,Gold_Shield,Gold_Belt,Gold_Boots,Gold_Gloves,Gold_Class
+
+
+//* Pet Armors* 2s-3s eth
+Pet_Armor: Dusk Shroud-Archon Plate
+
+Elite_Sword: Phase Blade,Legend Sword-Colossus Blade
+
+//* 4 socket Armors*  d2x:Archon Plate.d2:Gothic Plate
+Armor_4s: Gothic Plate-Ancient Armor,Embossed Plate-Ornate Plate,Dusk Shroud-Archon Plate
+
+//* 3 socket Helms* d2x:Bone Visage & Demonhead Mask.d2:Death Mask
+Helm_3s: Great Helm-Mask,Winged Helm-Death Mask,Spired Helm-Demonhead 2,Bone Visage
+
+Elite_Polearm: Ogre Axe-Giant Thresher
+Elite_Spears: Hyperion Spear-War Pike
+Act2_Pet_Weapons: Elite_Polearm,Elite_Spears
+
+
+//* Gem *
+LGem: 2050-2052,2055-2057,2060-2062,2065-2067,2070-2072,2075-2077,2090-2092
+HGem: 2053,2054,2058,2059,2063,2064,2068,2069,2073,2074,2078,2079,2093,2094
+Gem Colours:Item Colours[LGem,HGem]
+Gem Colour:Gem Colours
+
+Normal_Color:0xa0 
+Useful_Color:0xd0 
+Nice_Color:0xa4 
+Dreaming_Color:0x63 
+
+fire resist, fr: 1
+cold resist, cr: 2
+lighting resist, lr: 3
+poison resist, pr: 4
+exit game: 1
+back to town: 2
+Quick Back Town Key : QuickBackToTownKey
+Automap Active Room Toggle : Automap Active Rooms Toggle
+Automap Active Room Colour : Automap Active Rooms Colour
+Automap Ready Room Toggle : Automap Ready Rooms Toggle
+Automap Ready Room Colour : Automap Ready Rooms Colour
+Light Radiu Toggle : Light Radius Toggle
+Automap Corpse Toggle : Automap Corpses Toggle
+Monster Corpse Colour : Monster Corpse Colours
+Hidden Corpse Toggle : Hidden Corpses Toggle
+Missile Corpse : Missile Corpses
+Hidden Item Level : Hidden Items Level
+
+GameControlCharacterScreen:1
+GameControlInventoryScreen:2
+GameControlPartyScreen:3
+GameControlMessageLog:4
+GameControlQuestLog:5
+GameControlChat:6
+GameControlHelpScreen:7
+GameControlAutomap:8
+GameControlCenterAutomap:9
+GameControlFadeAutomap:10
+GameControlPartyonAutomap:11
+GameControlNamesonAutomap:12
+GameControlSkillTree:13
+GameControlSkillSpeedBar:14
+GameControlSkill1:15
+GameControlSkill2:16
+GameControlSkill3:17
+GameControlSkill4:18
+GameControlSkill5:19
+GameControlSkill6:20
+GameControlSkill7:21
+GameControlSkill8:22
+GameControlShowBelt:23
+GameControlUseBelt1:24
+GameControlUseBelt2:25
+GameControlUseBelt3:26
+GameControlUseBelt4:27
+GameControlSayHelp:28
+GameControlSayFollowme:29
+GameControlSayThisisforyou:30
+GameControlSayThanks:31
+GameControlSaySorry:32
+GameControlSayBye:33
+GameControlSayNowyoudie:34
+GameControlRun:35
+GameControlToggleRunWalk:36
+GameControlStandStill:37
+GameControlShowItems:38
+GameControlClearScreen:39
+GameControlSelectPreviousSkill:40
+GameControlSelectNextSkill:41
+GameControlClearNessage:42
+GameControlShowPortraits:44
+GameControlSwapWeapons:45
+GameControlToggleMiniMap:46
+GameControlSkill9:47
+GameControlSkill10:48
+GameControlSkill11:49
+GameControlSkill12:50
+GameControlSkill13:51
+GameControlSkill14:52
+GameControlSkill15:53
+GameControlSkill16:54
+GameControlHiringScreen:55
+GameControlSayRetreat:56
+GameControlESC:57
+GameControlHireUseBelt1:61
+GameControlHireUseBelt2:62  
+GameControlHireUseBelt3:63  
+GameControlHireUseBelt4:64  
+ClassAma:1
+ClassSor:2
+ClassNec:3
+ClassPal:4
+ClassBar:5
+ClassDru:6
+ClassAsn:7
+ClassAll:1-7

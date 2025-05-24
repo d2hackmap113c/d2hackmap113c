@@ -1,0 +1,41 @@
+﻿quest 1: den of evil
+	addSkill=q&1;
+	enter: set4
+	clear: set13,1
+	got skill point: set0,clear1, setQuest(41-1)(41-13)
+quest 9: Radament's Lair
+	addSkill=(q&3)&&(!(q&0x20));
+	close: set4
+	kill: set13,1,5
+	use book of skill: clear5
+	talk: set0,clear1
+	if don't have the book and exit game: set12, after create new game -> 0x1010 -> 0x1000
+	kill: set4,13,1,5
+	talk: set0,clear1 ->0x3031 new game->1031
+	use book: clear1,5 -> 0x3011
+quest 20: The Golden Bird
+	usePotion=(q&1)&&(!(q&0x20));
+	got: set6 -> 0x40
+	talk: set1 -> 0x42
+	got potion: clear1,set0,13,5 -> 2021
+	open quest panel: set12 -> 3021
+	use potion: clear5 -> 3001
+quest 17: Lam Esen's Tome
+	addStat=q&1;
+	talk: set13,0,1 clear1 -> 2001
+quest 25: The Fallen Angel
+	addSkill=q&1;
+	kill: set13,1 -> 2002
+	talk: set5 -> 2022
+	got point: set0,clear1
+	open quest panel: set12 -> 3001
+quest 37: Prison of Ice
+	useScroll=q&0x80;
+	close: set3 -> 8
+	rescue: set13,1 -> 200A
+	got scroll: set8 -> 210A
+	use scroll: set7 -> 218A
+	talk to anya: set9,clear1,set0,10,set(38-2) -> 2789
+	open quest panel: set12 -> 3789
+
+	

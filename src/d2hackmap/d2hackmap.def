@@ -1,0 +1,8 @@
+LIBRARY	"d2hackmap"
+EXPORTS
+  QueryInterface	@1
+	PatchClient @2
+	PatchServer @3
+	SetReloadFlag @4
+	MainMenuFlushFramebuf @5
+	SetBnetIp @6

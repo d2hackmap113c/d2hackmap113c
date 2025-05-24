@@ -1,0 +1,4 @@
+LIBRARY	"loadhackmap"
+EXPORTS
+   QueryInterface	@1
+	 MainMenuMessage @2

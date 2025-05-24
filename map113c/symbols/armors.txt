@@ -1,0 +1,204 @@
+//Armor items, internal id +1001
+Cap: 1001
+Skull Cap, skp: 1002
+Helm, hlm: 1003
+Full Helm, fhl: 1004
+Great Helm, ghm: 1005
+Crown, crn: 1006
+Mask, msk: 1007
+Quilted Armor, qui: 1008
+Leather Armor, lea: 1009
+Hard Leather Armor, hla: 1010
+Studded Leather, stu: 1011
+Ring Mail, rng: 1012
+Scale Mail, scl: 1013
+Chain Mail, chn: 1014
+Breast Plate, brs: 1015
+Splint Mail, spl: 1016
+Plate Mail, plt: 1017
+Field Plate, fld: 1018
+Gothic Plate, gth: 1019
+Full Plate Mail, ful: 1020
+Ancient Armor, aar: 1021
+Light Plate, ltp: 1022
+Buckler, buc: 1023
+Small Shield, sml: 1024
+Large Shield, lrg: 1025
+Kite Shield, kit: 1026
+Tower Shield, tow: 1027
+Gothic Shield, gts: 1028
+Leather Gloves, lgl: 1029
+Heavy Gloves, vgl: 1030
+Chain Gloves, mgl: 1031
+Light Gauntlets, tgl: 1032
+Gauntlets, hgl: 1033
+Boots, lbt: 1034
+Heavy Boots, vbt: 1035
+Chain Boots, mbt: 1036
+Light Plated Boots, tbt: 1037
+Greaves, hbt: 1038
+Sash, lbl: 1039
+Light Belt, vbl: 1040
+Belt, mbl: 1041
+Heavy Belt, tbl: 1042
+Plated Belt, hbl: 1043
+Bone Helm, bhm: 1044
+Bone Shield, bsh: 1045
+Spiked Shield, spk: 1046
+War Hat, xap: 1047
+Sallet, xkp: 1048
+Casque, xlm: 1049
+Basinet, xhl: 1050
+Winged Helm, xhm: 1051
+Grand Crown, xrn: 1052
+Death Mask, xsk: 1053
+Ghost Armor, xui: 1054
+Serpentskin Armor, xea: 1055
+Demonhide Armor, xla: 1056
+Trellised Armor, xtu: 1057
+Linked Mail, xng: 1058
+Tigulated Mail, xcl: 1059
+Mesh Armor, xhn: 1060
+Cuirass, xrs: 1061
+Russet Armor, xpl: 1062
+Templar Coat, xlt: 1063
+Sharktooth Armor, xld: 1064
+Embossed Plate, xth: 1065
+Chaos Armor, xul: 1066
+Ornate Plate, xar: 1067
+Mage Plate, xtp: 1068
+Defender, xuc: 1069
+Round Shield, xml: 1070
+Scutum, xrg: 1071
+Dragon Shield, xit: 1072
+Pavise, xow: 1073
+Ancient Shield, xts: 1074
+Demonhide Gloves, xlg: 1075
+Sharkskin Gloves, xvg: 1076
+Heavy Bracers, xmg: 1077
+Battle Gauntlets, xtg: 1078
+War Gauntlets, xhg: 1079
+Demonhide Boots, xlb: 1080
+Sharkskin Boots, xvb: 1081
+Mesh Boots, xmb: 1082
+Battle Boots, xtb: 1083
+War Boots, xhb: 1084
+Demonhide Sash, zlb: 1085
+Sharkskin Belt, zvb: 1086
+Mesh Belt, zmb: 1087
+Battle Belt, ztb: 1088
+War Belt, zhb: 1089
+Grim Helm, xh9: 1090
+Grim Shield, xsh: 1091
+Barbed Shield, xpk: 1092
+Wolf Head, dr1: 1093
+Hawk Helm, dr2: 1094
+Antlers, dr3: 1095
+Falcon Mask, dr4: 1096
+Spirit Mask, dr5: 1097
+Jawbone Cap, ba1: 1098
+Fanged Helm, ba2: 1099
+Horned Helm, ba3: 1100
+Assault Helmet, ba4: 1101
+Avenger Guard, ba5: 1102
+Targe, pa1: 1103
+Rondache, pa2: 1104
+Heraldic Shield, pa3: 1105
+Aerin Shield, pa4: 1106
+Crown Shield, pa5: 1107
+Preserved Head, ne1: 1108
+Zombie Head, ne2: 1109
+Unraveller Head, ne3: 1110
+Gargoyle Head, ne4: 1111
+Demon Head 1, ne5: 1112
+Circlet, ci0: 1113
+Coronet, ci1: 1114
+Tiara, ci2: 1115
+Diadem, ci3: 1116
+Shako, uap: 1117
+Hydraskull, ukp: 1118
+Armet, ulm: 1119
+Giant Conch, uhl: 1120
+Spired Helm, uhm: 1121
+Corona, urn: 1122
+Demonhead 2, usk: 1123
+Dusk Shroud, uui: 1124
+Wyrmhide, uea: 1125
+Scarab Husk, ula: 1126
+Wire Fleece, utu: 1127
+Diamond Mail, ung: 1128
+Loricated Mail, ucl: 1129
+Boneweave, uhn: 1130
+Great Hauberk, urs: 1131
+Balrog Skin, upl: 1132
+Hellforge Plate, ult: 1133
+Kraken Shell, uld: 1134
+Lacquered Plate, uth: 1135
+Shadow Plate, uul: 1136
+Sacred Armor, uar: 1137
+Archon Plate, utp: 1138
+Heater, uuc: 1139
+Luna, uml: 1140
+Hyperion, urg: 1141
+Monarch, uit: 1142
+Aegis, uow: 1143
+Ward, uts: 1144
+Bramble Mitts, ulg: 1145
+Vampirebone Gloves, uvg: 1146
+Vambraces, umg: 1147
+Crusader Gauntlets, utg: 1148
+Ogre Gauntlets, uhg: 1149
+Wyrmhide Boots, ulb: 1150
+Scarabshell Boots, uvb: 1151
+Boneweave Boots, umb: 1152
+Mirrored Boots, utb: 1153
+Myrmidon Greaves, uhb: 1154
+Spiderweb Sash, ulc: 1155
+Vampirefang Belt, uvc: 1156
+Mithril Coil, umc: 1157
+Troll Belt, utc: 1158
+Colossus Girdle, uhc: 1159
+Bone Visage, uh9: 1160
+Troll Nest, ush: 1161
+Blade Barrier, upk: 1162
+Alpha Helm, dr6: 1163
+Griffon Headdress, dr7: 1164
+Hunter's Guise, dr8: 1165
+Sacred Feathers, dr9: 1166
+Totemic Mask, dra: 1167
+Jawbone Visor, ba6: 1168
+Lion Helm, ba7: 1169
+Rage Mask, ba8: 1170
+Savage Helmet, ba9: 1171
+Slayer Guard, baa: 1172
+Akaran Targe, pa6: 1173
+Akaran Rondache, pa7: 1174
+Protector Shield, pa8: 1175
+Guilded Shield, pa9: 1176
+Royal Shield, paa: 1177
+Mummified Trophy, ne6: 1178
+Fetish Trophy, ne7: 1179
+Sexton Trophy, ne8: 1180
+Cantor Trophy, ne9: 1181
+Heirophant Trophy, nea: 1182
+Blood Spirit, drb: 1183
+Sun Spirit, drc: 1184
+Earth Spirit, drd: 1185
+Sky Spirit, dre: 1186
+Dream Spirit, drf: 1187
+Carnage Helm, bab: 1188
+Fury Visor, bac: 1189
+Destroyer Helm, bad: 1190
+Conqueror Crown, bae: 1191
+Guardian Crown, baf: 1192
+Sacred Targe, pab: 1193
+Sacred Rondache, pac: 1194
+Kurast Shield, pad: 1195
+Zakarum Shield, pae: 1196
+Vortex Shield, paf: 1197
+Minion Skull, neb: 1198
+Hellspawn Skull, nec: 1199
+Overseer Skull, ned: 1200
+Succubus Skull, nee: 1201
+Bloodlord Skull, nef: 1202
+

@@ -1,0 +1,169 @@
+W0 Ancient's Pledge 8+9+7   P35 S(43,2C070CC:30)+30%ColdResist抗冰冷  AllResist+(46166224-13)  P5 S(16,2C070EC:50)+50% Enhanced Defense(增强防御)  P30 S(114,2C070FC:10)10%Damage Taken Goes To Mana受损的生命转为法力的提高
+W1 Black 10+16+4   P108 S(136,2C071EC:40)40Chance of Crushing Blow(CB压碎性打击)  P29  P56 S(93,2C0720C:15)15%Increased Attack Speed(IAS增加攻击速度)  P6 S(35,2C0721C:2)(魔法伤害减少MDR)Magic Damage Reduced by 2  P15 S(19,2C0722C:200)+200 to Attack Rating(ACC命中率)  P243 S(204,2C0723C:4,74))10级Kick(4/0聚气)(12-4)
+W2 Fury 31+25+5   P29  P56 S(93,2C0731C:40)40%Increased Attack Speed(IAS增加攻击速度)  P94 S(117,2C0732C:1)Prevent Monster Heal(PHM防止敌人自疗)  P107 S(135,2C0733C:66)66Chance of Open Wounds(OW撕裂伤口)  P66 S(60,2C0734C:6)6 Life stolen per hit(LL生命于击中时偷取)  P113 S(141,2C0735C:33)33%Deadly Strike双倍打击  P123 S(107,2C0736C:5,147))+5到Frenzy(只限)
+W3 Holy Thunder 5+8+9+7   P29  P135 S(50,2C0743C:60)+60LightDam闪电伤害(20-60) S(51,2C0743C:60)+60MaxLightDam最大闪电伤害(20-60)  P28  P33 S(41,2C0745C:60)+60%LightResist抗闪电  P34 S(42,2C0746C:5)+5%MaxLightResist最大闪电抵抗  P123 S(107,2C0747C:3,118))+3到Holy Shock(只限)  P243 S(204,2C0748C:7,53))53级Attack(7/0聚气)(60-7)
+W4 Honor 11+1+6+3+12   P29  P53 S(74,2C0755C:10)Replenish Life(补充生命REP)+10  P104 S(127,2C0756C:1)+1AllSkill所有技能  P15 S(19,2C0757C:200)+200 to Attack Rating(ACC命中率)  P113 S(141,2C0758C:25)25%Deadly Strike双倍打击  P7 S(0,2C0759C:10)+10 to Strength(STR力量)
+W5 King's Grace 11+8+10   P29  P15 S(19,2C0767C:150)+150 to Attack Rating(ACC命中率)  P98 S(121,2C0768C:100)100%Damage to Demons增加对恶魔系的伤害  P99 S(122,2C0769C:50)50%Damage to Undead增加对不死系的伤害  P100 S(123,2C076AC:100)+100to Attack Rating against Demons增加对恶魔系的准确率  P101 S(124,2C076BC:100)+100to Attack Rating against Undead增加对不死系的准确率
+W6 Leaf 3+8   P103 S(126,12FBC0:1,3))+1 to Fire Skills  P141 S(214,2C0779C:16)Defense+2.00*角色等级 防御(根据角色等级决定)  P35 S(43,2C077AC:33)+33%ColdResist抗冰冷  P123 S(107,2C077BC:3,41))+3到Inferno地狱火(只限)  P123 S(107,2C077CC:3,36))+3到Fire Bolt火弹(只限)  P123 S(107,2C077DC:3,37))+3到Warmth温暖(只限)
+W7 Lionheart 15+17+19   P7 S(0,2C078AC:15)+15 to Strength(STR力量)  P9 S(3,2C078BC:20)+20 to Vitality(VIT体力)  P8 S(2,2C078CC:15)+15 to Dexterity(DEX敏捷)  P29  P13 S(7,2C078EC:50)+0MaxHP最大生命  AllResist+(46168304-30)
+W8 Lore 9+12   P10 S(1,2C079CC:10)+10 to Energy(ENG精力)  P104 S(127,2C079DC:1)+1AllSkill所有技能  P73 S(89,2C079EC:2)+2 to Light Radius照亮范围  P110 S(138,2C079FC:2)+2to Mana after each Kill法力每杀死一个敌人
+W9 Malice 6+1+5   P107 S(135,2C07AEC:100)100Chance of Open Wounds(OW撕裂伤口)  P97 S(120,2C07AFC:-100)-100to Monster Defense Per Hit每击中一次增机敌人防御  P94 S(117,2C07B0C:1)Prevent Monster Heal(PHM防止敌人自疗)  P29  P73 S(89,2C07B2C:-1)-1 to Light Radius照亮范围  P53 S(74,2C07B3C:-5)Replenish Life(补充生命REP)-5
+W10 Melody 13+18+4   P29  P124 S(188,2C07C1C:3)+3bowSkill弓和十字弓技能(只限Amazon亚马逊)  P123 S(107,2C07C2C:3,9))+3到Critical Strike(只限)  P123 S(107,2C07C3C:3,13))+3到Dodge(只限)  P123 S(107,2C07C4C:3,17))+3到Slow Missiles(只限)  P99 S(122,2C07C5C:300)300%Damage to Undead增加对不死系的伤害
+W11 Memory 17+16+12+5   P12 S(77,2C07D2C:20)Increase Maximum Mana增加法力最大值20%  P6 S(35,2C07D3C:7)(魔法伤害减少MDR)Magic Damage Reduced by 7  P5 S(16,2C07D4C:50)+50% Enhanced Defense(增强防御)  P86 S(105,2C07D5C:33)33Faster Cast Rate(FCR快速施法速度)  P70 S(83,12FBC0:1,3))+1 to PalSkill圣骑士技能ClassSkill  P123 S(107,2C07D7C:3,58))+3到Energy Shield能量护盾(只限)  P123 S(107,2C07D8C:2,42))+2到Static Field静电力场(只限)
+W12 Nadir 4+3   P5 S(16,2C07E4C:50)+50% Enhanced Defense(增强防御)  P0 S(31,2C07E5C:10)+10 Defense(DEF防御)  P73 S(89,2C07E6C:-3)-3 to Light Radius照亮范围  P243 S(204,2C07E7C:13,264))8级Left Hand Throw(13/0聚气)(9-13)  P58 S(79,2C07E8C:-33)-33%ExtraGold额外金币获得  P7 S(0,2C07E9C:5)+5 to Strength(STR力量)
+W13 Radiance 4+12+6   P73 S(89,2C07F6C:5)+5 to Light Radius照亮范围  P10 S(1,2C07F7C:10)+10 to Energy(ENG精力)  P9 S(3,2C07F8C:10)+10 to Vitality(VIT体力)  P6 S(35,2C07F9C:3)(魔法伤害减少MDR)Magic Damage Reduced by 3  P11 S(9,2C07FAC:33)+0MaxMana最大法力  P5 S(16,2C07FBC:75)+75% Enhanced Defense(增强防御)
+W14 Rhyme 13+5   P83 S(102,2C0808C:20)20Faster Block Rate(FBR快速格挡速度)  P16 S(20,2C0809C:20)+20% Increased Chance of Blocking(FBR增加格挡率)  AllResist+(46170272-25)  P115 S(153,2C080BC:1)Cannot Be Frozen无法被冻结  P58 S(79,2C080CC:50)50%ExtraGold额外金币获得  P59 S(80,2C080DC:25)25MF获得魔法装备
+W15 Silence 14+2+15+24+3+26   P65 S(62,2C081AC:4)4 Mana stolen per hit(LM法力于击中时偷取)  P91 S(113,2C081BC:33)+33击中使敌人致盲  P29  P56 S(93,2C081DC:20)20%Increased Attack Speed(IAS增加攻击速度)  AllResist+(46170592-75)  P104 S(127,2C081FC:2)+2AllSkill所有技能  P80 S(99,2C0820C:20)20Faster Hit Recovery(FHR快速打击恢复)
+W16 Smoke 4+17   P1 S(32,2C082CC:250)+250 Defense vs. Missile(近身防御)  P5 S(16,2C082DC:75)+75% Enhanced Defense(增强防御)  AllResist+(46170848-50)  P80 S(99,2C082FC:20)20Faster Hit Recovery(FHR快速打击恢复)  P73 S(89,2C0830C:-1)-1 to Light Radius照亮范围  P243 S(204,2C0831C:6,72))8级Kick(6/0聚气)(18-6)
+W17 Stealth 7+5   P6 S(35,2C083EC:3)(魔法伤害减少MDR)Magic Damage Reduced by 3  P8 S(2,2C083FC:6)+6 to Dexterity(DEX敏捷)  P63 S(11,2C0840C:15)+0MaxStamina最大耐力  P77 S(96,2C0841C:25)25Faster Run/Walk(FRW高速跑/行走)  P86 S(105,2C0842C:25)25Faster Cast Rate(FCR快速施法速度)  P80 S(99,2C0843C:25)25Faster Hit Recovery(FHR快速打击恢复)
+W18 Steel 3+1   P56 S(93,2C0850C:25)25%Increased Attack Speed(IAS增加攻击速度)  P27  P28  P107 S(135,2C0853C:50)50Chance of Open Wounds(OW撕裂伤口)  P29
+W19 Strength 11+3   P7 S(0,2C0862C:20)+20 to Strength(STR力量)  P29  P9 S(3,2C0864C:10)+10 to Vitality(VIT体力)  P108 S(136,2C0865C:25)25Chance of Crushing Blow(CB压碎性打击)
+W20 Venom 7+14+23   P138 S(57,2C0874C:312,175))+312Posion毒素伤害175Second 秒 S(58,2C0874C:312,175))312PosionDam/s每秒毒素伤害 S(59,2C0874C:312,175))312Posion/s秒毒素时间  P92 S(115,2C0875C:1)Ignore Target's Defense(ITD忽视目标防御)  P243 S(204,2C0876C:15,83))19级Kick(15/0聚气)(27-15)  P243 S(204,2C0877C:13,92))28级Kick(13/0聚气)(11-13)  P65 S(62,2C0878C:7)7 Mana stolen per hit(LM法力于击中时偷取)
+W21 Wealth 20+18+3   P58 S(79,2C0886C:250)250%ExtraGold额外金币获得  P59 S(80,2C0887C:100)100MF获得魔法装备
+W22 White 14+16   P124 S(188,2C0898C:3,7))+3fireSkill火焰技能(只限Amazon亚马逊)  P6 S(35,2C0899C:4)(魔法伤害减少MDR)Magic Damage Reduced by 4  P86 S(105,2C089AC:20)20Faster Cast Rate(FCR快速施法速度)  P11 S(9,2C089BC:13)+0MaxMana最大法力  P123 S(107,2C089CC:3,68))+3到Bone Armor骨盾(只限)  P123 S(107,2C089DC:2,84))+2到Bone Spear骨矛(只限)  P123 S(107,2C089EC:4,69))+4到Skeleton Mastery骷髅支配(只限)
+W23 Zephyr 9+5   P77 S(96,2C08AAC:25)25Faster Run/Walk(FRW高速跑/行走)  P56 S(93,2C08ABC:25)25%Increased Attack Speed(IAS增加攻击速度)  P29  P15 S(19,2C08ADC:66)+66 to Attack Rating(ACC命中率)  P128 S(201,2C08AEC:1,240))被击中时有1%放出等级为48的Unsummon(7-1)  P0 S(31,2C08AFC:25)+25 Defense(DEF防御)
+W24 Bound by Duty 14+22+30+24   AllResist+(46173120-50)  P5 S(16,2C08BDC:70)+70% Enhanced Defense(增强防御)  P98 S(121,2C08BEC:200)200%Damage to Demons增加对恶魔系的伤害  P99 S(122,2C08BFC:100)100%Damage to Undead增加对不死系的伤害  P66 S(60,2C08C0C:8)8 Life stolen per hit(LL生命于击中时偷取)  P104 S(127,2C08C1C:2)+2AllSkill所有技能  P7 S(0,2C08C2C:20)+20 to Strength(STR力量)
+W25 Bramble 8+27+29+5   P80 S(99,2C08CEC:50)50Faster Hit Recovery(FHR快速打击恢复)  P0 S(31,2C08CFC:300)+300 Defense(DEF防御)  P125 S(151,2C08D0C:21,103))Lv21 Thorns Aura(15-21)  P253 S(86,2C08D1C:13)+13HP/skill生命每杀死一个敌人  P247 S(332,2C08D2C:50)+50% 毒素技能伤害(25-50)  P39 S(45,2C08D3C:100)+100%PosionResist抗毒素  P243 S(204,2C08D4C:13,246))54级Unsummon(13/0聚气)(33-13)
+W26 Breath of the Dying 26+15+1+2+33+5   P56 S(93,2C08E0C:60)60%Increased Attack Speed(IAS增加攻击速度)  P99 S(122,2C08E1C:125)125%Damage to Undead增加对不死系的伤害  P66 S(60,2C08E2C:15)15 Life stolen per hit(LL生命于击中时偷取)(12-15)  P94 S(117,2C08E3C:1)Prevent Monster Heal(PHM防止敌人自疗)  P258 S(196,2C08E4C:20,92))杀死一个敌人时有20%放出等级为28的Kick (50-20)  P29  P251 S(0,2C08E6C:30)+30 to Strength(STR力量) S(1,2C08E6C:30)+30 to Energy(ENG精力) S(2,2C08E6C:30)+30 to Dexterity(DEX敏捷) S(3,2C08E6C:30)+30 to Vitality(VIT体力)
+W27 Call to Arms 11+8+23+24+27   P56 S(93,2C08F2C:40)40%Increased Attack Speed(IAS增加攻击速度)  P29  P104 S(127,2C08F4C:1)+1AllSkill所有技能  P265 S(97,2C08F5C:6,155))+6toBattle Command(2-6)  P265 S(97,2C08F6C:6,149))+6toBattle Orders(1-6)  P265 S(97,2C08F7C:4,146))+4toBattle Cry(1-4)  P53 S(74,2C08F8C:12)Replenish Life(补充生命REP)+12
+W28 Crescent Moon 13+22+3   P233 S(334,2C0904C:35)-35% 敌人闪电抵抗  P92 S(115,2C0905C:1)Ignore Target's Defense(ITD忽视目标防御)  P29  P48 S(147,2C0907C:11)+11Magic Absorb魔法吸收(9-11)  P243 S(204,2C0908C:18,227))35级Unsummon(18/0聚气)(30-18)  P127 S(198,2C0909C:13,42))击中时有13%放出等级为42的Attack (7-13)  P127 S(198,2C090AC:17,53))击中时有17%放出等级为53的Attack (10-17)
+W29 Delirium 20+24+16   P127 S(198,2C0916C:18,81))击中时有18%放出等级为17的Kick (11-18)  P243 S(204,2C0917C:17,86))22级Kick(17/0聚气)(60-17)  P128 S(201,2C0918C:13,77))被击中时有13%放出等级为13的Kick(14-13)  P0 S(31,2C0919C:261)+261 Defense(DEF防御)  P128 S(201,2C091AC:14,273))被击中时有14%放出等级为17的Left Hand Throw(6-14)  P128 S(201,2C091BC:50,350))被击中时有50%放出等级为30的Left Hand Swing(1-50)  P104 S(127,2C091CC:2)+2AllSkill所有技能
+W30 Doomsayer 15+27+22+28+32   P29  P125 S(151,2C0929C:12,114))Lv12 Holy Freeze Aura  P56 S(93,2C092AC:45)45%Increased Attack Speed(IAS增加攻击速度)  P94 S(117,2C092BC:1)Prevent Monster Heal(PHM防止敌人自疗)  P234 S(335,2C092CC:60)-60% 敌人冰冻抵抗(40-60)  P104 S(127,2C092DC:2)+2AllSkill所有技能  P127 S(198,2C092EC:18,244))击中时有18%放出等级为52的Unsummon (5-18)
+W31 Enigma 31+6+30   P0 S(31,2C093AC:775)+775 Defense(DEF防御)(750-775)  P253 S(86,2C093BC:14)+14HP/skill生命每杀死一个敌人  P77 S(96,2C093CC:45)45Faster Run/Walk(FRW高速跑/行走)  P147 S(220,2C093DC:0,6))to Strength+0.00*角色等级 力量(根据角色等级决定)  P104 S(127,2C093EC:2)+2AllSkill所有技能  P167 S(240,2C093FC:0,8))0.00*角色等级% 获得魔法装备(根据角色等级决定)  P265 S(97,2C0940C:1,54))+1toTeleport传送
+W32 Stone 13+22+21+17   P5 S(16,2C094CC:260)+260% Enhanced Defense(增强防御)(220-260)  P243 S(204,2C094DC:16,75))11级Kick(16/0聚气)  P1 S(32,2C094EC:300)+300 Defense vs. Missile(近身防御)  P243 S(204,2C094FC:16,229))37级Unsummon(16/0聚气)(80-16)  P7 S(0,2C0950C:16)+16 to Strength(STR力量)  P9 S(3,2C0951C:16)+16 to Vitality(VIT体力)  P80 S(99,2C0952C:40)40Faster Hit Recovery(FHR快速打击恢复)
+W33 Eternity 11+30+24+12+29   P29  P242  P114 S(150,2C0960C:33)slow使目标减速33%  P243 S(204,2C0961C:8,95))31级Kick(8/0聚气)(88-8)  P53 S(74,2C0962C:16)Replenish Life(补充生命REP)+16  P62 S(27,2C0963C:16)16% Regenerate Mana(加快恢复法力)  P115 S(153,2C0964C:1)Cannot Be Frozen无法被冻结
+W34 Exile's Path 26+27+24+14   P83 S(102,2C0970C:30)30Faster Block Rate(FBR快速格挡速度)  P106 S(134,2C0971C:1)Freezes target冻结目标+1  P5 S(16,2C0972C:260)+260% Enhanced Defense(增强防御)(220-260)  P125 S(151,2C0973C:16,104))Lv16 Defiance Aura(13-16)  P124 S(188,2C0974C:2,10))+2coldSkill冰冻技能(只限Sorceress法师)  P127 S(198,2C0975C:5,82))击中时有5%放出等级为18的Kick (15-5)  P179 S(252,2C0976C:0,25))每秒恢复 0 耐久度
+W35 Famine 19+27+9+31   P29  P66 S(60,2C0983C:12)12 Life stolen per hit(LL生命于击中时偷取)  P56 S(93,2C0984C:30)30%Increased Attack Speed(IAS增加攻击速度)  P94 S(117,2C0985C:1)Prevent Monster Heal(PHM防止敌人自疗)  P136 S(52,2C0986C:200)+200MagicDam魔法伤害(180-200) S(53,2C0986C:200)+200MaxMagicDam最大魔法伤害(180-200)  P248 S(48,2C0987C:200,100))+200FireDam火焰伤害(50-200) S(49,2C0987C:200,100))+200MaxFireDam最大火焰伤害(50-200) S(50,2C0987C:200,100))+200LightDam闪电伤害(50-200) S(51,2C0987C:200,100))+200MaxLightDam最大闪电伤害(50-200) S(54,2C0987C:200,100))+200ColdDam冰冻伤害小(50-200) S(55,2C0987C:200,100))+200MaxColdDam冰冻伤害大(50-200) S(56,2C0987C:200,100))200FreezeTime秒冷冻时间(50-200)  P264
+W36 Hand of Justice 29+32+11+28   P56 S(93,2C0994C:33)33%Increased Attack Speed(IAS增加攻击速度)  P29  P125 S(151,2C0996C:16,102))Lv16 Holy Fire Aura  P260 S(199,2C0997C:36,46))升级时有36%放出等级为46的Attack(100-36)  P259 S(197,2C0998C:48,56))死亡时有48%放出等级为56的Attack(100-48)  P92 S(115,2C0999C:1)Ignore Target's Defense(ITD忽视目标防御)  P232 S(333,2C099AC:20)-20% 敌人火焰抵抗
+W37 Heart of the Oak 18+26+21+10   P86 S(105,2C09A6C:40)40Faster Cast Rate(FCR快速施法速度)  P243 S(204,2C09A7C:4,226))34级Unsummon(4/0聚气)(25-4)  P12 S(77,2C09A8C:15)Increase Maximum Mana增加法力最大值15%  P104 S(127,2C09A9C:3)+3AllSkill所有技能  P53 S(74,2C09AAC:20)Replenish Life(补充生命REP)+20  AllResist+(46176944-30)  P243 S(204,2C09ACC:14,221))29级Unsummon(14/0聚气)(60-14)
+W38 Kingslayer 23+22+25+19   P56 S(93,2C09B8C:30)30%Increased Attack Speed(IAS增加攻击速度)  P29  P93 S(116,2C09BAC:25)-25%Target Defense目标防御  P108 S(136,2C09BBC:33)33Chance of Crushing Blow(CB压碎性打击)  P107 S(135,2C09BCC:25)25Chance of Open Wounds(OW撕裂伤口)  P265 S(97,2C09BDC:1,111))+1toVengeance  P58 S(79,2C09BEC:40)40%ExtraGold额外金币获得
+W39 Passion 14+9+2+20   P29  P265 S(97,2C09CBC:1,106))+1toZeal  P96 S(119,2C09CCC:80)80%增加命中率(50-80)  P265 S(97,2C09CDC:1,152))+1toBerserk  P56 S(93,2C09CEC:25)25%Increased Attack Speed(IAS增加攻击速度)  P243 S(204,2C09CFC:3,236))44级Unsummon(3/0聚气)(12-3)  P91 S(113,2C09D0C:10)+10击中使敌人致盲
+W40 Gloom 19+22+21   P5 S(16,2C09DCC:230)+230% Enhanced Defense(增强防御)(170-230)  AllResist+(46177744-30)  P128 S(201,2C09DEC:3,71))被击中时有3%放出等级为7的Kick(15-3)  P80 S(99,2C09DFC:10)10Faster Hit Recovery(FHR快速打击恢复)  P30 S(114,2C09E0C:5)5%Damage Taken Goes To Mana受损的生命转为法力的提高  P73 S(89,2C09E1C:-3)-3 to Light Radius照亮范围  P95 S(118,2C09E2C:1)Half Freeze Duration冰冻时间减半
+W41 Sanctuary 18+18+23   P16 S(20,2C09EEC:20)+20% Increased Chance of Blocking(FBR增加格挡率)  P83 S(102,2C09EFC:20)20Faster Block Rate(FBR快速格挡速度)  P5 S(16,2C09F0C:160)+160% Enhanced Defense(增强防御)(130-160)  P1 S(32,2C09F1C:250)+250 Defense vs. Missile(近身防御)  AllResist+(46178080-50)  P80 S(99,2C09F3C:20)20Faster Hit Recovery(FHR快速打击恢复)  P243 S(204,2C09F4C:12,17))17级Attack(12/0聚气)(60-12)
+W42 Chaos 19+27+22   P111 S(139,2C0A00C:15)+15Life after each Demon Kill生命每杀死一个恶魔系  P29  P136 S(52,2C0A02C:471)+471MagicDam魔法伤害(216-471) S(53,2C0A02C:471)+471MaxMagicDam最大魔法伤害(216-471)  P265 S(97,2C0A03C:1,151))+1toWhirlwind  P56 S(93,2C0A04C:35)35%Increased Attack Speed(IAS增加攻击速度)  P127 S(198,2C0A05C:11,64))击中时有11%放出等级为0的Kick (9-11)  P127 S(198,2C0A06C:9,38))击中时有9%放出等级为38的Attack (11-9)
+W43 The Beast 30+3+22+23+17   P56 S(93,2C0A12C:40)40%Increased Attack Speed(IAS增加攻击速度)  P125 S(151,2C0A13C:9,122))Lv9 Fanaticism Aura  P29  P7 S(0,2C0A15C:40)+40 to Strength(STR力量)(25-40)  P243 S(204,2C0A16C:13,247))55级Unsummon(13/0聚气)(5-13)  P265 S(97,2C0A17C:3,228))+3toWerebear  P265 S(97,2C0A18C:3,224))+3toLycanthropy
+W44 Serendipity  
+W45 Shadow  
+W46 Shadow of Doubt  
+W47 Siren's Song  
+W48 Sorrow  
+W49 Spirit 7+10+9+11   P81 S(99,2C0A7EC:55)55Faster Hit Recovery(FHR快速打击恢复)  P11 S(9,2C0A7FC:112)+0MaxMana最大法力(89-112)  P1 S(32,2C0A80C:250)+250 Defense vs. Missile(近身防御)  P9 S(3,2C0A81C:22)+22 to Vitality(VIT体力)  P87 S(105,2C0A82C:35)35Faster Cast Rate(FCR快速施法速度)(25-35)  P48 S(147,2C0A83C:8)+8Magic Absorb魔法吸收(3-8)  P104 S(127,2C0A84C:2)+2AllSkill所有技能
+W50 Splendor 5+17   P73 S(89,2C0A90C:3)+3 to Light Radius照亮范围  P58 S(79,2C0A91C:50)50%ExtraGold额外金币获得  P59 S(80,2C0A92C:20)20MF获得魔法装备  P5 S(16,2C0A93C:100)+100% Enhanced Defense(增强防御)(60-100)  P83 S(102,2C0A94C:20)20Faster Block Rate(FBR快速格挡速度)  P86 S(105,2C0A95C:10)10Faster Cast Rate(FCR快速施法速度)  P104 S(127,2C0A96C:1)+1AllSkill所有技能
+W51 Starlight  
+W52 Still Water  
+W53 Duress 13+22+10   P137 S(54,2C0AC6C:133,50))+133ColdDam冰冻伤害小(37-133) S(55,2C0AC6C:133,50))+133MaxColdDam冰冻伤害大(37-133) S(56,2C0AC6C:133,50))133FreezeTime秒冷冻时间(37-133)  P29  P5 S(16,2C0AC8C:200)+200% Enhanced Defense(增强防御)(150-200)  P80 S(99,2C0AC9C:20)20Faster Hit Recovery(FHR快速打击恢复)  P107 S(135,2C0ACAC:33)33Chance of Open Wounds(OW撕裂伤口)  P108 S(136,2C0ACBC:15)15Chance of Crushing Blow(CB压碎性打击)  P116 S(154,2C0ACCC:-20)-20%减少耐力消耗
+W54 Storm  
+W55 Tempest  
+W56 Temptation  
+W57 Terror  
+W58 Nightfall  
+W59 Oath 13+21+23+17   P29  P55 S(93,2C0B33C:30)30%Increased Attack Speed(IAS增加攻击速度)  P127 S(198,2C0B34C:20,93))击中时有20%放出等级为29的Kick (30-20)  P243 S(204,2C0B35C:17,90))26级Kick(17/0聚气)(14-17)  P243 S(204,2C0B36C:16,236))44级Unsummon(16/0聚气)(20-16)  P48 S(147,2C0B37C:15)+15Magic Absorb魔法吸收(10-15)  P242
+W60 Obedience 15+18+10+5+19   P29  P108 S(136,2C0B45C:40)40Chance of Crushing Blow(CB压碎性打击)  P258 S(196,2C0B46C:21,52))杀死一个敌人时有21%放出等级为52的Attack (30-21)  P232 S(333,2C0B47C:25)-25% 敌人火焰抵抗  P0 S(31,2C0B48C:300)+300 Defense(DEF防御)(200-300)  P81 S(99,2C0B49C:40)40Faster Hit Recovery(FHR快速打击恢复)  AllResist+(46183584-20)
+W61 Oblivion  
+W62 Obsession  
+W63 Harmony 3+6+12+18   P29  P248 S(48,2C0B7BC:160)+160FireDam火焰伤害(55-160) S(49,2C0B7BC:160)+160MaxFireDam最大火焰伤害(55-160) S(50,2C0B7BC:160)+160LightDam闪电伤害(55-160) S(51,2C0B7BC:160)+160MaxLightDam最大闪电伤害(55-160) S(54,2C0B7BC:160)+160ColdDam冰冻伤害小(55-160) S(55,2C0B7BC:160)+160MaxColdDam冰冻伤害大(55-160) S(56,2C0B7BC:160)160FreezeTime秒冷冻时间(55-160)  P243 S(204,2C0B7CC:20,95))31级Kick(20/0聚气)(25-20)  P125 S(151,2C0B7DC:10,115))Lv10 Vigor Aura  P265 S(97,2C0B7EC:6,32))+6toValkyrie(2-6)  P62 S(27,2C0B7FC:20)20% Regenerate Mana(加快恢复法力)  P73 S(89,2C0B80C:2)+2 to Light Radius照亮范围
+W64 Hatred  
+W65 Flickering Flame  
+W66 Fortitude 1+12+14+28   P5 S(16,2C0BB0C:200)+200% Enhanced Defense(增强防御)  P29  P87 S(105,2C0BB2C:25)25Faster Cast Rate(FCR快速施法速度)  P128 S(201,2C0BB3C:15,60))被击中时有15%放出等级为60的Attack(20-15)  P30 S(114,2C0BB4C:12)12%Damage Taken Goes To Mana受损的生命转为法力的提高  P143 S(216,2C0BB5C:12)to Life+0.01*角色等级 HP生命(根据角色等级决定)(8-12)  AllResist+(46185312-25)
+W67 Fortune's Favor  
+W68 Nature's Kingdom  
+W69 Glory  
+W70 Faith 27+31+20+2   P29  P96 S(119,2C0BF9C:300)300%增加命中率  P134 S(48,2C0BFAC:120)+120FireDam火焰伤害 S(49,2C0BFAC:120)+120MaxFireDam最大火焰伤害  AllResist+(46186416-15)  P125 S(151,2C0BFCC:15,122))Lv15 Fanaticism Aura(12-15)  P117 S(155,2C0BFDC:10,1))  P104 S(127,2C0BFEC:2)+2AllSkill所有技能(1-2)
+W71 Amity  
+W72 Armageddon  
+W73 Authority  
+W74 Beauty  
+W75 Blood  
+W76 Bone 12+22+22   P127 S(198,2C0C64C:10,84))击中时有10%放出等级为20的Kick (15-10)  P128 S(201,2C0C65C:10,68))被击中时有10%放出等级为4的Kick(15-10)  P69 S(83,12FBC0:2,2))+2 to NecSkill死灵法师技能ClassSkill  P11 S(9,2C0C67C:150)+0MaxMana最大法力(100-150)
+W77 Brand 31+28+23+25   P29  P98 S(121,2C0C77C:330)330%Damage to Demons增加对恶魔系的伤害(280-330)  P127 S(198,2C0C78C:18,84))击中时有18%放出等级为20的Kick (100-18)  P128 S(201,2C0C79C:14,66))被击中时有14%放出等级为2的Kick(35-14)  P60 S(81,2C0C7AC:1)Knockback  P94 S(117,2C0C7BC:1)Prevent Monster Heal(PHM防止敌人自疗)  P120 S(158,2C0C7CC:15)Fires Explosive Arrows or Bolts箭矢或弓弹火焰爆炸
+W78 Broken Promise  
+W79 Chance  
+W80 Sting  
+W81 Darkness  
+W82 Daylight  
+W83 Death 15+1+26+9+25   P29  P177 S(250,2C0CE3C:0,4))Deadly Strike0.00*角色等级% 双倍打击(根据角色等级决定)  P243 S(204,2C0CE4C:22,85))21级Kick(22/0聚气)(15-22)  P126 S(195,2C0CE5C:18,55))攻击时有18%放出等级为55的Attack(25-18)  P259 S(197,2C0CE6C:44,53))死亡时有44%放出等级为53的Attack(100-44)  P108 S(136,2C0CE7C:50)50Chance of Crushing Blow(CB压碎性打击)  P242
+W84 Deception  
+W85 Desire  
+W86 Despair  
+W87 Destiny's Daughter  
+W88 Destruction 26+28+30+31+18   P29  P136 S(52,2C0D3DC:180)+180MagicDam魔法伤害(100-180) S(53,2C0D3DC:180)+180MaxMagicDam最大魔法伤害(100-180)  P127 S(198,2C0D3EC:23,229))击中时有23%放出等级为37的Unsummon (5-23)  P259 S(197,2C0D3FC:45,56))死亡时有45%放出等级为56的Attack(100-45)  P126 S(195,2C0D40C:22,48))攻击时有22%放出等级为48的Attack(15-22)  P127 S(198,2C0D41C:12,244))击中时有12%放出等级为52的Unsummon (23-12)  P94 S(117,2C0D42C:1)Prevent Monster Heal(PHM防止敌人自疗)
+W89 Dragon 29+28+12   P0 S(31,2C0D4EC:360)+360 Defense(DEF防御)  P1 S(32,2C0D4FC:230)+230 Defense vs. Missile(近身防御)  P147 S(220,2C0D50C:0,3))to Strength+0.00*角色等级 力量(根据角色等级决定)  P127 S(198,2C0D51C:15,62))击中时有15%放出等级为62的Attack (12-15)  P128 S(201,2C0D52C:18,278))被击中时有18%放出等级为22的Left Hand Throw(20-18)  P125 S(151,2C0D53C:14,102))Lv14 Holy Fire Aura  P251 S(0,2C0D54C:5)+5 to Strength(STR力量)(3-5) S(1,2C0D54C:5)+5 to Energy(ENG精力)(3-5) S(2,2C0D54C:5)+5 to Dexterity(DEX敏捷)(3-5) S(3,2C0D54C:5)+5 to Vitality(VIT体力)(3-5)
+W90 Dread  
+W91 Dream 16+31+21   P0 S(31,2C0D72C:220)+220 Defense(DEF防御)(150-220)  P128 S(201,2C0D73C:15,81))被击中时有15%放出等级为17的Kick(10-15)  P144 S(217,2C0D74C:0,5))to Mana+0.00*角色等级 法力(根据角色等级决定)  AllResist+(46192464-5)  P81 S(99,2C0D76C:30)30Faster Hit Recovery(FHR快速打击恢复)(20-30)  P125 S(151,2C0D77C:15,118))Lv15 Holy Shock Aura  P59 S(80,2C0D78C:25)25MF获得魔法装备(12-25)
+W92 Dweomer  
+W93 Edge 3+7+11   P98 S(121,2C0D96C:380)380%Damage to Demons增加对恶魔系的伤害(320-380)  P99 S(122,2C0D97C:280)280%Damage to Undead增加对不死系的伤害  P56 S(93,2C0D98C:35)35%Increased Attack Speed(IAS增加攻击速度)  P94 S(117,2C0D99C:1)Prevent Monster Heal(PHM防止敌人自疗)  P125 S(151,2C0D9AC:15,103))Lv15 Thorns Aura  P251 S(0,2C0D9BC:10)+10 to Strength(STR力量)(5-10) S(1,2C0D9BC:10)+10 to Energy(ENG精力)(5-10) S(2,2C0D9BC:10)+10 to Dexterity(DEX敏捷)(5-10) S(3,2C0D9BC:10)+10 to Vitality(VIT体力)(5-10)  P254 S(87,2C0D9CC:15)ReducePrice减少交易花费 15%
+W94 Enlightenment 21+8+12   P127 S(198,2C0DA8C:15,47))击中时有15%放出等级为47的Attack (5-15)  P128 S(201,2C0DA9C:15,46))被击中时有15%放出等级为46的Attack(5-15)  P70 S(83,12FBC0:1,2))+1 to NecSkill死灵法师技能ClassSkill  P265 S(97,2C0DABC:1,37))+1toWarmth温暖
+W95 Envy  
+W96 Heaven's Will  
+W97 Holy Tears  
+W98 Humility  
+W99 Hunger  
+W100 Ice 11+13+31+28   P29  P125 S(151,2C0E15C:18,114))Lv18 Holy Freeze Aura  P246 S(331,2C0E16C:30)+30% 冰冻技能伤害(25-30)  P127 S(198,2C0E17C:22,44))击中时有22%放出等级为44的Attack (25-22)  P260 S(199,2C0E18C:40,59))升级时有40%放出等级为59的Attack(100-40)  P234 S(335,2C0E19C:20)-20% 敌人冰冻抵抗  P166 S(239,2C0E1AC:0,25))0.00*角色等级% 额外金币获得(根据角色等级决定)
+W101 Infinity 30+23+30+24   P29  P78 S(96,2C0E27C:35)35Faster Run/Walk(FRW高速跑/行走)  P150 S(223,2C0E28C:0,4))to Vitality+0.00*角色等级 精力(根据角色等级决定)  P125 S(151,2C0E29C:12,123))Lv12 Conviction Aura  P258 S(196,2C0E2AC:20,53))杀死一个敌人时有20%放出等级为53的Attack (50-20)  P233 S(334,2C0E2BC:55)-55% 敌人闪电抵抗(45-55)  P243 S(204,2C0E2CC:21,235))43级Unsummon(21/0聚气)(30-21)
+W102 Innocence  
+W103 Insight 8+3+7+12   P29  P96 S(119,2C0E4BC:250)250%增加命中率(180-250)  P59 S(80,2C0E4CC:23)23MF获得魔法装备  P265 S(97,2C0E4DC:6,9))+6toCritical Strike(1-6)  P86 S(105,2C0E4EC:35)35Faster Cast Rate(FCR快速施法速度)  P125 S(151,2C0E4FC:17,120))Lv17 Meditation Aura(12-17)  P251 S(0,2C0E50C:5)+5 to Strength(STR力量) S(1,2C0E50C:5)+5 to Energy(ENG精力) S(2,2C0E50C:5)+5 to Dexterity(DEX敏捷) S(3,2C0E50C:5)+5 to Vitality(VIT体力)
+W104 Jealousy  
+W105 Judgment  
+W106 Knight's Vigil  
+W107 Last Wish 31+23+31+29+31+30   P29  P126 S(195,2C0E93C:20,38))攻击时有20%放出等级为38的Attack  P127 S(198,2C0E94C:18,82))击中时有18%放出等级为18的Kick (10-18)  P128 S(201,2C0E95C:11,267))被击中时有11%放出等级为11的Left Hand Throw(6-11)  P108 S(136,2C0E96C:50)50Chance of Crushing Blow(CB压碎性打击)(40-50)  P167 S(240,2C0E97C:0,4))0.00*角色等级% 获得魔法装备(根据角色等级决定)  P125 S(151,2C0E98C:17,98))Lv17 Might Aura
+W108 Law  
+W109 Lawbringer 11+20+18   P137 S(54,2C0EB6C:180)+180ColdDam冰冻伤害小(130-180) S(55,2C0EB6C:180)+180MaxColdDam冰冻伤害大(130-180) S(56,2C0EB6C:180)180FreezeTime秒冷冻时间(130-180)  P134 S(48,2C0EB7C:210)+210FireDam火焰伤害(150-210) S(49,2C0EB7C:210)+210MaxFireDam最大火焰伤害(150-210)  P125 S(151,2C0EB8C:18,119))Lv18 Sanctuary Aura(16-18)  P127 S(198,2C0EB9C:15,87))击中时有15%放出等级为23的Kick (20-15)  P1 S(32,2C0EBAC:250)+250 Defense vs. Missile(近身防御)(200-250)  P255 S(108,2C0EBBC:1)使敌人处于休息状态  P93 S(116,2C0EBCC:50)-50%Target Defense目标防御
+W110 Lightning  
+W111 Loyalty  
+W112 Lust  
+W113 Madness  
+W114 Mist  
+W115 Morning Dew  
+W116 Mystery  
+W117 Myth 15+11+4   P127 S(198,2C0F46C:1,137))击中时有1%放出等级为9的Throw (10-1)  P128 S(201,2C0F47C:1,130))被击中时有1%放出等级为2的Throw(3-1)  P71 S(83,12FBC0:4,2))+4 to NecSkill死灵法师技能ClassSkill  P53 S(74,2C0F49C:10)Replenish Life(补充生命REP)+10
+W118 Patience  
+W119 Pattern 7+9+3   P96 S(119,2C0F6AC:10)10%增加命中率  P29  P134 S(48,2C0F6CC:32)+32FireDam火焰伤害(12-32) S(49,2C0F6CC:32)+32MaxFireDam最大火焰伤害(12-32)  AllResist+(46200528-15)  P7 S(0,2C0F6EC:6)+6 to Strength(STR力量)  P8 S(2,2C0F6FC:6)+6 to Dexterity(DEX敏捷)  P83 S(102,2C0F70C:30)30Faster Block Rate(FBR快速格挡速度)
+W120 Peace 13+10+11   P127 S(198,2C0F7CC:15,32))击中时有15%放出等级为32的Attack (2-15)  P128 S(201,2C0F7DC:5,17))被击中时有5%放出等级为17的Attack(4-5)  P67 S(83,2C0F7EC:2)+2 to AmaSkill亚马逊技能ClassSkill  P265 S(97,2C0F7FC:2,9))+2toCritical Strike
+W121 Penitence  
+W122 Peril  
+W123 Pestilence  
+W124 Phoenix 26+26+28+31   P29  P1 S(32,2C0FC5C:400)+400 Defense vs. Missile(近身防御)(350-400)  P127 S(198,2C0FC6C:22,225))击中时有22%放出等级为33的Unsummon (40-22)  P260 S(199,2C0FC7C:40,46))升级时有40%放出等级为46的Attack(100-40)  P232 S(333,2C0FC8C:28)-28% 敌人火焰抵抗  P125 S(151,2C0FC9C:15,124))Lv15 Redemption Aura(10-15)  P44 S(143,2C0FCAC:21)+21Fire Absorb火焰吸收(15-21)
+W125 Piety  
+W126 Pillar of Faith  
+W127 Plague 32+19+22 
+W128 Praise  
+W129 Prayer  
+W130 Pride 32+29+16+28   P170 S(243,2C1030C:0,8))Damage to Demons0.00*角色等级% 增加对恶魔系的伤害(根据角色等级决定)  P135 S(50,2C1031C:280)+280LightDam闪电伤害(50-280) S(51,2C1031C:280)+280MaxLightDam最大闪电伤害(50-280)  P96 S(119,2C1032C:300)300%增加命中率(260-300)  P125 S(151,2C1033C:20,113))Lv20 Concentration Aura(16-20)  P128 S(201,2C1034C:17,51))被击中时有17%放出等级为51的Attack(25-17)  P53 S(74,2C1035C:8)Replenish Life(补充生命REP)+8  P166 S(239,2C1036C:0,15))0.00*角色等级% 额外金币获得(根据角色等级决定)
+W131 Principle 8+25+2   P127 S(198,2C1042C:5,101))击中时有5%放出等级为37的Kick (100-5)  P68 S(83,12FBC0:3,2))+3 to NecSkill死灵法师技能ClassSkill
+W132 Prowess in Battle  
+W133 Prudence 23+3   P5 S(16,2C1066C:170)+170% Enhanced Defense(增强防御)(140-170)  P6 S(35,2C1067C:10)(魔法伤害减少MDR)Magic Damage Reduced by 10  P3 S(34,2C1068C:3)(物理伤害减少DR)Damage Reduced by 3  AllResist+(46204560-25)  P80 S(99,2C106AC:25)25Faster Hit Recovery(FHR快速打击恢复)  P179 S(252,2C106BC:0,25))每秒恢复 0 耐久度  P73 S(89,2C106CC:1)+1 to Light Radius照亮范围
+W134 Punishment  
+W135 Purity  
+W136 Question  
+W137 Rain 9+23+6   P127 S(198,2C10AEC:15,240))击中时有15%放出等级为48的Unsummon (5-15)  P128 S(201,2C10AFC:15,235))被击中时有15%放出等级为43的Unsummon(5-15)  P121 S(83,12FBC0:5,2))+5 to NecSkill死灵法师技能ClassSkill  P11 S(9,2C10B1C:150)+0MaxMana最大法力(100-150)
+W138 Reason  
+W139 Red  
+W140 Rift 15+18+20+25   P136 S(52,2C10E4C:250)+250MagicDam魔法伤害(160-250) S(53,2C10E4C:250)+250MaxMagicDam最大魔法伤害(160-250)  P134 S(48,2C10E5C:180)+180FireDam火焰伤害(60-180) S(49,2C10E5C:180)+180MaxFireDam最大火焰伤害(60-180)  P30 S(114,2C10E6C:38)38%Damage Taken Goes To Mana受损的生命转为法力的提高  P127 S(198,2C10E7C:16,245))击中时有16%放出等级为53的Unsummon (20-16)  P126 S(195,2C10E8C:21,64))攻击时有21%放出等级为0的Kick(16-21)  P243 S(204,2C10E9C:15,76))12级Kick(15/0聚气)(40-15)  P251 S(0,2C10EAC:10)+10 to Strength(STR力量)(5-10) S(1,2C10EAC:10)+10 to Energy(ENG精力)(5-10) S(2,2C10EAC:10)+10 to Dexterity(DEX敏捷)(5-10) S(3,2C10EAC:10)+10 to Vitality(VIT体力)(5-10)
+W141 The Lovers  
+W142 Thirst  
+W143 Thirst for Knowledge  
+W144 Thought  
+W145 Thunder  
+W146 Time  
+W147 Tradition  
+W148 Treachery 13+10+20   P127 S(198,2C1174C:15,278))击中时有15%放出等级为22的Left Hand Throw (25-15)  P128 S(201,2C1175C:15,267))被击中时有15%放出等级为11的Left Hand Throw(5-15)  P122 S(83,12FBC0:6,2))+6 to NecSkill死灵法师技能ClassSkill  P56 S(93,2C1177C:45)45%Increased Attack Speed(IAS增加攻击速度)
+W149 Trust  
+W150 Truth  
+W151 Unbending Will  
+W152 Valor  
+W153 Vengeance 6+11+1 
+W154 Victory  
+W155 Voice 3+6 
+W156 Void  
+W157 War  
+W158 Water  
+W159 Whisper  
+W160 Widowmaker 5+3+28+23+8   P170 S(243,2C124CC:0,15))Damage to Demons0.00*角色等级% 增加对恶魔系的伤害(根据角色等级决定)  P89 S(111,2C124DC:400)Damage增加+400伤害(340-400)  P57 S(93,2C124EC:40)40%Increased Attack Speed(IAS增加攻击速度)(30-40)  P127 S(198,2C124FC:15,278))击中时有15%放出等级为22的Left Hand Throw (35-15)  P235 S(336,2C1250C:25)-25% 敌人毒素抵抗(20-25)  P92 S(115,2C1251C:1)Ignore Target's Defense(ITD忽视目标防御)  P253 S(86,2C1252C:15)+15HP/skill生命每杀死一个敌人(10-15)
+W161 Wind 29+1   P29  P56 S(93,2C125FC:40)40%Increased Attack Speed(IAS增加攻击速度)  P77 S(96,2C1260C:20)20Faster Run/Walk(FRW高速跑/行走)  P93 S(116,2C1261C:50)-50%Target Defense目标防御  P127 S(198,2C1262C:9,245))击中时有9%放出等级为53的Unsummon (10-9)  P243 S(204,2C1263C:13,240))48级Unsummon(13/0聚气)(127-13)  P80 S(99,2C1264C:15)15Faster Hit Recovery(FHR快速打击恢复)
+W162 Wings of Hope  
+W163 Winter 20+18+1+2   P98 S(121,2C1282C:350)350%Damage to Demons增加对恶魔系的伤害(220-350)  P99 S(122,2C1283C:300)300%Damage to Undead增加对不死系的伤害(280-300)  P137 S(54,2C1284C:220)+220ColdDam冰冻伤害小(100-220) S(55,2C1284C:220)+220MaxColdDam冰冻伤害大(100-220) S(56,2C1284C:220)220FreezeTime秒冷冻时间(100-220)  P234 S(335,2C1285C:24)-24% 敌人冰冻抵抗  P127 S(198,2C1286C:20,45))击中时有20%放出等级为45的Attack (18-20)  P127 S(198,2C1287C:13,64))击中时有13%放出等级为0的Kick (15-13)  P115 S(153,2C1288C:1)Cannot Be Frozen无法被冻结
+W164 Wisdom  
+W165 Woe  
+W166 Wonder 4+12+24 
+W167 Wrath 21+17+30+23   P98 S(121,2C12CAC:300)300%Damage to Demons增加对恶魔系的伤害  P99 S(122,2C12CBC:300)300%Damage to Undead增加对不死系的伤害(250-300)  P135 S(50,2C12CCC:240)+240LightDam闪电伤害(41-240) S(51,2C12CCC:240)+240MaxLightDam最大闪电伤害(41-240)  P136 S(52,2C12CDC:120)+120MagicDam魔法伤害(85-120) S(53,2C12CDC:120)+120MaxMagicDam最大魔法伤害(85-120)  P127 S(198,2C12CEC:10,82))击中时有10%放出等级为18的Kick (5-10)  P127 S(198,2C12CFC:1,87))击中时有1%放出等级为23的Kick (30-1)  P115 S(153,2C12D0C:1)Cannot Be Frozen无法被冻结
+W168 Youth  

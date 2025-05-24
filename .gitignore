@@ -1,0 +1,14 @@
+.*.swp
+*.ncb
+*.exp
+*.pdb
+*.lib
+*.log
+*.user
+*.suo
+*.ncb
+obj
+Release
+Debug
+/map113c/r
+

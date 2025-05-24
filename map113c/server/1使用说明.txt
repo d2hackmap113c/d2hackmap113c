@@ -1,0 +1,24 @@
+﻿(This file is encoded in UTF-8)
+本软件下载地址 https://github.com/d2hackmap113c/d2hackmap113c/
+Pvpgn下载自https://github.com/pvpgn/pvpgn-server/releases/download/v1.99/pvpgn-1.99.r578-win32-ALL.rar,解压了里面的plain-cdb目录。只有这个版本能在XP上运行并且不需要安装数据库。
+
+服务器配置说明
+1. 补全d2server.exe需要的dll
+  需要把以下文件拷贝到本目录下
+    D2Client.dll D2CMP.dll D2Common.dll D2Game.dll D2gfx.dll D2Lang.dll 
+    D2MCPClient.dll D2Net.dll D2sound.dll D2Win.dll Fog.dll Storm.dll ijl11.dll
+  注意如果安装了plugY,则d2gfx.dll可能被改过用来加载plugY.dll，如果是从私服上下载的客户端，d2win.dll可能被改过用来加载验证码补丁。这些版本能不能用就不知道了，可以用md5.txt验证一下。
+2. 设置mpq路径
+  修改config.txt,把mpq_path改为包含以下mpq的目录:d2data.mpq d2sfx.mpq d2speech.mpq patch_d2.mpq d2exp.mpq
+3. 启动
+  依次双击以下文件: 
+    pvpgn-1.99.r578\d2dbsConsole.exe
+    pvpgn-1.99.r578\d2csConsole.exe
+    pvpgn-1.99.r578\PvPGNConsole.exe
+    d2server113c.exe
+4. 客户端启动参数
+  D:\game\diablo2\D2Loader.exe -lq -locale chi -lq -pdir D:\d2hackmap\map113c -direct -skiptobnet -w -mpqpath=d:\game\mpq -bnetip=127.0.0.1
+
+编译说明
+  本程序使用Visual Studio 2008编译,系统环境Windows XP(SP3),在网上可找到VS2008 90天试用版,链接指到microsoft.com的比较安全。只需要安装VC，打开src\server.sln按F7即可编译。
+

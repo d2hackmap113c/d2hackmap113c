@@ -1,0 +1,442 @@
+struct Dll {char *name;int start0,size;HMODULE *addr;int start,end;};
+#define N_DLL 16
+struct Dll dlls[N_DLL]={
+	{"d2game",d2game_ADDR,0x6FD41FFF-0x6FC20000,&addr_d2game},
+	{"d2net",d2net_ADDR,0x6FBFCFFF-0x6FBF0000,&addr_d2net},
+	{"d2gdi",d2gdi_ADDR,0x6F87DFFF-0x6F870000,&addr_d2gdi},
+	{"d2win",d2win_ADDR,0x6F9AEFFF-0x6F8E0000,&addr_d2win},
+	{"d2sound",d2sound_ADDR,0x6F9C8FFF-0x6F9B0000,&addr_d2sound},
+	{"d2multi",d2multi_ADDR,0x6FA0EFFF-0x6F9D0000,&addr_d2multi},
+	{"d2mcpclient",d2mcpclient_ADDR,0x6FA33FFF-0x6FA20000,&addr_d2mcpclient},
+	{"d2launch",d2launch_ADDR,0x6FA6CFFF-0x6FA40000,&addr_d2launch},
+	{"d2gfx",d2gfx_ADDR,0x6FAA0FFF-0x6FA80000,&addr_d2gfx},
+	{"d2client",d2client_ADDR,0x6FBE4FFF-0x6FAB0000,&addr_d2client},
+	{"storm",storm_ADDR,0x6FC4FFFF-0x6FBF0000,&addr_storm},
+	{"d2lang",d2lang_ADDR,0x6FC13FFF-0x6FC00000,&addr_d2lang},
+	{"d2common",d2common_ADDR,0x6FDF8FFF-0x6FD50000,&addr_d2common},
+	{"d2cmp",d2cmp_ADDR,0x6FF17FFF-0x6FE10000,&addr_d2cmp},
+	{"bnclient",bnclient_ADDR,0x6FF43FFF-0x6FF20000,&addr_bnclient},
+	{"fog",fog_ADDR,0x6FFABFFF-0x6FF50000,&addr_fog},
+};
+
+
+/*
+sgptDataTables
+  +000 - pPlayerClassTxt 
+  +004 - pPlayerClassLink 
+  +008 - pBodyLocsTxt 
+  +00C - pBodyLocsLink 
+  +010 - pStorePageTxt 
+  +014 - pStorePageLink 
+  +018 - pElemTypesTxt 
+  +01C - pElemTypesLink 
+  +020 - pHitClassTxt 
+  +024 - pHitClassLink 
+  +028 - pMonModeTxt 
+  +02C - pMonModeLink 
+  +030 - pPlrModeTxt 
+  +034 - pPlrModeLink 
+  +038 - pSkillCalcTxt 
+  +03C - pSkillCalcLink 
+  +040 - pSkillCalcCache 
+  +044 - nSkillCalcCache 
+  +048 - nSkillCalcCacheDelta 
+  +04C - pSkillDescCalcCache 
+  +050 - nSkillDescCalcCache 
+  +054 - nSkillDescCalcCacheDelta 
+  +058 - pMissCalcTxt 
+  +05C - pMissCalcLink 
+  +060 - pMissCalcCache 
+  +064 - nMissCalcCache 
+  +068 - nMissCalcCacheDelta 
+  +06C - pSkillCodesBin - created from the first column of skills.txt 
+  +070 - pSkillCodesLink 
+  +074 - pEventsTxt 
+  +078 - pEventsLink 
+  +07C - pCompCodesTxt 
+  +080 - pCompCodesLink 
+  +084 - nCompCodes 
+  +088 - pMonAiTxt 
+  +08C - pMonAiLink 
+  +090 - nMonAi 
+  +094 - pItemLink - the actual item text files are linked to gptItemTables 
+  +098 - pItemCalcCache 
+  +09C - nItemCalcCache 
+  +0A0 - nItemCalcCacheDelta 
+  +0A4 - pPropertiesTxt 
+  +0A8 - pPropertiesLink 
+  +0AC - nProperties 
+  +0B0 - pRunesLink 
+  +0B4 - pHireDescTxt 
+  +0B8 - pHireDescLink 
+  +0BC - pStatesTxt 
+  +0C0 - pStatesLink 
+  +0C4 - nStates 
+  +0C8 - pStateMaskFirst 
+  +0CC - pStateMaskArray[40] 
+  +16C - pProgressiveStates[arrSize] - list of states with progressive = true 
+  +170 - nProgressiveStates 
+  +174 - pCurseStates[arrSize] - list of states with curse = true 
+  +178 - nCurseStates 
+  +17C - pTransformStates[arrSize] - list of states with transform = true 
+  +180 - nTransformStates 
+  +184 - pActionStates[arrSize] - states with actions assigned 
+  +188 - nActionStates 
+  +18C - pColorStates[arrSize] - states that change color 
+  +190 - nColorStates 
+  +194 - pSoundCodesBin - created from the first column of sounds.txt, the rest is only found in D2Client.dll 
+  +198 - pSoundCodesLink 
+  +19C - nSoundCodes 
+  +1A0 - pHirelingsTxt 
+  +1A4 - nHirelings 
+  +1A8 - HireNameListStart[256] - first entry of 256 lists of hireling names 
+  +5A8 - HireNameListEnd[256] - last entry of 256 lists of hireling names 
+  +9A8 - pNpcsTxt 
+  +9AC - nNpcs 
+  +9B0 - pColorsTxt 
+  +9B4 - pColorsLink 
+  +9B8 - pTreasureClassExLink 
+  +9BC - pTreasureClassExTxt 
+  +9C0 - nTreasureClassEx 
+  +9C4 - pChestTreasureClassList[45] 
+  +A78 - pMonStatsTxt 
+  +A7C - pMonStatsLink 
+  +A80 - nMonStats 
+  +A84 - pMonSoundsTxt 
+  +A88 - pMonSoundsLink 
+  +A8C - nMonSounds 
+  +A90 - pMonStats2Txt 
+  +A94 - pMonStats2Link 
+  +A98 - nMonStats2 
+  +A9C - pMonPlaceTxt 
+  +AA0 - pMonPlaceLink 
+  +AA4 - nMonPlace 
+  +AA8 - pMonPresetTxt 
+  +AAC - pMonPresetActList[5] - first record for each act 
+  +AC0 - nMonPresetEachAct[5] - count for # of records per act 
+  +AD4 - pSuperUniquesTxt 
+  +AD8 - pSuperUniquesLink 
+  +ADC - nSuperUniques 
+  +AE0 - SuperUniqueHcIdxList[66] (66 words) 
+  +B64 - pMissilesTxt 
+  +B68 - pMissilesLink 
+  +B6C - nMissiles 
+  +B70 - pMonLvlTxt 
+  +B74 - nMonLvl 
+  +B78 - pMonSeqTxt 
+  +B7C - pMonSeqLink 
+  +B80 - nMonSeq 
+  +B84 - pMonSequences - created from MonSeq.txt after reading it 
+  +B88 - nMonSequences 
+  +B8C - pSkillDescTxt 
+  +B90 - pSkillDescLink 
+  +B94 - nSkillDesc 
+  +B98 - pSkillsTxt 
+  +B9C - pSkillsLink 
+  +BA0 - nSkills 
+  +BA4 - pPlayerSkillCount[arrSize] - an array of player skill counts (all words) 
+  +BA8 - nPlayerSkillCount 
+  +BAC - pPlayerSkillList[arrSize] - the skill Ids (all words) 
+  +BB0 - nPassiveSkillCount 
+  +BB4 - pPassiveSkillList[arrSize] - the skill Ids (all words) 
+  +BB8 - pOverlayTxt 
+  +BBC - pOverlayLink 
+  +BC0 - nOverlay 
+  +BC4 - pCharStatsTxt 
+  +BC8 - nCharStats 
+  +BCC - pItemStatCostTxt 
+  +BD0 - pItemStatCostLink 
+  +BD4 - nItemStatCost 
+  +BD8 - pOpStatNesting[arrSize] 
+  +BDC - nOpStatNesting 
+  +BE0 - pMonEquipTxt 
+  +BE4 - nMonEquip 
+  +BE8 - pPetTypesTxt 
+  +BEC - pPetTypesLink 
+  +BF0 - nPetTypes 
+  +BF4 - pItemTypesLink 
+  +BF8 - pItemTypesTxt 
+  +BFC - nItemTypes 
+  +C00 - nItemTypeNesting 
+  +C04 - pItemTypeNesting[arrSize] 
+  +C08 - pSetsLink 
+  +C0C - pSetsTxt 
+  +C10 - nSets 
+  +C14 - pSetItemsLink 
+  +C18 - pSetItemsTxt 
+  +C1C - nSetItems 
+  +C20 - pUniqueItemsLink 
+  +C24 - pUniqueItemsTxt 
+  +C28 - nUniqueItems 
+  +C2C - pMonPropLink 
+  +C30 - pMonPropTxt 
+  +C34 - nMonProp 
+  +C38 - pMonTypeLink 
+  +C3C - pMonTypeTxt 
+  +C40 - nMonType 
+  +C44 - pMonTypeNesting[arrSize] 
+  +C48 - nMonTypeNesting 
+  +C4C - pMonUModLink 
+  +C50 - pMonUModTxt 
+  +C54 - nMonUMod 
+  +C58 - pLevelsTxt 
+  +C5C - nLevels 
+  +C60 - pLvlDefsBin 
+  +C64 - pLvlPrestTxt 
+  +C68 - nLvlPrest 
+  +C6C - ItemStatCostStuff[2] - related to opstats, stuff column (etc) 
+  +C74 - pAnimTables (gptAnimTables) 
+  +C78 - pExperienceTxt 
+  +C7C - pDifficultyLevelsTxt 
+  +C80 - nDifficultyLevels 
+  +C84 - pExpFieldD2 - collision detection map 
+  +C88 - ExpFieldRuntimeData[10] 
+  +CB0 - pLvlSubExtraStuff[arrSize] 
+  +CB4 - nLvlSubExtraStuff 
+  +CB8 - pCharTemplateTxt 
+  +CBC - nCharTemplate 
+  +CC0 - pArenaTxt 
+  +CC4 - pLvlTypesTxt 
+  +CC8 - pWaypoints[arrSize] 
+  +CCC - nWaypoints 
+  +CD0 - nLvlTypes 
+  +CD4 - pLvlWarpTxt 
+  +CD8 - nLvlWarp 
+  +CDC - pLvlMazeTxt 
+  +CE0 - nLvlMaze 
+  +CE4 - pLvlSubTxt 
+  +CE8 - nLvlSub 
+  +CEC - pLvlSubCache[arrSize] 
+  +CF0 - three unused dwords here 
+  +CFC - pMapCache[arrSize] 
+  +D00 - nMapCache 
+  +D04 - pCubeMainTxt 
+  +D08 - nCubeMain 
+  +D0C - bWriteBinFiles (BOOL)
+*/
+// 6FA8B0A1 - FF 90 84000000        - call dword ptr [eax+00000084]
+void __declspec(naked) DrawCellFile_Patch_ASM() {
+	__asm {
+		cmp fSkipPainting, 0
+		je original
+		xor eax,eax
+		ret 16
+		//original code
+original:
+		jmp dword ptr [eax+0x84]
+	}
+}
+// 6FA8B00C - FF 90 98000000        - call dword ptr [eax+00000098]
+void __declspec(naked) DrawAutomapCell_Patch_ASM() {
+	__asm {
+		cmp fSkipPainting, 0
+		je original
+		xor eax,eax
+		ret 12
+		//original code
+original:
+		jmp dword ptr [eax+0x98]
+	}
+}
+
+//6FB5A94A - 89 3D 14C4BC6F        - mov [6FBCC414],edi { (3) } <--- set to 0
+void __declspec(naked) WaypointMenu1_Patch_ASM() {
+	__asm {
+		pushad
+		mov ecx,edi
+		call setScreenBlockCheck
+		popad
+		ret
+	}
+}
+//6FB5A975 - 89 1D 14C4BC6F        - mov [6FBCC414],ebx { (3) } <--- set to 1
+void __declspec(naked) WaypointMenu2_Patch_ASM() {
+	__asm {
+		pushad
+		mov ecx,ebx
+		call setScreenBlockCheck
+		popad
+		ret
+	}
+}
+	FILETIME create,access;
+	HANDLE hFile=CreateFile(d2hackmap_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (hFile) {GetFileTime(hFile,&create,&access,&d2hackmap_modtime);CloseHandle(hFile);}
+
+
+extern int mouseW,mouseL;
+//return -1:error 1:clicked tab 2:clicked menu
+int takeWaypointToAreaUI(int level) {
+/*
+type=2 (object)
+	waypoint:txt=119,156,157,237,238,288,323,324,398,402,429,496,511
+	blue portal txt=59 
+	red portal txt=60
+	red portal to Act5 txt=566
+expansion tab position: 118+62*[0-4],78
+classic tab position: 124+76*[0-3]
+mouse=112, 137+36*[0-8]
+*/
+	if (!d2client_CheckUiStatus(UIVAR_WAYPOINT)) return -1;
+	int ret=0,act=-1,menuId=-1;
+	for (int i=0;i<5;i++) {
+		for (int j=0;j<9;j++) {
+			if (waypointAreas[i][j]==level) {act=i;menuId=j;break;}
+		}
+	}
+	if (menuId<0) {gameMessage("Waypoint to area %d doesn't exist",level);return -1;}
+	int xpos,ypos;
+	if (*d2client_pWaypointMenuCurTab != act) {
+		if (EXPANSION) xpos=118+62*act;
+		else {
+			xpos=124+76*act;
+			if (act>=4) {gameMessage("Waypoint to area %d doesn't exist",level);return -1;}
+		}
+		ypos=78;
+		ret=1;
+	} else {
+		struct WaypointMenuItem *pitem=NULL;
+		xpos=112;
+		for (int i=0;i< *d2client_pWaypointMenuCount;i++) {
+			struct WaypointMenuItem *p=&d2client_pWaypointMenuItems[i];
+			if (p->areaId==level) {pitem=p;ypos=137+36*i;break;}
+		}
+		if (!pitem) {gameMessage("Waypoint to area %d doesn't match",level);return -1;}
+		if (!pitem->enable) {gameMessage("Waypoint to area %d inactive",level);return -1;}
+		ret=2;
+	}
+	//if (fScreenSaverActive) delayScreenSaver(80);
+	xpos+=(SCREENSIZE.x-800)/2;
+	ypos+=(SCREENSIZE.y-600)/2;
+	int wParam=0;//mouseW;
+	HWND hwnd=d2gfx_GetHwnd();
+	PostMessage(hwnd, WM_MOUSEMOVE, wParam, MAKELONG(xpos, ypos));
+	PostMessage(hwnd, WM_LBUTTONDOWN, wParam, MAKELONG(xpos, ypos));
+	PostMessage(hwnd, WM_LBUTTONUP, wParam, MAKELONG(xpos, ypos));
+	if (fWinActive) PostMessage(hwnd, WM_MOUSEMOVE, wParam, mouseL);
+	return ret;
+}
+
+		case CS_WAIT_WAYPOINT_MENU: {
+			if (!d2client_CheckUiStatus(UIVAR_WAYPOINT)) {
+				if (dwCurMs>followerInteractTimeout) {clickState=0;gameMessage("wait waypoint menu timeout");}
+			} else {
+				clickState=CS_CLICK_WAYPOINT_MENU;
+			}
+			break;
+		}
+		case CS_CLICK_WAYPOINT_MENU: {
+			int ret=takeWaypointToAreaUI(followerWaypointToArea);
+			if (ret==1) {
+				if (dwCurMs>followerInteractTimeout) {clickState=0;gameMessage("click waypoint tab timeout");}
+			} else {
+				clickState=0;
+			}
+			break;
+		}
+
+	/*
+	AreaRectData *pData = PLAYER->pMonPath->pAreaRectData;
+	maxDisM256=0x7FFFFFFF;nPos=0;
+	for (int y=scanY1;y<=scanY2;y++) {
+		POINT p;p.x=scanX;p.y=y;
+		if (addPossiblePoint(pData,p)) continue;
+		for (int i=0;i<pData->nearbyRectCount;i++) {
+			AreaRectData *pNData=pData->paDataNear[i];if (pNData==pData) continue;
+			if (addPossiblePoint(pNData,p)) break;
+		}
+	}
+	int monDis=findSafestPosition();
+	if (abs(src.x-bestP.x)<=3&&abs(src.y-bestP.y)<=3) {startProcessMs=dwCurMs+300;return 0;}
+	if (bestRect!=pData) savePrevMonsters();
+	if (tLogTP.isOn) 
+		LOG("TP find safe (%d,%d) curdis=%d monDis=%d\n",bestP.x,bestP.y,curdis,monDis);
+	tpMonCount=dwTotalMonsterCount;
+	dwTpMs=dwCurMs;TPtarget=bestP;TPtargetRect=bestRect;dwTpDoneMs=0;TPfailedRect=NULL;
+	RightSkillPos(bestP.x,bestP.y);
+	return 0;
+	*/
+
+int PutItemIntoCube(D2MSG *pMsg,int dx,int dy) {
+	if (!cube) return;
+	int location= cube->pItemData->nItemLocation;
+	InventoryType *pInvType=NULL;
+	if (location==0) { //bag
+		if (!d2client_CheckUiStatus(UIVAR_INVENTORY)&&!d2client_CheckUiStatus(UIVAR_STASH)) return 0;
+		pInvType=&invTypes[0];
+		updateInv(pInvType,0);
+	} else if (location==4) { //stash
+		if (!d2client_CheckUiStatus(UIVAR_STASH)) return 0;
+		if (EXPANSION) pInvType=&invTypes[1];
+		else pInvType=&invTypes[3];
+		updateInv(pInvType,EXPANSION?12:8);
+	}
+	int left=pInvType->left;
+	SendMessage(pMsg->hwnd, WM_MOUSEMOVE, pMsg->wParam, MAKELONG(pInvType->left + dx, pInvType->bottom + dy));
+	if (*d2client_pCursorInvGridX == 2) //10*10 big box
+		left-=2*pInvType->nGridWidth;
+	int x=cube->pItemPath->unitX;
+	int y=cube->pItemPath->unitY;
+	int xpos = left + x*pInvType->nGridWidth+dx;
+	int ypos = pInvType->bottom + y*pInvType->nGridHeight+dy;
+	SendMessage(pMsg->hwnd, WM_MOUSEMOVE, pMsg->wParam, MAKELONG(xpos, ypos));
+	SendMessage(pMsg->hwnd, WM_LBUTTONDOWN, pMsg->wParam, MAKELONG(xpos, ypos));
+	SendMessage(pMsg->hwnd, WM_LBUTTONUP, pMsg->wParam, MAKELONG(xpos, ypos));
+	SendMessage(pMsg->hwnd, WM_MOUSEMOVE, pMsg->wParam, pMsg->lParam);
+	return 1;
+}
+
+	int bottom=pInvType->bottom;
+	int left=pInvType->left;
+	int xpos = left + x*pInvType->nGridWidth+dx;
+	int ypos = bottom + y*pInvType->nGridHeight+dy;
+//Ctrl+点击控制
+//在联网模式，由于需要等待数据包返回才能拿起物品，所以在ButtonUp中不一定能处理好
+//采用先在LButtonUp事件中处理，如果不能处理，激活游戏循环判定，直到处理完毕
+
+static int nClickStatus = 0;    //是否Ctrl+点击事件
+static BOOL fSwapProc = FALSE;  //是否已开始处理
+static BOOL fSwapProcLoop = FALSE; //是否交给游戏循环处理
+static D2MSG unDealMsg; //LButtonUp消息结构缓存
+static DWORD dwSwapTimer;//计时器
+
+/*
+void __stdcall LButtonUpHandlerPatch(D2MSG *pMsg) {
+	if ( fSwapProc ) return ;
+	if ( nClickStatus==0 ) return ;
+	fSwapProc = TRUE;
+	fSwapProcLoop = FALSE;
+	dwSwapTimer = dwCurMs;
+	fSwapProcLoop = TRUE;
+	unDealMsg = *pMsg;
+	UnitAny *pItem = PLAYER->pInventory->pCursorItem;
+	if ( pItem){
+		Sleep(150);
+		MoveItem( pMsg );
+	}else{
+		fSwapProcLoop = TRUE;
+		unDealMsg = *pMsg;
+		return;
+	}
+	fSwapProc = FALSE;
+	nClickStatus = 0;
+}
+void __declspec(naked) LButtonUpHandlerPatch_ASM()
+{
+	//esp+4  = pMsg
+	__asm {
+		push ebp
+		push ebx
+
+		push [esp+0xC]
+		call D2Storm511    //原始调用，先调用将LButtonUp消息处理掉
+
+		push [esp+0xC]
+		call LButtonUpHandlerPatch
+
+		pop ebx
+		pop ebp
+		ret 4
+	}
+}
+*/

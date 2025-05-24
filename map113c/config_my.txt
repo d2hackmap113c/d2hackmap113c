@@ -1,0 +1,81 @@
+﻿//ShowDllVersion: 0
+AutoTeleportTelekinesisEnterChamber: 1 //服务器是否支持用法师之手进都瑞尔的房间
+LogTPToggle: 1,VK_ //将每次传送的数据记录到runtime/d2hackmap*.log中
+Monster TC Toggle: 0,VK_ //怪物TC等级显示开关
+Monster Death Anims[1+]:0//怪物死亡动画开关 0关闭 1开启
+AutoMap Toggle: 0, VK_ //开始游戏时自动显示小地图
+
+AlertNoBug: 0,VK_
+Item ExtInfo Toggle :          0,-1               //开启命令
+Item Indexs Toggle:             0, CTRL+ALT+VK_I               // 物品索引开关(map索引)
+Item FileIndexs Toggle:         0, CTRL+ALT+VK_I               // 物品文件索引及类别等
+MaxTownPortalCount:  100 //剩余回城卷轴少于100时显示地上的回城卷轴
+MaxIdentifyPortalCount: 100 //剩余辨识卷轴少于100时显示地上的辨识卷轴
+
+Snapshot Path: "D:\snapshot"
+Enable Snapshot: 1,VK_ //快照总开关
+Snapshot End Game: 1,VK_ //退出游戏时保存装备快照
+Snapshot Log: 1,VK_ //退出游戏时保存日志（时间和等级变化）
+Snapshot Save D2s: 1,VK_ //快照时生成d2s文件
+Message Log Toggle:      0   //记录游戏日志 0不记录日志,1记录日志  2 不记录聊天信息
+AutoBackgroundSkillToggle: 1,CTRL+ALT+VK_K //窗口在后台时自动使用技能
+Auto Summon Toggle: 1,CTRL+ALT+VK_S //自动召唤
+ShowSummonInfoToggle: 1,VK_ //显示召唤统计信息,包括数量，平均血量
+AutoPotionToggle: 1,CTRL+ALT+VK_P
+HirePotionColumn: 0 //佣兵使用第几列药,0取消此功能
+ManaPotionToggle: 1,VK_ ////是否自动使用法力药剂
+HealingPotionLifePercent: 60
+HealingPotionToggle: 1,VK_ //是否自动使用治疗药剂
+Auto Hide Minimap Toggle: 0,CTRL+ALT+VK_V
+Auto Teleport Minimap Toggle: 0, CTRL+VK_V
+NecTeleportAttractToggle: 1,VK_ //0:无操作 1:如果是NEC右键切换为传送时将左键切换为吸引,由传送切换为别的技能时将左键切换为普通攻击
+NecNoAttackInHellToggle: 1,VK_  //地狱难度NEC左键技能设为普通攻击时左键点击怪物只移动不攻击
+SwitchSkillRight[VK_TAB][ClassSor]: SkillTelekinesis,-1,-1,-1
+SwitchSkillRight[VK_TAB][ClassNec]: SkillRevive,-1,-1,-1
+//SwitchSkillRight[SHIFT+VK_D][ClassNec]: SkillAmplifyDamage,-1,-1,-1
+SwitchSkillLeft[SHIFT+VK_D][ClassBar]: SkillBattleOrders,-1,-1,-1
+
+MonitorRecvCmd[0,7,8,0x67,0x68,0x6b,0x6d,0x8a,0x8f,0x95]:0
+MonitorSendCmd[0,0x6d]:0
+PacketHandlerToggle: 0,CTRL+ALT+VK_N
+NoBackgroundImage: 1 //打开背包任务等面板时不显示背景图片
+DoTestKey: SHIFT+CTRL+ALT+VK_T
+ServerTestKey: SHIFT+CTRL+ALT+VK_T
+
+ManaPotionMax: 190 //当人物法力上限超过此值时使用自动法力药剂
+ManaPotionValue: 60 //法力低于此值后喝药
+AutoEnchantMana: 150 //法力低于150不强化
+//ManaPotionValue: 20 //法力低于此值后喝药
+
+Item Value Toggle:              1,VK_,35000           //显示卖价35K物品卖出价值(金钱)
+Item Levels Toggle:             0, VK_              // iLvl显示
+Hidden Items Toggle:            0,ALT+VK_G       // 地面垃圾物品隐藏开关，CTRL键
+ShowValuableItem: 30000 //显示卖价超过此值的物品
+Default Game Name:     "pt1"               //设置默认游戏名,注意引号必须有
+Default Game Password: ""                  //设置默认游戏密码
+Default Game Description: ""             //设置默认游戏描述
+//Skip Quest Message: 0 //6  //跳过NPC任务提示 0 不跳过 非0跳过速度
+DumpMpqPath: 1
+MinFrameMs: 20 //在城外如果两帧间隔小于这个时跳过绘图
+MinFrameMsInTown: 30 //在城内时如果两帧间隔小于这个时跳过绘图
+MinHackmapMs: 10 //在城外如果两帧间隔小于这个时跳过hackmap的处理
+MinHackmapMsInTown: 30 //在城内如果两帧间隔小于这个时跳过hackmap的处理
+MinLoopMs: 10 //每次循环最小时间,如果不够则调用Sleep,20ms对应50FPS,多开时限制CPU使用
+//Chicken Life Action: 2  //1:exit game 2:back to town
+MultiClientGroupSize2: 3 
+
+Bug Auto Quit Hell Act4 Toggle: 0,CTRL+ALT+VK_B  //地狱难度ACT4 bug保护提示后是否自动退出游戏 0 不退出 1退出
+Bug Auto Quit Hell Act5 Toggle: 1,CTRL+ALT+VK_B  //地狱难度ACT5 bug保护提示后是否自动退出游戏 0 不退出 1退出
+Lock Mouse Toggle: 0,CTRL+VK_L //锁定鼠标在窗口内,进入游戏后出城有效
+Chicken Life Min Clevel: 6   //6级以下不使用血保
+Perm Show Items Toggle: 1, ALT+VK_S             //强制显示物品开关,不按ALT显示物品,抢DD方便,Y键
+Socket Protect Toggle: 1, VK_OEM_5        // SOCKET保护，防止不小心把DD镶到不应该镶的地方.\|键
+Load Config File: "config_server.txt"
+ServerNoMonsterDrop: 1 //怪物不掉落物品
+MinimapDebugToggle: 0, CTRL+ALT+VK_M
+//---switch skill from teleport/telekinesis/town portal when switch to background
+TpSwitchBackground[ClassSor]: SkillBlizzard
+//---switch skill to when enter door in background
+EnterDoorInBackgroundSkill[ClassNec][1-136]: SkillDimVision
+ShowTestInfoToggle: 0,SHIFT+CTRL+ALT+VK_T //显示调试信息
+DrawInvItemInfoToggle: 1, VK_

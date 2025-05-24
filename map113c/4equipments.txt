@@ -1,0 +1,42 @@
+﻿常用装备，用于快速查找
+
+	sor: L45 Enlightenment(21+8+12) ,w94i1068
+	nec: L47 Bone(12+22+22) ,w76i1068
+	bar: L25 Myth(15+11+4) ,w117i1068
+	dru: L49 Rain(9+23+6)  ,w137i1068
+	ama: L29 Peace(13+10+11) ,w120i1068
+	pal: L55 Principle(8+25+2) ,w131i1068
+	asn: L43 Treachery(13+10+20) ,w148i1068
+	Lore(9+12) ,w8i1001
+	RW053=L51 强制 Duress(13+22+10) ,w53i1068
+	L27 Insight(8+3+7+12) ,w103i67
+	RW037=L55 橡树之心 Heart of the Oak (18+26+21+10) ,w37i22
+	RW060=L41 L53 遵从 Obedience(15+18+10+5+19) ,ew60i256
+	L27 Honor(11+1+6+3+12) +1skill 160ED 7LL 25DS 10REP +10STR
+	L21 Zephyr(9+5)Bows&Crossbows 25FRW 25IAS
+	L25 Edge(3+7+11)Bows&Crossbows 35IAS 7LL
+Enchant强化
+	U082=L16 抽动的挣扎 Twitchthroe 镶嵌甲Studded Leather +10STR +10DEX +20IAS 
+	U201=L28 粗野之冠 Peasant Crown 战帽War Hat +15FRW 
+	U061=L15 渡鸟之爪 Raven Claw 长弓Long Bow
+	U103=L9 血拳 Bloodfist 重手套Heavy Gloves +10IAS 
+	S125=L28 山德的禁忌 Sander's Taboo +20IAS 
+Hat帽子
+	isor,nec: U248=L62 谐角之冠 Harlequin Crest 军帽Shako
+	lsor,ama: U336=L76 格利风之眼 Griffon's Eye 权冠diadem +25FCR
+	pal: S104=L34 吉永之脸 Guillaume's Face +15STR
+	merc: 
+		U208=L41 吸血鬼的凝视 Vampire Gaze 残酷头盔Grim Helm
+		U206=L49 盗贼皇冠 Crown of Thieves 巨皇冠Grand Crown
+		U345=L83 安达利尔的面貌 Andariel's Visage 恶魔头盖骨面具demonhead
+Glove:
+	U364=L76 Dracul's Grasp	,u364
+Boot:
+	S69=L45 Aldur's Advance 艾尔多的成长 ,s69
+Amulet项链
+	U272=L67 马拉的万花筒 Mara's Kaleidoscope
+	U276=大君之怒 Highlord's Wrath
+	U269=猫眼 The Cat's Eye
+
+W27 Call to Arms 11+8+23+24+27 ,w27i30
+U371 Heaven's Light ,u371

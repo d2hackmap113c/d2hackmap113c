@@ -1,0 +1,20 @@
+//左边是人物名称，右过是标签，多个标签用逗号分隔
+//如果标签中包含bugKCountess, 则进入游戏时会打开BugAutoQuitHellAct1
+//如果标签中包含bugKM, 则进入游戏时会打开BugAutoQuitHellAct3
+//如果标签中包含bugKD, 则进入游戏时会打开BugAutoQuitHellAct4
+//如果标签中包含bugKB, 则进入游戏时会打开BugAutoQuitHellAct5
+classic-ssor: 静态力场
+classic-bsor: 暴风雪
+classic-esor: 强化
+classic-nec: 大号
+exp-create: 建立游戏,大紫瓶
+exp-tpsor: 传送
+exp-kmsor: bugKM
+exp-kbsor: bugKB
+exp-kbnec: bugKCountess,bugKB
+exp-palA: 宝石
+exp-palB: 低级符文
+exp-palC: 高级符文
+exp-palD: 打孔装备
+exp-palE: 帽子衣服盾腰带鞋
+exp-palF: 武器
