@@ -1,6 +1,6 @@
  d2hackmap
 
- Timestamp is 6831c6ae (Sat May 24 21:16:30 2025)
+ Timestamp is 6831cd14 (Sat May 24 21:43:48 2025)
 
  Preferred load address is 66000000
 
@@ -230,18 +230,18 @@
  0001:00017980       ?loop_addConfigVars@@YAXXZ 66018980 f   loop.obj
  0001:000179c0       ?ToggleIMEInput@@YAXH@Z    660189c0 f   loop.obj
  0001:00017a10       ?GameLoopPatch@@YAXXZ      66018a10 f   loop.obj
- 0001:000185d0       ?GameEndPatch@@YAXXZ       660195d0 f   loop.obj
- 0001:000187d0       ?GameLoopPatch_ASM@@YAXXZ  660197d0 f   loop.obj
- 0001:000187e0       ?GameEndPatch_ASM@@YAXXZ   660197e0 f   loop.obj
- 0001:000187f0       ?automap_addConfigVars@@YAXXZ 660197f0 f   map.obj
- 0001:00018830       ?automap_initConfigVars@@YAXXZ 66019830 f   map.obj
- 0001:00018b40       ?automap_initKeyEvent@@YAXXZ 66019b40 f   map.obj
- 0001:00018bc0       ?draw2map@@YAXPAUtagPOINT@@HH@Z 66019bc0 f   map.obj
- 0001:00018c30       ?tile2map@@YAXPAUtagPOINT@@HH@Z 66019c30 f   map.obj
- 0001:00018c80       ?addMapTarget@@YAXHHHPA_W0@Z 66019c80 f   map.obj
- 0001:00018d60       ?automap_fixValues@@YAXXZ  66019d60 f   map.obj
- 0001:00018dc0       ?AutoMapNewGame@@YAXXZ     66019dc0 f   map.obj
- 0001:00018eb0       ?PrevMapTarget@@YAHXZ      66019eb0 f   map.obj
+ 0001:000185e0       ?GameEndPatch@@YAXXZ       660195e0 f   loop.obj
+ 0001:000187e0       ?GameLoopPatch_ASM@@YAXXZ  660197e0 f   loop.obj
+ 0001:000187f0       ?GameEndPatch_ASM@@YAXXZ   660197f0 f   loop.obj
+ 0001:00018800       ?automap_addConfigVars@@YAXXZ 66019800 f   map.obj
+ 0001:00018840       ?automap_initConfigVars@@YAXXZ 66019840 f   map.obj
+ 0001:00018b50       ?automap_initKeyEvent@@YAXXZ 66019b50 f   map.obj
+ 0001:00018bd0       ?draw2map@@YAXPAUtagPOINT@@HH@Z 66019bd0 f   map.obj
+ 0001:00018c40       ?tile2map@@YAXPAUtagPOINT@@HH@Z 66019c40 f   map.obj
+ 0001:00018c90       ?addMapTarget@@YAXHHHPA_W0@Z 66019c90 f   map.obj
+ 0001:00018d70       ?automap_fixValues@@YAXXZ  66019d70 f   map.obj
+ 0001:00018dd0       ?AutoMapNewGame@@YAXXZ     66019dd0 f   map.obj
+ 0001:00018ec0       ?PrevMapTarget@@YAHXZ      66019ec0 f   map.obj
  0001:00019100       ?NextMapTarget@@YAHXZ      6601a100 f   map.obj
  0001:000191a0       ?AutoMapNewLevel@@YAXXZ    6601a1a0 f   map.obj
  0001:00019340       ?addMinimapTarget@@YAXPAUAreaRectInfo@@HHHHHH@Z 6601a340 f   map.obj
@@ -3387,7 +3387,7 @@
  0001:00017920       ?clickMenuItemPatch_ASM@@YAXXZ 66018920 f   dbg.obj
  0001:00017940       ?clickMenuItem@@YIXH@Z     66018940 f   dbg.obj
  0001:00018200       ?gameStart@@YAXXZ          66019200 f   loop.obj
- 0001:00018540       ?checkTag@@YAXPAD@Z        66019540 f   loop.obj
+ 0001:00018550       ?checkTag@@YAXPAD@Z        66019550 f   loop.obj
  0001:00018f70       ?updateTargetName@@YAXXZ   66019f70 f   map.obj
  0001:000192c0       ?selectWaypointTarget@@YAXXZ 6601a2c0 f   map.obj
  0001:00019890       ?LoadBmpCellFile@@YAPAUCellFile@@PAD@Z 6601a890 f   map.obj
