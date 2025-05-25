@@ -375,6 +375,10 @@ int NextMapTarget() {
 	AutoMapRoute();
 	return 1;
 }
+void incMapTargetIf(int cur) {
+	if (!pCurMapLevel||!pCurMapLevel->curTarget) return;
+	if (pCurMapLevel->cur==cur) NextMapTarget();
+}
 static void selectWaypointTarget() {
 	if (!pCurMapLevel||!pCurMapLevel->targets) return;
 	int n=0;
@@ -407,6 +411,13 @@ void AutoMapNewLevel() {
 	}
 	if (dwCurrentLevel!=Level_HallsofPain&&waypointExist(dwCurrentLevel)&&!hasWaypoint(dwCurrentLevel))
 		selectWaypointTarget();
+	else if (dwCurrentLevel==Level_ChaosSanctuary) {
+		if (DIFFICULTY==0||DIFFICULTY==1) {
+			if (pCurMapLevel&&pCurMapLevel->cur==0) {
+				NextMapTarget();
+			}
+		}
+	}
 }
 void addMinimapTarget(AreaRectInfo *pInfo,int srcLvl,int dstLvl,int unitX,int unitY,int unitType,int unitTxt) {
 	//LOG("addMinimapTarget %d %d %d %d %d %d\n",srcLvl,dstLvl,unitX,unitY,unitType,unitTxt);
@@ -1426,3 +1437,29 @@ void DrawScrollOffset(wchar_t* wbuf ,int posy){
 	}
 }
 
+int NextMapTarget();
+void __fastcall recvObjectState(char *packet) {
+	if (packet[0]!=0x0e) return;
+	if (packet[1]!=2) return;
+	int id=*(int *)(packet+2);
+	int mode=*(int *)(packet+8);
+	if (!mode) return;
+	UnitAny *pUnit=d2client_GetUnitFromId(id,UNITNO_OBJECT);if (!pUnit) return;
+	switch (pUnit->dwTxtFileNo) {
+		case 392:case 393:case 394:case 395:case 396://seal
+			if (mode) NextMapTarget();
+			break;
+	}
+}
+/*
+	d2client_AF580: E8 CB B1 F7 FF     call d2client_2A750(2 args)
+*/
+void __declspec(naked) RecvPacket0EPatch_ASM() {
+	__asm {
+		pushad
+		mov ecx, eax
+		call recvObjectState
+		popad
+		jmp d2client_setState_2A750
+	}
+}

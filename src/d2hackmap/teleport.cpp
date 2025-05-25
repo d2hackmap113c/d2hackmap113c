@@ -21,7 +21,11 @@ static int dwAutoTeleportTelekinesisDistance,dwAutoTeleportTelekinesisSafeDistan
 static int dwAutoTeleportTelekinesisEnterChamber;
 static int dwAutoTeleportRescueBarAvoid=10;
 int maxTpDisRaw;
+static int forceEnterCharLevelNormal=60;
+static int forceEnterCharLevelNightmare=80;
 static ConfigVar aConfigVars[] = {
+  {CONFIG_VAR_TYPE_INT,"ForceEnterCharLevelNormal",&forceEnterCharLevelNormal,4},
+  {CONFIG_VAR_TYPE_INT,"ForceEnterCharLevelNightmare",&forceEnterCharLevelNightmare,4},
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportSafeDistance",&dwAutoTeleportSafeDistance,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportMonsterDefaultDistance",&defMonYard,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportMaxDistance",&maxTpYard,4 },
@@ -257,7 +261,7 @@ static void interactObj(UnitAny *pUnit) {
 		takeWaypointToLevel(pUnit,actlvls[ACTNO]);
 		return;
 	}
-	LOG("interactObj txt=%d mode=%d\n",pUnit->dwTxtFileNo,pUnit->dwMode);
+	LOG("interactObj type=%d id=%d txt=%d mode=%d\n",pUnit->dwUnitType,pUnit->dwUnitId,pUnit->dwTxtFileNo,pUnit->dwMode);
 	switch (pUnit->dwTxtFileNo) {
 		case 268: //wirt's body
 			if (pUnit->dwMode==1) {//opened
@@ -278,6 +282,9 @@ found_leg:
 			} else {
 				LeftClickUnit(pUnit);
 			}
+			break;
+		case 392:case 393:case 394:case 395:case 396://seal
+			if (pUnit->dwMode==0) LeftClickUnit(pUnit);
 			break;
 		default:
 			LeftClickUnit(pUnit);
@@ -518,6 +525,7 @@ static int autoTarget() {
 	return teleportToSafety()?0:1;
 }
 //return 1 if auto skill can be used
+extern int bossX,bossY,bossHp;
 int AutoTeleport() {
 	if (!tposs) {posCap=4096;tposs=(TPPos *)HeapAlloc(dllHeap,0,sizeof(TPPos)*posCap);}
 	targetType=0;targetTxt=0;hasTarget=0;dstType=0;
@@ -545,6 +553,9 @@ int AutoTeleport() {
 		case Level_TheWorldstoneChamber:
 			if (findBoss(Mon_BaalCrab,0)) hasTarget=1;
 			break;
+		case Level_ChaosSanctuary:
+			if (bossHp>0) {dst.x=bossX;dst.y=bossY;hasTarget=1;}
+			break;
 		//case Level_TowerCellarLevel5:if (findBoss(Mon_DarkStalker,1)) hasTarget=1;break;
 	}
 	maxTpDisM256=maxTpYard*256*3/2;
@@ -554,6 +565,16 @@ int AutoTeleport() {
 	for (int retries=0;retries<6;retries++) {
 		dstType=AutoTeleportGetTarget(&dst,&targetType,&targetTxt,&rectCountFromTarget);
 		//0:noTarget 1:continue 2:end 3:interact 4:forceEnter 5:auto >=6:keep safe distance
+		if (dstType>=6) {
+			if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal
+				||DIFFICULTY==1&&dwPlayerLevel>=forceEnterCharLevelNightmare) {
+				switch (dwCurrentLevel) {
+				case Level_StonyField:
+				case Level_MaggotLairLevel3:dstType=2;break;
+				case Level_ChaosSanctuary:dstType=3;break;
+				}
+			}
+		}
 		if (!dstType) {startProcessMs=dwCurMs+200;return 1;}
 		if (dstType!=4) findMonsters();
 		else resetMonsters();

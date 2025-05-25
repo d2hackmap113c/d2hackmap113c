@@ -456,7 +456,7 @@ void server_test(int param) {
 	sendChatMessageToServer("%stest:%d,%d",undoPrefix,param,0);
 }
 int DoServerTest() {
-	server_test(0);
+	//server_test(0);
 	return 0;
 }
 AreaRectData * testPosition(AreaRectData *pData,int x,int y);

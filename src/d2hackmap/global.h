@@ -131,6 +131,7 @@ int hasWaypoint(int area);
 int isLocalPlayer(int uid);
 void check_d2ptrs();
 void draw2map(POINT *minimap,int drawX,int drawY);
+void __stdcall dumpStack(int n);
 
 extern HMODULE addr_storm,addr_d2client,addr_d2common,addr_d2gfx,addr_d2win,addr_d2lang;
 extern HMODULE addr_d2cmp,addr_bnclient,addr_d2net,addr_fog,addr_d2game,addr_d2launch;

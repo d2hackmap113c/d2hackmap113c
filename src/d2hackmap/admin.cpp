@@ -65,6 +65,8 @@ void maxCharStat(World *world,UnitAny *pUnit) {
 		ItemStatCostTxt *txt=d2common_GetItemStatCostTxt(id);if (!txt) continue;
 		int v=(1<<txt->csvbits)-1;
 		//if (txt->valshift) v<<=txt->valshift;
+		if (id==14) v=990000;
+		if (id==15) v=2500000;
 		int cur=d2common_GetUnitBaseStat(pUnit,id,0);
 		if (v!=cur) d2common_AddPlayerStat(pUnit,id,v-cur,0);
 	}

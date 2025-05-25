@@ -18,20 +18,18 @@ int changeStashPageCmd=0x9D;
 int changeStashPageCmdOffset=1;
 int changeStashPageCmdValue=0x2c;
 int changeStashPageValueOffset=0x15;
+int curStashPage=0,nStashPages=0;
 StashPage *stashPages[MAX_STASH_PAGES]={0};
-int curStashPage=-1,nStashPages=0;
 static int dwDrawMultiPageStashXY[2]={80,-95};
 static int dwSelfNameColor[3]={6,0x84,0x10};
 static int dwLocalNameColor[3]={6,0x84,0x10};
 static int dwPartyNameColor[3]={6,0x20,0x5b};
 static int dwNeutralNameColor[3]={0,0x5b,0x10};
 static int dwHostileNameColor[3]={6,0x62,0x6f};
-static int bossHp=-1;
-void drawInvItemInfo();
+int bossX,bossY,bossHp=-1;
 
 void ShowGameCount();
 ToggleVar tCountDown={TOGGLEVAR_ONOFF,0,-1,1,"Count Down"};
-ToggleVar tDrawSimpleItemStackCount={TOGGLEVAR_ONOFF,0,-1,1,"Draw Simple Item Stack Count"};
 ToggleVar tDrawMultiPageStashCount={TOGGLEVAR_ONOFF,0,-1,1,"Draw Multi Page Stash Count"};
 int dwGameMonitorX=-10,dwGameMonitorY=-110;
 int dwCountDownFontSize=			3;
@@ -65,7 +63,6 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT,"CountDownFlashSecond",&dwCountDownFlashSecond,4},
 	{CONFIG_VAR_TYPE_KEY,"KillCountToggle",&tKillCount},
 	{CONFIG_VAR_TYPE_KEY,"GetHitCountToggle",&tGetHitCount},
-	{CONFIG_VAR_TYPE_KEY,"DrawSimpleItemStackCount",&tDrawSimpleItemStackCount},
 	{CONFIG_VAR_TYPE_KEY,"DrawMultiPageStashCount",&tDrawMultiPageStashCount},
   {CONFIG_VAR_TYPE_INT_ARRAY1,"DrawMultiPageStashXY",&dwDrawMultiPageStashXY,2,{0}},
 	{CONFIG_VAR_TYPE_INT,"SimpleItemStackTxt",&simpleItemStackTxt,4},
@@ -138,7 +135,6 @@ int beltLayers;
 int dwNextHPotionId,dwNextMPotionId;
 static int minHPotionType,minMPotionType;
 static int throwWeaponIdx;
-static int hasSimpleItemStackInv,hasSimpleItemStackCube,hasSimpleItemStackStash;
 int dwThrowWeaponId,dwNextStackingId,dwNextStackX,dwNextStackY,dwNextStackLoc;
 
 static void checkWeapon(UnitAny *pUnit) {
@@ -213,10 +209,14 @@ static void checkItem(UnitAny *pUnit,int location) {
 }
 void checkAutoSkill();
 void updateCurStashPage() {
-	if (curStashPage<0&&curStashPage>=MAX_STASH_PAGES) return;
-	if (!stashPages[curStashPage]) stashPages[curStashPage]=
-		(StashPage *)HeapAlloc(dllHeap,0,sizeof(StashPage));
+	if (nStashPages<0||nStashPages>1000) {LOG("ERROR nStashPages=%d\n",nStashPages);nStashPages=0;}
+	if (curStashPage<0||curStashPage>=MAX_STASH_PAGES) return;
 	StashPage *p=stashPages[curStashPage];
+	if (!p) {
+		p=(StashPage *)HeapAlloc(dllHeap,0,sizeof(StashPage));
+		stashPages[curStashPage]=p;
+	}
+	LOG("updateStashPage1 %d/%d 0x%X\n",curStashPage,nStashPages,p);
 	p->n=0;
 	for (UnitAny *pUnit = d2common_GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = d2common_GetNextItemInInv(pUnit)) {
 		if (pUnit->dwUnitType!=UNITNO_ITEM) continue ;
@@ -231,6 +231,7 @@ void updateCurStashPage() {
 			case 3:break;//body
 		}
 	}
+	LOG("updateStashPage %d/%d: n=%d\n",curStashPage,nStashPages,p->n);
 }
 void recheckSelfItems() {
 	static int n=0;
@@ -258,21 +259,12 @@ void recheckSelfItems() {
 			}
 		} 
 	}
-	if (nStashPages) updateCurStashPage();
-	hasSimpleItemStackInv=0;hasSimpleItemStackCube=0;hasSimpleItemStackStash=0;
+	//if (nStashPages) updateCurStashPage();
 	for (UnitAny *pUnit = d2common_GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = d2common_GetNextItemInInv(pUnit)) {
 		if (pUnit->dwUnitType!=UNITNO_ITEM) continue ;
 		switch (pUnit->pItemData->nLocation) { 
 			case 0:break;//ground
 			case 1: {//cube/stash/inv
-				int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
-				if (index==simpleItemStackIdx) {
-					switch (pUnit->pItemData->nItemLocation) {
-						case 0:hasSimpleItemStackInv++;break;
-						case 3:hasSimpleItemStackCube++;break;
-						case 4:hasSimpleItemStackStash++;break;
-					}
-				}
 				switch (pUnit->pItemData->nItemLocation) {
 					case 0: checkItem(pUnit,0);break;//bag
 					//case 3:checkItem(pUnit,2);break;//cube
@@ -351,7 +343,7 @@ void GameMonitorNewGame() {
 }
 void GameMonitorEndGame() {
 	GameMonitorNewGame();
-	curStashPage=-1;nStashPages=0;
+	curStashPage=0;nStashPages=0;
 }
 extern wchar_t wszNpcTradeInfo[256];
 
@@ -425,67 +417,40 @@ org:
 		ret 
 	}
 }
-void drawSimpleItemStackCount() {
+void drawSimpleItemStackInfo(UnitAny *pUnit,int xpos,int ypos) {
 	wchar_t wbuf[32];
-	InventoryBIN* pInvs=*d2common_pInventoryTxt;if (!pInvs) return;
-	InventoryBIN *pInv=pInvs+16+12;
-	int nGridWidth=pInv->grid.w;
-	int nGridHeight=pInv->grid.h;
-	int dx=(SCREENSIZE.x-800)/2;
-	int dy=(SCREENSIZE.y-600)/2;
-	d2win_SetTextFont(8);
-	for (UnitAny *pUnit = d2common_GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = d2common_GetNextItemInInv(pUnit)) {
-		if (pUnit->dwUnitType!=UNITNO_ITEM) continue;
-		if (pUnit->pItemData->nLocation!=1) continue;
-		if (pUnit->pItemData->nItemLocation==0) {
-		} else if (pUnit->pItemData->nItemLocation==3) {
-			if (!(*d2client_pUiCubeOn)) continue;
-		} else if (pUnit->pItemData->nItemLocation==4) {
-			if (!(*d2client_pUiStashOn)) continue;
-		} else continue;
-		int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
-		if (index!=simpleItemStackIdx) continue;
-		if (!pUnit->pStatList) continue;
-		StatList *plist=pUnit->pStatList;
-		if (!(plist->dwListFlag&0x80000000)) continue;
-		if (!plist->sFullStat.pStats) continue;
-		Stat *stat=&plist->sFullStat;
-		int n=stat->wStats;
-		if (n>=511) continue;
-		InventoryBIN *pInv=pInvs+16;
-		if (pUnit->pItemData->nItemLocation==4) pInv+=12; //stash
-		else if (pUnit->pItemData->nItemLocation==3) pInv+=9; //cube
-		int left=pInv->grid.x0+14;
-		int bottom=pInv->grid.y0+nGridHeight-1;
-		StatEx *se=stat->pStats;
-		for (int i=0;i<n;i++) {
-			int id=se[i].wStatId;if (id!=simpleItemStackStatId) continue;
-			int count=se[i].dwStatValue;
-			int txt=se[i].wParam&0xFFFF;
-			int x=pUnit->pItemPath->unitX;
-			int y=pUnit->pItemPath->unitY;
-			int xpos = left+x*nGridWidth+dx;
-			int ypos = bottom+y*nGridHeight+dy;
-			int index = GetItemIndex(txt)+1;
-			if (2103<=index&&index<=2135) {
-				int r=index-2102;
-				wsprintfW(wbuf,L"R%d",r);
-				drawBgTextMiddle(wbuf,xpos,ypos-14,7,0x10);
-			} else if (2050<=index&&index<=2079) {
-				static char *gemNames[6]={"紫","黄","蓝","绿","红","白"};
-				static int gemColors[6]={11,9,3,2,1,0};
-				int t=index-2050;
-				wsprintfW(wbuf,L"%hs%d",gemNames[t/5],(t%5)+1);
-				drawBgTextMiddle(wbuf,xpos,ypos-14,gemColors[t/5],0x10);
-			} else if (2090<=index&&index<=2094) {
-				int t=index-2090;
-				wsprintfW(wbuf,L"骷%d",t+1);
-				drawBgTextMiddle(wbuf,xpos,ypos-14,0,0x10);
-			}
-			wsprintfW(wbuf,L"%d",count);
-			drawBgTextMiddle(wbuf,xpos,ypos,2,0x10);
-			break;
+	if (!pUnit->pStatList) return;
+	StatList *plist=pUnit->pStatList;
+	if (!(plist->dwListFlag&0x80000000)) return;
+	if (!plist->sFullStat.pStats) return;
+	Stat *stat=&plist->sFullStat;
+	int n=stat->wStats;
+	if (n>=511) return;
+	StatEx *se=stat->pStats;
+	xpos+=14;
+	for (int i=0;i<n;i++) {
+		int id=se[i].wStatId;if (id!=simpleItemStackStatId) continue;
+		int count=se[i].dwStatValue;
+		int txt=se[i].wParam&0xFFFF;
+		int index = GetItemIndex(txt)+1;
+		if (2103<=index&&index<=2135) {
+			int r=index-2102;
+			wsprintfW(wbuf,L"R%d",r);
+			drawBgTextMiddle(wbuf,xpos,ypos-14,7,0x10);
+		} else if (2050<=index&&index<=2079) {
+			static char *gemNames[6]={"紫","黄","蓝","绿","红","白"};
+			static int gemColors[6]={11,9,3,2,1,0};
+			int t=index-2050;
+			wsprintfW(wbuf,L"%hs%d",gemNames[t/5],(t%5)+1);
+			drawBgTextMiddle(wbuf,xpos,ypos-14,gemColors[t/5],0x10);
+		} else if (2090<=index&&index<=2094) {
+			int t=index-2090;
+			wsprintfW(wbuf,L"骷%d",t+1);
+			drawBgTextMiddle(wbuf,xpos,ypos-14,0,0x10);
 		}
+		wsprintfW(wbuf,L"%d",count);
+		drawBgTextMiddle(wbuf,xpos,ypos,2,0x10);
+		break;
 	}
 }
 
@@ -512,7 +477,6 @@ void DrawMonitorInfo(){
 		}
 	}
 	wchar_t wszTemp[512];
-	if (tDrawInvItemInfo.isOn) drawInvItemInfo();
 	if (tShowTestInfo.isOn) {
 		int pos=wsprintfW(wszTemp, L"(%d,%d)",*d2client_pMouseX,*d2client_pMouseY);
 		int drawX=d2client_GetScreenDrawX()+*d2client_pMouseX;
@@ -948,14 +912,17 @@ void itemAction(struct bitstream *bs,char *buf) {
 	}
 }
 void changeStashPage(int id) {
-	if (id>=nStashPages) {
-		for (int i=nStashPages;i<=curStashPage&&i<MAX_STASH_PAGES;i++) {
-			if (stashPages[i]) stashPages[i]->n=0;
-		}
-		nStashPages=curStashPage+1;
-	}
+	if (nStashPages>1000) {LOG("ERROR nStashPages=%d\n",nStashPages);nStashPages=0;}
+	if (id==curStashPage) return;
+	LOG("changeStashPage %d->%d/%d\n",curStashPage,id,nStashPages);
 	updateCurStashPage();
 	curStashPage=id;
+	if (id>=nStashPages) {
+		for (int i=nStashPages;i<=id&&i<MAX_STASH_PAGES;i++) {
+			if (stashPages[i]) stashPages[i]->n=0;
+		}
+		nStashPages=id+1;
+	}
 }
 void __fastcall itemAction9C(char *buf) {
 	struct bitstream bs;
@@ -1022,28 +989,6 @@ void __declspec(naked) RecvCommand_22_Patch_ASM() {
 		ret
 	}
 }
-static void drawSimpleItemStack() {
-	if (tDrawInvItemInfo.isOn) drawInvItemInfo();
-	if (!tDrawSimpleItemStackCount.isOn) return;
-	if (hasSimpleItemStackStash&&*d2client_pUiStashOn
-		||hasSimpleItemStackCube&&*d2client_pUiCubeOn
-		||hasSimpleItemStackInv&&(*d2client_pUiInventoryOn||*d2client_pUiStashOn||*d2client_pUiCubeOn)
-		) {
-		drawSimpleItemStackCount();
-	}
-}
-//d2client_C3B5B: 8B 35 60 AD BA 6F  mov esi, [d2client_FAD60 void *d2client_UiDropGoldWindow]
-void __declspec(naked) DrawSimpleItemStack_Patch_ASM() {
-	__asm{
-		cmp tDrawSimpleItemStackCount.isOn,0
-		jz original
-		call drawSimpleItemStack
-original:
-		mov esi, d2client_pUiDropGoldWindow
-		mov esi, [esi]
-		ret
-	}
-}
 #define FontHalfH 6
 extern BYTE nNeutralPlayerColor,nHostilePlayerColor;
 static void drawPlayerName(UnitAny *pUnit) {
@@ -1102,6 +1047,8 @@ static void drawBossHp(UnitAny *pUnit) {
 		int maxhp=d2common_GetUnitStat(pUnit, STAT_MAXHP, 0);
 		hp=maxhp<=0?0:d2common_GetUnitStat(pUnit, STAT_HP, 0)*100/maxhp;
 	}
+	bossX=pUnit->pMonPath->wUnitX;
+	bossY=pUnit->pMonPath->wUnitY;
 	bossHp=hp;
 	wsprintfW(wbuf,L"%d%%",hp);
 	int drawX = pUnit->pMonPath->drawX;
@@ -1139,6 +1086,14 @@ static void drawUnitsInfoInRect(AreaRectData *pData) {
 						case Mon_UberMephisto:case Mon_UberDiablo:case Mon_UberIzual:
 						case Mon_UberAndariel:case Mon_UberDuriel:case Mon_UberBaal:
 							drawBossHp(pUnit);
+							break;
+						case Mon_OblivionKnight1: 
+						case Mon_StormCaster1:
+						case Mon_VenomLord:
+						case Mon_DarkStalker:
+							if (pUnit->pMonsterData->fBoss&&pUnit->pMonsterData->fUnique) {
+								drawBossHp(pUnit);
+							}
 							break;
 					}
 				}

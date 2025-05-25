@@ -222,6 +222,8 @@ AutoTeleportTelekinesisSafeDistance: 5 //使用法师之手的距离加5
 WayPointRandom: 5 //Shift the waypoint target randomly. It doesn't look too realistic to teleport exactly to the center on battle.net.
 //MapTargets[src level][dest level]: type,EnglishName,中文名称
 //type: 1:Click点击 2:ForceEnter不管怪物强行靠近 3:Auto自动 10-120:DistanceToFindSafety距离目标小于此值则找安全位置
+ForceEnterCharLevelNormal: 60 //人物超过60级普通难度强行靠近
+ForceEnterCharLevelNightmare: 80 //人物超过80级噩梦难度强行靠近
 //Act1
 MapTargets[Blood Moor][Den of Evil]:1  
 MapTargets[Blood Moor][Cold Plains]:0 
@@ -872,6 +874,7 @@ SimpleItemStackTxt: 660
 SimpleItemStackIdx: 2153
 SimpleItemStackStatId: 359
 DrawSimpleItemStackCount: 1,VK_ //显示玉净瓶的内容和数量
+BatchSimpleItemStackCount: 3 //按住Shift键点击玉净瓶一次取出的数量
 DrawInvItemInfoToggle: 1, VK_ //在暗金绿色神符之语物品上显示名称，方便在集市上快速找装备
 //---Some server has different resist offset
 ResistOffsetClassic: 0,-20,-50 //only for display

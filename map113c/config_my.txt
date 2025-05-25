@@ -77,5 +77,5 @@ MinimapDebugToggle: 0, CTRL+ALT+VK_M
 TpSwitchBackground[ClassSor]: SkillBlizzard
 //---switch skill to when enter door in background
 EnterDoorInBackgroundSkill[ClassNec][1-136]: SkillDimVision
-ShowTestInfoToggle: 0,SHIFT+CTRL+ALT+VK_T //显示调试信息
+ShowTestInfoToggle: 1,SHIFT+CTRL+ALT+VK_T //显示调试信息
 DrawInvItemInfoToggle: 1, VK_

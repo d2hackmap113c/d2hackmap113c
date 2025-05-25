@@ -273,7 +273,7 @@ PatchCall(d2launch,0xDB9F,DeleteSelectedCharacter_Patch_ASM,6,"8D 96 00 01 00 00
 //d2win_F4E6: 8B 33              mov esi, [ebx]
 //d2win_F4E8: 83 3E 06           cmp dword ptr [esi], 6
 PatchCall(d2win,0xF4E6,ClickMenuItem_Patch_ASM,5,"8B 33 83 3E 06");
-//--- m_AutoMapCell.h ---
+//--- map.cpp ---
 //d2client_61354: 8B 14 85 B8 55 BC 6F  mov edx, [eax*4+d2client_1155B8]
 PatchCall(d2client,0x61354,OverrideShrinePatch_ASM,7,"8B 14 85 $(+1155B8)");
 //d2client_61D83: 8B 8E BC 01 00 00  mov ecx, [esi+0x1BC]
@@ -284,6 +284,8 @@ patchFill("shrinedistance",PATCH_ADDR(d2client,0x61D31),INST_NOP,6,"0F 84 21 01 
 PatchCall(d2client,0x604EA,DrawAutomapNodePatch,5,"E8 73 CC FA FF");
 //d2client_60E16: 8B 0D C4 C1 BC 6F  mov ecx, [d2client_11C1C4](->2689E20(->0))
 PatchCall(d2client,0x60E16,MinimapPatch_ASM,6,"8B 0D $(+11C1C4)");
+//d2client_AF580: E8 CB B1 F7 FF     call d2client_2A750(2 args)
+PatchCall(d2client,0xAF580,RecvPacket0EPatch_ASM,5,"E8 CB B1 F7 FF");
 //--- m_AutoMapBlob.h ---
 //d2client_61AC4: 0F 85 20 02 00 00  jnz d2client_61CEA ->+544 B61CEA
 PatchCall(d2client,0x61AC4,ForceDrawBlob_ASM,6,"0F 85 20 02 00 00");
@@ -504,8 +506,6 @@ PatchCall(d2client,0xAE880,RecvCommand_9D_Patch_ASM,5,"B9 40 00 00 00");
 //d2client_AC801: 8B F1              mov esi, ecx
 //d2client_AC803: 8A 46 0B           mov al, [esi+0xB]
 PatchCall(d2client,0xAC801,RecvCommand_22_Patch_ASM,5,"8B F1 8A 46 0B");
-//d2client_C3B5B: 8B 35 60 AD BA 6F  mov esi, [d2client_FAD60 void *d2client_UiDropGoldWindow](->0)
-PatchCall(d2client,0xC3B5B,DrawSimpleItemStack_Patch_ASM,6,"8B 35 60 AD BA 6F");
 //--- m_ShowOrbs.h ---
 //d2client_276B5: B9 45 10 00 00     mov ecx, 0x1045 (4165)
 PatchCall(d2client,0x276B5,ShowLifePatch_ASM,5,"B9 45 10 00 00");
@@ -633,7 +633,7 @@ PatchCall(d2client,0x523B0,RecvCommand_89_Patch_ASM,5,"83 F9 20 7C 07");
 PatchCall(d2client,0xAD766,RecvCommand_A4_Patch_ASM,6,"0F B7 59 01 8B 08");
 //d2client_AF1A9: B9 15 00 00 00     mov ecx, 0x15 (21)
 PatchCall(d2client,0xAF1A9,RecvCommand_4D_Patch_ASM,5,"B9 15 00 00 00");
-//--- m_ItemSocketProtect.h ---
+//--- item.cpp ---
 //d2client_99174: 8B 44 24 18        mov eax, [esp+0x18]
 //d2client_99178: 85 C0              test eax, eax
 PatchCall(d2client,0x99174,SocketProtectPatch1_ASM,6,"8B 44 24 18 85 C0");
@@ -642,6 +642,8 @@ PatchCall(d2client,0x99174,SocketProtectPatch1_ASM,6,"8B 44 24 18 85 C0");
 PatchCall(d2client,0x96FAB,SocketProtectPatch2_ASM,6,"8B 44 24 44 85 C0");
 // d2client_6B6B2: E8 DF 19 FA FF     call d2client_D096->d2gfx_B080 void __stdcall d2gfx_DrawCellFile(CellContext *context, int xPos, int yPos, DWORD dw1, int dwTransLvl, BYTE *coltab)(6 args)
 PatchCall(d2client,0x6B6B2,DrawInvItemPatch_ASM,5,"E8 DF 19 FA FF");
+//d2client_98D2E: E8 AD BB F7 FF     call d2client_148E0 void __fastcall d2client_sendPacketLen13(int arg1,int arg2,int arg3)//eax:char cmd(1 args)
+PatchCall(d2client,0x98D2E,ActiveBufferItemPatch_ASM,5,"E8 AD BB F7 FF");
 //--- m_GameChat.h ---
 //d2client_6FEC7: B9 D4 14 00 00     mov ecx, 0x14D4 (5332)
 PatchCall(d2client,0x6FEC7,WisperPatch_ASM,5,"B9 D4 14 00 00");
@@ -929,7 +931,7 @@ BOOL Install(){
 	if (debug) MessageBox(NULL,"Press to continue","PauseAtStartup",MB_OK);
 	if (dwGameLng<0) {
 		dwGameLng=GetGameLanguage();
-		if (dwGameLng==2) dwGameLng = 1;
+		if (dwGameLng) dwGameLng = 1;
 	}
 	if (*d2launch_pD2Characters) saveCharMenu();
 	if (debug) dump();

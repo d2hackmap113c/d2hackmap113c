@@ -1,5 +1,7 @@
 ﻿#include "stdafx.h"
 #include "header.h"
+#include <psapi.h>
+#include <dbghelp.h>
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -17,6 +19,87 @@ int SaveGame() {
 int DoTest() {
 	gameMessage("test");
 	return 1;
+}
+
+struct Dll {int addr,size,end;char *name;};
+static struct Dll *dllByAddr=NULL;
+static int nDll=0;
+int compareDllAddr(const void *a,const void *b) {
+	return ((struct Dll *)a)->addr-((struct Dll *)b)->addr;
+}
+static void formatDllName(char *name) {
+	char *ext=NULL;
+	for (int j=0;name[j];j++) {
+		if ('A'<=name[j]&&name[j]<='Z') name[j]='a'+name[j]-'A';
+		if (name[j]=='.') {name[j]='_';ext=name+j;}
+	}
+	if (ext&&strcmp(ext,"_dll")==0) *ext=0;
+}
+void initDllInfo() {
+	if (nDll) return;
+	MODULEINFO info;
+	HMODULE mods[512];DWORD cbNeeded;
+	TCHAR name[256];
+	HANDLE handle=GetCurrentProcess();
+	if (!EnumProcessModules(handle, mods, sizeof(mods), &cbNeeded)) {LOG("enum dll failed\n");return;}
+	int n=cbNeeded/sizeof(HMODULE);if (n>512) {n=512;LOG("ERROR: too many dlls\n");}
+	dllByAddr=(struct Dll *)malloc(sizeof(struct Dll)*n);
+	for (int i=0;i<n;i++) {
+		HMODULE m=mods[i];if (!m) continue;
+		GetModuleBaseName(handle, m, name, 256);
+		if (!GetModuleInformation(handle,m,&info,sizeof(MODULEINFO))) {
+			LOG("Can't get info of %X %s\n",m,name);continue;
+		}
+		struct Dll *p=dllByAddr+(nDll++);
+		formatDllName(name);
+		p->name=_strdup(name);
+		p->addr=(int)info.lpBaseOfDll;p->end=p->addr+info.SizeOfImage;p->size=info.SizeOfImage;
+	}
+	qsort(dllByAddr,nDll,sizeof(struct Dll),compareDllAddr);
+}
+static struct Dll *lastDll=NULL;
+struct Dll *bsearchDllAddr(struct Dll *ss, int start,int end,int addr) {
+	if (start>=end) return ss+start;
+	int m=(start+end)>>1;
+	struct Dll *p=ss+m;int t=p->addr;
+	if (addr==t) {
+		while (p>ss&&p[-1].addr==addr) p--;
+		return p;
+	}
+	if (addr<t) return bsearchDllAddr(ss,start,m-1,addr);
+	else return bsearchDllAddr(ss,m+1,end,addr);
+}
+struct Dll *getEnclosingDll(int addr) {
+	if (!nDll) initDllInfo();
+	if (!nDll) return NULL;
+	if (lastDll&&lastDll->addr<=addr&&addr<lastDll->end) return lastDll; 
+	struct Dll s;s.addr=addr;
+	struct Dll *r=bsearchDllAddr(dllByAddr,0,nDll-1,addr);
+	if (r->addr<=addr&&addr<r->end) {lastDll=r;return r;}
+	if (r->addr>addr) {
+		if (r==dllByAddr) return NULL;
+		r--;if (r->addr<=addr&&addr<r->end) {lastDll=r;return r;}
+	}
+	return NULL;
+}
+void __stdcall dumpStack(int n) {
+	if (!logfp) return;
+	int *stack=&n;stack--;
+	int *last=stack,*end=stack+n;
+	for (;stack<end;stack++) {
+		int imm=*stack;if (imm<0x400000) {continue;}
+		struct Dll *dll=getEnclosingDll(imm);if (!dll) {continue;}
+		if (imm<dll->addr||imm>dll->end) {continue;}
+		if (last<stack) {
+			for (int i=0;last<stack;last++,i++) {
+				fprintf(logfp," %X",*last);
+			}
+			fputc('\n',logfp);
+		}
+		fprintf(logfp,"%X: %s_%X\n",stack,dll->name,imm-dll->addr);
+		last=stack+1;
+	}
+	fflush(logfp);
 }
 
 static void __fastcall loadUiImage(char *path,int ret) {

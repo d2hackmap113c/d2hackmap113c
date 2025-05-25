@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 #include "header.h"
+#include "multi.h"
 
 struct BugQuestInfo{
 	int nQuestNo; //任务编号
@@ -436,7 +437,12 @@ Q52
 							dwBarbrianLeft=aPacket[4];
 							wsprintfW(wszbuf, L"Q52: %d barbrian to rescue",aPacket[4]);
 							d2client_ShowPartyMessage(wszbuf, 2);
-							NextMapTarget();
+							if (fWinActive) {
+								NextMapTarget();
+							} else {
+								if (aPacket[4]==10) send_multi_quest_info(MCQ_10BB);
+								else if (aPacket[4]==5) send_multi_quest_info(MCQ_5BB);
+							}
 						} else if (aPacket[3]==0x03) {
 							dwBarbrianLeft=0;
 							d2client_ShowPartyMessage(L"Q52: All barbrian rescued",2);

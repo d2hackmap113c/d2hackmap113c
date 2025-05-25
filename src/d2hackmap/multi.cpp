@@ -3,9 +3,10 @@
 #include "multi.h"
 #include "auto.h"
 
-#define VARIABLE_DECLARE
-#include "multi.h"
-#undef VARIABLE_DECLARE
+int dwMultiClientMaxWindowId=0;
+int d2winLastId=0;
+wchar_t wszTransferClick[64]={0};
+int fAutoFollowMoving=0;
 
 extern int dwEnterDoorInBackgroundSkill[7][140];
 int takeWaypointToAreaUI(int level);
@@ -253,6 +254,17 @@ void leader_click_object(int type,int id) {
 	}
 }
 int loadRuntimeInfo(D2Window *pwin,int id);
+void send_multi_quest_info(int info) {
+	int gid24=dwGameWindowId<<24;
+	multiclient_send_info((MCI_Quest<<24)|(info&0xFFFFFF)|gid24);
+}
+void incMapTargetIf(int cur);
+void recv_multi_quest_info(int info) {
+	switch (info) {
+	case MCQ_10BB:if (dwCurrentLevel==Level_FrigidHighlands) incMapTargetIf(0);break;
+	case MCQ_5BB:if (dwCurrentLevel==Level_FrigidHighlands) incMapTargetIf(1);break;
+	}
+}
 void multiclient_recv_info(int info) {
 	int type=(info>>24)&0xF0;
 	int gid=(info>>24)&0x0F;
@@ -286,6 +298,7 @@ void multiclient_recv_info(int info) {
 		case MCI_StartFollow:pwin->isTeam=1;break;break;
 		case MCI_StopFollow:pwin->isTeam=0;break;break;
 		case MCI_AutoSkill:pwin->autoSkillId=info&0x7FFFFF;pwin->autoLeft=info&0x800000;break;
+		case MCI_Quest:recv_multi_quest_info(info&0xFFFFFF);break;
 	}
 }
 void multiclient_send_info(int info) {

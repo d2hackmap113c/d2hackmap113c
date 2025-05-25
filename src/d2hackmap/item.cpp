@@ -50,7 +50,13 @@ char 			szItemExtInfoCfgName[2][256]	={			{'\0'}};
 ToggleVar 	tItemExtInfo={			TOGGLEVAR_ONOFF,	0,	-1,	1 , "ItemExtInfo" , &LoadExtInfo};
 BYTE 			nDefaultExtInfoColour=				8;
 int maxTownPortalCount=20,maxIdentifyPortalCount=20;
+int batchSimpleItemStackCount=3;
+ToggleVar tDrawSimpleItemStackCount={TOGGLEVAR_ONOFF,0,-1,1,"Draw Simple Item Stack Count"};
+static int showUnidentifiedItemInfo=0;
 static ConfigVar aConfigVars[] = {
+  {CONFIG_VAR_TYPE_INT, "ShowUnidentifiedItemInfo", &showUnidentifiedItemInfo,     4 },
+	{CONFIG_VAR_TYPE_KEY,"DrawSimpleItemStackCount",&tDrawSimpleItemStackCount},
+  {CONFIG_VAR_TYPE_INT, "BatchSimpleItemStackCount", &batchSimpleItemStackCount,     4 },
   {CONFIG_VAR_TYPE_INT, "MaxTownPortalCount", &maxTownPortalCount,     4 },
   {CONFIG_VAR_TYPE_INT, "MaxIdentifyPortalCount", &maxIdentifyPortalCount,     4 },
 //--- m_ItemDefine.h ---
@@ -1092,18 +1098,6 @@ original_code:
 		ret
 	}
 }
-struct DrawInvItem {
-	UnitAny *pItem;int x,y;
-};
-DrawInvItem invItems[256];
-int nDrawInvItems=0;
-int hasDrawInvItemInfo=0;
-static void __fastcall drawInvItem(int x,int y,UnitAny *pItem) {
-	hasDrawInvItemInfo=0;
-	if (nDrawInvItems>=256) return;
-	DrawInvItem *p=&invItems[nDrawInvItems++];
-	p->pItem=pItem;p->x=x;p->y=y;
-}
 int searchStat(UnitAny *pItem,int statId,int *pParam) {
 	if (!pItem->pStatList) return 0;
 	StatList *plist=pItem->pStatList;
@@ -1120,117 +1114,246 @@ int searchStat(UnitAny *pItem,int statId,int *pParam) {
 	}
 	return 0;
 }
-static char *clsNames[8]={"ama","sor","nec","pal","bar","dru","asn","???"};
+static char *clsNames[2][8]={
+	{"ama","sor","nec","pal","bar","dru","asn","???"},
+	{"亚马逊","法师","死灵","圣骑士","野蛮人","德鲁依","刺客","???"}};
 extern char *runeWordNames[];
 extern char *uniqueNames[];
 extern char *setItemNames[];
-#define MAX_INFO_LEN 3
+#define MAX_INFO_LEN 2
 int cpLocaleName(wchar_t *dst,wchar_t *s,int max);
-void drawInvItemInfo() {
+void drawSimpleItemStackInfo(UnitAny *pUnit,int xpos,int ypos);
+void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 	wchar_t wbuf[128];int lines[8];
-	if (hasDrawInvItemInfo) return;
-	hasDrawInvItemInfo=1;
-	DrawInvItem *p=invItems;
-	for (int i=0;i<nDrawInvItems;i++,p++) {
-		UnitAny *pItem=p->pItem;
-		int dwQuality=pItem->pItemData->dwQuality;
-		int pos=0,color=7,ln=0;
-		lines[ln++]=pos;
-		switch (dwQuality) {
-			case ITEM_QUALITY_UNIQUE: {
-				int fileindex = d2common_GetItemFileIndex(pItem);
-				UniqueItemTxt *txt = d2common_GetUniqueItemTxt(fileindex);if (!txt) break;
-				if (txt) {
-					wchar_t *s=d2lang_GetLocaleText(txt->wLocaleTxtNo);if (!s) break;
-					pos+=cpLocaleName(wbuf+pos,s,MAX_INFO_LEN);
-				}
-				//char *s=uniqueNames[fileindex];if (!s) break;
-				//int n=MultiByteToWideChar(CP_ACP,0,s,strlen(s),wbuf+pos,128);
-				//if (n>MAX_INFO_LEN) n=MAX_INFO_LEN;
-				//pos+=n;
-				switch (fileindex) {
-					case 210: { //蛇魔法师之皮 Skin of the Vipermagi
-						int resist=d2common_GetUnitStat(pItem, STAT_FIRE_RESIST, 0);
-						wbuf[pos++]=0;lines[ln++]=pos;
-						pos+=wsprintfW(wbuf+pos,L"r%d\n",resist);
-						break;
-					}
-					case 272: { //马拉的万花筒 Mara's Kaleidoscope
-						int resist=d2common_GetUnitStat(pItem, STAT_FIRE_RESIST, 0);
-						wbuf[pos++]=0;lines[ln++]=pos;
-						pos+=wsprintfW(wbuf+pos,L"r%d\n",resist);
-						break;
-					}
-					case 400:{ //Helltorch
-						int type;
-						int cls=searchStat(pItem,STAT_CLASS_SKILL,&type);
-						int attr=d2common_GetUnitStat(pItem, STAT_STRENGTH, 0);
-						int resist=d2common_GetUnitStat(pItem, STAT_FIRE_RESIST, 0);
-						if (cls) {
-							wbuf[pos++]=0;lines[ln++]=pos;
-							pos+=wsprintfW(wbuf+pos,L"%hs",clsNames[type]);
-						}
-						wbuf[pos++]=0;lines[ln++]=pos;
-						pos+=wsprintfW(wbuf+pos,L"a%d",attr);
-						wbuf[pos++]=0;lines[ln++]=pos;
-						pos+=wsprintfW(wbuf+pos,L"r%d\n",resist);
-						break;
-					}
-				}
-				break;
+	int index = GetItemIndex(pItem->dwTxtFileNo)+1;
+	if (index==simpleItemStackIdx) {
+		if (tDrawSimpleItemStackCount.isOn) drawSimpleItemStackInfo(pItem,px,py);
+		return;
+	}
+	ItemTxt *pItemTxt=d2common_GetItemTxt(pItem->dwTxtFileNo);
+	int w=pItemTxt->nInvwidth;
+	int dwQuality=pItem->pItemData->dwQuality;
+	int pos=0,color=0,ln=0;
+	lines[ln++]=pos;
+	int showClassSkill=0,showResist=0,showAttr=0,showFcr=0,showMF=0,dy=0;
+	int showLL=0,showSTR=0,showDEX=0;
+	if (dwQuality>=ITEM_QUALITY_MAGIC) {
+		if (!showUnidentifiedItemInfo&&!d2common_CheckItemFlag(pItem,ITEMFLAG_IDENTIFIED,0,"?")) return;
+	}
+	switch (dwQuality) {
+		case ITEM_QUALITY_UNIQUE: {
+			color=7;
+			int fileindex = d2common_GetItemFileIndex(pItem);
+			UniqueItemTxt *txt = d2common_GetUniqueItemTxt(fileindex);if (!txt) break;
+			if (txt) {
+				wchar_t *s=d2lang_GetLocaleText(txt->wLocaleTxtNo);if (!s) break;
+				pos+=cpLocaleName(wbuf+pos,s,MAX_INFO_LEN*w);
 			}
-			case ITEM_QUALITY_SET: {
-				color=2;
-				int fileindex = d2common_GetItemFileIndex(pItem);
-				SetItemTxt *txt = d2common_GetSetItemTxt(fileindex);if (!txt) break;
+			switch (fileindex) {
+				case 101: //囚房 The Ward
+				case 210: //蛇魔法师之皮 Skin of the Vipermagi
+				case 272: //马拉的万花筒 Mara's Kaleidoscope
+				case 357: //奇拉的守护 Kira's Guardian
+					showResist=1;
+					break;
+				case 104: //运气守护 Chance Guards
+				case 120: //拿各的戒指 Nagelring
+				case 240: //战争旅者 War Traveler
+					showMF=1;
+					break;
+				case 281: //泰坦的复仇 Titan's Revenge
+				case 326: //死神的丧钟 The Reaper's Toll
+				case 345: //安达利尔的面貌 Andariel's Visage
+					showLL=1;
+					break;
+				case 364: //卓古拉之握 Dracul's Grasp
+					showLL=1;showSTR=1;
+					break;
+				case 275: //乌鸦之霜 Raven Frost
+					showDEX=1;
+					break;
+				case 400:{ //Helltorch
+					showAttr=1;
+					showResist=1;
+					showClassSkill=1;
+					break;
+				default:
+					if (392<=fileindex&&fileindex<=399) {
+						static char *names[]={"死电","死冰","死火","死毒","活电","活冰","活火","活毒",};
+						wbuf[pos++]=0;lines[ln++]=pos;
+						pos+=wsprintfW(wbuf+pos,L"%hs\n",names[fileindex-392]);
+					}
+				}
+			}
+			break;
+		}
+		case ITEM_QUALITY_SET: {
+			color=2;
+			int fileindex = d2common_GetItemFileIndex(pItem);
+			SetItemTxt *txt = d2common_GetSetItemTxt(fileindex);if (!txt) break;
+			if (txt) {
+				wchar_t *s=d2lang_GetLocaleText(txt->wLocaleTxtNo);
+				pos+=cpLocaleName(wbuf+pos,s,MAX_INFO_LEN*w);
+			}
+			break;
+		}
+		default:
+			if (d2common_CheckItemFlag(pItem, ITEMFLAG_RUNEWORD, 0, "?")) {
+				color=7;
+				int fileindex = d2common_GetRuneWordTxtIndex( pItem->pItemData->wMagicPrefix[0] );
+				RuneWordTxt *txt = d2common_GetRuneWordTxt(fileindex);
 				if (txt) {
 					wchar_t *s=d2lang_GetLocaleText(txt->wLocaleTxtNo);
-					pos+=cpLocaleName(wbuf+pos,s,MAX_INFO_LEN);
+					pos+=cpLocaleName(wbuf+pos,s,MAX_INFO_LEN*w);
 				}
-				break;
-			}
-			default:
-				if (d2common_CheckItemFlag(pItem, ITEMFLAG_RUNEWORD, 0, "?")) {
-					int fileindex = d2common_GetRuneWordTxtIndex( pItem->pItemData->wMagicPrefix[0] );
-					RuneWordTxt *txt = d2common_GetRuneWordTxt(fileindex);
-					if (txt) {
-						wchar_t *s=d2lang_GetLocaleText(txt->wLocaleTxtNo);
-						pos+=cpLocaleName(wbuf+pos,s,MAX_INFO_LEN);
-					}
+				switch (fileindex) {
+					case 37: //橡树之心 Heart of the Oak
+						showResist=1;
+						break;
+					case 49: //精神 Spirit
+						showFcr=1;
+						break;
 				}
-		}
-		if (!pos) continue;
-		wbuf[pos]=0;
-		ItemTxt *pItemTxt=d2common_GetItemTxt(pItem->dwTxtFileNo);
-		int x=p->x+((pItemTxt->nInvwidth*29)>>1);
-		int y=p->y-((pItemTxt->nInvheight*29)>>1)+12-ln*6;
-		for (int i=0;i<ln;i++) {
-			if (i==0) {
-				DrawCenterText(8,wbuf+lines[i],x+1,y+1,6,1,0);
-				DrawCenterText(8,wbuf+lines[i],x,y,color,1,0);
 			} else {
-				DrawCenterText(8,wbuf+lines[i],x+1,y+1,6,1,0);
-				DrawCenterText(8,wbuf+lines[i],x,y,0,1,0);
+				int idx=GetItemIndex(pItem->dwTxtFileNo)+1;
+				wchar_t *name=NULL;
+				switch (idx) {
+					case 2140:name=L"A1";break;
+					case 2141:name=L"A2";break;
+					case 2142:name=L"A5";break;
+					case 2147:name=L"A1";break;
+					case 2148:name=L"A3";break;
+					case 2149:name=L"A4";break;
+					case 2150:name=L"A5";break;
+					default:
+						if (2103<=idx&&idx<=2135) {
+							color=0;dy=-8;
+							pos+=wsprintfW(wbuf+pos,L"R%d",idx-2102);
+						}
+				}
+				if (name) {
+					pos+=wsprintfW(wbuf+pos,L"%s",name);
+				}
 			}
-			y+=12;
+			break;
+	}
+	if (showClassSkill) {
+		int type;
+		int cls=searchStat(pItem,STAT_CLASS_SKILL,&type);
+		if (cls) {
+			wbuf[pos++]=0;lines[ln++]=pos;
+			pos+=wsprintfW(wbuf+pos,L"%hs",clsNames[dwGameLng][type]);
 		}
+	}
+	if (showAttr) {
+		int attr=d2common_GetUnitStat(pItem, STAT_STRENGTH, 0);
+		wbuf[pos++]=0;lines[ln++]=pos;
+		pos+=wsprintfW(wbuf+pos,L"a%d",attr);
+	}
+	if (showResist) {
+		int resist=d2common_GetUnitStat(pItem, STAT_FIRE_RESIST, 0);
+		wbuf[pos++]=0;lines[ln++]=pos;
+		pos+=wsprintfW(wbuf+pos,L"r%d\n",resist);
+	}
+	if (showFcr) {
+		int fcr = d2common_GetUnitStat(pItem, STAT_FCR, 0);
+		wbuf[pos++]=0;lines[ln++]=pos;
+		pos+=wsprintfW(wbuf+pos,L"%dFCR",fcr);
+	}
+	if (showMF) {
+		int fcr = d2common_GetUnitStat(pItem,STAT_MAGIC_FIND,0);
+		wbuf[pos++]=0;lines[ln++]=pos;
+		pos+=wsprintfW(wbuf+pos,L"%dMF",fcr);
+	}
+	if (showLL) {
+		int ll = d2common_GetUnitStat(pItem,STAT_LIFE_LEECH,0);
+		wbuf[pos++]=0;lines[ln++]=pos;
+		pos+=wsprintfW(wbuf+pos,L"%dLL",ll);
+	}
+	if (showSTR) {
+		int ed = d2common_GetUnitStat(pItem,STAT_STRENGTH,0);
+		wbuf[pos++]=0;lines[ln++]=pos;
+		pos+=wsprintfW(wbuf+pos,L"%dSTR",ed);
+	}
+	if (showDEX) {
+		int ed = d2common_GetUnitStat(pItem,STAT_DEXTERITY,0);
+		wbuf[pos++]=0;lines[ln++]=pos;
+		pos+=wsprintfW(wbuf+pos,L"%dDEX",ed);
+	}
+	if (!pos) return;
+	wbuf[pos]=0;
+	int x=px+((pItemTxt->nInvwidth*29)>>1);
+	int y=py-((pItemTxt->nInvheight*29)>>1)+12-ln*6+dy;
+	for (int i=0;i<ln;i++) {
+		if (i==0) {
+			DrawCenterText(8,wbuf+lines[i],x+1,y+1,6,1,0);
+			DrawCenterText(8,wbuf+lines[i],x,y,color,1,0);
+		} else {
+			DrawCenterText(8,wbuf+lines[i],x+1,y+1,6,1,0);
+			DrawCenterText(8,wbuf+lines[i],x,y,0,1,0);
+		}
+		y+=12;
 	}
 }
 /*
 	d2client_6B6B2: E8 DF 19 FA FF     call d2client_D096->d2gfx_B080 void __stdcall d2gfx_DrawCellFile(CellContext *context, int xPos, int yPos, DWORD dw1, int dwTransLvl, BYTE *coltab)(6 args)
 	*/
+struct DrawCellFileArgs {
+	CellContext *context;
+	int x,y,dw1,dwTransLvl;
+	BYTE *coltab;
+};
+int __fastcall drawInvItemPatch(DrawCellFileArgs *args,UnitAny *pItem) {
+	int ret=d2gfx_DrawCellFile(args->context,args->x,args->y,args->dw1,args->dwTransLvl,args->coltab);
+	drawInvItemInfo(pItem,args->x,args->y);
+	return ret;
+}
 void __declspec(naked) DrawInvItemPatch_ASM() {
 	__asm {
 		cmp [tDrawInvItemInfo.isOn], 0
 		jz original_code
 		pushad
-		mov ecx, [esp+0x28]
-		mov edx, [esp+0x2C]
-		push ebx
-		call drawInvItem
+		lea ecx, [esp+0x24]
+		mov edx, ebx
+		call drawInvItemPatch
 		popad
+		ret 0x18
 original_code:
 		jmp d2gfx_DrawCellFile
-		ret
+	}
+}
+void __fastcall activeBufferItem(int id,int x,int y) {
+	//LOG("activeBufferItem %d (%d,%d)\n",id,x,y);
+	UnitAny *pItem=d2client_GetUnitFromId(id,UNITNO_ITEM);if (!pItem) return;
+	int index=GetItemIndex(pItem->dwTxtFileNo)+1;
+	if (index==simpleItemStackIdx) {
+		if (GetKeyState(VK_SHIFT)&0x8000) {
+			int x=PLAYER->pMonPath->wUnitX;
+			int y=PLAYER->pMonPath->wUnitY;
+			LOG("player (%d,%d)\n",x,y);
+			BYTE packet[13];
+			packet[0]=0x20;*(DWORD*)&packet[1]=id;
+			*(DWORD*)&packet[5]=x;
+			*(DWORD*)&packet[9]=y;
+			for (int i=1;i<3;i++) SendPacket(packet,13);
+		}
+		return;
+	}
+}
+/*
+	d2client_98D26: 8B 4E 0C           mov ecx, [esi+0xC]
+	d2client_98D29: 57                 push edi
+	d2client_98D2A: 8B D3              mov edx, ebx
+	d2client_98D2C: B0 20              mov al, 0x20 (32) (' ')
+	d2client_98D2E: E8 AD BB F7 FF     call d2client_148E0 void __fastcall d2client_sendPacketLen13(int arg1,int arg2,int arg3)//eax:char cmd(1 args)
+*/
+void __declspec(naked) ActiveBufferItemPatch_ASM() {
+	__asm {
+		pushad
+		mov eax, [esp+0x24]
+		push eax
+		call activeBufferItem
+		popad
+		jmp d2client_sendPacketLen13
 	}
 }

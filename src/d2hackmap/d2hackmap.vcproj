@@ -146,6 +146,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="psapi.lib"
 				OutputFile="..\..\map113c\dll\$(ProjectName).dll"
 				LinkIncremental="1"
 				ModuleDefinitionFile="d2hackmap.def"
@@ -371,6 +372,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\chat.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\d2s.cpp"
 						>
 					</File>
@@ -383,15 +388,11 @@
 						>
 					</File>
 					<File
-						RelativePath=".\chat.cpp"
+						RelativePath=".\login.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\mcp.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\login.cpp"
 						>
 					</File>
 					<File
@@ -447,15 +448,15 @@
 					Name="server"
 					>
 					<File
+						RelativePath=".\admin.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\panel.cpp"
 						>
 					</File>
 					<File
 						RelativePath=".\server.cpp"
-						>
-					</File>
-					<File
-						RelativePath=".\admin.cpp"
 						>
 					</File>
 				</Filter>

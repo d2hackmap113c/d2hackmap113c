@@ -575,6 +575,8 @@ dump:
 		pushad
 		lea ecx, dword ptr [esp+0x24]
 		call dumpSendPacket;
+		//push 4096
+		//call dumpStack
 		popad
 end:
 		mov eax, d2net_pUnkNetFlag
@@ -785,15 +787,14 @@ void showResetProtectMsg() {
 	wsprintfW(wszbuf, L"Reset Protection, (use %hs to unlock)",keyname);
 	d2client_ShowGameMessage(wszbuf, 0);
 }
-int ResetProtection(int unitId) {
-	if (!tResetProtectionToggle.isOn) return 0;
-	UnitAny *pUnit=d2client_GetUnitFromId(unitId,UNITNO_ITEM);
-	if (!pUnit) return 0;
+int activeBufferItem(int unitId,int x,int y) {
+	UnitAny *pUnit=d2client_GetUnitFromId(unitId,UNITNO_ITEM);if (!pUnit) return 0;
 	if (pUnit->dwUnitType!=UNITNO_ITEM) return 0;
-	int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
-	if (index==2146) {
-		showResetProtectMsg();
-		return 1;
+	int index=GetItemIndex(pUnit->dwTxtFileNo)+1;
+	switch (index) {
+		case 2146:
+			if (tResetProtectionToggle.isOn) {showResetProtectMsg();return 1;}
+			break;
 	}
 	return 0;
 }
@@ -862,7 +863,9 @@ int __fastcall blockSendPacket(int *esp) {
 		case 0x17:case 0x33:case 0x36: return DropProtectionPacketBlock(packet,len);
 		case 0x20: { //active item
 			int id=*(int *)&packet[1];
-			if (ResetProtection(id)) return 1;
+			int x=*(int *)&packet[5];
+			int y=*(int *)&packet[9];
+			if (activeBufferItem(id,x,y)) return 1;
 			break;
 		}
 		case 0x21: {

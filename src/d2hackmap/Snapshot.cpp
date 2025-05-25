@@ -500,6 +500,7 @@ static void outputGemRune(FILE *fp) {
 	fprintf(fp,"Gold: %d\n",d2common_GetUnitStat(PLAYER, 14, 0)+d2common_GetUnitStat(PLAYER, 15, 0));
 }
 void countAllGemRunes() {
+	if (nStashPages>1000) {LOG("ERROR nStashPages=%d\n",nStashPages);nStashPages=0;}
 	memset(&runeInfo,0,sizeof(RuneInfo));
 	if (nStashPages==0) {
 		for (UnitAny *pItem=d2common_GetFirstItemInInv(PLAYER->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem))
@@ -511,6 +512,7 @@ void countAllGemRunes() {
 					countGemRunes(pItem);
 			} else {
 				StashPage *p=stashPages[i];if (!p) continue;
+				LOG("count page %d/%d %X\n",i,nStashPages,p);
 				for (int j=0;j<p->n;j++) countGemRunes(p->items[j]);
 			}
 		}
@@ -1211,6 +1213,7 @@ int d2s_generate(FILE *fp, UnitAny *pUnit,UnitAny *m,u16 *quest,char *wp,UnitAny
 static void dumpInventory() {
 	FILE *fp;
 	char ext[16];
+	if (nStashPages>1000) {LOG("ERROR nStashPages=%d\n",nStashPages);nStashPages=0;}
 	if (tSnapshot.isOn) {
 		sprintf(ext,"quest%d.bin",DIFFICULTY);
 		if (QUESTDATA) {
@@ -1690,7 +1693,7 @@ int DoSnapshot() {
 		fclose(playerfp);
 		fclose(fp);
 	}
-	if (0) {
+	if (1) {
 		fp=openDbgFile("_objects.txt");
 		if (fp) {
 			for (int i=0;i<128;i++) {

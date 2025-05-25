@@ -101,7 +101,6 @@ char *getCharTag(char *name);
 extern int fPartyListValid,dwPetListChangeCount,dwPetListChangeVerify;
 extern int fInMainMenu;
 static void gameStart() {
-	nDrawInvItems=0;
 	if (fInMainMenu) fInMainMenu=0;
 	fPartyListValid=0;dwPetListChangeCount=1;dwPetListChangeVerify=0;
 //--- m_pub.h ---
@@ -258,7 +257,6 @@ void GameLoopPatch() {
 	*d2client_pShowLifeStr=*d2client_pAutomapOn;
 	*d2client_pShowManaStr=*d2client_pAutomapOn;
 	if (chatPasteMs&&dwCurMs>chatPasteMs) processChatPaste();
-	nDrawInvItems=0;
 }
 
 void GameEndPatch() {

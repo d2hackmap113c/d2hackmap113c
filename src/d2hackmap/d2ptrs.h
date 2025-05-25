@@ -54,6 +54,7 @@ DLL_FUN(d2client,0x10DF0,SetResolutionMode,void,__stdcall, ())
 DLL_FUN(d2client,0x13CE0,drawGroundPiece,void,__stdcall,(int arg1,int arg2,int arg3,int arg4,int arg5,int arg6))
 DLL_FUN(d2client,0x14050,drawGround,int,__stdcall,(void *arg1))
 DLL_FUN(d2client,0x143E0,SendPacket43E0,void,__stdcall,(char *packet)) //ebx=len
+DLL_FUN(d2client,0x148E0,sendPacketLen13,void,__fastcall,(int arg1,int arg2,int arg3)) //eax:char cmd
 DLL_FUN(d2client,0x14A10,SendPacket3,void,__fastcall,(short param)) //al=cmd
 DLL_FUN(d2client,0x185E0,ShouldClick85E0,int,__stdcall, ()) //ecx=buf
 DLL_FUN(d2client,0x1BC40,RightClickBC40,int,__stdcall, ()) //esi=buf
@@ -65,6 +66,7 @@ DLL_FUN(d2client,0x27590,drawHpManaText,int,__stdcall,())
 DLL_FUN(d2client,0x28BC0,DrawSkillButton,void,__stdcall, (Skill *pSkill,int x,int y,int isLeft))
 DLL_FUN(d2client,0x29250,DrawClient,void,__fastcall, ())
 DLL_FUN(d2client,0x29990,UseBelt,void,__fastcall,(UnitInventory *pInventory,UnitAny *player,int id)) //edx:PLAYER ecx:PLAYER->pInventory eax:0x8000(shift)or0
+DLL_FUN(d2client,0x2A750,setState_2A750,void,__fastcall,(int,int,int,int))
 DLL_FUN(d2client,0x2B420,LoadUiImageFunc,CellFile*,__stdcall,(int)) //eax:path
 DLL_FUN(d2client,0x3B8B0,ShowMap,void,__fastcall, ())
 DLL_FUN(d2client,0x3CB00,processMessages,void,__fastcall, ()) //ebx:int (*processGame)()
@@ -110,6 +112,7 @@ DLL_FUN(d2client,0xAC440,RecvCommand07,void,__fastcall, (BYTE *cmdbuf))
 DLL_FUN(d2client,0xACE20,PacketHandler,void,__stdcall, (int len)) //eax:char *buf
 DLL_FUN(d2client,0xAE080,RecvPacket9C,void,__fastcall,(char *packet))
 DLL_FUN(d2client,0xAE870,RecvPacket9D,void,__fastcall,(char *packet))
+DLL_FUN(d2client,0xAF560,RecvPacket0E,void,__fastcall,(int arg,char *packet))
 DLL_FUN(d2client,0xBE400,CheckUiStatusStub,int,__fastcall, (int dwUiNo))//dwUiNo ==> eax
 DLL_FUN(d2client,0xBF6C0,LoadUiImageSubpath,CellFile*,__fastcall,()) //esi=subpath data/global/ui/%s
 DLL_FUN(d2client,0xC2790,SetUiStatus,int,__fastcall, (int dwUiNo, int howset, DWORD unknown1))
@@ -665,7 +668,7 @@ DLL_ORD(d2gfx,0xAFD0,10011,drawShadow,void,__stdcall, (void *ptr,int x,int y))
 DLL_ORD(d2gfx,0xAFF0,10079,DrawAutomapNode,void,__stdcall, (CellContext *context, int xpos, int ypos, RECT *cliprect, DWORD dwTransLvl)) 
 DLL_ORD(d2gfx,0xB020,10074,FillOrb,void,__stdcall, (int arg0,int x,int y,int arg3,int arg4,int arg5)) 
 DLL_ORD(d2gfx,0xB050,10019,drawSomething,void,__stdcall, (void *ptr,int x,int y,int d,int e,int f)) //6fa8b050 d=-1 e=(4:char,5:skill button) f=(0:normal 1:inactive)
-DLL_ORD(d2gfx,0xB080,10041,DrawCellFile,void,__stdcall, (CellContext *context, int xPos, int yPos, DWORD dw1, int dwTransLvl, BYTE *coltab)) 
+DLL_ORD(d2gfx,0xB080,10041,DrawCellFile,int,__stdcall, (CellContext *context, int xPos, int yPos, DWORD dw1, int dwTransLvl, BYTE *coltab)) 
 DLL_ORD(d2gfx,0xB320,10031,getResolutionMode,int,__stdcall, ()) 
 DLL_ORD(d2gfx,0xB9C0,10010,DrawLine,void,__stdcall, (int x1, int y1, int x2, int y2, int dwColor, int dwTransLvl)) 
 DLL_ORD(d2gfx,0xBA30,10014,DrawRectangle,void,__stdcall, (long dwXstart, long dwYstart, long dwXend, long dwYend, int dwPal, int dwTransLvl)) //filled
