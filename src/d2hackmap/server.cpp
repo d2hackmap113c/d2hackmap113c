@@ -607,7 +607,7 @@ patchValue("identified set",PATCH_ADDR(d2game,0x13DAA),1,1,"00");//identified se
 PatchCall(d2game,0x2AC77,GameStartPatch_ASM,5,"E8 64 F7 05 00");
 	if (!hasPlugY) installUberQuestPatches();
 //d2game_12A0B: E8 70 EE FF FF     call d2game_11880
-PatchCall(d2game,0x12A0B,NoMonsterDropPatch_ASM,5,"E8 70 EE FF FF");
+//PatchCall(d2game,0x12A0B,NoMonsterDropPatch_ASM,5,"E8 70 EE FF FF");
 //d2game_9D4E7: 8B CD              mov ecx, ebp
 //d2game_9D4E9: FF 50 04           call dword ptr [eax+0x4]
 PatchCall(d2game,0x9D4E7,MonsterSleepPatch_ASM,5,"8B CD FF 50 04");

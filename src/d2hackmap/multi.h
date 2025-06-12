@@ -20,18 +20,23 @@ enum MulticlientInfo {
 	MCI_HMRPotion=0x40,
 	MCI_Quantity=0x60,
 	MCI_Mana=0x70,
-	MCI_MaxMana=0x80,
+	MCI_Hp=0x80,
 	MCI_Minions=0x90,
 	MCI_StartFollow=0xA0,
 	MCI_StopFollow=0xB0,
 	MCI_AutoSkill=0xC0,
-	MCI_Hp=0xD0,
-	MCI_MaxHp=0xE0,
+	MCI_Reply=0xD0,
 	MCI_Quest=0xF0,
 };
 enum MulticlientQuest {
 	MCQ_10BB=1,
 	MCQ_5BB=2,
+};
+enum MulticlientReply {
+	MCR_OK=1,
+	MCR_DONE=2,
+	MCR_ERROR=3,
+	MCR_GOT_RUNES=4,
 };
 struct D2Window {
 	HWND hwnd;
@@ -44,6 +49,8 @@ struct D2Window {
 	char game[32];
 	char name[32];
 	char switchkey[32];
+	//int questData,questDataMs; //not cleared
+	int reply,replyMs; //not cleared
 };
 HWND getGameWindowHwnd(int id);
 extern D2Window d2wins[32];

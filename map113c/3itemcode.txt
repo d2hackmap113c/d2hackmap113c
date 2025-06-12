@@ -1,6 +1,9 @@
 ﻿英-------------汉---------------代码-----编号
 
+9.PaladinShields-游侠盾牌 1103-1107 1173-1177 1193-1197
 8.Polearms-长杆武器
+9.Bows
+10.Crossbows-弩
 
 一.装甲
 
@@ -225,7 +228,7 @@ Avenger-Guard----复仇者之盔------ba5---1102
 Slayer-Guard-----杀手防护面甲----baa---1172
 Guardian-Crown---守护者皇冠面甲--baf---1192
 
-9.Paladin-Shields-游侠盾牌 1103-1107 1173-1177 1193-1197
+9.PaladinShields-游侠盾牌 1103-1107 1173-1177 1193-1197
 Targe-------------小盾----------pa1---1103 pa1 L3  STR16  S4 2-6   
 Akaran-Targe------亚克南圆盾----pa6---1173 pa6 L26 STR44  S4 12-16 
 Sacred-Targe------神圣小盾------pab---1193 L47 socket4 STR86 ac126-158 dam22-70
@@ -529,18 +532,21 @@ Gothic-Bow--------哥德弓--------8lw---169 L25 socket6 speed10 STR95 DEX118 10
 Hydra-Bow---------九头蛇弓------6lw---272 L63 socket6 speed10 STR134 DEX167 10-68
 
 10.Crossbows-弩
-Light-Crossbow-------轻十字弓-------lxb---77
-Arbalest-------------石弓-----------8lx---170
-Pellet-Bow-----------弹丸弓---------6lx---273
-Crossbow-------------十字弓---------mxb---78
-Siege-Crossbow-------攻城十字弓-----8mx---171
-Gorgon-Crossbow------蛇魔女十字弓---6mx---274
-Heavy-Crossbow-------重十字弓-------hxb---79
-Ballista-------------弩弓-----------8hx---172
-Colossus-Crossbow----巨神十字弓-----6hx---275
-Repeating-Crossbow---连射十字弓-----rxb---80
-Chu-Ko-Nu------------巧工弩---------8rx---173
-Demon-Crossbow-------恶魔十字弓-----6rx---276
+Light-Crossbow-------轻十字弓-------lxb---77  L0 socket3 speed-10 STR21 DEX27 (2hand)6-9
+Arbalest-------------石弓-----------8lx---170 L22 socket3 speed-10 STR52 DEX61 (2hand)14-27
+Pellet-Bow-----------弹丸弓---------6lx---273 L42 socket3 speed-10 STR83 DEX155 (2hand)28-73
+
+Crossbow-------------十字弓---------mxb---78  L0 socket4 STR40 DEX33 (2hand)9-16
+Siege-Crossbow-------攻城十字弓-----8mx---171 L25 socket4 STR80 DEX70 (2hand)20-42
+Gorgon-Crossbow------蛇魔女十字弓---6mx---274 L50 socket4 STR117 DEX105 (2hand)25-87
+
+Heavy-Crossbow-------重十字弓-------hxb---79  L0 socket6 speed10 STR60 DEX40 (2hand)14-26
+Ballista-------------弩弓-----------8hx---172 L25 socket6 speed10 STR110 DEX80 (2hand)33-55
+Colossus-Crossbow----巨神十字弓-----6hx---275 L56 socket6 speed10 STR163 DEX77 (2hand)32-91
+
+Repeating-Crossbow---连射十字弓-----rxb---80  L0 socket5 speed-40 STR40 DEX50 (2hand)6-12
+Chu-Ko-Nu------------巧工弩---------8rx---173 L25 socket5 speed-60 STR80 DEX95 (2hand)14-32
+Demon-Crossbow-------恶魔十字弓-----6rx---276 L63 socket5 speed-60 STR141 DEX98 (2hand)26-40
 
 11.Staves-棍棒
 Short-Staff------短棍-----------sst---64 L0 socket2 speed-10 (2hand)1-5

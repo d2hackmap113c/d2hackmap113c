@@ -281,7 +281,7 @@ static int __fastcall canDeleteCharacter(D2Character *pchar) {
 		gameMessageW(wbuf);
 		return 0;
 	}
-	int hasEq=1,mercDead=1;
+	int hasEq=1,mercDead=1,soj=0;
 	while (1) {
 		char buf[512];
 		char *line=fgets(buf,512,fp);if (!line) break;
@@ -289,10 +289,12 @@ static int __fastcall canDeleteCharacter(D2Character *pchar) {
 		char *key=line;*value=0;value++;
 		if (strcmp(key,"HasValuableEquipment")==0) hasEq=strtol(value,0,0);
 		else if (strcmp(key,"MercDead")==0) mercDead=strtol(value,0,0);
+		else if (strcmp(key,"soj")==0) soj=strtol(value,0,0);
 	}
-	if (hasEq||mercDead) {
+	if (hasEq||mercDead||soj) {
 		int pos=wsprintfW(wbuf,dwGameLng?L"hackmap装备保护":L"hackmap Drop Protection");
 		if (hasEq) pos+=wsprintfW(wbuf+pos,dwGameLng?L"人物有%d装备":L"Character has %d equipment",hasEq);
+		if (soj) pos+=wsprintfW(wbuf+pos,dwGameLng?L"人物有%dsoj":L"%dsoj",soj);
 		if (mercDead) pos+=wsprintfW(wbuf+pos,dwGameLng?L"雇佣兵死亡装备未知":L"Merc dead");
 		pos+=wsprintfW(wbuf+pos,dwGameLng?L"按%hs关闭保护":L"press %hs to disable protection",keyname);
 		gameMessageW(wbuf);

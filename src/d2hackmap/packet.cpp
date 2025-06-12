@@ -8,8 +8,10 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 
+void send_multi_reply(int info);
 extern ToggleVar tResetProtectionToggle;
 extern int dwTeamMemberCount;
+int npcChatTxt;
 int dwSendPacketCount=0;
 void MonitorPacket();
 int DoTest();
@@ -54,6 +56,7 @@ void __fastcall dumpRecvPacket(BYTE* buf, int len);
 static int dwPHTime;
 void ResetPacketHandlerTimer() {dwPHTime=dwCurMs;}
 void PacketNewGame() {
+	npcChatTxt=0;
 	ResetPacketHandlerTimer();
 }
 static void hex(FILE *fp,int addr,void *vbuf,int n) {
@@ -299,7 +302,7 @@ void __fastcall dumpRecvPacket(BYTE* buf, int len) {
 			name="GameHandshake";break;
 		case 0x0c://   9   NPC Hit         0c [BYTE Unit Type] [DWORD Unit Id] [WORD  Animation Id] [BYTE Life] 
 			name="NPCHit";break;
-		case 0xd: {//player stop
+		case 0xd: {//  0d   Player Stop      0d [BYTE Unit Type] [DWORD Unit Id] [BYTE  Unknown] [WORD Unit X] [WORD Unit Y] [BYTE Unknown] [BYTE Life] 
 			name="PlayerStop";
 			break;
 		}
@@ -312,6 +315,8 @@ void __fastcall dumpRecvPacket(BYTE* buf, int len) {
 		case 0x10: //player to target
 //10   16   Player To Target   10 [1:BYTE Unit Type] [2:DWORD Unit Id] [6:BYTE  0x02 = Walk || 0x18 = Run] [7:BYTE Target Type] [8:DWORD Target Id] [12:WORD Current X]  [14:WORD Current Y] 
 //	000000: 10 00 02 00 - 00 00 18 01 - 09 00 00 00 - d2 18 2a 15 |              * 			name="PlayerToTarget";break;
+			name="Player To Target";break;
+			break;
 		case 0x11://   8   Report Kill      11 [BYTE Unit Type] [DWORD Unit Id] [WORD  Unknown] 
 			name="ReportKill";break;
 		case 0x15://11   Reassign Player   15 [BYTE Unit Type] [DWORD Unit Id] [WORD  X] [WORD Y] [BYTE 0x01 = True || 0x00 = False] 
@@ -825,6 +830,7 @@ extern int dwUpdateQuestMs;
 int dwInteractEntityCount=0;
 void packetDebug() {
 }
+extern int autoNpcTxt;
 int __fastcall blockSendPacket(int *esp) {
 	int ret=esp[0];
 	int len=esp[1];
@@ -884,18 +890,40 @@ int __fastcall blockSendPacket(int *esp) {
 			}
 			break;
 		}
-		case 0x30: {//Terminate entity chat
+		case 0x2f: { //Initiate entity chat
 			int type=*(int *)&packet[1];
 			int id=*(int *)&packet[5];
-			if (id!=1) break;
-			UnitAny *pUnit=d2client_GetUnitFromId(id,type);
-			if (!pUnit) break;
-			if (dwCurrentLevel==Level_LutGholein) {
-				int q=QUESTDATA->quests[14];
+			if (type!=1) break;
+			UnitAny *pUnit=d2client_GetUnitFromId(id,type);if (!pUnit) break;
+			npcChatTxt=pUnit->dwTxtFileNo;
+			break;
+		}
+		case 0x30: {//Terminate entity chat
+			npcChatTxt=0;
+			int type=*(int *)&packet[1];
+			int id=*(int *)&packet[5];
+			if (type!=1) break;
+			UnitAny *pUnit=d2client_GetUnitFromId(id,type);if (!pUnit) break;
+			switch (pUnit->dwTxtFileNo) {
+				case Mon_Jerhyn:
+					if (QUESTDATA->quests[14]&0x1008) dwUpdateQuestMs=dwCurMs+500;
+					break;
+				case Mon_Meshif1:if (QUESTDATA->quests[14]&0x1010) dwUpdateQuestMs=dwCurMs+500;break;
+				case Mon_DeckardCain3:if (!(QUESTDATA->quests[21]&1)) dwUpdateQuestMs=dwCurMs+500;break;
+			}
+			if (autoNpcTxt&&!fWinActive) {
 				switch (pUnit->dwTxtFileNo) {
-					case Mon_Jerhyn:if (q&0x1008) dwUpdateQuestMs=dwCurMs+500;break;
-					case Mon_Meshif1:if (q&0x1010) dwUpdateQuestMs=dwCurMs+500;break;
+					case Mon_Jerhyn:
+						send_multi_reply(MCR_DONE);
+						break;
+					case Mon_DeckardCain3:
+						send_multi_reply(MCR_DONE);
+						break;
+					case Mon_QualKehk:
+						//send_multi_reply(MCR_DONE);
+						break;
 				}
+				autoNpcTxt=0;
 			}
 			break;
 		}
@@ -988,6 +1016,7 @@ void initSendPacketCheckTable() {
 	sendPacketCheckTable[0x17]=1; //drop item
 	sendPacketCheckTable[0x20]=1; //active item
 	sendPacketCheckTable[0x21]=1; //stack items
+	sendPacketCheckTable[0x2f]=1; //Initiate entity chat
 	sendPacketCheckTable[0x30]=1; //Terminate entity chat
 	sendPacketCheckTable[0x33]=1; //sell item
 	sendPacketCheckTable[0x36]=1; //hire merc

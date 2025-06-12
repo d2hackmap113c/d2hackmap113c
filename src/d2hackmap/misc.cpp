@@ -97,18 +97,21 @@ orgcontinue:
 static BOOL fSkipMessageReq = 0 ;
 static DWORD mSkipMessageTimer = 0 ;
 
+/*
+	d2client_7E9B7: 0F 84 B8 00 00 00  jz d2client_7EA75 ->+184 B7EA75
+*/
 void  __declspec(naked) NPCMessageLoopPatch_ASM()
 {
 	__asm {
 		test eax , eax
 		jne noje
 		mov eax ,[mSkipQuestMessage]
-		cmp eax , 0				    //未开启功能，不处理
+		cmp eax , 0				    //Not enabled 未开启功能，不处理
 		je oldje
-		cmp [fSkipMessageReq] , 0   //非任务信息，不处理
+		cmp [fSkipMessageReq] , 0   //not quest 非任务信息，不处理
 		je oldje
 		add [mSkipMessageTimer],1
-		cmp [mSkipMessageTimer],eax //小于计时，不处理
+		cmp [mSkipMessageTimer],eax //less then timer 小于计时，不处理
 		jle oldje
 		mov [mSkipMessageTimer],0
 		mov eax ,1

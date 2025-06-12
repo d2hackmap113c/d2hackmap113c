@@ -136,6 +136,7 @@ DWORD __fastcall InfravisionPatch(UnitAny *pUnit){
 			break;
 		case UNITNO_ITEM:
 			if (!CheckItemVisible(pUnit)) return 1;
+			return 0; //shouldn't be hide behide a wall
 			break;
 		default:
 			break;

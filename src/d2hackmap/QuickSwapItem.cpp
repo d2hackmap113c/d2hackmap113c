@@ -5,14 +5,19 @@
 //InvAma=0,InvSor=1,InvNec=2,InvPal=3,InvBar=4,Inv5=5,Inv6=6,Inv7=7,InvStashClassic=8,
 //InvCube=9,Inv10=10,Inv11=11,InvStashExpansion=12,Inv13=13,InvDru=14,InvAsn=15
 extern int dwQuickSwapItemDelayMs;
-ToggleVar 	tRightClickSwap={    TOGGLEVAR_ONOFF,	1,	-1,	1 ,	"Right Click Swap"};
-ToggleVar tQuickDropToggle={	TOGGLEVAR_ONOFF,	0,	-1,	1 , "Quick Drop"};
-ToggleVar tEnableGemAutoMerge={	TOGGLEVAR_ONOFF,	0,	-1,	1 , "Auto Merge Gem"};
+ToggleVar tRightClickSwap={TOGGLEVAR_ONOFF,	1,	-1,	1 ,	"Right Click Swap"};
+ToggleVar tQuickDropToggle={TOGGLEVAR_ONOFF,	0,	-1,	1 , "Quick Drop"};
+ToggleVar tEnableGemAutoMerge={TOGGLEVAR_ONOFF,	0,	-1,	1 , "Auto Merge Gem"};
+ToggleVar tEnableAutoSimpleItemStack={TOGGLEVAR_ONOFF,	0,	-1,	1 , "Auto Simple Item Stack"};
+static int autoIdentifyCount=10;
+static int identifyingId=0;
 
 static ConfigVar aConfigVars[] = {
-  {CONFIG_VAR_TYPE_KEY, "RightClickSwapToggle",  &tRightClickSwap   },
-  {CONFIG_VAR_TYPE_KEY, "QuickDropToggle",       &tQuickDropToggle  },
-  {CONFIG_VAR_TYPE_KEY,"EnableGemAutoMerge",&tEnableGemAutoMerge  },
+  {CONFIG_VAR_TYPE_INT,"AutoIdentifyCount",&autoIdentifyCount,4},
+  {CONFIG_VAR_TYPE_KEY,"RightClickSwapToggle",&tRightClickSwap},
+  {CONFIG_VAR_TYPE_KEY,"QuickDropToggle",&tQuickDropToggle},
+  {CONFIG_VAR_TYPE_KEY,"EnableGemAutoMerge",&tEnableGemAutoMerge},
+  {CONFIG_VAR_TYPE_KEY,"EnableAutoSimpleItemStack",&tEnableAutoSimpleItemStack},
 };
 void quickswap_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
@@ -30,18 +35,34 @@ static int startProcessMs=0;
 static int cubeIdx,cubeN;
 static char cubeMap[256],invMap[256],stashMap[256];
 static UnitAny *cube=NULL,*cubeItem,*pGem[30],*pSkeleton[5],*rune7;
+static UnitAny *unidentifiedItem,*idBook;
+static UnitAny *pGemStack[30],*pSkeletonStack[5],*pRuneStack[34];
 static int nGem[30],nSkeleton[5],nrune7;
+static int invUsed,invLeft;
+InventoryBIN *getInvTxt() {
+	InventoryBIN* pInvs=*d2common_pInventoryTxt;if (!pInvs) return 0;
+	InventoryBIN *pInv;
+	if (dwPlayerClass<5) pInv=pInvs+16+dwPlayerClass;
+	else if (dwPlayerClass==5) pInv=pInvs+16+14; //dru
+	else if (dwPlayerClass==6) pInv=pInvs+16+15; //asn
+	else pInv=pInvs+16;
+	return pInv;
+}
 static void updateCubeInvMap() {
-	cube=NULL;cubeItem=NULL;cubeIdx=0;cubeN=0;
+	invUsed=0;cube=NULL;cubeItem=NULL;cubeIdx=0;cubeN=0;
 	memset(cubeMap,0,sizeof(cubeMap));
 	memset(invMap,0,sizeof(invMap));
 	memset(stashMap,0,sizeof(invMap));
 	memset(pGem,0,sizeof(pGem));
 	memset(pSkeleton,0,sizeof(pSkeleton));
-	rune7=NULL;
+	rune7=NULL;unidentifiedItem=NULL;idBook=NULL;
 	memset(nGem,0,sizeof(nGem));
 	memset(nSkeleton,0,sizeof(nSkeleton));
+	memset(pGemStack,0,sizeof(pGemStack));
+	memset(pSkeletonStack,0,sizeof(pSkeletonStack));
+	memset(pRuneStack,0,sizeof(pRuneStack));
 	nrune7=0;
+
 	for (UnitAny *pItem=d2common_GetFirstItemInInv(PLAYER->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem)) {
 		if (pItem->dwUnitType!=UNITNO_ITEM) continue ;
 		if (pItem->pItemData->nLocation!=1) continue; //cube/stash/inv
@@ -53,7 +74,15 @@ static void updateCubeInvMap() {
 		char *map=NULL;
 		switch (pItem->pItemData->nItemLocation) {
 			case 0://inv
-				if (2050<=index&&index<=2079) {
+				invUsed+=w*h;
+				if (!d2common_CheckItemFlag(pItem,ITEMFLAG_IDENTIFIED,0,"?")) {
+					if (identifyingId!=pItem->dwUnitId)
+						unidentifiedItem=pItem;
+				}
+				if (index==2012) {
+					int count=d2common_GetUnitStat(pItem,STAT_AMMOQUANTITY,0);
+					if (count>autoIdentifyCount) idBook=pItem;
+				} else if (2050<=index&&index<=2079) {
 					pGem[index-2050]=pItem;
 					nGem[index-2050]++;
 				} else if (2090<=index&&index<=2094) {
@@ -85,7 +114,27 @@ static void updateCubeInvMap() {
 				else memset(&map[((y+i)<<4)+x],1,w);
 			}
 		}
+		if (index==simpleItemStackIdx) {
+			switch (pItem->pItemData->nItemLocation) {
+				case 0:if (!*d2client_pUiInventoryOn&&!*d2client_pUiCubeOn&&!*d2client_pUiStashOn) continue;break;
+				case 3:if (!*d2client_pUiCubeOn) continue;break;
+				case 4:if (!*d2client_pUiStashOn) continue;break;
+			}
+			int txt=0;int count=getSimpleItemStackContent(pItem,&txt);
+			if (count) {
+				int index=GetItemIndex(txt)+1;
+				if (2103<=index&&index<=2135) {//runes
+					pRuneStack[index-2103]=pItem;
+				} else if (2050<=index&&index<=2079) {//gems
+					pGemStack[index-2050]=pItem;
+				} else if (2090<=index&&index<=2094) { //skeleton
+					pSkeletonStack[index-2090]=pItem;
+				}
+			}
+		}
 	}
+	InventoryBIN *pInv=getInvTxt();
+	invLeft=pInv->inv.w*pInv->inv.h-invUsed;
 }
 int putIntoCubeIndirect() {
 	if (!cube) return 0;
@@ -141,9 +190,7 @@ find:
 	return 1;
 }
 int putIntoInv() {
-	InventoryBIN* pInvs=*d2common_pInventoryTxt;if (!pInvs) return 0;
-	InventoryBIN *pInv=pInvs+16+dwPlayerClass;
-	return putItem(pInv,invMap,0);
+	return putItem(getInvTxt(),invMap,0);
 }
 int putIntoCube() {
 	UnitAny *pCursorItem = PLAYER->pInventory->pCursorItem;if (!pCursorItem) return 0;
@@ -206,19 +253,8 @@ static UnitAny *findSimpleItemStack(int txtNo) {
 			case 3:if (!*d2client_pUiCubeOn) continue;break;
 			case 4:if (!*d2client_pUiStashOn) continue;break;
 		}
-		StatList *plist=pUnit->pStatList;
-		if (!(plist->dwListFlag&0x80000000)) continue;
-		if (!plist->sFullStat.pStats) continue;
-		Stat *stat=&plist->sFullStat;
-		int n=stat->wStats;
-		if (n>=511) continue;
-		StatEx *se=stat->pStats;
-		for (int i=0;i<n;i++) {
-			int id=se[i].wStatId;if (id!=simpleItemStackStatId) continue;
-			int count=se[i].dwStatValue;
-			int txt=se[i].wParam&0xFFFF;
-			if (txt==txtNo) return pUnit;
-		}
+		int txt=0;int count=getSimpleItemStackContent(pUnit,&txt);
+		if (count&&txt==txtNo) return pUnit;
 	}
 	return NULL;
 }
@@ -236,9 +272,9 @@ static void updateInv(InventoryType *inv, int id) {
 	inv->nGridHeight=pInv->grid.h;
 	//LOG("update inv %d (%d,%d) %d*%d %d*%d\n",id,inv->left,inv->bottom,inv->nGridXs,inv->nGridYs,inv->nGridWidth,inv->nGridHeight);
 }
-static void putIntoSimpleItemStack() {
-	UnitAny *pItem = PLAYER->pInventory->pCursorItem;if (!pItem) return;
-	UnitAny *rc=findSimpleItemStack(pItem->dwTxtFileNo);if (!rc) return;
+static int putIntoSimpleItemStack() {
+	UnitAny *pItem = PLAYER->pInventory->pCursorItem;if (!pItem) return 0;
+	UnitAny *rc=findSimpleItemStack(pItem->dwTxtFileNo);if (!rc) return 0;
 	int x=rc->pItemPath->unitX;
 	int y=rc->pItemPath->unitY;
 	BYTE packet[17];packet[0]=0x1f;
@@ -248,6 +284,7 @@ static void putIntoSimpleItemStack() {
 	*(int *)&packet[13]=y;
 	SendPacket(packet,sizeof(packet));
 	startProcessMs=dwCurMs+300;
+	return 1;
 }
 void dumpInvBin();
 void MoveItem(D2MSG *pMsg) {
@@ -478,6 +515,87 @@ int autoCubeTransform() {
 	}
 	if (pItem) return pickupItem(pItem);
 err:
+	startProcessMs=dwCurMs+300;
+	return 0;
+}
+static int useStackItemCount=1,useStackItemCount1=0,useStackItemArg=-1,autoIdMs=0;
+void quickswap_NewGame() {
+	useStackItemCount=1;useStackItemCount1=0;useStackItemArg=-1;autoIdMs=0;
+}
+/*
+	d2client_AF910: 83 EC 08           sub esp, 8
+	d2client_AF913: 8B 01              mov eax, [ecx]
+	d2client_AF915: 8B 49 04           mov ecx, [ecx+0x4]
+	d2client_AF918: 8D 14 24           lea edx, [esp]
+	d2client_AF91B: 52                 push edx
+	d2client_AF91C: 89 44 24 04        mov [esp+0x4], eax
+	d2client_AF920: 89 4C 24 08        mov [esp+0x8], ecx
+  d2client_AF924: E8 17 71 FD FF     call d2client_86A40 void __stdcall d2client_useStackableItem(char *packet)(1 args)
+*/
+void __declspec(naked) RecvPacket3FPatch_ASM() {
+	__asm {
+		inc useStackItemCount
+		mov useStackItemArg,eax
+		jmp d2client_useStackableItem
+	}
+}
+void activeItemStack(int id) {
+	int x=PLAYER->pMonPath->wUnitX;
+	int y=PLAYER->pMonPath->wUnitY;
+	BYTE packet[13];
+	packet[0]=0x20;*(DWORD*)&packet[1]=idBook->dwUnitId;
+	*(DWORD*)&packet[5]=x;*(DWORD*)&packet[9]=y;
+	SendPacket(packet,13);
+}
+int autoIdentify() {
+	if (!*d2client_pUiInventoryOn) return 0;
+	if (autoIdMs&&dwCurMs<autoIdMs&&useStackItemCount1==useStackItemCount) return 1;
+	updateCubeInvMap();
+	if (!unidentifiedItem||!idBook) return 0;
+	if (((useStackItemArg>>8)&0xff)==0) { //0:ready to use, 0xFF:used
+		identifyingId=unidentifiedItem->dwUnitId;
+		useStackItemCount1=useStackItemCount;
+		BYTE packet[9];packet[0]=0x27;
+		*(DWORD*)&packet[1]=unidentifiedItem->dwUnitId;
+		*(DWORD*)&packet[5]=idBook->dwUnitId;
+		SendPacket(packet,9);
+		autoIdMs=dwCurMs+300;
+		return 1;
+	}
+	identifyingId=0;
+	useStackItemCount1=useStackItemCount;
+	activeItemStack(idBook->dwUnitId);
+	autoIdMs=dwCurMs+300;
+	return 1;
+}
+int autoSimpleItemStack() {
+	static int dwSkillChangeCount1=0; 
+	if (!tEnableAutoSimpleItemStack.isOn) return 0;
+	if (startProcessMs&&dwCurMs<startProcessMs) {
+		if (dwSkillChangeCount1==dwSkillChangeCount) return 0;
+	}
+	if (!*d2client_pUiStashOn) return 0;
+	dwSkillChangeCount1=dwSkillChangeCount;
+	UnitAny *pCursorItem=PLAYER->pInventory->pCursorItem;
+	if (pCursorItem) {
+		putIntoSimpleItemStack();
+		startProcessMs=dwCurMs+300;
+		return 0;
+	}
+	updateCubeInvMap();
+	for (UnitAny *pItem=d2common_GetFirstItemInInv(PLAYER->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem)) {
+		if (pItem->dwUnitType!=UNITNO_ITEM) continue ;
+		if (pItem->pItemData->nLocation!=1) continue; //cube/stash/inv
+		if (pItem->pItemData->nItemLocation!=0) continue; //inv
+		int index=GetItemIndex(pItem->dwTxtFileNo)+1;
+		if (2103<=index&&index<=2135) {//runes
+			if (pRuneStack[index-2103]) {pickupItem(pItem);break;}
+		} else if (2050<=index&&index<=2079) {//gems
+			if (pGemStack[index-2050]) {pickupItem(pItem);break;}
+		} else if (2090<=index&&index<=2094) { //skeleton
+			if (pSkeletonStack[index-2090]) {pickupItem(pItem);break;}
+		}
+	}
 	startProcessMs=dwCurMs+300;
 	return 0;
 }

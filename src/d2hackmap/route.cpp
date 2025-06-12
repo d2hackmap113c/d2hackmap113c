@@ -281,6 +281,7 @@ static void recycleRouteInfo(MinimapLevelTarget *pTarget) {
 		}
 	}
 }
+extern int dwBarbrianLeft;
 static int initRectRoute(MinimapLevelTarget *pTarget) {
 	if (pTarget->rectRoute) return 0;
 	LOG("AutoRouteInit lvl=%d minimap target %d/%d\n",dwCurrentLevel,pTarget->id,pTarget->level->n);
@@ -321,6 +322,13 @@ static int initRectRoute(MinimapLevelTarget *pTarget) {
 				if (p1->tileX<p2->tileX&&p1->tileX+p1->tileW==p2->tileX) {p1->dir[AAR_RIGHT]=p2;p2->dir[AAR_LEFT]=p1;}
 				else if (p1->tileX>p2->tileX&&p1->tileX==p2->tileX+p2->tileW) {p1->dir[AAR_LEFT]=p2;p2->dir[AAR_RIGHT]=p1;}
 			}
+		}
+	}
+	if (dwCurrentLevel==Level_FrigidHighlands&&3000<=pTarget->dstLvl&&pTarget->dstLvl<=3002) { //rescue mission
+		if (pTarget->dstRect&&pTarget->dstRect->dir[AAR_RIGHT]) {
+			int done=QUESTDATA->quests[36]&3;
+			if (done||dwBarbrianLeft==5)
+				pTarget->dstRect->dir[AAR_RIGHT]->valid=0;
 		}
 	}
 	LOG("time %d ms memory=%dKB\n",GetTickCount()-startMs,autoRouteMemUsed/1024);

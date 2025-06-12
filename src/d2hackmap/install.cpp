@@ -431,9 +431,10 @@ PatchCall(d2client,0x7D673,MessageLogPatch2_ASM,5,"05 10 27 00 00");
 PatchCall(d2client,0x44630,RButtonUpHandlerPatch_ASM,5,"A1 $(+11C3A0)");
 //d2client_8B976: E9 09 05 F8 FF     jmp d2client_BE84 ^-522999 BBE84->storm_343D0
 PatchJmp(d2client,0x8B976,RButtonInTradePatch_ASM,5,"E9 09 05 F8 FF");
-
 //d2client_96CCE: 0F 84 40 01 00 00  jz d2client_96E14 ->+320 B96E14
 PatchCall(d2client,0x96CCE,CtrlClickHandlerPatch_ASM,6,"0F 84 40 01 00 00");
+//d2client_AF924: E8 17 71 FD FF     call d2client_86A40 void __stdcall d2client_useStackableItem(char *packet)
+PatchCall(d2client,0xAF924,RecvPacket3FPatch_ASM,5,"E8 17 71 FD FF");
 //patchCall(PATCH_ADDR(d2client,0x9B7F9),(DWORD)LButtonUpHandlerPatch_ASM,5,0xF70686E8,0x895E5FFF);//家里箱子和身上箱子之间
 //patchCall(PATCH_ADDR(d2client,0x9B2D4),(DWORD)LButtonUpHandlerPatch_ASM,5,0xF70BABE8,0x5D5E5FFF);//cube和身上箱子之间
 //patchCall(PATCH_ADDR(d2client,0x9C81F),(DWORD)LButtonUpHandlerPatch_ASM,5,0xF6F660E8,0x5D5E5FFF);//左边空地和身上箱子之间
@@ -619,7 +620,7 @@ PatchCall(d2client,0xC0B5F,MonsterNamePatch_ASM,5,"E8 FC C7 F4 FF");
 //--- m_PlayerLifeBar.h ---
 //d2client_C0E88: E8 D3 C4 F4 FF     call d2client_D360->d2win_12730 d2win/Ordinal10070
 PatchCall(d2client,0xC0E88,PlayerNamePatch_ASM,5,"E8 D3 C4 F4 FF");
-//--- m_QuestProtect.h ---
+//--- quest.cpp ---
 //d2client_1F7C9: 81 FE 16 01 00 00  cmp esi, 0x116 (278)
 PatchCall(d2client,0x1F7C9,DrawQuestPagePatch_ASM,6,"81 FE 16 01 00 00");
 //d2client_AF8F0: 83 EC 08           sub esp, 8
@@ -633,6 +634,8 @@ PatchCall(d2client,0x523B0,RecvCommand_89_Patch_ASM,5,"83 F9 20 7C 07");
 PatchCall(d2client,0xAD766,RecvCommand_A4_Patch_ASM,6,"0F B7 59 01 8B 08");
 //d2client_AF1A9: B9 15 00 00 00     mov ecx, 0x15 (21)
 PatchCall(d2client,0xAF1A9,RecvCommand_4D_Patch_ASM,5,"B9 15 00 00 00");
+//d2client_AFA81: E8 1A BE F9 FF     call d2client_4B8A0(3 args)
+PatchCall(d2client,0xAFA81,RecvCommand_28_Patch_ASM,5,"E8 1A BE F9 FF");
 //--- item.cpp ---
 //d2client_99174: 8B 44 24 18        mov eax, [esp+0x18]
 //d2client_99178: 85 C0              test eax, eax

@@ -46,12 +46,13 @@ ToggleVar 	tChickenDangerousMonster={		TOGGLEVAR_ONOFF,	0,	-1,	1, "Chicken Dange
 ToggleVar 	tAutoPotion=			{TOGGLEVAR_ONOFF,	0,	-1,	1,	"Auto Potion"};
 int 		dwChickenLifeMinClevel=						0;
 int 		dwChickenLifeForcedClevel=						90;
+int dwNoQuitIfDeadClevel=90;
 int 		dwChickenLifeEnterGame=						1;
-BOOL 			fLifeProtectOn=			FALSE;
-BOOL 			fDangerousMonsterActive=FALSE;
-char 			anDangerousMonster[1000][2]	=		{0};
-int 		nDangerousMonsterAction=			2;
-static ConfigVar aConfigVars[] = {
+BOOL fLifeProtectOn=FALSE;
+BOOL fDangerousMonsterActive=FALSE;
+char anDangerousMonster[1000][2]={0};
+int nDangerousMonsterAction=2;
+static ConfigVar aConfigVars[]={
 //--- m_CheckDangerous.h ---
   {CONFIG_VAR_TYPE_INT, "IronGolemLifeAlertPercent",&dwIronGolemLifeAlertPercent,     4},
   {CONFIG_VAR_TYPE_INT, "IronGolemLifeTownPercent",&dwIronGolemLifeTownPercent,     4},
@@ -85,6 +86,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "DangerousMonsterAction",     &nDangerousMonsterAction, 4},
   {CONFIG_VAR_TYPE_INT, "ChickenLifeMinClevel",				&dwChickenLifeMinClevel,     4},
   {CONFIG_VAR_TYPE_INT, "ChickenLifeForcedClevel",				&dwChickenLifeForcedClevel,     4},
+  {CONFIG_VAR_TYPE_INT, "NoQuitIfDeadClevel",				&dwNoQuitIfDeadClevel,     4},
   {CONFIG_VAR_TYPE_INT, "AutoProtectionNewGame",				&dwChickenLifeEnterGame,     4},
 };
 void dangerous_addConfigVars() {
@@ -93,14 +95,19 @@ void dangerous_addConfigVars() {
 void dangerous_initConfigVars() {
 	memset(anDangerousMonster,    0,        sizeof(anDangerousMonster));
 }
-void ProtectAction(wchar_t* wszShowMsg, int action = 1 , BYTE nCol = 8) {
+int ProtectAction(wchar_t* wszShowMsg, int action = 1 , BYTE nCol = 8) {
 	//  1 exit game  , 2 back to home , 3 show message  4 drink
 	wchar_t wszTemp[0x100];
 	wcscpy( wszTemp	,	wszShowMsg);
 	if ( fInGame ) {
 		if (action == 1 ) {
-			wcscat(wszTemp	,	L"Exit game.");
-			d2client_ShowGameMessage(	wszTemp, nCol);
+			if (dwPlayerLevel>=dwNoQuitIfDeadClevel&&(PLAYER->dwMode==PlayerMode_Death||PLAYER->dwMode==PlayerMode_Dead)) {
+				wcscat(wszTemp,	L"Already dead, no action.");
+				d2client_ShowGameMessage(wszTemp, nCol);
+				return 0;
+			}
+			wcscat(wszTemp,	L"Exit game.");
+			d2client_ShowGameMessage(wszTemp, nCol);
 			ExitGame();
 		} else if ( action == 2) {
 			if (!dwBackToTownTimeout) {
@@ -110,6 +117,7 @@ void ProtectAction(wchar_t* wszShowMsg, int action = 1 , BYTE nCol = 8) {
 			}
 		}
 	}
+	return 1;
 }
 static void rescanMercPointers() {
 	int n=0;
@@ -147,7 +155,7 @@ static void rescanMercPointers() {
 	}
 }
 
-extern ToggleVar tBugAutoQuitHell,tBugAutoQuitHellAct4,tBugAutoQuitHellAct5,tChickenLife,tSocketProtect,tDropProtectionToggle,tResetProtectionToggle;
+extern ToggleVar tBugAutoQuitHell,tBugAutoQuitHellAct4,tBugAutoQuitHellAct5,tChickenLife,tSocketProtect,tDropProtectionToggle,tResetProtectionToggle,tRunewordProtect;
 void ChickenLifeNewGame() {
 	static int bugHell=0,bugHellA4=0,bugHellA5=0;
 	if (tBugAutoQuitHell.isOn) bugHell=1;
@@ -156,6 +164,7 @@ void ChickenLifeNewGame() {
 	if (dwChickenLifeEnterGame) {
 		tChickenLife.isOn=1;
 		tSocketProtect.isOn=1;
+		tRunewordProtect.isOn=1;
 		tDropProtectionToggle.isOn=1;
 		tResetProtectionToggle.isOn=1;
 		if (bugHell) tBugAutoQuitHell.isOn=1;
@@ -279,7 +288,9 @@ void ChickenLifeLoop() {
 	}
 	ceHp=0;cowKingHp=0;ceDis=12;cowKingDis=1000;
 }
+extern int HasCowKing;
 int isCowKing(MonsterData *pMonsterData) {
+	if (!HasCowKing) return 0;
 	if (LEVELNO!=39) return 0;
 	if (!pMonsterData->fUnique) return 0;
 	int le=0,m=0;

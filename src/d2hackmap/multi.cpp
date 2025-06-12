@@ -3,14 +3,16 @@
 #include "multi.h"
 #include "auto.h"
 
+int autoNpcTxt=0;
+extern int npcChatTxt;
 int dwMultiClientMaxWindowId=0;
 int d2winLastId=0;
 wchar_t wszTransferClick[64]={0};
 int fAutoFollowMoving=0;
+void send_multi_reply(int info);
 
 extern int dwEnterDoorInBackgroundSkill[7][140];
 int takeWaypointToAreaUI(int level);
-void takeWaypointToLevel(UnitAny *waypoint,int level);
 extern int dwTakeWaypointToLevel;
 int BackToTown();
 int MultiClientTalkToNpc();
@@ -87,7 +89,7 @@ void multiclient_FixValues() {
 void refresh_team_info();
 void multiclient_winactive();
 void refresh_clients();
-D2Window d2wins[32];
+D2Window d2wins[32]={0};
 void MultiClientSendPos();
 static int dwLeaderGameId;
 static int waitToMs=0;
@@ -111,6 +113,7 @@ void MultiClientNewGame() {
 	waitToMs=0;clickState=0;activeHwnd=0;fSendInfoErr=0;
 	fTransferClick=0;wszTransferClick[0]=0;transferClickType=0;
 	followerInteractType=0;followerInteractId=0;fAutoFollowMoving=0;followerClickCount=0;d2winLastId=0;
+	autoNpcTxt=0;
 	saveRuntimeInfo(d2gfx_GetHwnd());
 	refresh_clients();
 }
@@ -169,7 +172,7 @@ int loadRuntimeInfo(D2Window *pwin,int id) {
 	fclose(fp);
 	int len=GetClassName(pwin->hwnd,buf,256);
 	if (len>0&&strcmp(buf,"Diablo II")==0) return 1;
-	memset(pwin,0,sizeof(D2Window));
+	memset(pwin,0,sizeof(D2Window)-8);
 	return 0;
 }
 int isLocalPlayer(int uid) {
@@ -218,16 +221,24 @@ HWND getGameWindowHwnd(int id) {
 	return d2wins[id].hwnd;
 }
 extern int dwScreenBlockMask;
+extern int need_paint;
+void pressESC() {
+	need_paint=2;
+	//LOG("press ESC\n");
+	int esc=getGameControlKey(56);HWND hwnd=d2gfx_GetHwnd();
+	PostMessage(hwnd, WM_KEYDOWN, esc, 0);PostMessage(hwnd, WM_KEYUP, esc, 0);
+}
 int canRemoteControl() {
 	if (fWinActive) return 0;
 	if (PLAYER->dwMode==PlayerMode_Death||PLAYER->dwMode==PlayerMode_Dead) return 0;
-	if (d2client_CheckUiStatus(UIVAR_INTERACT)) {
-		int esc=getGameControlKey(56);HWND hwnd=d2gfx_GetHwnd();
-		PostMessage(hwnd, WM_KEYDOWN, esc, 0);PostMessage(hwnd, WM_KEYUP, esc, 0);
-	} else if (d2client_CheckUiStatus(UIVAR_INVENTORY)
-		||d2client_CheckUiStatus(UIVAR_NPCTRADE)
-		||d2client_CheckUiStatus(UIVAR_STASH)
-		||d2client_CheckUiStatus(UIVAR_WAYPOINT)) {
+	if (npcChatTxt||*d2client_pUiInteractOn) {
+		pressESC();
+		return 0;
+	} else if (*d2client_pUiInventoryOn
+		||*d2client_pUiCubeOn
+		||*d2client_pUiStashOn
+		||*d2client_pUiNpcTradeOn
+		||*d2client_pUiWaypointOn) {
 		GameControl(56);
 	}
 	return (d2client_pScreenBlocked[0]&3)!=3 ;
@@ -259,11 +270,19 @@ void send_multi_quest_info(int info) {
 	multiclient_send_info((MCI_Quest<<24)|(info&0xFFFFFF)|gid24);
 }
 void incMapTargetIf(int cur);
-void recv_multi_quest_info(int info) {
-	switch (info) {
+void recv_multi_quest_info(D2Window *pwin,int info) {
+	//gameMessage("recv quest info 0x%X",info);
+	switch (info&0xFF) {
 	case MCQ_10BB:if (dwCurrentLevel==Level_FrigidHighlands) incMapTargetIf(0);break;
 	case MCQ_5BB:if (dwCurrentLevel==Level_FrigidHighlands) incMapTargetIf(1);break;
 	}
+}
+void send_multi_reply(int info) {
+	int gid24=dwGameWindowId<<24;
+	multiclient_send_info((MCI_Reply<<24)|(info&0xFFFFFF)|gid24);
+}
+void recv_multi_quest_reply(D2Window *pwin,int info) {
+	pwin->reply=info;pwin->replyMs=dwCurMs+18000;
 }
 void multiclient_recv_info(int info) {
 	int type=(info>>24)&0xF0;
@@ -289,16 +308,15 @@ void multiclient_recv_info(int info) {
 		case MCI_HMRPotion:pwin->hPotion=(info>>16)&0xFF;pwin->mPotion=(info>>8)&0xFF;
 			pwin->rPotion=info&0xFF;break;
 		case MCI_Quantity:pwin->quantity=(info>>8)&0xFFFF;break;
-		case MCI_Mana:pwin->mana=(info>>8)&0xFFFF;pwin->infoMs=dwCurMs+1500;break;
-		case MCI_MaxMana:pwin->manaMax=(info>>8)&0xFFFF;break;
-		case MCI_Hp:pwin->hp=(info>>8)&0xFFFF;pwin->infoMs=dwCurMs+1500;break;
-		case MCI_MaxHp:pwin->hpMax=(info>>8)&0xFFFF;break;
+		case MCI_Mana:pwin->manaMax=(info>>12)&0xFFF;pwin->mana=(info)&0xFFF;pwin->infoMs=dwCurMs+1500;break;
+		case MCI_Hp:pwin->hpMax=(info>>12)&0xFFF;pwin->hp=(info)&0xFFF;pwin->infoMs=dwCurMs+1500;break;
 		case MCI_Minions:pwin->minionsHp=(info>>16)&0xFF;pwin->minions=(info>>8)&0xFF;
 			pwin->enMinions=info&0xFF;break;
 		case MCI_StartFollow:pwin->isTeam=1;break;break;
 		case MCI_StopFollow:pwin->isTeam=0;break;break;
 		case MCI_AutoSkill:pwin->autoSkillId=info&0x7FFFFF;pwin->autoLeft=info&0x800000;break;
-		case MCI_Quest:recv_multi_quest_info(info&0xFFFFFF);break;
+		case MCI_Quest:recv_multi_quest_info(pwin,info&0xFFFFFF);break;
+		case MCI_Reply:recv_multi_quest_reply(pwin,info&0xFFFFFF);break;
 	}
 }
 void multiclient_send_info(int info) {
@@ -394,10 +412,14 @@ void MultiClientLoop() {
 		int gid24=dwGameWindowId<<24;
 		multiclient_send_info((MCI_HMRPotion<<24)|(dwHPotionCount<<16)|(dwMPotionCount<<8)|dwRPotionCount|gid24);
 		multiclient_send_info((MCI_Quantity<<24)|(n<<8)|gid24);
-		multiclient_send_info((MCI_Mana<<24)|(dwPlayerMana<<8)|gid24);
-		multiclient_send_info((MCI_MaxMana<<24)|(dwPlayerMaxMana<<8)|gid24);
-		multiclient_send_info((MCI_Hp<<24)|(dwPlayerHP<<8)|gid24);
-		multiclient_send_info((MCI_MaxHp<<24)|(dwPlayerMaxHP<<8)|gid24);
+		if (dwPlayerMaxMana<4096) 
+			multiclient_send_info((MCI_Mana<<24)|(dwPlayerMaxMana<<12)|(dwPlayerMana)|gid24);
+		else
+			multiclient_send_info((MCI_Mana<<24)|((dwPlayerMaxMana>>4)<<12)|(dwPlayerMana>>4)|gid24);
+		if (dwPlayerMaxHP<4096)
+			multiclient_send_info((MCI_Hp<<24)|(dwPlayerMaxHP<<12)|(dwPlayerHP)|gid24);
+		else
+			multiclient_send_info((MCI_Hp<<24)|((dwPlayerMaxHP>>4)<<12)|(dwPlayerHP>>4)|gid24);
 		int minions=dwCurMs>dwNecInfoExpireMs?0:dwSkeletonCount+dwSkeletonMageCount+dwReviveCount;
 		multiclient_send_info((MCI_Minions<<24)|(dwSkeletonHPPercent<<16)|(minions<<8)|dwEnchantSkeletonCount|gid24);
 		infoMs=dwCurMs+1000;
@@ -547,13 +569,15 @@ UnitAny *findClosetPortal() {
 	}
 	return minUnit;
 }
+extern int autoTerminateNpcInteractMs;
 void talkToNpc() {
-	int npc1=0,npc2=0;
+	int npc1=0,npc2=0,qid=0;
+	autoNpcTxt=0;
 	switch (dwCurrentLevel) {
 		case Level_RogueEncampment:npc1=Mon_Warriv1;break;
-		case Level_LutGholein:npc1=Mon_Jerhyn;npc2=Mon_Meshif1;break;
-		case Level_KurastDocks:npc1=Mon_DeckardCain3;break;
-		case Level_Harrogath:npc1=Mon_QualKehk;break;
+		case Level_LutGholein:npc1=Mon_Jerhyn;npc2=Mon_Meshif1;qid=14;break;
+		case Level_KurastDocks:npc1=Mon_DeckardCain3;qid=21;break;
+		case Level_Harrogath:npc1=Mon_QualKehk;qid=36;break;
 		default:return;
 	}
 	UnitAny *npc=NULL;
@@ -563,8 +587,28 @@ void talkToNpc() {
 			if (npc1&&pUnit->dwTxtFileNo==npc1||npc2&&pUnit->dwTxtFileNo==npc2) {npc=pUnit;break;}
 		}
 	}
-	if (!npc) return;
+	if (!npc) {
+		send_multi_reply(MCR_ERROR);
+		return;
+	}
+	short q=QUESTDATA->quests[qid];
+	if (qid) LOG("auto npc quest %d = %X\n",qid,q);
+	switch (npc->dwTxtFileNo) {
+		case Mon_Jerhyn://200C->2014
+			if (q&&(!(q&8))) goto done; //already talked
+			break;
+		case Mon_DeckardCain3://2018->2009
+		case Mon_QualKehk:
+			if (q&1) goto done; //already finish
+			break;
+	}
+	send_multi_reply(MCR_OK);
+	autoNpcTxt=npc->dwTxtFileNo;
 	LeftClickUnit(npc);
+	autoTerminateNpcInteractMs=dwCurMs+500;
+	return;
+done:
+	send_multi_reply(MCR_DONE);
 }
 void follower_cmd(int lParam) {
 	int cmd=(lParam>>24)&0xFF;
@@ -615,7 +659,7 @@ void follower_cmd(int lParam) {
 			if (!portal) {gameMessage("Auto Follow: can't find portal to %d name %s",area,name);return;}
 			if (dwEnterDoorInBackgroundSkill[dwPlayerClass][dwCurrentLevel]) {
 				int skillId=dwEnterDoorInBackgroundSkill[dwPlayerClass][dwCurrentLevel];
-				if (hasSkill(skillId)&&dwRightSkill!=skillId) selectSkill(1,skillId);
+				if (dwRightSkill!=0&&hasSkill(skillId)&&dwRightSkill!=skillId) selectSkill(1,skillId);
 			}
 			transferClickType=3;transferClickUnitType=portal->dwUnitType;
 			transferClickUnitId=portal->dwUnitId;transferClickTimeout=dwCurMs+1000;
@@ -661,6 +705,7 @@ int MultiClientToggleFollow() {
 }
 int MultiClientTalkToNpc() {
 	if (!tMultiClient.isOn||!fInGame) return 0;
+	MultiClientStopFollow();
 	refresh_followers(dwMultiClientGroupSize1);
 	if (!dwTeamMemberCount) {gameMessage("Auto Follow: No team member found");return 0;}
 	for (int i=1;i<=d2winLastId;i++) {

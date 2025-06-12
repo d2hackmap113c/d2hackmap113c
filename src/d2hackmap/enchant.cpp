@@ -55,6 +55,7 @@ int checkUnit(UnitAny *pUnit) {
 			if (DIFFICULTY==1&&d2common_GetUnitStat(pUnit, STAT_LEVEL, 0)<=dwAutoEnchantPlayerLevel) {
 				enchant=1;goto player_end;
 			}
+			if (pUnit->dwTxtFileNo!=1&&pUnit->dwTxtFileNo!=2) enchant=1;
 			for (UnitAny *pItem = d2common_GetFirstItemInInv(pUnit->pInventory);pItem;pItem = d2common_GetNextItemInInv(pItem)) {
 				if (pItem->dwUnitType!=UNITNO_ITEM) continue;
 				if (pItem->pItemData->nLocation!=3) continue; //not on body

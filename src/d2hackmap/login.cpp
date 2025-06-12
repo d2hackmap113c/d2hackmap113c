@@ -103,6 +103,10 @@ char *getLastUser() {
 	return name;
 }
 int inputUserPassword(LoginInfo *pai) {
+	if (IsBadReadPtr(pai,sizeof(LoginInfo))) {
+		LOG("ERROR: inputUserPassword bad ptr\n");
+		return 0;
+	}
 	char *name=pai->name;char *password=pai->pass;
 	if (!name) return -1;if (!password) password="";
 	wchar_t wb[64]={0};

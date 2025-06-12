@@ -1,0 +1,1863 @@
+item=716 weapon=306 armor=202
+nUnique=538 nSet=127
+idx1 txt0 type28:Axe code:hax (hax 9ha 7ha) 手斧【普通】 手斧【普通】
+	Item Colours[1][7]:-1,-2,-2,-2 //U0牙齒 The Gnasher
+	U0 牙齒 The Gnasher
+idx2 txt1 type28:Axe code:axe (axe 9ax 7ax) 斧【普通】 斧【普通】
+	Item Colours[2][7]:-1,-2,-2,-2 //U1死亡之鏟 Deathspade
+	U1 死亡之鏟 Deathspade
+idx3 txt2 type28:Axe code:2ax (2ax 92a 72a) 雙刃斧【普通】 雙刃斧【普通】
+	Item Colours[3][7]:-1,-2,-2,-2 //U2肩胛骨 Bladebone
+	U2 肩胛骨 Bladebone
+	Item Colours[3][5]:-1,-2,-2,-2 //S46狂戰士的手斧 Berserker's Hatchet
+	S46 狂戰士的手斧 Berserker's Hatchet
+idx4 txt3 type28:Axe code:mpi (mpi 9mp 7mp) 軍用鍬【普通】 軍用鍬【普通】
+	Item Colours[4][7]:-1,-2,-2,-2 //U3切開骷髏 Skull Splitter
+	U3 切開骷髏 Skull Splitter
+	Item Colours[4][5]:-1,-2,-2,-2 //S30坦克雷的鴉嘴鉗 Tancred's Crowbill
+	S30 坦克雷的鴉嘴鉗 Tancred's Crowbill
+idx5 txt4 type28:Axe code:wax (wax 9wa 7wa) 巨戰斧【普通】 巨戰斧【普通】
+	Item Colours[5][7]:-1,-2,-2,-2 //U4火鉤之傷 Rakescar
+	U4 火鉤之傷 Rakescar
+idx6 txt5 type28:Axe code:lax (lax 9la 7la) 巨斧【普通】 巨斧【普通】
+	Item Colours[6][7]:-1,-2,-2,-2 //U5費屈瑪之斧 Axe of Fechmar
+	U5 費屈瑪之斧 Axe of Fechmar
+idx7 txt6 type28:Axe code:bax (bax 9ba 7ba) 闊斧【普通】 闊斧【普通】
+	Item Colours[7][7]:-1,-2,-2,-2 //U6血塊之鏟 Goreshovel
+	U6 血塊之鏟 Goreshovel
+idx8 txt7 type28:Axe code:btx (btx 9bt 7bt) 戰鬥斧【普通】 戰鬥斧【普通】
+	Item Colours[8][7]:-1,-2,-2,-2 //U7族長 The Chieftain
+	U7 族長 The Chieftain
+idx9 txt8 type28:Axe code:gax (gax 9ga 7ga) 卓越之斧【普通】 卓越之斧【普通】
+	Item Colours[9][7]:-1,-2,-2,-2 //U8腦袋 Brainhew
+	U8 腦袋 Brainhew
+idx10 txt9 type28:Axe code:gix (gix 9gi 7gi) 大斧【普通】 大斧【普通】
+	Item Colours[10][7]:-1,-2,-2,-2 //U9巨大無比 Humongous
+	U9 巨大無比 Humongous
+idx11 txt10 type25:Wand code:wnd (wnd 9wn 7wn) 法杖【普通】 法杖【普通】
+	Item Colours[11][7]:-1,-2,-2,-2 //U10衣洛的火炬 Torch of Iro
+	U10 衣洛的火炬 Torch of Iro
+idx12 txt11 type25:Wand code:ywn (ywn 9yw 7yw) 紫杉之杖【普通】 紫杉之杖【普通】
+	Item Colours[12][7]:-1,-2,-2,-2 //U11漩渦 Maelstrom
+	U11 漩渦 Maelstrom
+idx13 txt12 type25:Wand code:bwn (bwn 9bw 7bw) 骨杖【普通】 骨杖【普通】
+	Item Colours[13][7]:-1,-2,-2,-2 //U12墓穴之脊 Gravenspine
+	U12 墓穴之脊 Gravenspine
+	Item Colours[13][5]:-1,-2,-2,-2 //S126山德的迷信 Sander's Superstition
+	S126 山德的迷信 Sander's Superstition
+idx14 txt13 type25:Wand code:gwn (gwn 9gw 7gw) 殘酷之杖【普通】 殘酷之杖【普通】
+	Item Colours[14][7]:-1,-2,-2,-2 //U13烏米的慟哭 Ume's Lament
+	U13 烏米的慟哭 Ume's Lament
+	Item Colours[14][5]:-1,-2,-2,-2 //S42地獄火炬 Infernal Torch
+	S42 地獄火炬 Infernal Torch
+idx15 txt14 type29:Club code:clb (clb 9cl 7cl) 木棒【普通】 木棒【普通】
+	Item Colours[15][7]:-1,-2,-2,-2 //U14兇猛橡樹 Felloak
+	U14 兇猛橡樹 Felloak
+idx16 txt15 type24:Sceptre code:scp (scp 9sc 7sc) 權杖【普通】 權杖【普通】
+	Item Colours[16][7]:-1,-2,-2,-2 //U15敲擊喪鐘者 Knell Striker
+	U15 敲擊喪鐘者 Knell Striker
+idx17 txt16 type24:Sceptre code:gsc (gsc 9qs 7qs) 雄偉權杖【普通】 雄偉權杖【普通】
+	Item Colours[17][7]:-1,-2,-2,-2 //U16腐蝕的把手 Rusthandle
+	U16 腐蝕的把手 Rusthandle
+	Item Colours[17][5]:-1,-2,-2,-2 //S2希弗伯的短棍 Civerb's Cudgel
+	S2 希弗伯的短棍 Civerb's Cudgel
+idx18 txt17 type24:Sceptre code:wsp (wsp 9ws 7ws) 巨戰權杖【普通】 巨戰權杖【普通】
+	Item Colours[18][7]:-1,-2,-2,-2 //U17暴風眼 Stormeye
+	U17 暴風眼 Stormeye
+	Item Colours[18][5]:-1,-2,-2,-2 //S22米拉伯佳之杖 Milabrega's Rod
+	S22 米拉伯佳之杖 Milabrega's Rod
+idx19 txt18 type29:Club code:spc (spc 9sp 7sp) 狼牙棒【普通】 狼牙棒【普通】
+	Item Colours[19][7]:-1,-2,-2,-2 //U18堅硬的指甲 Stoutnail
+	U18 堅硬的指甲 Stoutnail
+idx20 txt19 type36:Maces code:mac (mac 9ma 7ma) 釘頭錘【普通】 釘頭錘【普通】
+	Item Colours[20][7]:-1,-2,-2,-2 //U19壓碎的凸邊 Crushflange
+	U19 壓碎的凸邊 Crushflange
+idx21 txt20 type36:Maces code:mst (mst 9mt 7mt) 流星鎚【普通】 流星鎚【普通】
+	Item Colours[21][7]:-1,-2,-2,-2 //U20血昇 Bloodrise
+	U20 血昇 Bloodrise
+idx22 txt21 type36:Maces code:fla (fla 9fl 7fl) 連枷【普通】 連枷【普通】
+	Item Colours[22][7]:-1,-2,-2,-2 //U21坦-杜-裡-嘎將軍 The General's Tan Do Li Ga
+	U21 坦-杜-裡-嘎將軍 The General's Tan Do Li Ga
+idx23 txt22 type31:Maul code:whm (whm 9wh 7wh) 巨戰鐵鎚【普通】 巨戰鐵鎚【普通】
+	Item Colours[23][7]:-1,-2,-2,-2 //U22鐵石 Ironstone
+	U22 鐵石 Ironstone
+idx24 txt23 type31:Maul code:mau (mau 9m9 7m7) 大木棍【普通】 大木棍【普通】
+	Item Colours[24][7]:-1,-2,-2,-2 //U23碎骨 Bonesnap
+	U23 碎骨 Bonesnap
+idx25 txt24 type31:Maul code:gma (gma 9gm 7gm) 卓越巨棍【普通】 卓越巨棍【普通】
+	Item Colours[25][7]:-1,-2,-2,-2 //U24鐵製大鎚 Steeldriver
+	U24 鐵製大鎚 Steeldriver
+idx26 txt25 type30:Sword code:ssd (ssd 9ss 7ss) 短劍【普通】 短劍【普通】
+	Item Colours[26][7]:-1,-2,-2,-2 //U25瑞克撒特的輓歌 Rixot's Keen
+	U25 瑞克撒特的輓歌 Rixot's Keen
+idx27 txt26 type30:Sword code:scm (scm 9sm 7sm) 彎刀【普通】 彎刀【普通】
+	Item Colours[27][7]:-1,-2,-2,-2 //U26血紅新月 Blood Crescent
+	U26 血紅新月 Blood Crescent
+idx28 txt27 type30:Sword code:sbr (sbr 9sb 7sb) 軍刀【普通】 軍刀【普通】
+	Item Colours[28][7]:-1,-2,-2,-2 //U27格林提斯的肉叉 Skewer of Krintiz
+	U27 格林提斯的肉叉 Skewer of Krintiz
+	Item Colours[28][5]:-1,-2,-2,-2 //S50天使的鐮刀 Angelic Sickle
+	S50 天使的鐮刀 Angelic Sickle
+idx29 txt28 type30:Sword code:flc (flc 9fc 7fc) 彎形大刀【普通】 彎形大刀【普通】
+	Item Colours[29][7]:-1,-2,-2,-2 //U28閃耀的鐮刀 Gleamscythe
+	U28 閃耀的鐮刀 Gleamscythe
+idx30 txt29 type30:Sword code:crs (crs 9cr 7cr) 水晶劍【普通】 水晶劍【普通】
+	Item Colours[30][7]:-1,-2,-2,-2 //U29碧藍怒火 Azurewrath
+	U29 碧藍怒火 Azurewrath
+idx31 txt30 type30:Sword code:bsd (bsd 9bs 7bs) 闊劍【普通】 闊劍【普通】
+	Item Colours[31][7]:-1,-2,-2,-2 //U30格瑞斯華爾德的銳利 Griswold's Edge
+	U30 格瑞斯華爾德的銳利 Griswold's Edge
+	Item Colours[31][5]:-1,-2,-2,-2 //S13依森哈德的光之烙鐵 Isenhart's Lightbrand
+	S13 依森哈德的光之烙鐵 Isenhart's Lightbrand
+idx32 txt31 type30:Sword code:lsd (lsd 9ls 7ls) 長劍【普通】 長劍【普通】
+	Item Colours[32][7]:-1,-2,-2,-2 //U31地獄瘟疫 Hellplague
+	U31 地獄瘟疫 Hellplague
+	Item Colours[32][5]:-1,-2,-2,-2 //S6克雷得勞之牙 Cleglaw's Tooth
+	S6 克雷得勞之牙 Cleglaw's Tooth
+idx33 txt32 type30:Sword code:wsd (wsd 9wd 7wd) 巨戰之劍【普通】 巨戰之劍【普通】
+	Item Colours[33][7]:-1,-2,-2,-2 //U32庫爾溫的尖端 Culwen's Point
+	U32 庫爾溫的尖端 Culwen's Point
+	Item Colours[33][5]:-1,-2,-2,-2 //S49死亡之觸 Death's Touch
+	S49 死亡之觸 Death's Touch
+idx34 txt33 type30:Sword code:2hs (2hs 92h 72h) 雙手劍【普通】 雙手劍【普通】
+	Item Colours[34][7]:-1,-2,-2,-2 //U33影之牙 Shadowfang
+	U33 影之牙 Shadowfang
+idx35 txt34 type30:Sword code:clm (clm 9cm 7cm) 雙刃大刀【普通】 雙刃大刀【普通】
+	Item Colours[35][7]:-1,-2,-2,-2 //U34剝皮靈魂 Soulflay
+	U34 剝皮靈魂 Soulflay
+idx36 txt35 type30:Sword code:gis (gis 9gs 7gs) 大劍【普通】 大劍【普通】
+	Item Colours[36][7]:-1,-2,-2,-2 //U35金麥爾的錐子 Kinemil's Awl
+	U35 金麥爾的錐子 Kinemil's Awl
+idx37 txt36 type30:Sword code:bsw (bsw 9b9 7b7) 巨劍【普通】 巨劍【普通】
+	Item Colours[37][7]:-1,-2,-2,-2 //U36黑色之舌 Blacktongue
+	U36 黑色之舌 Blacktongue
+idx38 txt37 type30:Sword code:flb (flb 9fb 7fb) 雙手飾劍【普通】 雙手飾劍【普通】
+	Item Colours[38][7]:-1,-2,-2,-2 //U37粗齒大鋸 Ripsaw
+	U37 粗齒大鋸 Ripsaw
+idx39 txt38 type30:Sword code:gsd (gsd 9gd 7gd) 卓越之劍【普通】 卓越之劍【普通】
+	Item Colours[39][7]:-1,-2,-2,-2 //U38族長 The Patriarch
+	U38 族長 The Patriarch
+idx40 txt39 type32:Dagger code:dgr (dgr 9dg 7dg) 匕首【普通】 匕首【普通】
+	Item Colours[40][7]:-1,-2,-2,-2 //U39海鷗 Gull
+	U39 海鷗 Gull
+idx41 txt40 type32:Dagger code:dir (dir 9di 7di) 長匕首【普通】 長匕首【普通】
+	Item Colours[41][7]:-1,-2,-2,-2 //U40迪格勒 The Diggler
+	U40 迪格勒 The Diggler
+idx42 txt41 type32:Dagger code:kri (kri 9kr 7kr) 波形刀【普通】 波形刀【普通】
+	Item Colours[42][7]:-1,-2,-2,-2 //U41坦杜之玉 The Jade Tan Do
+	U41 坦杜之玉 The Jade Tan Do
+idx43 txt42 type32:Dagger code:bld (bld 9bl 7bl) 短刀【普通】 短刀【普通】
+	Item Colours[43][7]:-1,-2,-2,-2 //U42妖怪碎片 Spectral Shard
+	U42 妖怪碎片 Spectral Shard
+idx44 txt43 type42:ThrowingKnife code:tkf (tkf 9tk 7tk) 飛刀【普通】 飛刀【普通】
+idx45 txt44 type43:ThrowingAxe code:tax (tax 9ta 7ta) 飛斧【普通】 飛斧【普通】
+idx46 txt45 type42:ThrowingKnife code:bkf (bkf 9bk 7bk) 平衡小刀【普通】 平衡小刀【普通】
+idx47 txt46 type43:ThrowingAxe code:bal (bal 9b8 7b8) 平衡斧【普通】 平衡斧【普通】
+idx48 txt47 type44:Javelins code:jav (jav 9ja 7ja) 標槍【普通】 標槍【普通】
+idx49 txt48 type44:Javelins code:pil (pil 9pi 7pi) 短鏢槍【普通】 短鏢槍【普通】
+idx50 txt49 type44:Javelins code:ssp (ssp 9s9 7s7) 短矛【普通】 短矛【普通】
+idx51 txt50 type44:Javelins code:glv (glv 9gl 7gl) 大長刀【普通】 大長刀【普通】
+idx52 txt51 type44:Javelins code:tsp (tsp 9ts 7ts) 飛矛【普通】 飛矛【普通】
+idx53 txt52 type33:Spear code:spr (spr 9sr 7sr) 長矛【普通】 長矛【普通】
+	Item Colours[53][7]:-1,-2,-2,-2 //U43張龍 The Dragon Chang
+	U43 張龍 The Dragon Chang
+idx54 txt53 type33:Spear code:tri (tri 9tr 7tr) 三叉戟【普通】 三叉戟【普通】
+	Item Colours[54][7]:-1,-2,-2,-2 //U44剃刀之叉 Razortine
+	U44 剃刀之叉 Razortine
+idx55 txt54 type33:Spear code:brn (brn 9br 7br) 叉【普通】 叉【普通】
+	Item Colours[55][7]:-1,-2,-2,-2 //U45血之偷 Bloodthief
+	U45 血之偷 Bloodthief
+idx56 txt55 type33:Spear code:spt (spt 9st 7st) 大戰戟【普通】 大戰戟【普通】
+	Item Colours[56][7]:-1,-2,-2,-2 //U46雅該長矛 Lance of Yaggai
+	U46 雅該長矛 Lance of Yaggai
+idx57 txt56 type33:Spear code:pik (pik 9p9 7p7) 矛【普通】 矛【普通】
+	Item Colours[57][7]:-1,-2,-2,-2 //U47坦之血杖 The Tannr Gorerod
+	U47 坦之血杖 The Tannr Gorerod
+idx58 txt57 type34:Polearm code:bar (bar 9b7 7o7) 大砍刀【普通】 大砍刀【普通】
+	Item Colours[58][7]:-1,-2,-2,-2 //U48迪馬克之劈砍 Dimoak's Hew
+	U48 迪馬克之劈砍 Dimoak's Hew
+idx59 txt58 type34:Polearm code:vou (vou 9vo 7vo) 鉤鐮槍【普通】 鉤鐮槍【普通】
+	Item Colours[59][7]:-1,-2,-2,-2 //U49鐵刺棒 Steelgoad
+	U49 鐵刺棒 Steelgoad
+idx60 txt59 type34:Polearm code:scy (scy 9s8 7s8) 鐮刀【普通】 鐮刀【普通】
+	Item Colours[60][7]:-1,-2,-2,-2 //U50靈魂採集者 Soul Harvest
+	U50 靈魂採集者 Soul Harvest
+idx61 txt60 type34:Polearm code:pax (pax 9pa 7pa) 長柄戰斧【普通】 長柄戰斧【普通】
+	Item Colours[61][7]:-1,-2,-2,-2 //U51戰鬥支系 The Battlebranch
+	U51 戰鬥支系 The Battlebranch
+idx62 txt61 type34:Polearm code:hal (hal 9h9 7h7) 長戟【普通】 長戟【普通】
+	Item Colours[62][7]:-1,-2,-2,-2 //U52煩惱詩集 Woestave
+	U52 煩惱詩集 Woestave
+idx63 txt62 type34:Polearm code:wsc (wsc 9wc 7wc) 巨戰鐮刀【普通】 巨戰鐮刀【普通】
+	Item Colours[63][7]:-1,-2,-2,-2 //U53冷酷開膛手 The Grim Reaper
+	U53 冷酷開膛手 The Grim Reaper
+idx64 txt63 type26:Staff code:sst (sst 8ss 6ss) 短棍【普通】 短棍【普通】
+	Item Colours[64][7]:-1,-2,-2,-2 //U54禍根之灰 Bane Ash
+	U54 禍根之灰 Bane Ash
+idx65 txt64 type26:Staff code:lst (lst 8ls 6ls) 長棍【普通】 長棍【普通】
+	Item Colours[65][7]:-1,-2,-2,-2 //U55海蛇之王 Serpent Lord
+	U55 海蛇之王 Serpent Lord
+idx66 txt65 type26:Staff code:cst (cst 8cs 6cs) 多節棍【普通】 多節棍【普通】
+	Item Colours[66][7]:-1,-2,-2,-2 //U56拉撒羅斯之螺旋 Spire of Lazarus
+	U56 拉撒羅斯之螺旋 Spire of Lazarus
+idx67 txt66 type26:Staff code:bst (bst 8bs 6bs) 戰鬥法杖【普通】 戰鬥法杖【普通】
+	Item Colours[67][7]:-1,-2,-2,-2 //U57火精靈 The Salamander
+	U57 火精靈 The Salamander
+	Item Colours[67][5]:-1,-2,-2,-2 //S25卡珊之尺 Cathan's Rule
+	S25 卡珊之尺 Cathan's Rule
+idx68 txt67 type26:Staff code:wst (wst 8ws 6ws) 巨戰法杖【普通】 巨戰法杖【普通】
+	Item Colours[68][7]:-1,-2,-2,-2 //U58鐵檢棒 The Iron Jang Bong
+	U58 鐵檢棒 The Iron Jang Bong
+	Item Colours[68][5]:-1,-2,-2,-2 //S59阿卡娜的死亡之杖 Arcanna's Deathwand
+	S59 阿卡娜的死亡之杖 Arcanna's Deathwand
+idx69 txt68 type27:Bow code:sbw (sbw 8sb 6sb) 短弓【普通】 短弓【普通】
+	Item Colours[69][7]:-1,-2,-2,-2 //U59勇氣之眼 Pluckeye
+	U59 勇氣之眼 Pluckeye
+idx70 txt69 type27:Bow code:hbw (hbw 8hb 6hb) 獵弓【普通】【-10】 獵弓【普通】【-10】
+	Item Colours[70][7]:-1,-2,-2,-2 //U60凋謝之戒 Witherstring
+	U60 凋謝之戒 Witherstring
+idx71 txt70 type27:Bow code:lbw (lbw 8lb 6lb) 長弓【普通】【0】 長弓【普通】【0】
+	Item Colours[71][7]:-1,-2,-2,-2 //U61渡鳥之爪 Raven Claw
+	U61 渡鳥之爪 Raven Claw
+idx72 txt71 type27:Bow code:cbw (cbw 8cb 6cb) 組合弓【普通】 組合弓【普通】
+	Item Colours[72][7]:-1,-2,-2,-2 //U62蘿格之弓 Rogue's Bow
+	U62 蘿格之弓 Rogue's Bow
+idx73 txt72 type27:Bow code:sbb (sbb 8s8 6s7) 短戰鬥弓【普通】 短戰鬥弓【普通】
+	Item Colours[73][7]:-1,-2,-2,-2 //U63暴風之擊 Stormstrike
+	U63 暴風之擊 Stormstrike
+idx74 txt73 type27:Bow code:lbb (lbb 8l8 6l7) 長戰鬥弓【普通】 長戰鬥弓【普通】
+	Item Colours[74][7]:-1,-2,-2,-2 //U64凋謝之畫 Wizendraw
+	U64 凋謝之畫 Wizendraw
+	Item Colours[74][5]:-1,-2,-2,-2 //S17維達拉之倒刺 Vidala's Barb
+	S17 維達拉之倒刺 Vidala's Barb
+idx75 txt74 type27:Bow code:swb (swb 8sw 6sw) 短巨戰弓【普通】 短巨戰弓【普通】
+	Item Colours[75][7]:-1,-2,-2,-2 //U65作響的地獄 Hellclap
+	U65 作響的地獄 Hellclap
+	Item Colours[75][5]:-1,-2,-2,-2 //S54北極號角 Arctic Horn
+	S54 北極號角 Arctic Horn
+idx76 txt75 type27:Bow code:lwb (lwb 8lw 6lw) 長巨戰弓【普通】 長巨戰弓【普通】
+	Item Colours[76][7]:-1,-2,-2,-2 //U66爆裂的吠叫 Blastbark
+	U66 爆裂的吠叫 Blastbark
+idx77 txt76 type35:CrossBow code:lxb (lxb 8lx 6lx) 輕十字弓【普通】 輕十字弓【普通】
+	Item Colours[77][7]:-1,-2,-2,-2 //U67引導烏鴉 Leadcrow
+	U67 引導烏鴉 Leadcrow
+idx78 txt77 type35:CrossBow code:mxb (mxb 8mx 6mx) 十字弓【普通】 十字弓【普通】
+	Item Colours[78][7]:-1,-2,-2,-2 //U68靈液之刺 Ichorsting
+	U68 靈液之刺 Ichorsting
+idx79 txt78 type35:CrossBow code:hxb (hxb 8hx 6hx) 重十字弓【普通】 重十字弓【普通】
+	Item Colours[79][7]:-1,-2,-2,-2 //U69投擲地獄 Hellcast
+	U69 投擲地獄 Hellcast
+idx80 txt79 type35:CrossBow code:rxb (rxb 8rx 6rx) 連射十字弓【普通】 連射十字弓【普通】
+	Item Colours[80][7]:-1,-2,-2,-2 //U70毀滅投石者 Doomslinger
+	U70 毀滅投石者 Doomslinger
+idx81 txt80 type38:ThrowingPotion code:gps (gps) 惡臭瓦斯葯劑 惡臭瓦斯葯劑
+idx82 txt81 type38:ThrowingPotion code:ops (ops) 油 油
+idx83 txt82 type38:ThrowingPotion code:gpm (gpm) 窒息瓦斯葯劑 窒息瓦斯葯劑
+idx84 txt83 type38:ThrowingPotion code:opm (opm) 爆炸葯劑 爆炸葯劑
+idx85 txt84 type38:ThrowingPotion code:gpl (gpl) 勒頸瓦斯葯劑 勒頸瓦斯葯劑
+idx86 txt85 type38:ThrowingPotion code:opl (opl) 猛爆性葯劑 猛爆性葯劑
+idx87 txt86 type32:Dagger code:d33 (d33) 吉得賓誘餌 吉得賓誘餌
+idx88 txt87 type32:Dagger code:g33 (g33) 吉得賓 吉得賓
+idx89 txt88 type29:Club code:leg (leg) 維特之腳 維特之腳
+idx90 txt89 type31:Maul code:hdm (hdm) 赫拉迪克-馬勒斯 赫拉迪克-馬勒斯
+idx91 txt90 type31:Maul code:hfh (hfh) 地獄熔爐鐵鎚 地獄熔爐鐵鎚
+	Item Colours[91][7]:-1,-2,-2,-2 //U126地獄熔爐鐵鎚
+	U126 地獄熔爐鐵鎚
+idx92 txt91 type26:Staff code:hst (hst) 赫拉迪克之杖 赫拉迪克之杖
+	Item Colours[92][7]:-1,-2,-2,-2 //U125赫拉迪克法杖
+	U125 赫拉迪克法杖
+idx93 txt92 type26:Staff code:msf (msf) 赫拉迪克之杖的轉軸 赫拉迪克之杖的轉軸
+	Item Colours[93][7]:-1,-2,-2,-2 //U124國王之杖
+	U124 國王之杖
+idx94 txt93 type28:Axe code:9ha (hax 9ha 7ha) 小斧【擴展】 小斧【擴展】
+	Item Colours[94][7]:-1,-2,-2,-2 //U129冷殺 Coldkill
+	U129 冷殺 Coldkill
+idx95 txt94 type28:Axe code:9ax (axe 9ax 7ax) 切肉斧【擴展】 切肉斧【擴展】
+	Item Colours[95][7]:-1,-2,-2,-2 //U130屠夫之瞳 Butcher's Pupil
+	U130 屠夫之瞳 Butcher's Pupil
+idx96 txt95 type28:Axe code:92a (2ax 92a 72a) 強化雙斧【擴展】 強化雙斧【擴展】
+	Item Colours[96][7]:-1,-2,-2,-2 //U131島擊 Islestrike
+	U131 島擊 Islestrike
+idx97 txt96 type28:Axe code:9mp (mpi 9mp 7mp) 喙鉗【擴展】 喙鉗【擴展】
+	Item Colours[97][7]:-1,-2,-2,-2 //U132龐貝之怒 Pompeii's Wrath
+	U132 龐貝之怒 Pompeii's Wrath
+idx98 txt97 type28:Axe code:9wa (wax 9wa 7wa) 那加之斧【擴展】 那加之斧【擴展】
+	Item Colours[98][7]:-1,-2,-2,-2 //U133蛇神守護者 Guardian Naga
+	U133 蛇神守護者 Guardian Naga
+idx99 txt98 type28:Axe code:9la (lax 9la 7la) 軍斧【擴展】 軍斧【擴展】
+	Item Colours[99][7]:-1,-2,-2,-2 //U134戰爵之證 Warlord's Trust
+	U134 戰爵之證 Warlord's Trust
+idx100 txt99 type28:Axe code:9ba (bax 9ba 7ba) 鉤斧【擴展】 鉤斧【擴展】
+	Item Colours[100][7]:-1,-2,-2,-2 //U135鋼鐵魔咒 Spellsteel
+	U135 鋼鐵魔咒 Spellsteel
+idx101 txt100 type28:Axe code:9bt (btx 9bt 7bt) 戰鬥斧【擴展】 戰鬥斧【擴展】
+	Item Colours[101][7]:-1,-2,-2,-2 //U136暴風騎士 Stormrider
+	U136 暴風騎士 Stormrider
+idx102 txt101 type28:Axe code:9ga (gax 9ga 7ga) 哥德之斧【擴展】 哥德之斧【擴展】
+	Item Colours[102][7]:-1,-2,-2,-2 //U137碎骨者之刃 Boneslayer Blade
+	U137 碎骨者之刃 Boneslayer Blade
+idx103 txt102 type28:Axe code:9gi (gix 9gi 7gi) 古代之斧【擴展】 古代之斧【擴展】
+	Item Colours[103][7]:-1,-2,-2,-2 //U138牛頭怪 The Minotaur
+	U138 牛頭怪 The Minotaur
+idx104 txt103 type25:Wand code:9wn (wnd 9wn 7wn) 燒焦之杖【擴展】 燒焦之杖【擴展】
+	Item Colours[104][7]:-1,-2,-2,-2 //U139自殺支系 Suicide Branch
+	U139 自殺支系 Suicide Branch
+idx105 txt104 type25:Wand code:9yw (ywn 9yw 7yw) 石化之杖【擴展】 石化之杖【擴展】
+	Item Colours[105][7]:-1,-2,-2,-2 //U140凱恩碎片 Carin Shard
+	U140 凱恩碎片 Carin Shard
+idx106 txt105 type25:Wand code:9bw (bwn 9bw 7bw) 古墓之杖【擴展】 古墓之杖【擴展】
+	Item Colours[106][7]:-1,-2,-2,-2 //U141李奧瑞克王的武器 Arm of King Leoric
+	U141 李奧瑞克王的武器 Arm of King Leoric
+idx107 txt106 type25:Wand code:9gw (gwn 9gw 7gw) 墓地之杖【擴展】 墓地之杖【擴展】
+	Item Colours[107][7]:-1,-2,-2,-2 //U142黑手之鑰 Blackhand Key
+	U142 黑手之鑰 Blackhand Key
+idx108 txt107 type29:Club code:9cl (clb 9cl 7cl) 棍棒【擴展】 棍棒【擴展】
+	Item Colours[108][7]:-1,-2,-2,-2 //U143闇族碎滅者 Dark Clan Crusher
+	U143 闇族碎滅者 Dark Clan Crusher
+idx109 txt108 type24:Sceptre code:9sc (scp 9sc 7sc) 符文權杖【擴展】 符文權杖【擴展】
+	Item Colours[109][7]:-1,-2,-2,-2 //U144撒卡蘭姆之手 Zakarum's Hand
+	U144 撒卡蘭姆之手 Zakarum's Hand
+idx110 txt109 type24:Sceptre code:9qs (gsc 9qs 7qs) 聖水噴杖【擴展】 聖水噴杖【擴展】
+	Item Colours[110][7]:-1,-2,-2,-2 //U145惡臭散佈者 The Fetid Sprinkler
+	U145 惡臭散佈者 The Fetid Sprinkler
+idx111 txt110 type24:Sceptre code:9ws (wsp 9ws 7ws) 神屬權杖【擴展】 神屬權杖【擴展】
+	Item Colours[111][7]:-1,-2,-2,-2 //U146祝福之光之手 Hand of Blessed Light
+	U146 祝福之光之手 Hand of Blessed Light
+idx112 txt111 type29:Club code:9sp (spc 9sp 7sp) 倒鉤鎚【擴展】 倒鉤鎚【擴展】
+	Item Colours[112][7]:-1,-2,-2,-2 //U147血肉裁決者 Fleshrender
+	U147 血肉裁決者 Fleshrender
+idx113 txt112 type36:Maces code:9ma (mac 9ma 7ma) 凸緣釘頭錘【擴展】 凸緣釘頭錘【擴展】
+	Item Colours[113][7]:-1,-2,-2,-2 //U148尖嘯冰霜 Sureshrill Frost
+	U148 尖嘯冰霜 Sureshrill Frost
+idx114 txt113 type36:Maces code:9mt (mst 9mt 7mt) 鋸齒流星鎚【擴展】 鋸齒流星鎚【擴展】
+	Item Colours[114][7]:-1,-2,-2,-2 //U149落月 Moonfall
+	U149 落月 Moonfall
+	Item Colours[114][5]:-1,-2,-2,-2 //S68艾爾多的律動 Aldur's Rhythm
+	S68 艾爾多的律動 Aldur's Rhythm
+idx115 txt114 type36:Maces code:9fl (fla 9fl 7fl) 鐵皮鞭【擴展】 鐵皮鞭【擴展】
+	Item Colours[115][7]:-1,-2,-2,-2 //U150貝西爾的漩渦 Baezil's Vortex
+	U150 貝西爾的漩渦 Baezil's Vortex
+idx116 txt115 type31:Maul code:9wh (whm 9wh 7wh) 戰鬥鐵鎚【擴展】 戰鬥鐵鎚【擴展】
+	Item Colours[116][7]:-1,-2,-2,-2 //U151撼地者 Earthshaker
+	U151 撼地者 Earthshaker
+idx117 txt116 type31:Maul code:9m9 (mau 9m9 7m7) 巨戰木棍【擴展】 巨戰木棍【擴展】
+	Item Colours[117][7]:-1,-2,-2,-2 //U152血樹殘株 Bloodtree Stump
+	U152 血樹殘株 Bloodtree Stump
+idx118 txt117 type31:Maul code:9gm (gma 9gm 7gm) 戰槌【擴展】 戰槌【擴展】
+	Item Colours[118][7]:-1,-2,-2,-2 //U153痛苦木槌 The Gavel of Pain
+	U153 痛苦木槌 The Gavel of Pain
+idx119 txt118 type30:Sword code:9ss (ssd 9ss 7ss) 羅馬短劍【擴展】 羅馬短劍【擴展】
+	Item Colours[119][7]:-1,-2,-2,-2 //U154血書 Bloodletter
+	U154 血書 Bloodletter
+idx120 txt119 type30:Sword code:9sm (scm 9sm 7sm) 微彎劍【擴展】【-30】 微彎劍【擴展】【-30】
+	Item Colours[120][7]:-1,-2,-2,-2 //U155冰鋼之眼 Coldsteel Eye
+	U155 冰鋼之眼 Coldsteel Eye
+idx121 txt120 type30:Sword code:9sb (sbr 9sb 7sb) 波斯之刃【擴展】 波斯之刃【擴展】
+	Item Colours[121][7]:-1,-2,-2,-2 //U156六角之火 Hexfire
+	U156 六角之火 Hexfire
+idx122 txt121 type30:Sword code:9fc (flc 9fc 7fc) 圓月彎刀【擴展】 圓月彎刀【擴展】
+	Item Colours[122][7]:-1,-2,-2,-2 //U157阿里巴巴之刃 Blade of Ali Baba
+	U157 阿里巴巴之刃 Blade of Ali Baba
+idx123 txt122 type30:Sword code:9cr (crs 9cr 7cr) 空間之刃【擴展】 空間之刃【擴展】
+	Item Colours[123][7]:-1,-2,-2,-2 //U158金瑟的裂縫 Ginther's Rift
+	U158 金瑟的裂縫 Ginther's Rift
+idx124 txt123 type30:Sword code:9bs (bsd 9bs 7bs) 戰鬥劍【擴展】【0】 戰鬥劍【擴展】【0】
+	Item Colours[124][7]:-1,-2,-2,-2 //U159擊頭者 Headstriker
+	U159 擊頭者 Headstriker
+idx125 txt124 type30:Sword code:9ls (lsd 9ls 7ls) 符文劍【擴展】 符文劍【擴展】
+	Item Colours[125][7]:-1,-2,-2,-2 //U160疫病帶原者 Plague Bearer
+	U160 疫病帶原者 Plague Bearer
+idx126 txt125 type30:Sword code:9wd (wsd 9wd 7wd) 古代之劍【擴展】 古代之劍【擴展】
+	Item Colours[126][7]:-1,-2,-2,-2 //U161亞特拉斯 The Atlantean
+	U161 亞特拉斯 The Atlantean
+idx127 txt126 type30:Sword code:92h (2hs 92h 72h) 斬鐵劍【擴展】 斬鐵劍【擴展】
+	Item Colours[127][7]:-1,-2,-2,-2 //U162克林鐵-弗姆 Crainte Vomir
+	U162 克林鐵-弗姆 Crainte Vomir
+idx128 txt127 type30:Sword code:9cm (clm 9cm 7cm) 雙刃鐮【擴展】 雙刃鐮【擴展】
+	Item Colours[128][7]:-1,-2,-2,-2 //U163兵之王 Bing Sz Wang
+	U163 兵之王 Bing Sz Wang
+idx129 txt128 type30:Sword code:9gs (gis 9gs 7gs) 長牙劍【擴展】【0】 長牙劍【擴展】【0】
+	Item Colours[129][7]:-1,-2,-2,-2 //U164卑劣軀殼 The Vile Husk
+	U164 卑劣軀殼 The Vile Husk
+idx130 txt129 type30:Sword code:9b9 (bsw 9b9 7b7) 哥德劍【擴展】 哥德劍【擴展】
+	Item Colours[130][7]:-1,-2,-2,-2 //U165雲裂 Cloudcrack
+	U165 雲裂 Cloudcrack
+idx131 txt130 type30:Sword code:9fb (flb 9fb 7fb) 雙手巨劍【擴展】 雙手巨劍【擴展】
+	Item Colours[131][7]:-1,-2,-2,-2 //U166特迪斯法雷-芙法米 Todesfaelle Flamme
+	U166 特迪斯法雷-芙法米 Todesfaelle Flamme
+idx132 txt131 type30:Sword code:9gd (gsd 9gd 7gd) 死刑之劍【擴展】 死刑之劍【擴展】
+	Item Colours[132][7]:-1,-2,-2,-2 //U167劍衛 Swordguard
+	U167 劍衛 Swordguard
+idx133 txt132 type32:Dagger code:9dg (dgr 9dg 7dg) 銳匕【擴展】 銳匕【擴展】
+	Item Colours[133][7]:-1,-2,-2,-2 //U168裂脊者 Spineripper
+	U168 裂脊者 Spineripper
+idx134 txt133 type32:Dagger code:9di (dir 9di 7di) 詩歌匕首【擴展】 詩歌匕首【擴展】
+	Item Colours[134][7]:-1,-2,-2,-2 //U169刻心者 Heart Carver
+	U169 刻心者 Heart Carver
+idx135 txt134 type32:Dagger code:9kr (kri 9kr 7kr) 強波刀【擴展】 強波刀【擴展】
+	Item Colours[135][7]:-1,-2,-2,-2 //U170黑沼之鋒 Blackbog's Sharp
+	U170 黑沼之鋒 Blackbog's Sharp
+idx136 txt135 type32:Dagger code:9bl (bld 9bl 7bl) 小劍【擴展】 小劍【擴展】
+	Item Colours[136][7]:-1,-2,-2,-2 //U171暴風尖刺 Stormspike
+	U171 暴風尖刺 Stormspike
+idx137 txt136 type42:ThrowingKnife code:9tk (tkf 9tk 7tk) 戰鬥飛鏢【擴展】 戰鬥飛鏢【擴展】
+	Item Colours[137][7]:-1,-2,-2,-2 //U291死亡碎片 Deathbit
+	U291 死亡碎片 Deathbit
+idx138 txt137 type43:ThrowingAxe code:9ta (tax 9ta 7ta) 法蘭飛斧【擴展】 法蘭飛斧【擴展】
+	Item Colours[138][7]:-1,-2,-2,-2 //U288圓鑿 The Scalper
+	U288 圓鑿 The Scalper
+idx139 txt138 type42:ThrowingKnife code:9bk (bkf 9bk 7bk) 巨戰飛鏢【擴展】 巨戰飛鏢【擴展】
+idx140 txt139 type43:ThrowingAxe code:9b8 (bal 9b8 7b8) 短戰戟【擴展】 短戰戟【擴展】
+idx141 txt140 type44:Javelins code:9ja (jav 9ja 7ja) 巨戰標槍【擴展】 巨戰標槍【擴展】
+idx142 txt141 type44:Javelins code:9pi (pil 9pi 7pi) 卓越標槍【擴展】 卓越標槍【擴展】
+idx143 txt142 type44:Javelins code:9s9 (ssp 9s9 7s7) 銳矛【擴展】 銳矛【擴展】
+idx144 txt143 type44:Javelins code:9gl (glv 9gl 7gl) 闊針長矛【擴展】 闊針長矛【擴展】
+idx145 txt144 type44:Javelins code:9ts (tsp 9ts 7ts) 魚叉【擴展】 魚叉【擴展】
+idx146 txt145 type33:Spear code:9sr (spr 9sr 7sr) 巨戰長矛【擴展】 巨戰長矛【擴展】
+	Item Colours[146][7]:-1,-2,-2,-2 //U172穿刺者 The Impaler
+	U172 穿刺者 The Impaler
+idx147 txt146 type33:Spear code:9tr (tri 9tr 7tr) 魔鬼之叉【擴展】【0】 魔鬼之叉【擴展】【0】
+	Item Colours[147][7]:-1,-2,-2,-2 //U173水魔陷阱 Kelpie Snare
+	U173 水魔陷阱 Kelpie Snare
+idx148 txt147 type33:Spear code:9br (brn 9br 7br) 巨戰之叉【擴展】 巨戰之叉【擴展】
+	Item Colours[148][7]:-1,-2,-2,-2 //U174噬魂叉 Soulfeast Tine
+	U174 噬魂叉 Soulfeast Tine
+idx149 txt148 type33:Spear code:9st (spt 9st 7st) 三叉長槍【擴展】【0】 三叉長槍【擴展】【0】
+	Item Colours[149][7]:-1,-2,-2,-2 //U175宏-森丹 Hone Sundan
+	U175 宏-森丹 Hone Sundan
+idx150 txt149 type33:Spear code:9p9 (pik 9p9 7p7) 長槍【擴展】 長槍【擴展】
+	Item Colours[150][7]:-1,-2,-2,-2 //U176榮耀的尖塔 Spire of Honor
+	U176 榮耀的尖塔 Spire of Honor
+idx151 txt150 type34:Polearm code:9b7 (bar 9b7 7o7) 羅佳柏斧【擴展】 羅佳柏斧【擴展】
+	Item Colours[151][7]:-1,-2,-2,-2 //U177刮肉者 The Meat Scraper
+	U177 刮肉者 The Meat Scraper
+idx152 txt151 type34:Polearm code:9vo (vou 9vo 7vo) 尖鋒長刀【擴展】 尖鋒長刀【擴展】
+	Item Colours[152][7]:-1,-2,-2,-2 //U178黑水之刃 Blackleach Blade
+	U178 黑水之刃 Blackleach Blade
+	Item Colours[152][5]:-1,-2,-2,-2 //S111華寧的正義 Hwanin's Justice
+	S111 華寧的正義 Hwanin's Justice
+idx153 txt152 type34:Polearm code:9s8 (scy 9s8 7s8) 戰鬥鐮刀【擴展】 戰鬥鐮刀【擴展】
+	Item Colours[153][7]:-1,-2,-2,-2 //U179雅典娜的忿怒 Athena's Wrath
+	U179 雅典娜的忿怒 Athena's Wrath
+idx154 txt153 type34:Polearm code:9pa (pax 9pa 7pa) 戰戟【擴展】 戰戟【擴展】
+	Item Colours[154][7]:-1,-2,-2,-2 //U180皮爾-通把-考恩特 Pierre Tombale Couant
+	U180 皮爾-通把-考恩特 Pierre Tombale Couant
+idx155 txt154 type34:Polearm code:9h9 (hal 9h9 7h7) 雙鋒戰戟【擴展】 雙鋒戰戟【擴展】
+	Item Colours[155][7]:-1,-2,-2,-2 //U181胡索丹-依弗 Husoldal Evo
+	U181 胡索丹-依弗 Husoldal Evo
+idx156 txt155 type34:Polearm code:9wc (wsc 9wc 7wc) 殘酷鐮刀【擴展】 殘酷鐮刀【擴展】
+	Item Colours[156][7]:-1,-2,-2,-2 //U182驚怖焰亡靈 Grim's Burning Dead
+	U182 驚怖焰亡靈 Grim's Burning Dead
+idx157 txt156 type26:Staff code:8ss (sst 8ss 6ss) 喬木棒【擴展】 喬木棒【擴展】
+	Item Colours[157][7]:-1,-2,-2,-2 //U183擺動剃刀 Razorswitch
+	U183 擺動剃刀 Razorswitch
+idx158 txt157 type26:Staff code:8ls (lst 8ls 6ls) 六尺棍【擴展】【0】 六尺棍【擴展】【0】
+	Item Colours[158][7]:-1,-2,-2,-2 //U184肋骨粉碎者 Ribcracker
+	U184 肋骨粉碎者 Ribcracker
+idx159 txt158 type26:Staff code:8cs (cst 8cs 6cs) 杉木之棍【擴展】 杉木之棍【擴展】
+	Item Colours[159][7]:-1,-2,-2,-2 //U185五彩的怒氣 Chromatic Ire
+	U185 五彩的怒氣 Chromatic Ire
+idx160 txt159 type26:Staff code:8bs (bst 8bs 6bs) 哥德之棍【擴展】 哥德之棍【擴展】
+	Item Colours[160][7]:-1,-2,-2,-2 //U186扭曲之矛 Warpspear
+	U186 扭曲之矛 Warpspear
+idx161 txt160 type26:Staff code:8ws (wst 8ws 6ws) 符文之棍【擴展】 符文之棍【擴展】
+	Item Colours[161][7]:-1,-2,-2,-2 //U187骷髏收集者 Skull Collector
+	U187 骷髏收集者 Skull Collector
+idx162 txt161 type27:Bow code:8sb (sbw 8sb 6sb) 鋒銳之弓【擴展】 鋒銳之弓【擴展】
+	Item Colours[162][7]:-1,-2,-2,-2 //U188天擊 Skystrike
+	U188 天擊 Skystrike
+idx163 txt162 type27:Bow code:8hb (hbw 8hb 6hb) 剃刀之弓【擴展】 剃刀之弓【擴展】
+	Item Colours[163][7]:-1,-2,-2,-2 //U189撕裂之鉤 Riphook
+	U189 撕裂之鉤 Riphook
+idx164 txt163 type27:Bow code:8lb (lbw 8lb 6lb) 杉木弓【擴展】 杉木弓【擴展】
+	Item Colours[164][7]:-1,-2,-2,-2 //U190社角久子 Kuko Shakaku
+	U190 社角久子 Kuko Shakaku
+idx165 txt164 type27:Bow code:8cb (cbw 8cb 6cb) 雙弓【擴展】 雙弓【擴展】
+	Item Colours[165][7]:-1,-2,-2,-2 //U191無休止的冰雹 Endlesshail
+	U191 無休止的冰雹 Endlesshail
+idx166 txt165 type27:Bow code:8s8 (sbb 8s8 6s7) 短攻城弓【擴展】【0】 短攻城弓【擴展】【0】
+	Item Colours[166][7]:-1,-2,-2,-2 //U192狂野之弦 Witchwild String
+	U192 狂野之弦 Witchwild String
+idx167 txt166 type27:Bow code:8l8 (lbb 8l8 6l7) 長攻城弓【擴展】 長攻城弓【擴展】
+	Item Colours[167][7]:-1,-2,-2,-2 //U193岩壁殺手 Cliffkiller
+	U193 岩壁殺手 Cliffkiller
+idx168 txt167 type27:Bow code:8sw (swb 8sw 6sw) 符文之弓【擴展】【0】 符文之弓【擴展】【0】
+	Item Colours[168][7]:-1,-2,-2,-2 //U194巫師之怒 Magewrath
+	U194 巫師之怒 Magewrath
+idx169 txt168 type27:Bow code:8lw (lwb 8lw 6lw) 哥德弓【擴展】【10】 哥德弓【擴展】【10】
+	Item Colours[169][7]:-1,-2,-2,-2 //U195金擊圓弧 Goldstrike Arch
+	U195 金擊圓弧 Goldstrike Arch
+idx170 txt169 type35:CrossBow code:8lx (lxb 8lx 6lx) 石弓【擴展】 石弓【擴展】
+	Item Colours[170][7]:-1,-2,-2,-2 //U196蘭格-布里瑟 Langer Briser
+	U196 蘭格-布里瑟 Langer Briser
+idx171 txt170 type35:CrossBow code:8mx (mxb 8mx 6mx) 攻城十字弓【擴展】 攻城十字弓【擴展】
+	Item Colours[171][7]:-1,-2,-2,-2 //U197毒液怪 Pus Spitter
+	U197 毒液怪 Pus Spitter
+idx172 txt171 type35:CrossBow code:8hx (hxb 8hx 6hx) 弩弓【擴展】【10】 弩弓【擴展】【10】
+	Item Colours[172][7]:-1,-2,-2,-2 //U198布理撒-多-凱南 Buriza-Do Kyanon
+	U198 布理撒-多-凱南 Buriza-Do Kyanon
+idx173 txt172 type35:CrossBow code:8rx (rxb 8rx 6rx) 巧工弩【擴展】【-60】 巧工弩【擴展】【-60】
+	Item Colours[173][7]:-1,-2,-2,-2 //U199惡魔機器 Demon Machine
+	U199 惡魔機器 Demon Machine
+idx174 txt173 type36:Maces code:qf1 (fla) 克林姆的連枷 克林姆的連枷
+	Item Colours[174][7]:-1,-2,-2,-2 //U127克林姆的連枷
+	U127 克林姆的連枷
+idx175 txt174 type36:Maces code:qf2 (fla) 克林姆的意志 克林姆的意志
+	Item Colours[175][7]:-1,-2,-2,-2 //U128克林姆的意志
+	U128 克林姆的意志
+idx176 txt175 type67:Claws code:ktr (ktr 9ar 7ar) 拳劍【普通】 拳劍【普通】
+idx177 txt176 type67:Claws code:wrb (wrb 9wb 7wb) 腕刃【普通】  腕刃【普通】 
+idx178 txt177 type67:Claws code:axf (axf 9xf 7xf) 斧手 斧手
+idx179 txt178 type67:Claws code:ces (ces 9cs 7cs) 腰刀【普通】 腰刀【普通】
+idx180 txt179 type67:Claws code:clw (clw 9lw 7lw) 爪【普通】  爪【普通】 
+idx181 txt180 type67:Claws code:btl (btl 9tw 7tw) 刃爪【普通】  刃爪【普通】 
+idx182 txt181 type67:Claws code:skr (skr 9qr 7qr) 剪咬刃【普通】  剪咬刃【普通】 
+idx183 txt182 type67:Claws code:9ar (ktr 9ar 7ar) 格鬥刃【擴展】【0】  格鬥刃【擴展】【0】 
+idx184 txt183 type67:Claws code:9wb (wrb 9wb 7wb) 腕刺【擴展】【-10】  腕刺【擴展】【-10】 
+idx185 txt184 type67:Claws code:9xf (axf 9xf 7xf) 格鬥爪【擴展】【10】  格鬥爪【擴展】【10】 
+idx186 txt185 type88:Claw code:9cs (ces 9cs 7cs) 手鐮【擴展】【-10】  手鐮【擴展】【-10】 
+idx187 txt186 type88:Claw code:9lw (clw 9lw 7lw) 巨爪【擴展】【-20】  巨爪【擴展】【-20】 
+idx188 txt187 type88:Claw code:9tw (btl 9tw 7tw) 巨鷹爪【擴展】【-30】  巨鷹爪【擴展】【-30】 
+	Item Colours[188][7]:-1,-2,-2,-2 //U286巴特克的猛擊 Bartuc's Cut-Throat
+	U286 巴特克的猛擊 Bartuc's Cut-Throat
+idx189 txt188 type88:Claw code:9qr (skr 9qr 7qr) 格鬥剪【擴展】【0】  格鬥剪【擴展】【0】 
+idx190 txt189 type88:Claw code:7ar (ktr 9ar 7ar) 近身刃 Suwayyah【精英】【0】 近身刃 Suwayyah【精英】【0】
+idx191 txt190 type88:Claw code:7wb (wrb 9wb 7wb) 腕劍 Wrist Sword【精英】【-10】 腕劍 Wrist Sword【精英】【-10】
+	Item Colours[191][7]:-1,-2,-2,-2 //U308碧玉爪 Jade Talon
+	U308 碧玉爪 Jade Talon
+idx192 txt191 type88:Claw code:7xf (axf 9xf 7xf) 戰拳 War Fist【精英】【10】 戰拳 War Fist【精英】【10】
+idx193 txt192 type88:Claw code:7cs (ces 9cs 7cs) 鬥腰刀 Battle Cestus【精英】【-10】 鬥腰刀 Battle Cestus【精英】【-10】
+	Item Colours[193][7]:-1,-2,-2,-2 //U334影殺者 Shadow Killer
+	U334 影殺者 Shadow Killer
+idx194 txt193 type88:Claw code:7lw (clw 9lw 7lw) 猛禽爪 Feral Claws【精英】【-20】 猛禽爪 Feral Claws【精英】【-20】
+	Item Colours[194][7]:-1,-2,-2,-2 //U368火蜥蜴之爪 Firelizard's Talons
+	U368 火蜥蜴之爪 Firelizard's Talons
+idx195 txt194 type88:Claw code:7tw (btl 9tw 7tw) 符紋爪 Runic Talons【精英】【-30】 符紋爪 Runic Talons【精英】【-30】
+idx196 txt195 type88:Claw code:7qr (skr 9qr 7qr) 近身剪 Scissors Suwayyah【精英】【0】 近身剪 Scissors Suwayyah【精英】【0】
+	Item Colours[196][5]:-1,-2,-2,-2 //S63娜塔亞的記號 Natalya's Mark
+	S63 娜塔亞的記號 Natalya's Mark
+idx197 txt196 type28:Axe code:7ha (hax 9ha 7ha) 戰鉞  Tomahawk【精英】 戰鉞  Tomahawk【精英】
+	Item Colours[197][7]:-1,-2,-2,-2 //U294刀鋒邊緣 Razor's Edge
+	U294 刀鋒邊緣 Razor's Edge
+idx198 txt197 type28:Axe code:7ax (axe 9ax 7ax) 彎月斧 Small Crescent【精英】 彎月斧 Small Crescent【精英】
+idx199 txt198 type28:Axe code:72a (2ax 92a 72a) 雙頭斧 Ettin Axe【精英】 雙頭斧 Ettin Axe【精英】
+	Item Colours[199][7]:-1,-2,-2,-2 //U313符文大師 Rune Master
+	U313 符文大師 Rune Master
+idx200 txt199 type28:Axe code:7mp (mpi 9mp 7mp) 戰刺 War Spike【精英】 戰刺 War Spike【精英】
+	Item Colours[200][7]:-1,-2,-2,-2 //U383鶴嘴 Cranebeak
+	U383 鶴嘴 Cranebeak
+idx201 txt200 type28:Axe code:7wa (wax 9wa 7wa) 狂戰士斧 Berserker Axe【精華】 狂戰士斧 Berserker Axe【精華】
+	Item Colours[201][7]:-1,-2,-2,-2 //U314死亡之刀 Death Cleaver
+	U314 死亡之刀 Death Cleaver
+idx202 txt201 type28:Axe code:7la (lax 9la 7la) 猛禽斧 Feral Axe【精英】 猛禽斧 Feral Axe【精英】
+idx203 txt202 type28:Axe code:7ba (bax 9ba 7ba) 銀刃斧 Silver-edged Axe【精英】 銀刃斧 Silver-edged Axe【精英】
+	Item Colours[203][7]:-1,-2,-2,-2 //U324永恆邊界 Ethereal Edge
+	U324 永恆邊界 Ethereal Edge
+idx204 txt203 type28:Axe code:7bt (btx 9bt 7bt) 斬首斧 Decapitator【精英】 斬首斧 Decapitator【精英】
+	Item Colours[204][7]:-1,-2,-2,-2 //U254地獄毀滅者 Hellslayer
+	U254 地獄毀滅者 Hellslayer
+idx205 txt204 type28:Axe code:7ga (gax 9ga 7ga) 豪傑斧 Champion Axe【精英】 豪傑斧 Champion Axe【精英】
+	Item Colours[205][7]:-1,-2,-2,-2 //U255希梅斯特的掠奪 Messerschmidt's Reaver
+	U255 希梅斯特的掠奪 Messerschmidt's Reaver
+idx206 txt205 type28:Axe code:7gi (gix 9gi 7gi) 榮光之斧 Glorious Axe【精英】 榮光之斧 Glorious Axe【精英】
+	Item Colours[206][7]:-1,-2,-2,-2 //U315劊子手的裁決 Executioner's Justice
+	U315 劊子手的裁決 Executioner's Justice
+idx207 txt206 type25:Wand code:7wn (wnd 9wn 7wn) 洗鍊法杖 Polished Wand【精英】 洗鍊法杖 Polished Wand【精英】
+idx208 txt207 type25:Wand code:7yw (ywn 9yw 7yw) 鬼魂法杖 Ghost Wand【精英】 鬼魂法杖 Ghost Wand【精英】
+idx209 txt208 type25:Wand code:7bw (bwn 9bw 7bw) 巫妖法杖 Lich Wand【精英】 巫妖法杖 Lich Wand【精英】
+	Item Colours[209][7]:-1,-2,-2,-2 //U351白骨陰影 Boneshade
+	U351 白骨陰影 Boneshade
+idx210 txt209 type25:Wand code:7gw (gwn 9gw 7gw) 破隱法杖 Unearthed Wand【精英】 破隱法杖 Unearthed Wand【精英】
+	Item Colours[210][7]:-1,-2,-2,-2 //U299死亡之網 Death's Web
+	U299 死亡之網 Death's Web
+idx211 txt210 type29:Club code:7cl (clb 9cl 7cl) 戰儀杖 Truncheon【精英】 戰儀杖 Truncheon【精英】
+	Item Colours[211][7]:-1,-2,-2,-2 //U384諾德的蝕肉藥 Nord's Tenderizer
+	U384 諾德的蝕肉藥 Nord's Tenderizer
+idx212 txt211 type24:Sceptre code:7sc (scp 9sc 7sc) 強威權杖 Mighty Scepter【精英】 強威權杖 Mighty Scepter【精英】
+	Item Colours[212][7]:-1,-2,-2,-2 //U371天堂之光 Heaven's LightU389懺悔者 The Redeemer
+	U371 天堂之光 Heaven's Light
+	U389 懺悔者 The Redeemer
+idx213 txt212 type24:Sceptre code:7qs (gsc 9qs 7qs) 熾天使法杖 Seraph Rod【精英】 熾天使法杖 Seraph Rod【精英】
+idx214 txt213 type24:Sceptre code:7ws (wsp 9ws 7ws) 神使之杖 Caduceus【精英】 神使之杖 Caduceus【精英】
+	Item Colours[214][7]:-1,-2,-2,-2 //U380愛斯特龍之鐵的保護區 Astreon's Iron Ward
+	U380 愛斯特龍之鐵的保護區 Astreon's Iron Ward
+	Item Colours[214][5]:-1,-2,-2,-2 //S83格瑞斯華爾德的救贖 Griswold's Redemption
+	S83 格瑞斯華爾德的救贖 Griswold's Redemption
+idx215 txt214 type29:Club code:7sp (spc 9sp 7sp) 暴君之棒 Tyrant Club【精英】 暴君之棒 Tyrant Club【精英】
+	Item Colours[215][7]:-1,-2,-2,-2 //U296惡魔爪牙 Demon Limb
+	U296 惡魔爪牙 Demon Limb
+idx216 txt215 type36:Maces code:7ma (mac 9ma 7ma) 強化釘頭錘 Reinforced Mace【精英】 強化釘頭錘 Reinforced Mace【精英】
+	Item Colours[216][5]:-1,-2,-2,-2 //S100丹弓的教導 Dangoon's Teaching
+	S100 丹弓的教導 Dangoon's Teaching
+idx217 txt216 type36:Maces code:7mt (mst 9mt 7mt) 惡魔流星錘 Devil Star【精英】 惡魔流星錘 Devil Star【精英】
+	Item Colours[217][7]:-1,-2,-2,-2 //U256巴拉那之星 Baranar's Star
+	U256 巴拉那之星 Baranar's Star
+idx218 txt217 type36:Maces code:7fl (fla 9fl 7fl) 天罰之錘 Scourge【精英】 天罰之錘 Scourge【精英】
+	Item Colours[218][7]:-1,-2,-2,-2 //U306地平線的颱風 Horizon's TornadoU360暴風之結 Stormlash
+	U306 地平線的颱風 Horizon's Tornado
+	U360 暴風之結 Stormlash
+idx219 txt218 type31:Maul code:7wh (whm 9wh 7wh) 傳說之鎚 Legendary Mallet【精英】 傳說之鎚 Legendary Mallet【精英】
+	Item Colours[219][7]:-1,-2,-2,-2 //U257史恰佛之鎚 Schaefer's HammerU307碎石者 Stone Crusher
+	U257 史恰佛之鎚 Schaefer's Hammer
+	U307 碎石者 Stone Crusher
+idx220 txt219 type31:Maul code:7m7 (mau 9m9 7m7) 食人魔之錘 Ogre Maul【精英】 食人魔之錘 Ogre Maul【精英】
+	Item Colours[220][7]:-1,-2,-2,-2 //U337風之鎚 Windhammer
+	U337 風之鎚 Windhammer
+	Item Colours[220][5]:-1,-2,-2,-2 //S75不朽之王的碎魂者 Immortal King's Stone Crusher
+	S75 不朽之王的碎魂者 Immortal King's Stone Crusher
+idx221 txt220 type31:Maul code:7gm (gma 9gm 7gm) 雷錘 Thunder Maul【精英】 雷錘 Thunder Maul【精英】
+	Item Colours[221][7]:-1,-2,-2,-2 //U258碎腦鎚 The Cranium BasherU385大地變形者 Earth Shifter
+	U258 碎腦鎚 The Cranium Basher
+	U385 大地變形者 Earth Shifter
+idx222 txt221 type30:Sword code:7ss (ssd 9ss 7ss) 短劍 Falcata【精英】 短劍 Falcata【精英】
+idx223 txt222 type30:Sword code:7sm (scm 9sm 7sm) 土耳其劍 Ataghan【精英】 土耳其劍 Ataghan【精英】
+	Item Colours[223][7]:-1,-2,-2,-2 //U290魔靈殺手 Djinn Slayer
+	U290 魔靈殺手 Djinn Slayer
+idx224 txt223 type30:Sword code:7sb (sbr 9sb 7sb) 優雅之劍 Elegant Blade【精英】 優雅之劍 Elegant Blade【精英】
+	Item Colours[224][7]:-1,-2,-2,-2 //U289血月 Bloodmoon
+	U289 血月 Bloodmoon
+idx225 txt224 type30:Sword code:7fc (flc 9fc 7fc) 九頭蛇刃 Hydra Edge【精英】 九頭蛇刃 Hydra Edge【精英】
+idx226 txt225 type30:Sword code:7cr (crs 9cr 7cr) 幻化之刃 Phase Blade【精英】【-30】 幻化之刃 Phase Blade【精英】【-30】
+	Item Colours[226][7]:-1,-2,-2,-2 //U259光之軍刀 LightsabreU301碧藍怒火 Azurewrath
+	U259 光之軍刀 Lightsabre
+	U301 碧藍怒火 Azurewrath
+idx227 txt226 type30:Sword code:7bs (bsd 9bs 7bs) 征服之劍 Conquest Sword【精英】【0】 征服之劍 Conquest Sword【精英】【0】
+idx228 txt227 type30:Sword code:7ls (lsd 9ls 7ls) 神秘之劍 Cryptic Sword【精英】【-10】 神秘之劍 Cryptic Sword【精英】【-10】
+	Item Colours[228][7]:-1,-2,-2,-2 //U365冰霜之風 Frostwind
+	U365 冰霜之風 Frostwind
+	Item Colours[228][5]:-1,-2,-2,-2 //S112沙撒璧的懺悔之鈷 Sazabi's Cobalt Redeemer
+	S112 沙撒璧的懺悔之鈷 Sazabi's Cobalt Redeemer
+idx229 txt228 type30:Sword code:7wd (wsd 9wd 7wd) 秘儀之劍 Mythical Sword【精英】【0】 秘儀之劍 Mythical Sword【精英】【0】
+	Item Colours[229][5]:-1,-2,-2,-2 //S116布爾凱索的部族守護 Bul-Kathos' Tribal Guardian
+	S116 布爾凱索的部族守護 Bul-Kathos' Tribal Guardian
+idx230 txt229 type30:Sword code:72h (2hs 92h 72h) 傳說之劍 Legend Sword【精英】【-15】 傳說之劍 Legend Sword【精英】【-15】
+idx231 txt230 type30:Sword code:7cm (clm 9cm 7cm) 高地之劍 Highland Blade【精英】【-5】 高地之劍 Highland Blade【精英】【-5】
+idx232 txt231 type30:Sword code:7gs (gis 9gs 7gs) 炎魔之刃 Balrog Blade【精英】【0】 炎魔之刃 Balrog Blade【精英】【0】
+	Item Colours[232][7]:-1,-2,-2,-2 //U353火焰號叫 Flamebellow
+	U353 火焰號叫 Flamebellow
+idx233 txt232 type30:Sword code:7b7 (bsw 9b9 7b7) 冠軍之劍 Champion Sword【精英】【-10】 冠軍之劍 Champion Sword【精英】【-10】
+	Item Colours[233][7]:-1,-2,-2,-2 //U260末日毀滅者 Doombringer
+	U260 末日毀滅者 Doombringer
+idx234 txt233 type30:Sword code:7fb (flb 9fb 7fb) 巨神之劍 Colossus Sword【精英】【10】 巨神之劍 Colossus Sword【精英】【10】
+idx235 txt234 type30:Sword code:7gd (gsd 9gd 7gd) 巨神之刃 Colossus Blade【精英】【5】 巨神之刃 Colossus Blade【精英】【5】
+	Item Colours[235][7]:-1,-2,-2,-2 //U261祖父 The Grandfather
+	U261 祖父 The Grandfather
+	Item Colours[235][5]:-1,-2,-2,-2 //S115布爾凱索的神聖代價 Bul-Kathos' Sacred Charge
+	S115 布爾凱索的神聖代價 Bul-Kathos' Sacred Charge
+idx236 txt235 type32:Dagger code:7dg (dgr 9dg 7dg) 骸骨小刀 Bone Knife【精英】 骸骨小刀 Bone Knife【精英】
+	Item Colours[236][7]:-1,-2,-2,-2 //U262巫師之刺 Wizardspike
+	U262 巫師之刺 Wizardspike
+idx237 txt236 type32:Dagger code:7di (dir 9di 7di) 秘銀小刀 Mithril Point【精英】 秘銀小刀 Mithril Point【精英】
+idx238 txt237 type32:Dagger code:7kr (kri 9kr 7kr) 齒緣小刀 Fanged Knife【精英】 齒緣小刀 Fanged Knife【精英】
+	Item Colours[238][7]:-1,-2,-2,-2 //U304裂肉者 Fleshripper
+	U304 裂肉者 Fleshripper
+idx239 txt238 type32:Dagger code:7bl (bld 9bl 7bl) 傳說尖刺 Legend Spike【精英】 傳說尖刺 Legend Spike【精英】
+	Item Colours[239][7]:-1,-2,-2,-2 //U333鬼火焰 Ghostflame
+	U333 鬼火焰 Ghostflame
+idx240 txt239 type42:ThrowingKnife code:7tk (tkf 9tk 7tk) 飛刀 Flying Knife【精英】 飛刀 Flying Knife【精英】
+idx241 txt240 type43:ThrowingAxe code:7ta (tax 9ta 7ta) 飛斧 Flying Axe【精英】 飛斧 Flying Axe【精英】
+	Item Colours[241][7]:-1,-2,-2,-2 //U335碎片貪婪者 Gimmershred
+	U335 碎片貪婪者 Gimmershred
+idx242 txt241 type42:ThrowingKnife code:7bk (bkf 9bk 7bk) 翼刀 Winged Knife【精英】 翼刀 Winged Knife【精英】
+	Item Colours[242][7]:-1,-2,-2,-2 //U292戰爭之鳥 Warshrike
+	U292 戰爭之鳥 Warshrike
+idx243 txt242 type43:ThrowingAxe code:7b8 (bal 9b8 7b8) 翼斧 Winged Axe【精英】 翼斧 Winged Axe【精英】
+	Item Colours[243][7]:-1,-2,-2,-2 //U321撕裂者 Lacerator
+	U321 撕裂者 Lacerator
+idx244 txt243 type44:Javelins code:7ja (jav 9ja 7ja) 亥伯龍之槍 Hyperion Javelin【精英】【-10】 亥伯龍之槍 Hyperion Javelin【精英】【-10】
+idx245 txt244 type44:Javelins code:7pi (pil 9pi 7pi) 冥河標槍 Stygian Pilum【精英】【0】 冥河標槍 Stygian Pilum【精英】【0】
+idx246 txt245 type44:Javelins code:7s7 (ssp 9s9 7s7) 炎魔長矛 Balrog Spear【精英】【10】 炎魔長矛 Balrog Spear【精英】【10】
+	Item Colours[246][7]:-1,-2,-2,-2 //U340惡魔之王 Demon's Arch
+	U340 惡魔之王 Demon's Arch
+idx247 txt246 type44:Javelins code:7gl (glv 9gl 7gl) 鬼魂尖槍 Ghost Glaive【精英】【20】 鬼魂尖槍 Ghost Glaive【精英】【20】
+	Item Colours[247][7]:-1,-2,-2,-2 //U386死靈夜翔 Wraith Flight
+	U386 死靈夜翔 Wraith Flight
+idx248 txt247 type44:Javelins code:7ts (tsp 9ts 7ts) 翼魚叉 Winged Harpoon【精英】【-10】 翼魚叉 Winged Harpoon【精英】【-10】
+	Item Colours[248][7]:-1,-2,-2,-2 //U320石像鬼之噬 Gargoyle's Bite
+	U320 石像鬼之噬 Gargoyle's Bite
+idx249 txt248 type33:Spear code:7sr (spr 9sr 7sr) 亥伯龍之矛 Hyperion Spear【精英】【-10】 亥伯龍之矛 Hyperion Spear【精英】【-10】
+	Item Colours[249][7]:-1,-2,-2,-2 //U382愛理歐克之針 Arioc's Needle
+	U382 愛理歐克之針 Arioc's Needle
+idx250 txt249 type33:Spear code:7tr (tri 9tr 7tr) 冥河之槍 Stygian Pike【精英】【0】 冥河之槍 Stygian Pike【精英】【0】
+idx251 txt250 type33:Spear code:7br (brn 9br 7br) 刺人槍 Mancatcher【精英】【-20】 刺人槍 Mancatcher【精英】【-20】
+	Item Colours[251][7]:-1,-2,-2,-2 //U323蝮蛇叉 Viperfork
+	U323 蝮蛇叉 Viperfork
+idx252 txt251 type33:Spear code:7st (spt 9st 7st) 鬼魂之矛 Ghost Spear【精英】【0】 鬼魂之矛 Ghost Spear【精英】【0】
+idx253 txt252 type33:Spear code:7p7 (pik 9p9 7p7) 戰槍 War Pike【精英】【20】 戰槍 War Pike【精英】【20】
+	Item Colours[253][7]:-1,-2,-2,-2 //U342鐵柱 Steel PillarU377席嘉德的隱藏 Siggard's Stealth
+	U342 鐵柱 Steel Pillar
+	U377 席嘉德的隱藏 Siggard's Stealth
+idx254 txt253 type34:Polearm code:7o7 (bar 9b7 7o7) 食人魔之斧 Ogre Axe【精英】【0】 食人魔之斧 Ogre Axe【精英】【0】
+	Item Colours[254][7]:-1,-2,-2,-2 //U387ÿc4破骨 Bonehew
+
+	U387 ÿc4破骨 Bonehew
+
+idx255 txt254 type34:Polearm code:7vo (vou 9vo 7vo) 巨神之斧 Colossus Voulge【精英】【10】 巨神之斧 Colossus Voulge【精英】【10】
+idx256 txt255 type34:Polearm code:7s8 (scy 9s8 7s8) 銳利之斧 Thresher【精英】【-10】 銳利之斧 Thresher【精英】【-10】
+	Item Colours[256][7]:-1,-2,-2,-2 //U326死神的喪鐘 The Reaper's Toll
+	U326 死神的喪鐘 The Reaper's Toll
+idx257 txt256 type34:Polearm code:7pa (pax 9pa 7pa) 神秘之斧 Cryptic Axe【精英】【10】 神秘之斧 Cryptic Axe【精英】【10】
+	Item Colours[257][7]:-1,-2,-2,-2 //U298盜墓者 Tomb Reaver
+	U298 盜墓者 Tomb Reaver
+idx258 txt257 type34:Polearm code:7h7 (hal 9h9 7h7) 巨長斧 Great Poleaxe【精英】【0】 巨長斧 Great Poleaxe【精英】【0】
+idx259 txt258 type34:Polearm code:7wc (wsc 9wc 7wc) 鮫尾巨斧 Giant Thresher【精英】【-10】 鮫尾巨斧 Giant Thresher【精英】【-10】
+	Item Colours[259][7]:-1,-2,-2,-2 //U264暴風尖塔 Stormspire
+	U264 暴風尖塔 Stormspire
+idx260 txt259 type26:Staff code:6ss (sst 8ss 6ss) 手杖 Walking Stick【精英】 手杖 Walking Stick【精英】
+idx261 txt260 type26:Staff code:6ls (lst 8ls 6ls) 鐘乳石之杖 Stalagmite【精英】【10】 鐘乳石之杖 Stalagmite【精英】【10】
+idx262 txt261 type26:Staff code:6cs (cst 8cs 6cs) 長老之杖 Elder Staff【精英】 長老之杖 Elder Staff【精英】
+	Item Colours[262][7]:-1,-2,-2,-2 //U388安戴爾的智慧 Ondal's Wisdom
+	U388 安戴爾的智慧 Ondal's Wisdom
+	Item Colours[262][5]:-1,-2,-2,-2 //S120娜吉解迷杖 Naj's Puzzler
+	S120 娜吉解迷杖 Naj's Puzzler
+idx263 txt262 type26:Staff code:6bs (bst 8bs 6bs) 樹皮之杖 Shillelagh【精英】 樹皮之杖 Shillelagh【精英】
+idx264 txt263 type26:Staff code:6ws (wst 8ws 6ws) 執政官之杖 Archon Staff【精英】 執政官之杖 Archon Staff【精英】
+	Item Colours[264][7]:-1,-2,-2,-2 //U322梅格之歌的教訓 Mang Song's Lesson
+	U322 梅格之歌的教訓 Mang Song's Lesson
+idx265 txt264 type27:Bow code:6sb (sbw 8sb 6sb) 蜘蛛弓 Spider Bow【精英】 蜘蛛弓 Spider Bow【精英】
+idx266 txt265 type27:Bow code:6hb (hbw 8hb 6hb) 刀鋒弓 Blade Bow【精英】【-10】 刀鋒弓 Blade Bow【精英】【-10】
+idx267 txt266 type27:Bow code:6lb (lbw 8lb 6lb) 陰影弓 Shadow Bow【精英】【0】 陰影弓 Shadow Bow【精英】【0】
+idx268 txt267 type27:Bow code:6cb (cbw 8cb 6cb) 巨弓 Great Bow【精英】【-10】 巨弓 Great Bow【精英】【-10】
+idx269 txt268 type27:Bow code:6s7 (sbb 8s8 6s7) 鑽石弓 Diamond Bow【精英】【0】 鑽石弓 Diamond Bow【精英】【0】
+idx270 txt269 type27:Bow code:6l7 (lbb 8l8 6l7) 十字軍之弓 Crusader Bow【精英】【10】 十字軍之弓 Crusader Bow【精英】【10】
+	Item Colours[270][7]:-1,-2,-2,-2 //U265鷹號角 Eaglehorn
+	U265 鷹號角 Eaglehorn
+idx271 txt270 type27:Bow code:6sw (swb 8sw 6sw) 庇護之弓 Ward Bow【精英】【0】 庇護之弓 Ward Bow【精英】【0】
+	Item Colours[271][7]:-1,-2,-2,-2 //U331戮夫刃 Widowmaker
+	U331 戮夫刃 Widowmaker
+idx272 txt271 type27:Bow code:6lw (lwb 8lw 6lw) 九頭蛇弓 Hydra Bow【精英】【10】 九頭蛇弓 Hydra Bow【精英】【10】
+	Item Colours[272][7]:-1,-2,-2,-2 //U266風之力 Windforce
+	U266 風之力 Windforce
+idx273 txt272 type35:CrossBow code:6lx (lxb 8lx 6lx) 彈丸弓 Pellet Bow【精英】 彈丸弓 Pellet Bow【精英】
+idx274 txt273 type35:CrossBow code:6mx (mxb 8mx 6mx) 蛇魔女十字弓 Gorgon Crossbow【精英】 蛇魔女十字弓 Gorgon Crossbow【精英】
+idx275 txt274 type35:CrossBow code:6hx (hxb 8hx 6hx) 巨神十字弓 Colossus Crossbow【精英】 巨神十字弓 Colossus Crossbow【精英】
+	Item Colours[275][7]:-1,-2,-2,-2 //U328地獄拷問 Hellrack
+	U328 地獄拷問 Hellrack
+idx276 txt275 type35:CrossBow code:6rx (rxb 8rx 6rx) 惡魔十字弓 Demon Crossbow【精英】 惡魔十字弓 Demon Crossbow【精英】
+	Item Colours[276][7]:-1,-2,-2,-2 //U293內臟吸管 Gut Siphon
+	U293 內臟吸管 Gut Siphon
+idx277 txt276 type68:Orb code:ob1 (ob1 ob6 obb) 鷹之法珠【普通】  鷹之法珠【普通】 
+idx278 txt277 type68:Orb code:ob2 (ob2 ob7 obc) 神聖天球【普通】  神聖天球【普通】 
+idx279 txt278 type68:Orb code:ob3 (ob3 ob8 obd) 攏煙之球【普通】   攏煙之球【普通】  
+idx280 txt279 type68:Orb code:ob4 (ob4 ob9 obe) 握扣法珠【普通】   握扣法珠【普通】  
+idx281 txt280 type68:Orb code:ob5 (ob5 oba obf) 傑瑞德之石 傑瑞德之石
+idx282 txt281 type85:AmaBow code:am1 (am1 am6 amb) 男性之弓【普通】 男性之弓【普通】
+idx283 txt282 type85:AmaBow code:am2 (am2 am7 amc) 反射之弓【普通】  反射之弓【普通】 
+idx284 txt283 type86:AmaSpear code:am3 (am3 am8 amd) 女士之矛【普通】  女士之矛【普通】 
+idx285 txt284 type86:AmaSpear code:am4 (am4 am9 ame) 女士長矛【普通】  女士長矛【普通】 
+idx286 txt285 type87:AmaJavelin code:am5 (am5 ama amf) 女士鏢槍【普通】  女士鏢槍【普通】 
+idx287 txt286 type68:Orb code:ob6 (ob1 ob6 obb) 靈光法珠【擴展】  靈光法珠【擴展】 
+idx288 txt287 type68:Orb code:ob7 (ob2 ob7 obc) 水晶天球【擴展】  水晶天球【擴展】 
+idx289 txt288 type68:Orb code:ob8 (ob3 ob8 obd) 雲霧之球【擴展】  雲霧之球【擴展】 
+idx290 txt289 type68:Orb code:ob9 (ob4 ob9 obe) 閃耀之球【擴展】  閃耀之球【擴展】 
+idx291 txt290 type68:Orb code:oba (ob5 oba obf) 渦流水晶【擴展】  渦流水晶【擴展】 
+	Item Colours[291][7]:-1,-2,-2,-2 //U284眼球 The Oculus
+	U284 眼球 The Oculus
+	Item Colours[291][5]:-1,-2,-2,-2 //S78塔-拉夏的警戒之眼 Tal Rasha's Lidless Eye
+	S78 塔-拉夏的警戒之眼 Tal Rasha's Lidless Eye
+idx292 txt291 type85:AmaBow code:am6 (am1 am6 amb) 灰木之弓【擴展】  灰木之弓【擴展】 
+idx293 txt292 type85:AmaBow code:am7 (am2 am7 amc) 祭典之弓【擴展】【10】  祭典之弓【擴展】【10】 
+	Item Colours[293][7]:-1,-2,-2,-2 //U282雷山德的指標 Lycander's Aim
+	U282 雷山德的指標 Lycander's Aim
+idx294 txt293 type86:AmaSpear code:am8 (am3 am8 amd) 祭典之矛【擴展】  祭典之矛【擴展】 
+idx295 txt294 type86:AmaSpear code:am9 (am4 am9 ame) 祭典之長矛【擴展】  祭典之長矛【擴展】 
+	Item Colours[295][7]:-1,-2,-2,-2 //U283雷山德的側腹 Lycander's Flank
+	U283 雷山德的側腹 Lycander's Flank
+idx296 txt295 type87:AmaJavelin code:ama (am5 ama amf) 祭典之鏢槍【擴展】【-10】  祭典之鏢槍【擴展】【-10】 
+	Item Colours[296][7]:-1,-2,-2,-2 //U281泰坦的復仇 Titan's Revenge
+	U281 泰坦的復仇 Titan's Revenge
+idx297 txt296 type68:Orb code:obb (ob1 ob6 obb) 天堂之石 Heavenly Stone【精英】 天堂之石 Heavenly Stone【精英】
+idx298 txt297 type68:Orb code:obc (ob2 ob7 obc) 怪異之球 Eldritch Orb【精英】 怪異之球 Eldritch Orb【精英】
+	Item Colours[298][7]:-1,-2,-2,-2 //U367艾斯屈塔的脾氣 Eschuta's Temper
+	U367 艾斯屈塔的脾氣 Eschuta's Temper
+idx299 txt298 type68:Orb code:obd (ob3 ob8 obd) 惡魔之心 Demon Heart【精英】 惡魔之心 Demon Heart【精英】
+idx300 txt299 type68:Orb code:obe (ob4 ob9 obe) 漩渦球 Vortex Orb【精英】 漩渦球 Vortex Orb【精英】
+idx301 txt300 type68:Orb code:obf (ob5 oba obf) 次元碎片 Dimensional Shard【精英】 次元碎片 Dimensional Shard【精英】
+	Item Colours[301][7]:-1,-2,-2,-2 //U354死亡深度 Death's Fathom
+	U354 死亡深度 Death's Fathom
+idx302 txt301 type85:AmaBow code:amb (am1 am6 amb) 女族長之弓 Matriarchal Bow【精英】【-10】 女族長之弓 Matriarchal Bow【精英】【-10】
+	Item Colours[302][7]:-1,-2,-2,-2 //U332血鳥的襲擊 Blood Raven's Charge
+	U332 血鳥的襲擊 Blood Raven's Charge
+idx303 txt302 type85:AmaBow code:amc (am2 am7 amc) 大院長之弓 Grand Matron Bow【精英】【10】 大院長之弓 Grand Matron Bow【精英】【10】
+	Item Colours[303][5]:-1,-2,-2,-2 //S94馬維娜的施展 M'avina's Caster
+	S94 馬維娜的施展 M'avina's Caster
+idx304 txt303 type86:AmaSpear code:amd (am3 am8 amd) 女族長之矛 Matriarchal Spear【精英】 女族長之矛 Matriarchal Spear【精英】
+	Item Colours[304][7]:-1,-2,-2,-2 //U316石烏鴉 Stoneraven
+	U316 石烏鴉 Stoneraven
+idx305 txt304 type86:AmaSpear code:ame (am4 am9 ame) 女族長之長矛 Matriarchal Pike【精英】 女族長之長矛 Matriarchal Pike【精英】
+idx306 txt305 type87:AmaJavelin code:amf (am5 ama amf) 女族長之鏢槍 Matriarchal Javelin【精英】【-10】 女族長之鏢槍 Matriarchal Javelin【精英】【-10】
+	Item Colours[306][7]:-1,-2,-2,-2 //U338雷擊 Thunderstroke
+	U338 雷擊 Thunderstroke
+idx1001 txt306 type37:Helm code:cap (cap xap uap) 帽子【普通】 帽子【普通】
+	Item Colours[1001][7]:-1,-2,-2,-2 //U71畢格因的軟帽 Biggin's Bonnet
+	U71 畢格因的軟帽 Biggin's Bonnet
+	Item Colours[1001][5]:-1,-2,-2,-2 //S41地獄頭骨 Infernal CraniumS123山德的模範 Sander's Paragon
+	S41 地獄頭骨 Infernal Cranium
+	S123 山德的模範 Sander's Paragon
+idx1002 txt307 type37:Helm code:skp (skp xkp ukp) 骷髏帽【普通】 骷髏帽【普通】
+	Item Colours[1002][7]:-1,-2,-2,-2 //U72塔因頭盔 Tarnhelm
+	U72 塔因頭盔 Tarnhelm
+	Item Colours[1002][5]:-1,-2,-2,-2 //S60阿卡娜的頭 Arcanna's Head
+	S60 阿卡娜的頭 Arcanna's Head
+idx1003 txt308 type37:Helm code:hlm (hlm xlm ulm) 頭盔【普通】 頭盔【普通】
+	Item Colours[1003][7]:-1,-2,-2,-2 //U73光榮布帽 Coif of Glory
+	U73 光榮布帽 Coif of Glory
+	Item Colours[1003][5]:-1,-2,-2,-2 //S44狂戰士的頭戴 Berserker's Headgear
+	S44 狂戰士的頭戴 Berserker's Headgear
+idx1004 txt309 type37:Helm code:fhl (fhl xhl uhl) 高級頭盔【普通】 高級頭盔【普通】
+	Item Colours[1004][7]:-1,-2,-2,-2 //U74黃昏深處 Duskdeep
+	U74 黃昏深處 Duskdeep
+	Item Colours[1004][5]:-1,-2,-2,-2 //S16依森哈德的號角 Isenhart's Horns
+	S16 依森哈德的號角 Isenhart's Horns
+idx1005 txt310 type37:Helm code:ghm (ghm xhm uhm) 卓越頭盔【普通】 卓越頭盔【普通】
+	Item Colours[1005][7]:-1,-2,-2,-2 //U76怒號長牙 Howltusk
+	U76 怒號長牙 Howltusk
+	Item Colours[1005][5]:-1,-2,-2,-2 //S36西剛之面甲 Sigon's Visor
+	S36 西剛之面甲 Sigon's Visor
+idx1006 txt311 type37:Helm code:crn (crn xrn urn) 皇冠【普通】 皇冠【普通】
+	Item Colours[1006][7]:-1,-2,-2,-2 //U77不死皇冠 Undead Crown
+	U77 不死皇冠 Undead Crown
+	Item Colours[1006][5]:-1,-2,-2,-2 //S11依雷撒的線圈 Iratha's CoilS23米拉伯佳的王冠 Milabrega's Diadem
+	S11 依雷撒的線圈 Iratha's Coil
+	S23 米拉伯佳的王冠 Milabrega's Diadem
+idx1007 txt312 type37:Helm code:msk (msk xsk usk) 面具【普通】 面具【普通】
+	Item Colours[1007][7]:-1,-2,-2,-2 //U78恐懼之臉 The Face of Horror
+	U78 恐懼之臉 The Face of Horror
+	Item Colours[1007][5]:-1,-2,-2,-2 //S27卡珊的容貌 Cathan's Visage
+	S27 卡珊的容貌 Cathan's Visage
+idx1008 txt313 type3:Armor code:qui (qui xui uui) 布甲【普通】【輕】 布甲【普通】【輕】
+	Item Colours[1008][7]:-1,-2,-2,-2 //U79薄暮外觀 Greyform
+	U79 薄暮外觀 Greyform
+	Item Colours[1008][5]:-1,-2,-2,-2 //S55北極毛皮 Arctic Furs
+	S55 北極毛皮 Arctic Furs
+idx1009 txt314 type3:Armor code:lea (lea xea uea) 皮甲【普通】【輕】 皮甲【普通】【輕】
+	Item Colours[1009][7]:-1,-2,-2,-2 //U80眨眼蝙蝠的外觀 Blinkbat's Form
+	U80 眨眼蝙蝠的外觀 Blinkbat's Form
+	Item Colours[1009][5]:-1,-2,-2,-2 //S19維達拉的突襲 Vidala's Ambush
+	S19 維達拉的突襲 Vidala's Ambush
+idx1010 txt315 type3:Armor code:hla (hla xla ula) 硬皮甲【普通】【輕】 硬皮甲【普通】【輕】
+	Item Colours[1010][7]:-1,-2,-2,-2 //U81百夫長 The Centurion
+	U81 百夫長 The Centurion
+idx1011 txt316 type3:Armor code:stu (stu xtu utu) 鑲嵌甲【普通】【輕】 鑲嵌甲【普通】【輕】
+	Item Colours[1011][7]:-1,-2,-2,-2 //U82抽動的掙扎 Twitchthroe
+	U82 抽動的掙扎 Twitchthroe
+	Item Colours[1011][5]:-1,-2,-2,-2 //S118牛魔王之皮 Cow King's Hide
+	S118 牛魔王之皮 Cow King's Hide
+idx1012 txt317 type3:Armor code:rng (rng xng ung) 鎖環甲【普通】【中】 鎖環甲【普通】【中】
+	Item Colours[1012][7]:-1,-2,-2,-2 //U83擴散黑暗 Darkglow
+	U83 擴散黑暗 Darkglow
+	Item Colours[1012][5]:-1,-2,-2,-2 //S51天使的披風 Angelic Mantle
+	S51 天使的披風 Angelic Mantle
+idx1013 txt318 type3:Armor code:scl (scl xcl ucl) 鱗甲【普通】【重】 鱗甲【普通】【重】
+	Item Colours[1013][7]:-1,-2,-2,-2 //U84鷹甲 Hawkmail
+	U84 鷹甲 Hawkmail
+idx1014 txt319 type3:Armor code:chn (chn xhn uhn) 鎖子甲【普通】【中】 鎖子甲【普通】【中】
+	Item Colours[1014][7]:-1,-2,-2,-2 //U85火花之甲 Sparking Mail
+	U85 火花之甲 Sparking Mail
+	Item Colours[1014][5]:-1,-2,-2,-2 //S26卡珊之網 Cathan's Mesh
+	S26 卡珊之網 Cathan's Mesh
+idx1015 txt320 type3:Armor code:brs (brs xrs urs) 胸甲【普通】【輕】 胸甲【普通】【輕】
+	Item Colours[1015][7]:-1,-2,-2,-2 //U86毒液牢房 Venom Ward
+	U86 毒液牢房 Venom Ward
+	Item Colours[1015][5]:-1,-2,-2,-2 //S15依森哈德的外殼 Isenhart's Case
+	S15 依森哈德的外殼 Isenhart's Case
+idx1016 txt321 type3:Armor code:spl (spl xpl upl) 板甲【普通】【中】 板甲【普通】【中】
+	Item Colours[1016][7]:-1,-2,-2,-2 //U87冰雪眨眼 Iceblink
+	U87 冰雪眨眼 Iceblink
+	Item Colours[1016][5]:-1,-2,-2,-2 //S45狂戰士的鎖子甲 Berserker's Hauberk
+	S45 狂戰士的鎖子甲 Berserker's Hauberk
+idx1017 txt322 type3:Armor code:plt (plt xlt ult) 鎧甲【普通】【重】 鎧甲【普通】【重】
+	Item Colours[1017][7]:-1,-2,-2,-2 //U88骨肉 Boneflesh
+	U88 骨肉 Boneflesh
+idx1018 txt323 type3:Armor code:fld (fld xld uld) 實戰鎧甲【普通】【中】 實戰鎧甲【普通】【中】
+	Item Colours[1018][7]:-1,-2,-2,-2 //U89石之毛 Rockfleece
+	U89 石之毛 Rockfleece
+idx1019 txt324 type3:Armor code:gth (gth xth uth) 哥德戰甲【普通】【中】 哥德戰甲【普通】【中】
+	Item Colours[1019][7]:-1,-2,-2,-2 //U90作響之籠 Rattlecage
+	U90 作響之籠 Rattlecage
+	Item Colours[1019][5]:-1,-2,-2,-2 //S37西剛的遮蔽 Sigon's Shelter
+	S37 西剛的遮蔽 Sigon's Shelter
+idx1020 txt325 type3:Armor code:ful (ful xul uul) 高級戰甲【普通】【重】 高級戰甲【普通】【重】
+	Item Colours[1020][7]:-1,-2,-2,-2 //U91黃金之皮 Goldskin
+	U91 黃金之皮 Goldskin
+	Item Colours[1020][5]:-1,-2,-2,-2 //S31坦克雷的脊柱 Tancred's Spine
+	S31 坦克雷的脊柱 Tancred's Spine
+idx1021 txt326 type3:Armor code:aar (aar xar uar) 古代裝甲【普通】【中】 古代裝甲【普通】【中】
+	Item Colours[1021][7]:-1,-2,-2,-2 //U92勝利者之絲綢 Silks of the Victor
+	U92 勝利者之絲綢 Silks of the Victor
+	Item Colours[1021][5]:-1,-2,-2,-2 //S24米拉伯佳之袍 Milabrega's Robe
+	S24 米拉伯佳之袍 Milabrega's Robe
+idx1022 txt327 type3:Armor code:ltp (ltp xtp utp) 輕型裝甲【普通】【輕】 輕型裝甲【普通】【輕】
+	Item Colours[1022][7]:-1,-2,-2,-2 //U93天堂裝束 Heavenly Garb
+	U93 天堂裝束 Heavenly Garb
+	Item Colours[1022][5]:-1,-2,-2,-2 //S61阿卡娜的血肉 Arcanna's Flesh
+	S61 阿卡娜的血肉 Arcanna's Flesh
+idx1023 txt328 type2:Shield code:buc (buc xuc uuc) 圓盾【普通】【輕】 圓盾【普通】【輕】
+	Item Colours[1023][7]:-1,-2,-2,-2 //U94新月小盾 Pelta Lunata
+	U94 新月小盾 Pelta Lunata
+	Item Colours[1023][5]:-1,-2,-2,-2 //S4哈斯拉柏的鐵拳 Hsarus' Iron Fist
+	S4 哈斯拉柏的鐵拳 Hsarus' Iron Fist
+idx1024 txt329 type2:Shield code:sml (sml xml uml) 小盾牌【普通】【輕】 小盾牌【普通】【輕】
+	Item Colours[1024][7]:-1,-2,-2,-2 //U95陰影圓盤 Umbral Disk
+	U95 陰影圓盤 Umbral Disk
+	Item Colours[1024][5]:-1,-2,-2,-2 //S7克雷得勞之爪 Cleglaw's Claw
+	S7 克雷得勞之爪 Cleglaw's Claw
+idx1025 txt330 type2:Shield code:lrg (lrg xrg urg) 大盾牌【普通】【中】 大盾牌【普通】【中】
+	Item Colours[1025][7]:-1,-2,-2,-2 //U96暴風公會 Stormguild
+	U96 暴風公會 Stormguild
+	Item Colours[1025][5]:-1,-2,-2,-2 //S0希弗柏的防護 Civerb's Ward
+	S0 希弗柏的防護 Civerb's Ward
+idx1026 txt331 type2:Shield code:kit (kit xit uit) 輕盾【普通】【輕】 輕盾【普通】【輕】
+	Item Colours[1026][7]:-1,-2,-2,-2 //U99作響的金屬 Steelclash
+	U99 作響的金屬 Steelclash
+	Item Colours[1026][5]:-1,-2,-2,-2 //S21米拉伯佳之球 Milabrega's Orb
+	S21 米拉伯佳之球 Milabrega's Orb
+idx1027 txt332 type2:Shield code:tow (tow xow uow) 塔盾【普通】【重】 塔盾【普通】【重】
+	Item Colours[1027][7]:-1,-2,-2,-2 //U100貝弗提的紀念 Bverrit Keep
+	U100 貝弗提的紀念 Bverrit Keep
+	Item Colours[1027][5]:-1,-2,-2,-2 //S40西剛的守護 Sigon's Guard
+	S40 西剛的守護 Sigon's Guard
+idx1028 txt333 type2:Shield code:gts (gts xts uts) 哥德盾牌【普通】【中】 哥德盾牌【普通】【中】
+	Item Colours[1028][7]:-1,-2,-2,-2 //U101囚房 The Ward
+	U101 囚房 The Ward
+	Item Colours[1028][5]:-1,-2,-2,-2 //S14依森哈德的閃避 Isenhart's Parry
+	S14 依森哈德的閃避 Isenhart's Parry
+idx1029 txt334 type16:Glove code:lgl (lgl xlg ulg) 皮手套【普通】 皮手套【普通】
+	Item Colours[1029][7]:-1,-2,-2,-2 //U102柏克之手 The Hand of Broc
+	U102 柏克之手 The Hand of Broc
+	Item Colours[1029][5]:-1,-2,-2,-2 //S47死亡之手 Death's Hand
+	S47 死亡之手 Death's Hand
+idx1030 txt335 type16:Glove code:vgl (vgl xvg uvg) 重手套【普通】 重手套【普通】
+	Item Colours[1030][7]:-1,-2,-2,-2 //U103血拳 Bloodfist
+	U103 血拳 Bloodfist
+	Item Colours[1030][5]:-1,-2,-2,-2 //S125山德的禁忌 Sander's Taboo
+	S125 山德的禁忌 Sander's Taboo
+idx1031 txt336 type16:Glove code:mgl (mgl xmg umg) 鎖鍊手套【普通】 鎖鍊手套【普通】
+	Item Colours[1031][7]:-1,-2,-2,-2 //U104運氣守護 Chance Guards
+	U104 運氣守護 Chance Guards
+	Item Colours[1031][5]:-1,-2,-2,-2 //S8克雷得勞之鉗 Cleglaw's Pincers
+	S8 克雷得勞之鉗 Cleglaw's Pincers
+idx1032 txt337 type16:Glove code:tgl (tgl xtg utg) 輕型鐵手套【普通】 輕型鐵手套【普通】
+	Item Colours[1032][7]:-1,-2,-2,-2 //U105法師之拳 Magefist
+	U105 法師之拳 Magefist
+	Item Colours[1032][5]:-1,-2,-2,-2 //S10依雷撒的袖口 Iratha's CuffS57北極手套 Arctic Mitts
+	S10 依雷撒的袖口 Iratha's Cuff
+	S57 北極手套 Arctic Mitts
+idx1033 txt338 type16:Glove code:hgl (hgl xhg uhg) 鐵手套【普通】 鐵手套【普通】
+	Item Colours[1033][7]:-1,-2,-2,-2 //U106霜燃 Frostburn
+	U106 霜燃 Frostburn
+	Item Colours[1033][5]:-1,-2,-2,-2 //S35西剛的挑戰 Sigon's Gage
+	S35 西剛的挑戰 Sigon's Gage
+idx1034 txt339 type15:Boot code:lbt (lbt xlb ulb) 皮靴【普通】 皮靴【普通】
+	Item Colours[1034][7]:-1,-2,-2,-2 //U107熱靴刺 Hotspur
+	U107 熱靴刺 Hotspur
+	Item Colours[1034][5]:-1,-2,-2,-2 //S32坦克雷的平頭釘 Tancred's Hobnails
+	S32 坦克雷的平頭釘 Tancred's Hobnails
+idx1035 txt340 type15:Boot code:vbt (vbt xvb uvb) 重靴【普通】 重靴【普通】
+	Item Colours[1035][7]:-1,-2,-2,-2 //U108血腳 Gorefoot
+	U108 血腳 Gorefoot
+	Item Colours[1035][5]:-1,-2,-2,-2 //S119牛魔王之蹄 Cow King's HoovesS124山德的碎石 Sander's Riprap
+	S119 牛魔王之蹄 Cow King's Hooves
+	S124 山德的碎石 Sander's Riprap
+idx1036 txt341 type15:Boot code:mbt (mbt xmb umb) 鎖鍊靴【普通】 鎖鍊靴【普通】
+	Item Colours[1036][7]:-1,-2,-2,-2 //U109凱松的征服 Treads of Cthon
+	U109 凱松的征服 Treads of Cthon
+	Item Colours[1036][5]:-1,-2,-2,-2 //S3哈斯拉柏的鐵後跟 Hsarus' Iron Heel
+	S3 哈斯拉柏的鐵後跟 Hsarus' Iron Heel
+idx1037 txt342 type15:Boot code:tbt (tbt xtb utb) 輕型金屬靴【普通】 輕型金屬靴【普通】
+	Item Colours[1037][7]:-1,-2,-2,-2 //U110小妖精腳趾 Goblin Toe
+	U110 小妖精腳趾 Goblin Toe
+	Item Colours[1037][5]:-1,-2,-2,-2 //S18維達拉的距毛 Vidala's Fetlock
+	S18 維達拉的距毛 Vidala's Fetlock
+idx1038 txt343 type15:Boot code:hbt (hbt xhb uhb) 護脛【普通】 護脛【普通】
+	Item Colours[1038][7]:-1,-2,-2,-2 //U111淚之臀 Tearhaunch
+	U111 淚之臀 Tearhaunch
+	Item Colours[1038][5]:-1,-2,-2,-2 //S38西剛的木鞋 Sigon's Sabot
+	S38 西剛的木鞋 Sigon's Sabot
+idx1039 txt344 type19:Belt code:lbl (lbl zlb ulc) 飾帶【普通】 飾帶【普通】
+	Item Colours[1039][7]:-1,-2,-2,-2 //U112雷尼摩 Lenymo
+	U112 雷尼摩 Lenymo
+	Item Colours[1039][5]:-1,-2,-2,-2 //S48死亡的守護 Death's Guard
+	S48 死亡的守護 Death's Guard
+idx1040 txt345 type19:Belt code:vbl (vbl zvb uvc) 輕扣帶【普通】 輕扣帶【普通】
+	Item Colours[1040][7]:-1,-2,-2,-2 //U113蛇索 Snakecord
+	U113 蛇索 Snakecord
+	Item Colours[1040][5]:-1,-2,-2,-2 //S56北極捆縛 Arctic Binding
+	S56 北極捆縛 Arctic Binding
+idx1041 txt346 type19:Belt code:mbl (mbl zmb umc) 扣帶【普通】 扣帶【普通】
+	Item Colours[1041][7]:-1,-2,-2,-2 //U114夜煙 Nightsmoke
+	U114 夜煙 Nightsmoke
+	Item Colours[1041][5]:-1,-2,-2,-2 //S5哈斯拉柏的鐵胸衣 Hsarus' Iron StayS110華寧的祝福 Hwanin's Blessing
+	S5 哈斯拉柏的鐵胸衣 Hsarus' Iron Stay
+	S110 華寧的祝福 Hwanin's Blessing
+idx1042 txt347 type19:Belt code:tbl (tbl ztb utc) 重扣帶【普通】 重扣帶【普通】
+	Item Colours[1042][7]:-1,-2,-2,-2 //U115金色包袱 Goldwrap
+	U115 金色包袱 Goldwrap
+	Item Colours[1042][5]:-1,-2,-2,-2 //S12依雷撒之繩 Iratha's CordS43地獄符號 Infernal Sign
+	S12 依雷撒之繩 Iratha's Cord
+	S43 地獄符號 Infernal Sign
+idx1043 txt348 type19:Belt code:hbl (hbl zhb uhc) 金屬扣帶【普通】 金屬扣帶【普通】
+	Item Colours[1043][7]:-1,-2,-2,-2 //U116鋒利扣帶 Bladebuckle
+	U116 鋒利扣帶 Bladebuckle
+	Item Colours[1043][5]:-1,-2,-2,-2 //S39西剛的披肩 Sigon's Wrap
+	S39 西剛的披肩 Sigon's Wrap
+idx1044 txt349 type37:Helm code:bhm (bhm xh9 uh9) 白骨頭盔【普通】 白骨頭盔【普通】
+	Item Colours[1044][7]:-1,-2,-2,-2 //U75溫暖骷髏 Wormskull
+	U75 溫暖骷髏 Wormskull
+	Item Colours[1044][5]:-1,-2,-2,-2 //S34坦克雷之骷髏 Tancred's Skull
+	S34 坦克雷之骷髏 Tancred's Skull
+idx1045 txt350 type2:Shield code:bsh (bsh xsh ush) 白骨盾牌【普通】【輕】 白骨盾牌【普通】【輕】
+	Item Colours[1045][7]:-1,-2,-2,-2 //U97無眼之牆 Wall of the Eyeless
+	U97 無眼之牆 Wall of the Eyeless
+idx1046 txt351 type2:Shield code:spk (spk xpk upk) 尖刺盾牌【普通】【輕】 尖刺盾牌【普通】【輕】
+	Item Colours[1046][7]:-1,-2,-2,-2 //U98劍背之架 Swordback Hold
+	U98 劍背之架 Swordback Hold
+idx1047 txt352 type37:Helm code:xap (cap xap uap) 戰帽【擴展】 戰帽【擴展】
+	Item Colours[1047][7]:-1,-2,-2,-2 //U201粗野之冠 Peasant Crown
+	U201 粗野之冠 Peasant Crown
+	Item Colours[1047][5]:-1,-2,-2,-2 //S117牛魔王之角 Cow King's Horns
+	S117 牛魔王之角 Cow King's Horns
+idx1048 txt353 type37:Helm code:xkp (skp xkp ukp) 輕便頭盔【擴展】 輕便頭盔【擴展】
+	Item Colours[1048][7]:-1,-2,-2,-2 //U202岩石制動器 Rockstopper
+	U202 岩石制動器 Rockstopper
+idx1049 txt354 type37:Helm code:xlm (hlm xlm ulm) 無頰頭盔【擴展】 無頰頭盔【擴展】
+	Item Colours[1049][7]:-1,-2,-2,-2 //U203偷取骷髏 Stealskull
+	U203 偷取骷髏 Stealskull
+idx1050 txt355 type37:Helm code:xhl (fhl xhl uhl) 輕鋼盔【擴展】 輕鋼盔【擴展】
+	Item Colours[1050][7]:-1,-2,-2,-2 //U204暗視之盔 Darksight Helm
+	U204 暗視之盔 Darksight Helm
+	Item Colours[1050][5]:-1,-2,-2,-2 //S114沙撒璧的精神之鞘 Sazabi's Mental Sheath
+	S114 沙撒璧的精神之鞘 Sazabi's Mental Sheath
+idx1051 txt356 type37:Helm code:xhm (ghm xhm uhm) 翼盔【擴展】 翼盔【擴展】
+	Item Colours[1051][7]:-1,-2,-2,-2 //U205女神之翼 Valkyrie Wing
+	U205 女神之翼 Valkyrie Wing
+	Item Colours[1051][5]:-1,-2,-2,-2 //S104吉永之臉 Guillaume's Face
+	S104 吉永之臉 Guillaume's Face
+idx1052 txt357 type37:Helm code:xrn (crn xrn urn) 巨皇冠【擴展】 巨皇冠【擴展】
+	Item Colours[1052][7]:-1,-2,-2,-2 //U206盜賊皇冠 Crown of Thieves
+	U206 盜賊皇冠 Crown of Thieves
+	Item Colours[1052][5]:-1,-2,-2,-2 //S108華寧的光輝 Hwanin's Splendor
+	S108 華寧的光輝 Hwanin's Splendor
+idx1053 txt358 type37:Helm code:xsk (msk xsk usk) 死亡面具【擴展】 死亡面具【擴展】
+	Item Colours[1053][7]:-1,-2,-2,-2 //U207黑角面具 Blackhorn's Face
+	U207 黑角面具 Blackhorn's Face
+	Item Colours[1053][5]:-1,-2,-2,-2 //S80塔-拉夏的赫拉迪克紋章 Tal Rasha's Horadric Crest
+	S80 塔-拉夏的赫拉迪克紋章 Tal Rasha's Horadric Crest
+idx1054 txt359 type3:Armor code:xui (qui xui uui) 鬼魂戰甲【擴展】【輕】 鬼魂戰甲【擴展】【輕】
+	Item Colours[1054][7]:-1,-2,-2,-2 //U209靈魂帷幕 The Spirit Shroud
+	U209 靈魂帷幕 The Spirit Shroud
+idx1055 txt360 type3:Armor code:xea (lea xea uea) 海蛇皮甲【擴展】【輕】 海蛇皮甲【擴展】【輕】
+	Item Colours[1055][7]:-1,-2,-2,-2 //U210蛇魔法師之皮 Skin of the Vipermagi
+	U210 蛇魔法師之皮 Skin of the Vipermagi
+idx1056 txt361 type3:Armor code:xla (hla xla ula) 魔皮戰甲【擴展】【輕】 魔皮戰甲【擴展】【輕】
+	Item Colours[1056][7]:-1,-2,-2,-2 //U211剝皮者之皮 Skin of the Flayed One
+	U211 剝皮者之皮 Skin of the Flayed One
+idx1057 txt362 type3:Armor code:xtu (stu xtu utu) 攀繞戰甲【擴展】【輕】 攀繞戰甲【擴展】【輕】
+	Item Colours[1057][7]:-1,-2,-2,-2 //U212擲鐵 Iron Pelt
+	U212 擲鐵 Iron Pelt
+idx1058 txt363 type3:Armor code:xng (rng xng ung) 連扣戰甲【擴展】【中】 連扣戰甲【擴展】【中】
+	Item Colours[1058][7]:-1,-2,-2,-2 //U213靈魂熔爐 Spirit Forge
+	U213 靈魂熔爐 Spirit Forge
+idx1059 txt364 type3:Armor code:xcl (scl xcl ucl) 提格萊特戰甲【擴展】【重】 提格萊特戰甲【擴展】【重】
+	Item Colours[1059][7]:-1,-2,-2,-2 //U214鴉鳴 Crow Caw
+	U214 鴉鳴 Crow Caw
+	Item Colours[1059][5]:-1,-2,-2,-2 //S109華寧的保護 Hwanin's Refuge
+	S109 華寧的保護 Hwanin's Refuge
+idx1060 txt365 type3:Armor code:xhn (chn xhn uhn) 織網戰甲【擴展】【中】 織網戰甲【擴展】【中】
+	Item Colours[1060][7]:-1,-2,-2,-2 //U215謝夫特斯坦布 Shaftstop
+	U215 謝夫特斯坦布 Shaftstop
+idx1061 txt366 type3:Armor code:xrs (brs xrs urs) 護胸甲【擴展】【輕】 護胸甲【擴展】【輕】
+	Item Colours[1061][7]:-1,-2,-2,-2 //U216都瑞爾的殼 Duriel's Shell
+	U216 都瑞爾的殼 Duriel's Shell
+	Item Colours[1061][5]:-1,-2,-2,-2 //S102黑摩蘇的堅決 Haemosu's Adamant
+	S102 黑摩蘇的堅決 Haemosu's Adamant
+idx1062 txt367 type3:Armor code:xpl (spl xpl upl) 羅瑟戰甲【擴展】【中】 羅瑟戰甲【擴展】【中】
+	Item Colours[1062][7]:-1,-2,-2,-2 //U217詩寇蒂的憤怒 Skullder's Ire
+	U217 詩寇蒂的憤怒 Skullder's Ire
+idx1063 txt368 type3:Armor code:xlt (plt xlt ult) 聖堂武士外袍【擴展】【重】 聖堂武士外袍【擴展】【重】
+	Item Colours[1063][7]:-1,-2,-2,-2 //U218守護天使 Guardian Angel
+	U218 守護天使 Guardian Angel
+idx1064 txt369 type3:Armor code:xld (fld xld uld) 鯊齒戰甲【擴展】【中】 鯊齒戰甲【擴展】【中】
+	Item Colours[1064][7]:-1,-2,-2,-2 //U219排齒 Toothrow
+	U219 排齒 Toothrow
+idx1065 txt370 type3:Armor code:xth (gth xth uth) 凸紋戰甲【擴展】【中】 凸紋戰甲【擴展】【中】
+	Item Colours[1065][7]:-1,-2,-2,-2 //U220亞特瑪的哭喊 Atma's Wail
+	U220 亞特瑪的哭喊 Atma's Wail
+idx1066 txt371 type3:Armor code:xul (ful xul uul) 混沌戰甲【擴展】【重】 混沌戰甲【擴展】【重】
+	Item Colours[1066][7]:-1,-2,-2,-2 //U221黑色黑帝斯 Black Hades
+	U221 黑色黑帝斯 Black Hades
+	Item Colours[1066][5]:-1,-2,-2,-2 //S86塔格奧之鱗 Trang-Oul's Scales
+	S86 塔格奧之鱗 Trang-Oul's Scales
+idx1067 txt372 type3:Armor code:xar (aar xar uar) 華麗戰甲【擴展】【中】 華麗戰甲【擴展】【中】
+	Item Colours[1067][7]:-1,-2,-2,-2 //U222屍體的哀傷 Corpsemourn
+	U222 屍體的哀傷 Corpsemourn
+	Item Colours[1067][5]:-1,-2,-2,-2 //S82格瑞斯華爾德之心 Griswold's Heart
+	S82 格瑞斯華爾德之心 Griswold's Heart
+idx1068 txt373 type3:Armor code:xtp (ltp xtp utp) 法師鎧甲【擴展】【輕】 法師鎧甲【擴展】【輕】
+	Item Colours[1068][7]:-1,-2,-2,-2 //U223魁黑剛的智慧 Que-Hegan's Wisdom
+	U223 魁黑剛的智慧 Que-Hegan's Wisdom
+idx1069 txt374 type2:Shield code:xuc (buc xuc uuc) 防禦盾【擴展】【輕】 防禦盾【擴展】【輕】
+	Item Colours[1069][7]:-1,-2,-2,-2 //U224維斯爾坦特 Visceratuant
+	U224 維斯爾坦特 Visceratuant
+idx1070 txt375 type2:Shield code:xml (sml xml uml) 圓型盾【擴展】【輕】 圓型盾【擴展】【輕】
+	Item Colours[1070][7]:-1,-2,-2,-2 //U225摩西祝福之環 Moser's Blessed Circle
+	U225 摩西祝福之環 Moser's Blessed Circle
+	Item Colours[1070][5]:-1,-2,-2,-2 //S107惠斯坦的武裝 Whitstan's Guard
+	S107 惠斯坦的武裝 Whitstan's Guard
+idx1071 txt376 type2:Shield code:xrg (lrg xrg urg) 鱗盾【擴展】【中】 鱗盾【擴展】【中】
+	Item Colours[1071][7]:-1,-2,-2,-2 //U226風暴追逐者 Stormchaser
+	U226 風暴追逐者 Stormchaser
+idx1072 txt377 type2:Shield code:xit (kit xit uit) 龍盾【擴展】【輕】 龍盾【擴展】【輕】
+	Item Colours[1072][7]:-1,-2,-2,-2 //U227魔龍的非難 Tiamat's Rebuke
+	U227 魔龍的非難 Tiamat's Rebuke
+idx1073 txt378 type2:Shield code:xow (tow xow uow) 大盾【擴展】【重】 大盾【擴展】【重】
+	Item Colours[1073][7]:-1,-2,-2,-2 //U228基爾克的聖堂 Gerke's Sanctuary
+	U228 基爾克的聖堂 Gerke's Sanctuary
+idx1074 txt379 type2:Shield code:xts (gts xts uts) 古代之盾【擴展】【中】 古代之盾【擴展】【中】
+	Item Colours[1074][7]:-1,-2,-2,-2 //U229羅達門特之球體 Radament's Sphere
+	U229 羅達門特之球體 Radament's Sphere
+idx1075 txt380 type16:Glove code:xlg (lgl xlg ulg) 魔皮手套【擴展】 魔皮手套【擴展】
+	Item Colours[1075][7]:-1,-2,-2,-2 //U232劇毒之抓 Venom Grip
+	U232 劇毒之抓 Venom Grip
+idx1076 txt381 type16:Glove code:xvg (vgl xvg uvg) 鯊魚皮套【擴展】 鯊魚皮套【擴展】
+	Item Colours[1076][7]:-1,-2,-2,-2 //U233墓穴的撫弄 Gravepalm
+	U233 墓穴的撫弄 Gravepalm
+	Item Colours[1076][5]:-1,-2,-2,-2 //S106馬格納斯之皮 Magnus' Skin
+	S106 馬格納斯之皮 Magnus' Skin
+idx1077 txt382 type16:Glove code:xmg (mgl xmg umg) 重型手鐲【擴展】 重型手鐲【擴展】
+	Item Colours[1077][7]:-1,-2,-2,-2 //U234食屍鬼外皮 Ghoulhide
+	U234 食屍鬼外皮 Ghoulhide
+	Item Colours[1077][5]:-1,-2,-2,-2 //S88塔格奧之手 Trang-Oul's Claws
+	S88 塔格奧之手 Trang-Oul's Claws
+idx1078 txt383 type16:Glove code:xtg (tgl xtg utg) 戰場手套【擴展】 戰場手套【擴展】
+	Item Colours[1078][7]:-1,-2,-2,-2 //U235熔岩角羊 Lava Gout
+	U235 熔岩角羊 Lava Gout
+	Item Colours[1078][5]:-1,-2,-2,-2 //S92馬維娜的冰握 M'avina's Icy Clutch
+	S92 馬維娜的冰握 M'avina's Icy Clutch
+idx1079 txt384 type16:Glove code:xhg (hgl xhg uhg) 巨戰手套【擴展】 巨戰手套【擴展】
+	Item Colours[1079][7]:-1,-2,-2,-2 //U236地獄之嘴 Hellmouth
+	U236 地獄之嘴 Hellmouth
+	Item Colours[1079][5]:-1,-2,-2,-2 //S73不朽之王的融爐 Immortal King's Forge
+	S73 不朽之王的融爐 Immortal King's Forge
+idx1080 txt385 type15:Boot code:xlb (lbt xlb ulb) 魔皮靴【擴展】 魔皮靴【擴展】
+	Item Colours[1080][7]:-1,-2,-2,-2 //U237地獄闊步 Infernostride
+	U237 地獄闊步 Infernostride
+	Item Colours[1080][5]:-1,-2,-2,-2 //S97儀式的走道 Rite of Passage
+	S97 儀式的走道 Rite of Passage
+idx1081 txt386 type15:Boot code:xvb (vbt xvb uvb) 鯊皮之靴【擴展】 鯊皮之靴【擴展】
+	Item Colours[1081][7]:-1,-2,-2,-2 //U238水上飄 Waterwalk
+	U238 水上飄 Waterwalk
+idx1082 txt387 type15:Boot code:xmb (mbt xmb umb) 織網之靴【擴展】 織網之靴【擴展】
+	Item Colours[1082][7]:-1,-2,-2,-2 //U239紗織 Silkweave
+	U239 紗織 Silkweave
+	Item Colours[1082][5]:-1,-2,-2,-2 //S65娜塔亞的靈魂 Natalya's Soul
+	S65 娜塔亞的靈魂 Natalya's Soul
+idx1083 txt388 type15:Boot code:xtb (tbt xtb utb) 戰場之靴【擴展】 戰場之靴【擴展】
+	Item Colours[1083][7]:-1,-2,-2,-2 //U240戰爭旅者 War Traveler
+	U240 戰爭旅者 War Traveler
+	Item Colours[1083][5]:-1,-2,-2,-2 //S69艾爾多的成長 Aldur's Advance
+	S69 艾爾多的成長 Aldur's Advance
+idx1084 txt389 type15:Boot code:xhb (hbt xhb uhb) 巨戰之靴【擴展】 巨戰之靴【擴展】
+	Item Colours[1084][7]:-1,-2,-2,-2 //U241蝕肉騎士 Gore Rider
+	U241 蝕肉騎士 Gore Rider
+	Item Colours[1084][5]:-1,-2,-2,-2 //S74不朽之王之柱 Immortal King's Pillar
+	S74 不朽之王之柱 Immortal King's Pillar
+idx1085 txt390 type19:Belt code:zlb (lbl zlb ulc) 魔皮勳帶【擴展】 魔皮勳帶【擴展】
+	Item Colours[1085][7]:-1,-2,-2,-2 //U242長串之耳 String of Ears
+	U242 長串之耳 String of Ears
+idx1086 txt391 type19:Belt code:zvb (vbl zvb uvc) 鯊皮腰帶【擴展】 鯊皮腰帶【擴展】
+	Item Colours[1086][7]:-1,-2,-2,-2 //U243剃刀之尾 Razortail
+	U243 剃刀之尾 Razortail
+	Item Colours[1086][5]:-1,-2,-2,-2 //S93馬維娜的教義 M'avina's Tenet
+	S93 馬維娜的教義 M'avina's Tenet
+idx1087 txt392 type19:Belt code:zmb (mbl zmb umc) 織網腰帶【擴展】 織網腰帶【擴展】
+	Item Colours[1087][7]:-1,-2,-2,-2 //U244陰影陷阱 Gloom's Trap
+	U244 陰影陷阱 Gloom's Trap
+	Item Colours[1087][5]:-1,-2,-2,-2 //S76塔-拉夏的纖細衣服 Tal Rasha's Fine-Spun Cloth
+	S76 塔-拉夏的纖細衣服 Tal Rasha's Fine-Spun Cloth
+idx1088 txt393 type19:Belt code:ztb (tbl ztb utc) 戰場腰帶【擴展】 戰場腰帶【擴展】
+	Item Colours[1088][7]:-1,-2,-2,-2 //U245雪之衝突 Snowclash
+	U245 雪之衝突 Snowclash
+	Item Colours[1088][5]:-1,-2,-2,-2 //S105威廉的自尊 Wilhelm's Pride
+	S105 威廉的自尊 Wilhelm's Pride
+idx1089 txt394 type19:Belt code:zhb (hbl zhb uhc) 巨戰腰帶【擴展】 巨戰腰帶【擴展】
+	Item Colours[1089][7]:-1,-2,-2,-2 //U246雷神之力 Thundergod's Vigor
+	U246 雷神之力 Thundergod's Vigor
+	Item Colours[1089][5]:-1,-2,-2,-2 //S72不朽之王的瑣事 Immortal King's Detail
+	S72 不朽之王的瑣事 Immortal King's Detail
+idx1090 txt395 type37:Helm code:xh9 (bhm xh9 uh9) 殘酷頭盔【擴展】 殘酷頭盔【擴展】
+	Item Colours[1090][7]:-1,-2,-2,-2 //U208吸血鬼的凝視 Vampire Gaze
+	U208 吸血鬼的凝視 Vampire Gaze
+	Item Colours[1090][5]:-1,-2,-2,-2 //S62娜塔亞的圖騰 Natalya's Totem
+	S62 娜塔亞的圖騰 Natalya's Totem
+idx1091 txt396 type2:Shield code:xsh (bsh xsh ush) 冷酷之盾【擴展】【輕】 冷酷之盾【擴展】【輕】
+	Item Colours[1091][7]:-1,-2,-2,-2 //U230警戒之牆 Lidless Wall
+	U230 警戒之牆 Lidless Wall
+idx1092 txt397 type2:Shield code:xpk (spk xpk upk) 倒刺護盾【擴展】【輕】 倒刺護盾【擴展】【輕】
+	Item Colours[1092][7]:-1,-2,-2,-2 //U231長槍守衛 Lance Guard
+	U231 長槍守衛 Lance Guard
+idx1093 txt398 type72:DruHelm code:dr1 (dr1 dr6 drb) 狼頭【普通】  狼頭【普通】 
+idx1094 txt399 type72:DruHelm code:dr2 (dr2 dr7 drc) 飛鷹頭盔【普通】  飛鷹頭盔【普通】 
+idx1095 txt400 type72:DruHelm code:dr3 (dr3 dr8 drd) 鹿角【普通】  鹿角【普通】 
+idx1096 txt401 type72:DruHelm code:dr4 (dr4 dr9 dre) 獵鷹面具【普通】  獵鷹面具【普通】 
+idx1097 txt402 type72:DruHelm code:dr5 (dr5 dra drf) 靈魂狼頭面具【普通】  靈魂狼頭面具【普通】 
+idx1098 txt403 type71:Helm code:ba1 (ba1 ba6 bab) 顎骨帽【普通】  顎骨帽【普通】 
+idx1099 txt404 type71:Helm code:ba2 (ba2 ba7 bac) 尖牙盔【普通】  尖牙盔【普通】 
+idx1100 txt405 type71:Helm code:ba3 (ba3 ba8 bad) 角盔【普通】  角盔【普通】 
+idx1101 txt406 type71:Helm code:ba4 (ba4 ba9 bae) 突擊盔【普通】  突擊盔【普通】 
+idx1102 txt407 type71:Helm code:ba5 (ba5 baa baf) 復仇者之盔【普通】  復仇者之盔【普通】 
+	Item Colours[1102][5]:-1,-2,-2,-2 //S70不朽之王的意志 Immortal King's Will
+	S70 不朽之王的意志 Immortal King's Will
+idx1103 txt408 type70:PalShield code:pa1 (pa1 pa6 pab) 小盾【普通】【輕】  小盾【普通】【輕】 
+idx1104 txt409 type70:PalShield code:pa2 (pa2 pa7 pac) 輕圓盾【普通】【輕】  輕圓盾【普通】【輕】 
+idx1105 txt410 type70:PalShield code:pa3 (pa3 pa8 pad) 紋章盾【普通】【輕】  紋章盾【普通】【輕】 
+idx1106 txt411 type70:PalShield code:pa4 (pa4 pa9 pae) 艾文之盾【普通】【輕】  艾文之盾【普通】【輕】 
+idx1107 txt412 type70:PalShield code:pa5 (pa5 paa paf) 皇冠之盾【普通】【輕】  皇冠之盾【普通】【輕】 
+idx1108 txt413 type69:NecHeads code:ne1 (ne1 ne6 neb) 防腐之首【普通】【輕】  防腐之首【普通】【輕】 
+idx1109 txt414 type69:NecHeads code:ne2 (ne2 ne7 neg) 僵屍之首【普通】【輕】  僵屍之首【普通】【輕】 
+idx1110 txt415 type69:NecHeads code:ne3 (ne3 ne8 ned) 揭露者之首【普通】【輕】  揭露者之首【普通】【輕】 
+idx1111 txt416 type69:NecHeads code:ne4 (ne4 ne9 nee) 石像鬼之首【普通】【輕】  石像鬼之首【普通】【輕】 
+idx1112 txt417 type69:NecHeads code:ne5 (ne5 nea nef) 惡魔之首【普通】【輕】  惡魔之首【普通】【輕】 
+idx1113 txt418 type75:Circlet code:ci0 (ci0 ci2 ci3) 頭飾 Circlet【普通】 頭飾 Circlet【普通】
+	Item Colours[1113][5]:-1,-2,-2,-2 //S122娜吉的小環 Naj's Circlet
+	S122 娜吉的小環 Naj's Circlet
+idx1114 txt419 type75:Circlet code:ci1 (ci1 ci2 ci3) 寶冠 Coronet【普通】 寶冠 Coronet【普通】
+idx1115 txt420 type75:Circlet code:ci2 (ci1 ci2 ci3) 三重冠 Tiara【擴展】 三重冠 Tiara【擴展】
+	Item Colours[1115][7]:-1,-2,-2,-2 //U357奇拉的守護 Kira's Guardian
+	U357 奇拉的守護 Kira's Guardian
+idx1116 txt421 type75:Circlet code:ci3 (ci1 ci2 ci3) 權冠 Diadem【精英】 權冠 Diadem【精英】
+	Item Colours[1116][7]:-1,-2,-2,-2 //U336格利風之眼 Griffon's Eye
+	U336 格利風之眼 Griffon's Eye
+	Item Colours[1116][5]:-1,-2,-2,-2 //S90馬維娜的真實之眼 M'avina's True Sight
+	S90 馬維娜的真實之眼 M'avina's True Sight
+idx1117 txt422 type37:Helm code:uap (cap xap uap) 軍帽 Shako【精英】 軍帽 Shako【精英】
+	Item Colours[1117][7]:-1,-2,-2,-2 //U248諧角之冠 Harlequin Crest
+	U248 諧角之冠 Harlequin Crest
+idx1118 txt423 type37:Helm code:ukp (skp xkp ukp) 九頭蛇頭蓋骨圓帽 Hydraskull【精英】 九頭蛇頭蓋骨圓帽 Hydraskull【精英】
+idx1119 txt424 type37:Helm code:ulm (hlm xlm ulm) 活動頭盔 Armet【精英】 活動頭盔 Armet【精英】
+	Item Colours[1119][7]:-1,-2,-2,-2 //U297鋼影 Steel ShadeU346黑暗恐懼 Darkfear
+	U297 鋼影 Steel Shade
+	U346 黑暗恐懼 Darkfear
+idx1120 txt425 type37:Helm code:uhl (fhl xhl uhl) 巨貝頭盔 Giant Conch【精英】 巨貝頭盔 Giant Conch【精英】
+idx1121 txt426 type37:Helm code:uhm (ghm xhm uhm) 螺旋頭盔 Spired Helm【精英】 螺旋頭盔 Spired Helm【精英】
+	Item Colours[1121][7]:-1,-2,-2,-2 //U249鋼鐵面紗 Veil of SteelU343夜翼面紗 Nightwing's Veil
+	U249 鋼鐵面紗 Veil of Steel
+	U343 夜翼面紗 Nightwing's Veil
+	Item Colours[1121][5]:-1,-2,-2,-2 //S103安戴爾的全靈 Ondal's Almighty
+	S103 安戴爾的全靈 Ondal's Almighty
+idx1122 txt427 type37:Helm code:urn (crn xrn urn) 頭冠 Corona【精英】 頭冠 Corona【精英】
+	Item Colours[1122][7]:-1,-2,-2,-2 //U344年紀之冠 Crown of Ages
+	U344 年紀之冠 Crown of Ages
+	Item Colours[1122][5]:-1,-2,-2,-2 //S81格瑞斯華爾德的勇氣 Griswold's Valor
+	S81 格瑞斯華爾德的勇氣 Griswold's Valor
+idx1123 txt428 type37:Helm code:usk (msk xsk usk) 惡魔頭蓋骨面具 Demonhead【精英】 惡魔頭蓋骨面具 Demonhead【精英】
+	Item Colours[1123][7]:-1,-2,-2,-2 //U345安達利爾的面貌 Andariel's Visage
+	U345 安達利爾的面貌 Andariel's Visage
+idx1124 txt429 type3:Armor code:uui (qui xui uui) 灰暮壽衣 Dusk Shroud【精英】【輕】 灰暮壽衣 Dusk Shroud【精英】【輕】
+	Item Colours[1124][7]:-1,-2,-2,-2 //U358奧瑪斯的長袍 Ormus' Robes
+	U358 奧瑪斯的長袍 Ormus' Robes
+	Item Colours[1124][5]:-1,-2,-2,-2 //S98黑暗信徒 Dark Adherent
+	S98 黑暗信徒 Dark Adherent
+idx1125 txt430 type3:Armor code:uea (lea xea uea) 古龍皮 Wyrmhide【精英】【輕】 古龍皮 Wyrmhide【精英】【輕】
+idx1126 txt431 type3:Armor code:ula (hla xla ula) 聖甲蟲殼皮甲 Scarab Husk【精英】【輕】 聖甲蟲殼皮甲 Scarab Husk【精英】【輕】
+idx1127 txt432 type3:Armor code:utu (stu xtu utu) 線羊毛皮甲 Wire Fleece【精英】【輕】 線羊毛皮甲 Wire Fleece【精英】【輕】
+	Item Colours[1127][7]:-1,-2,-2,-2 //U250鬥士的禍根 The Gladiator's Bane
+	U250 鬥士的禍根 The Gladiator's Bane
+idx1128 txt433 type3:Armor code:ung (rng xng ung) 鑽石鎖子甲 Diamond Mail【精英】【中】 鑽石鎖子甲 Diamond Mail【精英】【中】
+idx1129 txt434 type3:Armor code:ucl (scl xcl ucl) 甲殼鎧鱗甲 Loricated Mail【精英】【重】 甲殼鎧鱗甲 Loricated Mail【精英】【重】
+	Item Colours[1129][5]:-1,-2,-2,-2 //S64娜塔亞的影子 Natalya's Shadow
+	S64 娜塔亞的影子 Natalya's Shadow
+idx1130 txt435 type3:Armor code:uhn (chn xhn uhn) 骸骨鏈甲 Boneweave【精英】【中】 骸骨鏈甲 Boneweave【精英】【中】
+idx1131 txt436 type3:Armor code:urs (brs xrs urs) 巨型鱗鎧胸甲 Great Hauberk【精英】【輕】 巨型鱗鎧胸甲 Great Hauberk【精英】【輕】
+idx1132 txt437 type3:Armor code:upl (spl xpl upl) 炎魔皮板甲 Balrog Skin【精英】【中】 炎魔皮板甲 Balrog Skin【精英】【中】
+	Item Colours[1132][7]:-1,-2,-2,-2 //U251阿凱尼的榮耀 Arkaine's Valor
+	U251 阿凱尼的榮耀 Arkaine's Valor
+	Item Colours[1132][5]:-1,-2,-2,-2 //S113沙撒璧的鬼魂釋放者 Sazabi's Ghost Liberator
+	S113 沙撒璧的鬼魂釋放者 Sazabi's Ghost Liberator
+idx1133 txt438 type3:Armor code:ult (plt xlt ult) 地獄鍛甲 Hellforge Plate【精英】【重】 地獄鍛甲 Hellforge Plate【精英】【重】
+	Item Colours[1133][5]:-1,-2,-2,-2 //S121娜吉的輕鎧甲 Naj's Light Plate
+	S121 娜吉的輕鎧甲 Naj's Light Plate
+idx1134 txt439 type3:Armor code:uld (fld xld uld) 海妖殼甲 Kraken Shell【精英】【中】 海妖殼甲 Kraken Shell【精英】【中】
+	Item Colours[1134][7]:-1,-2,-2,-2 //U317海王利維亞桑 Leviathan
+	U317 海王利維亞桑 Leviathan
+	Item Colours[1134][5]:-1,-2,-2,-2 //S91馬維娜的擁抱 M'avina's Embrace
+	S91 馬維娜的擁抱 M'avina's Embrace
+idx1135 txt440 type3:Armor code:uth (gth xth uth) 漆甲 Lacquered Plate【精英】【中】 漆甲 Lacquered Plate【精英】【中】
+	Item Colours[1135][5]:-1,-2,-2,-2 //S79塔-拉夏的守護 Tal Rasha's Guardianship
+	S79 塔-拉夏的守護 Tal Rasha's Guardianship
+idx1136 txt441 type3:Armor code:uul (ful xul uul) 陰影鎧甲 Shadow Plate【精英】【重】 陰影鎧甲 Shadow Plate【精英】【重】
+	Item Colours[1136][7]:-1,-2,-2,-2 //U348鋼鐵鎧甲 Steel Carapace
+	U348 鋼鐵鎧甲 Steel Carapace
+	Item Colours[1136][5]:-1,-2,-2,-2 //S67艾爾多的欺暪 Aldur's Deception
+	S67 艾爾多的欺暪 Aldur's Deception
+idx1137 txt442 type3:Armor code:uar (aar xar uar) 神聖盔甲 Sacred Armor【精英】【中】 神聖盔甲 Sacred Armor【精英】【中】
+	Item Colours[1137][7]:-1,-2,-2,-2 //U311泰瑞爾的力量 Tyrael's MightU366聖堂武士的力量 Templar's Might
+	U311 泰瑞爾的力量 Tyrael's Might
+	U366 聖堂武士的力量 Templar's Might
+	Item Colours[1137][5]:-1,-2,-2,-2 //S71不朽之王的靈魂牢籠 Immortal King's Soul Cage
+	S71 不朽之王的靈魂牢籠 Immortal King's Soul Cage
+idx1138 txt443 type3:Armor code:utp (ltp xtp utp) 執政官鎧甲 Archon Plate【精英】【輕】 執政官鎧甲 Archon Plate【精英】【輕】
+idx1139 txt444 type2:Shield code:uuc (buc xuc uuc) 防寒圓盾 Heater【精英】【輕】 防寒圓盾 Heater【精英】【輕】
+idx1140 txt445 type2:Shield code:uml (sml xml uml) 月精靈護盾 Luna【精英】【輕】 月精靈護盾 Luna【精英】【輕】
+	Item Colours[1140][7]:-1,-2,-2,-2 //U252黑橡樹盾 Blackoak Shield
+	U252 黑橡樹盾 Blackoak Shield
+idx1141 txt446 type2:Shield code:urg (lrg xrg urg) 亥伯龍盾 Hyperion【精英】【中】 亥伯龍盾 Hyperion【精英】【中】
+idx1142 txt447 type2:Shield code:uit (kit xit uit) 統治者大盾 Monarch【精英】【輕】 統治者大盾 Monarch【精英】【輕】
+	Item Colours[1142][7]:-1,-2,-2,-2 //U253暴風之盾 Stormshield
+	U253 暴風之盾 Stormshield
+idx1143 txt448 type2:Shield code:uow (tow xow uow) 聖盾 Aegis【精英】【重】 聖盾 Aegis【精英】【重】
+	Item Colours[1143][7]:-1,-2,-2,-2 //U349梅杜莎的凝視 Medusa's Gaze
+	U349 梅杜莎的凝視 Medusa's Gaze
+idx1144 txt449 type2:Shield code:uts (gts xts uts) 保護盾牌 Ward【精英】【中】 保護盾牌 Ward【精英】【中】
+	Item Colours[1144][7]:-1,-2,-2,-2 //U356魂系結界 Spirit Ward
+	U356 魂系結界 Spirit Ward
+	Item Colours[1144][5]:-1,-2,-2,-2 //S101泰比克的光榮 Taebaek's Glory
+	S101 泰比克的光榮 Taebaek's Glory
+idx1145 txt450 type16:Glove code:ulg (lgl xlg ulg) 荊棘連指手套 Bramble Mitts【精英】 荊棘連指手套 Bramble Mitts【精英】
+	Item Colours[1145][7]:-1,-2,-2,-2 //U295血塊撕裂者 Gore Ripper
+	U295 血塊撕裂者 Gore Ripper
+	Item Colours[1145][5]:-1,-2,-2,-2 //S96手掌的安置 Laying of Hands
+	S96 手掌的安置 Laying of Hands
+idx1146 txt451 type16:Glove code:uvg (vgl xvg uvg) 吸血鬼骸骨手套 Vampirebone Gloves【精英】 吸血鬼骸骨手套 Vampirebone Gloves【精英】
+	Item Colours[1146][7]:-1,-2,-2,-2 //U364卓古拉之握 Dracul's Grasp
+	U364 卓古拉之握 Dracul's Grasp
+idx1147 txt452 type16:Glove code:umg (mgl xmg umg) 吸血鬼手套 Vambraces【精英】 吸血鬼手套 Vambraces【精英】
+	Item Colours[1147][7]:-1,-2,-2,-2 //U312吸魂者 Soul Drainer
+	U312 吸魂者 Soul Drainer
+idx1148 txt453 type16:Glove code:utg (tgl xtg utg) 十字軍鐵手套 Crusader Gauntlets【精英】 十字軍鐵手套 Crusader Gauntlets【精英】
+idx1149 txt454 type16:Glove code:uhg (hgl xhg uhg) 食人魔鐵手套 Ogre Gauntlets【精英】 食人魔鐵手套 Ogre Gauntlets【精英】
+	Item Colours[1149][7]:-1,-2,-2,-2 //U391碎鋼 Steelrend
+	U391 碎鋼 Steelrend
+idx1150 txt455 type15:Boot code:ulb (lbt xlb ulb) 飛龍皮靴 Wyrmhide Boots【精英】 飛龍皮靴 Wyrmhide Boots【精英】
+	Item Colours[1150][7]:-1,-2,-2,-2 //U372人魚的齒輪 Merman's Sprocket
+	U372 人魚的齒輪 Merman's Sprocket
+idx1151 txt456 type15:Boot code:uvb (vbt xvb uvb) 聖甲蟲殼靴 Scarabshell Boots【精英】 聖甲蟲殼靴 Scarabshell Boots【精英】
+	Item Colours[1151][7]:-1,-2,-2,-2 //U369沙暴之旅 Sandstorm Trek
+	U369 沙暴之旅 Sandstorm Trek
+idx1152 txt457 type15:Boot code:umb (mbt xmb umb) 骸骨靴 Boneweave Boots【精英】 骸骨靴 Boneweave Boots【精英】
+	Item Colours[1152][7]:-1,-2,-2,-2 //U370骨髓行走 Marrowwalk
+	U370 骨髓行走 Marrowwalk
+idx1153 txt458 type15:Boot code:utb (tbt xtb utb) 鏡化靴 Mirrored Boots【精英】 鏡化靴 Mirrored Boots【精英】
+idx1154 txt459 type15:Boot code:uhb (hbt xhb uhb) 極速靴 Myrmidon Greaves【精英】 極速靴 Myrmidon Greaves【精英】
+	Item Colours[1154][7]:-1,-2,-2,-2 //U309影舞者 Shadow Dancer
+	U309 影舞者 Shadow Dancer
+idx1155 txt460 type19:Belt code:ulc (lbl zlb ulc) 蛛網腰帶 Spiderweb Sash【精英】 蛛網腰帶 Spiderweb Sash【精英】
+	Item Colours[1155][7]:-1,-2,-2,-2 //U373蜘蛛之網 Arachnid Mesh
+	U373 蜘蛛之網 Arachnid Mesh
+idx1156 txt461 type19:Belt code:uvc (vbl zvb uvc) 吸血鬼燎牙腰帶 Vampirefang Belt【精英】 吸血鬼燎牙腰帶 Vampirefang Belt【精英】
+	Item Colours[1156][7]:-1,-2,-2,-2 //U374吸血聖王之圈 Nosferatu's Coil
+	U374 吸血聖王之圈 Nosferatu's Coil
+idx1157 txt462 type19:Belt code:umc (mbl zmb umc) 秘銀腰帶 Mithril Coil【精英】 秘銀腰帶 Mithril Coil【精英】
+	Item Colours[1157][7]:-1,-2,-2,-2 //U376維爾登戈的心結 Verdungo's Hearty Cord
+	U376 維爾登戈的心結 Verdungo's Hearty Cord
+	Item Colours[1157][5]:-1,-2,-2,-2 //S99信條 Credendum
+	S99 信條 Credendum
+idx1158 txt463 type19:Belt code:utc (tbl ztb utc) 洞穴巨魔腰帶 Troll Belt【精英】 洞穴巨魔腰帶 Troll Belt【精英】
+	Item Colours[1158][7]:-1,-2,-2,-2 //U362瓦瑞夫的令牌 Warriv's Warder
+	U362 瓦瑞夫的令牌 Warriv's Warder
+	Item Colours[1158][5]:-1,-2,-2,-2 //S89塔格奧之束帶 Trang-Oul's Girth
+	S89 塔格奧之束帶 Trang-Oul's Girth
+idx1159 txt464 type19:Belt code:uhc (hbl zhb uhc) 巨神腰帶 Colossus Girdle【精英】 巨神腰帶 Colossus Girdle【精英】
+idx1160 txt465 type37:Helm code:uh9 (bhm xh9 uh9) 骸骨面罩 Bone Visage【精英】 骸骨面罩 Bone Visage【精英】
+	Item Colours[1160][7]:-1,-2,-2,-2 //U379巨骷髏 Giant Skull
+	U379 巨骷髏 Giant Skull
+	Item Colours[1160][5]:-1,-2,-2,-2 //S85塔格奧之外裝 Trang-Oul's Guise
+	S85 塔格奧之外裝 Trang-Oul's Guise
+idx1161 txt466 type2:Shield code:ush (bsh xsh ush) 洞穴巨魔巢穴骨盾 Troll Nest【精英】【輕】 洞穴巨魔巢穴骨盾 Troll Nest【精英】【輕】
+	Item Colours[1161][7]:-1,-2,-2,-2 //U390獵頭人的榮耀 Head Hunter's Glory
+	U390 獵頭人的榮耀 Head Hunter's Glory
+idx1162 txt467 type2:Shield code:upk (spk xpk upk) 刀刃刺盾 Blade Barrier【精英】【輕】 刀刃刺盾 Blade Barrier【精英】【輕】
+	Item Colours[1162][7]:-1,-2,-2,-2 //U363尖刺根源 Spike Thorn
+	U363 尖刺根源 Spike Thorn
+idx1163 txt468 type72:DruHelm code:dr6 (dr1 dr6 drb) 阿爾發頭盔【擴展】  阿爾發頭盔【擴展】 
+idx1164 txt469 type72:DruHelm code:dr7 (dr2 dr7 drc) 獅鷲獸頭帶【擴展】 獅鷲獸頭帶【擴展】
+idx1165 txt470 type72:DruHelm code:dr8 (dr3 dr8 drd) 獵人的偽裝【擴展】  獵人的偽裝【擴展】 
+	Item Colours[1165][5]:-1,-2,-2,-2 //S66艾爾多的冷酷凝視 Aldur's Stony Gaze
+	S66 艾爾多的冷酷凝視 Aldur's Stony Gaze
+idx1166 txt471 type72:DruHelm code:dr9 (dr4 dr9 dre) 神聖羽毛頭帶【擴展】 神聖羽毛頭帶【擴展】
+idx1167 txt472 type72:DruHelm code:dra (dr5 dra drf) 圖騰面具狼盔【擴展】  圖騰面具狼盔【擴展】 
+	Item Colours[1167][7]:-1,-2,-2,-2 //U287加爾的長髮 Jalal's Mane
+	U287 加爾的長髮 Jalal's Mane
+idx1168 txt473 type71:Helm code:ba6 (ba1 ba6 bab) 顎骨面甲【擴展】  顎骨面甲【擴展】 
+idx1169 txt474 type71:Helm code:ba7 (ba2 ba7 bac) 獅頭尖盔【擴展】  獅頭尖盔【擴展】 
+idx1170 txt475 type71:Helm code:ba8 (ba3 ba8 bad) 狂怒面具刺盔【擴展】  狂怒面具刺盔【擴展】 
+idx1171 txt476 type71:Helm code:ba9 (ba4 ba9 bae) 蠻族頭盔【擴展】  蠻族頭盔【擴展】 
+idx1172 txt477 type71:Helm code:baa (ba5 baa baf) 殺手防護面甲【擴展】  殺手防護面甲【擴展】 
+	Item Colours[1172][7]:-1,-2,-2,-2 //U279亞瑞特的面容 Arreat's Face
+	U279 亞瑞特的面容 Arreat's Face
+idx1173 txt478 type70:PalShield code:pa6 (pa1 pa6 pab) 亞克南圓盾【擴展】【輕】  亞克南圓盾【擴展】【輕】 
+idx1174 txt479 type70:PalShield code:pa7 (pa2 pa7 pac) 亞克南輕圓盾【擴展】【輕】  亞克南輕圓盾【擴展】【輕】 
+idx1175 txt480 type70:PalShield code:pa8 (pa3 pa8 pad) 防護者盾牌【擴展】【輕】  防護者盾牌【擴展】【輕】 
+idx1176 txt481 type70:PalShield code:pa9 (pa4 pa9 pae) 飾金盾牌【擴展】【輕】  飾金盾牌【擴展】【輕】 
+	Item Colours[1176][7]:-1,-2,-2,-2 //U285撒卡蘭姆使者 Herald of Zakarum
+	U285 撒卡蘭姆使者 Herald of Zakarum
+idx1177 txt482 type70:PalShield code:paa (pa5 paa paf) 皇家盾牌【擴展】【輕】  皇家盾牌【擴展】【輕】 
+idx1178 txt483 type69:NecHeads code:ne6 (ne1 ne6 neb) 木乃伊印記【擴展】【輕】  木乃伊印記【擴展】【輕】 
+idx1179 txt484 type69:NecHeads code:ne7 (ne2 ne7 neg) 物神印記【擴展】【輕】  物神印記【擴展】【輕】 
+idx1180 txt485 type69:NecHeads code:ne8 (ne3 ne8 ned) 司事印記【擴展】【輕】  司事印記【擴展】【輕】 
+idx1181 txt486 type69:NecHeads code:ne9 (ne4 ne9 nee) 領唱者印記【擴展】【輕】  領唱者印記【擴展】【輕】 
+	Item Colours[1181][5]:-1,-2,-2,-2 //S87塔格奧之翼 Trang-Oul's Wing
+	S87 塔格奧之翼 Trang-Oul's Wing
+idx1182 txt487 type69:NecHeads code:nea (ne5 nea nef) 祭司印記【擴展】【輕】  祭司印記【擴展】【輕】 
+	Item Colours[1182][7]:-1,-2,-2,-2 //U280侏儒 Homunculus
+	U280 侏儒 Homunculus
+idx1183 txt488 type72:DruHelm code:drb (dr1 dr6 drb) 血腥之靈 Blood Spirit【精英】 血腥之靈 Blood Spirit【精英】
+	Item Colours[1183][7]:-1,-2,-2,-2 //U310地獄之吻 Cerebus' Bite
+	U310 地獄之吻 Cerebus' Bite
+idx1184 txt489 type72:DruHelm code:drc (dr2 dr7 drc) 太陽之靈 Sun Spirit【精英】 太陽之靈 Sun Spirit【精英】
+idx1185 txt490 type72:DruHelm code:drd (dr3 dr8 drd) 大地之靈 Earth Spirit【精英】 大地之靈 Earth Spirit【精英】
+	Item Colours[1185][7]:-1,-2,-2,-2 //U327靈魂看守者 Spirit Keeper
+	U327 靈魂看守者 Spirit Keeper
+idx1186 txt491 type72:DruHelm code:dre (dr4 dr9 dre) 天空之靈 Sky Spirit【精英】 天空之靈 Sky Spirit【精英】
+	Item Colours[1186][7]:-1,-2,-2,-2 //U350烏鴉之王 Ravenlore
+	U350 烏鴉之王 Ravenlore
+idx1187 txt492 type72:DruHelm code:drf (dr5 dra drf) 幽夢之靈 Dream Spirit【精英】 幽夢之靈 Dream Spirit【精英】
+idx1188 txt493 type71:Helm code:bab (ba1 ba6 bab) 屠殺頭盔 Carnage Helm【精英】 屠殺頭盔 Carnage Helm【精英】
+idx1189 txt494 type71:Helm code:bac (ba2 ba7 bac) 暴怒面甲 Fury Visor【精英】 暴怒面甲 Fury Visor【精英】
+	Item Colours[1189][7]:-1,-2,-2,-2 //U355狼嚎 Wolfhowl
+	U355 狼嚎 Wolfhowl
+idx1190 txt495 type71:Helm code:bad (ba3 ba8 bad) 毀滅者頭盔 Destroyer Helm【精英】 毀滅者頭盔 Destroyer Helm【精英】
+	Item Colours[1190][7]:-1,-2,-2,-2 //U325惡魔號角的邊緣 Demonhorn's Edge
+	U325 惡魔號角的邊緣 Demonhorn's Edge
+idx1191 txt496 type71:Helm code:bae (ba4 ba9 bae) 征服者皇冠面甲 Conqueror Crown【精英】 征服者皇冠面甲 Conqueror Crown【精英】
+	Item Colours[1191][7]:-1,-2,-2,-2 //U361
+
+	U361 
+
+idx1192 txt497 type71:Helm code:baf (ba5 baa baf) 守護者皇冠面甲 Guardian Crown【精英】 守護者皇冠面甲 Guardian Crown【精英】
+idx1193 txt498 type70:PalShield code:pab (pa1 pa6 pab) 神聖小盾 Sacred Targe【精英】【輕】 神聖小盾 Sacred Targe【精英】【輕】
+idx1194 txt499 type70:PalShield code:pac (pa2 pa7 pac) 神聖輕圓盾 Sacred Rondache【精英】【輕】 神聖輕圓盾 Sacred Rondache【精英】【輕】
+	Item Colours[1194][7]:-1,-2,-2,-2 //U329阿爾瑪-尼格拉 Alma Negra
+	U329 阿爾瑪-尼格拉 Alma Negra
+idx1195 txt500 type70:PalShield code:pad (pa3 pa8 pad) 庫拉斯特之盾 Kurast Shield 庫拉斯特之盾 Kurast Shield
+idx1196 txt501 type70:PalShield code:pae (pa4 pa9 pae) 撒卡蘭姆盾牌 Zakarum Shield【精英】【輕】 撒卡蘭姆盾牌 Zakarum Shield【精英】【輕】
+	Item Colours[1196][7]:-1,-2,-2,-2 //U347龍鱗 Dragonscale
+	U347 龍鱗 Dragonscale
+idx1197 txt502 type70:PalShield code:paf (pa5 paa paf) 旋風盾 Vortex Shield【精英】【輕】 旋風盾 Vortex Shield【精英】【輕】
+	Item Colours[1197][5]:-1,-2,-2,-2 //S84格瑞斯華爾德的榮耀 Griswold's Honor
+	S84 格瑞斯華爾德的榮耀 Griswold's Honor
+idx1198 txt503 type69:NecHeads code:neb (ne1 ne6 neb) 隨侍之骨 Minion Skull【精英】【輕】 隨侍之骨 Minion Skull【精英】【輕】
+idx1199 txt504 type69:NecHeads code:neg (ne2 ne7 neg) 地獄爪牙之骨 Hellspawn Skull【精華】【輕】 地獄爪牙之骨 Hellspawn Skull【精華】【輕】
+idx1200 txt505 type69:NecHeads code:ned (ne3 ne8 ned) 監視者之骨 Overseer Skull【精英】【輕】 監視者之骨 Overseer Skull【精英】【輕】
+idx1201 txt506 type69:NecHeads code:nee (ne4 ne9 nee) 女妖之骨 Succubus Skull【精英】【輕】 女妖之骨 Succubus Skull【精英】【輕】
+	Item Colours[1201][7]:-1,-2,-2,-2 //U341骨焰 Boneflame
+	U341 骨焰 Boneflame
+idx1202 txt507 type69:NecHeads code:nef (ne5 nea nef) 血王之骨 Bloodlord Skull【精英】【輕】 血王之骨 Bloodlord Skull【精英】【輕】
+	Item Colours[1202][7]:-1,-2,-2,-2 //U330魔力肇生 Darkforce Spawn
+	U330 魔力肇生 Darkforce Spawn
+idx2001 txt508 type11:Elixir code:elx 靈葯 靈葯
+idx2002 txt509 type76:healing code:hpo 一股邪惡力量 一股邪惡力量
+idx2003 txt510 type77:mana code:mpo 一股邪惡力量 一股邪惡力量
+idx2004 txt511 type76:healing code:hpf 一股邪惡力量 一股邪惡力量
+idx2005 txt512 type77:mana code:mpf 一股邪惡力量 一股邪惡力量
+idx2006 txt513 type79:Stamina code:vps 體力葯劑 體力葯劑
+idx2007 txt514 type80:Antidote code:yps 解毒葯劑 解毒葯劑
+idx2008 txt515 type78:Rejuvenation code:rvs 回復活力葯劑 回復活力葯劑
+idx2009 txt516 type78:Rejuvenation code:rvl 全面回復活力葯劑 全面回復活力葯劑
+idx2010 txt517 type81:Thawing code:wms 融解葯劑 融解葯劑
+idx2011 txt518 type18:Book code:tbk 城鎮傳送之書 城鎮傳送之書
+idx2012 txt519 type18:Book code:ibk 辨視之書 辨視之書
+idx2013 txt520 type12:Amulet code:amu 項鏈 Amulet 項鏈 Amulet
+	Item Colours[2013][7]:-1,-2,-2,-2 //U117諾科藍遺物 Nokozan RelicU118艾利屈之眼 The Eye of EtlichU119瑪哈姆橡木古董 The Mahim-Oak CurioU269貓眼 The Cat's EyeU270旭日東昇 The Rising SunU271新月 Crescent MoonU272馬拉的萬花筒 Mara's KaleidoscopeU273亞特瑪的聖甲蟲 Atma's ScarabU276大君之怒 Highlord's WrathU277薩拉森的機會 Saracen's ChanceU302熾天使之韻 Seraph's HymnU375金屬網格 MetalgridU401拉蘇克的鬥士 Larzuk's ChampionU402拉蘇克的鬥士 Larzuk's ChampionU403拉蘇克的鬥士 Larzuk's ChampionU404拉蘇克的鬥士 Larzuk's ChampionU405拉蘇克的鬥士 Larzuk's ChampionU406拉蘇克的鬥士 Larzuk's ChampionU407拉蘇克的鬥士 Larzuk's ChampionU408拉蘇克的鬥士 Larzuk's ChampionU409拉蘇克的鬥士 Larzuk's ChampionU410拉蘇克的鬥士 Larzuk's ChampionU411拉蘇克的鬥士 Larzuk's ChampionU412拉蘇克的鬥士 Larzuk's ChampionU413拉蘇克的鬥士 Larzuk's ChampionU414拉蘇克的鬥士 Larzuk's ChampionU415拉蘇克的鬥士 Larzuk's ChampionU416拉蘇克的鬥士 Larzuk's ChampionU417拉蘇克的鬥士 Larzuk's ChampionU418拉蘇克的鬥士 Larzuk's ChampionU419拉蘇克的鬥士 Larzuk's ChampionU420拉蘇克的鬥士 Larzuk's ChampionU421拉蘇克的鬥士 Larzuk's ChampionU422拉蘇克的鬥士 Larzuk's ChampionU423拉蘇克的鬥士 Larzuk's ChampionU424拉蘇克的鬥士 Larzuk's ChampionU425拉蘇克的鬥士 Larzuk's ChampionU426拉蘇克的鬥士 Larzuk's ChampionU427拉蘇克的鬥士 Larzuk's ChampionU428拉蘇克的鬥士 Larzuk's ChampionU429拉蘇克的鬥士 Larzuk's ChampionU430拉蘇克的鬥士 Larzuk's ChampionU431拉蘇克的鬥士 Larzuk's ChampionU432拉蘇克的鬥士 Larzuk's ChampionU433拉蘇克的鬥士 Larzuk's ChampionU434拉蘇克的鬥士 Larzuk's ChampionU435拉蘇克的鬥士 Larzuk's ChampionU436拉蘇克的鬥士 Larzuk's ChampionU437拉蘇克的鬥士 Larzuk's ChampionU438拉蘇克的鬥士 Larzuk's ChampionU439拉蘇克的鬥士 Larzuk's ChampionU440拉蘇克的鬥士 Larzuk's ChampionU441拉蘇克的鬥士 Larzuk's ChampionU442拉蘇克的鬥士 Larzuk's ChampionU443拉蘇克的鬥士 Larzuk's ChampionU444拉蘇克的鬥士 Larzuk's ChampionU445拉蘇克的鬥士 Larzuk's ChampionU446拉蘇克的鬥士 Larzuk's ChampionU447拉蘇克的鬥士 Larzuk's ChampionU448拉蘇克的鬥士 Larzuk's ChampionU449拉蘇克的鬥士 Larzuk's ChampionU450拉蘇克的鬥士 Larzuk's ChampionU451拉蘇克的鬥士 Larzuk's ChampionU452拉蘇克的鬥士 Larzuk's ChampionU453拉蘇克的鬥士 Larzuk's Champion
+	U117 諾科藍遺物 Nokozan Relic
+	U118 艾利屈之眼 The Eye of Etlich
+	U119 瑪哈姆橡木古董 The Mahim-Oak Curio
+	U269 貓眼 The Cat's Eye
+	U270 旭日東昇 The Rising Sun
+	U271 新月 Crescent Moon
+	U272 馬拉的萬花筒 Mara's Kaleidoscope
+	U273 亞特瑪的聖甲蟲 Atma's Scarab
+	U276 大君之怒 Highlord's Wrath
+	U277 薩拉森的機會 Saracen's Chance
+	U302 熾天使之韻 Seraph's Hymn
+	U375 金屬網格 Metalgrid
+	U401 拉蘇克的鬥士 Larzuk's Champion
+	U402 拉蘇克的鬥士 Larzuk's Champion
+	U403 拉蘇克的鬥士 Larzuk's Champion
+	U404 拉蘇克的鬥士 Larzuk's Champion
+	U405 拉蘇克的鬥士 Larzuk's Champion
+	U406 拉蘇克的鬥士 Larzuk's Champion
+	U407 拉蘇克的鬥士 Larzuk's Champion
+	U408 拉蘇克的鬥士 Larzuk's Champion
+	U409 拉蘇克的鬥士 Larzuk's Champion
+	U410 拉蘇克的鬥士 Larzuk's Champion
+	U411 拉蘇克的鬥士 Larzuk's Champion
+	U412 拉蘇克的鬥士 Larzuk's Champion
+	U413 拉蘇克的鬥士 Larzuk's Champion
+	U414 拉蘇克的鬥士 Larzuk's Champion
+	U415 拉蘇克的鬥士 Larzuk's Champion
+	U416 拉蘇克的鬥士 Larzuk's Champion
+	U417 拉蘇克的鬥士 Larzuk's Champion
+	U418 拉蘇克的鬥士 Larzuk's Champion
+	U419 拉蘇克的鬥士 Larzuk's Champion
+	U420 拉蘇克的鬥士 Larzuk's Champion
+	U421 拉蘇克的鬥士 Larzuk's Champion
+	U422 拉蘇克的鬥士 Larzuk's Champion
+	U423 拉蘇克的鬥士 Larzuk's Champion
+	U424 拉蘇克的鬥士 Larzuk's Champion
+	U425 拉蘇克的鬥士 Larzuk's Champion
+	U426 拉蘇克的鬥士 Larzuk's Champion
+	U427 拉蘇克的鬥士 Larzuk's Champion
+	U428 拉蘇克的鬥士 Larzuk's Champion
+	U429 拉蘇克的鬥士 Larzuk's Champion
+	U430 拉蘇克的鬥士 Larzuk's Champion
+	U431 拉蘇克的鬥士 Larzuk's Champion
+	U432 拉蘇克的鬥士 Larzuk's Champion
+	U433 拉蘇克的鬥士 Larzuk's Champion
+	U434 拉蘇克的鬥士 Larzuk's Champion
+	U435 拉蘇克的鬥士 Larzuk's Champion
+	U436 拉蘇克的鬥士 Larzuk's Champion
+	U437 拉蘇克的鬥士 Larzuk's Champion
+	U438 拉蘇克的鬥士 Larzuk's Champion
+	U439 拉蘇克的鬥士 Larzuk's Champion
+	U440 拉蘇克的鬥士 Larzuk's Champion
+	U441 拉蘇克的鬥士 Larzuk's Champion
+	U442 拉蘇克的鬥士 Larzuk's Champion
+	U443 拉蘇克的鬥士 Larzuk's Champion
+	U444 拉蘇克的鬥士 Larzuk's Champion
+	U445 拉蘇克的鬥士 Larzuk's Champion
+	U446 拉蘇克的鬥士 Larzuk's Champion
+	U447 拉蘇克的鬥士 Larzuk's Champion
+	U448 拉蘇克的鬥士 Larzuk's Champion
+	U449 拉蘇克的鬥士 Larzuk's Champion
+	U450 拉蘇克的鬥士 Larzuk's Champion
+	U451 拉蘇克的鬥士 Larzuk's Champion
+	U452 拉蘇克的鬥士 Larzuk's Champion
+	U453 拉蘇克的鬥士 Larzuk's Champion
+	Item Colours[2013][5]:-1,-2,-2,-2 //S1希弗伯的圖案 Civerb's IconS9依雷撒的項圈 Iratha's CollarS20維達拉的陷阱 Vidala's SnareS28卡珊的魔咒 Cathan's SigilS33坦克雷的怪誕 Tancred's WeirdS53天使之翼 Angelic WingsS58阿卡娜的符號 Arcanna's SignS77塔-拉夏的判決 Tal Rasha's AdjudicationS95述說之珠 Telling of Beads
+	S1 希弗伯的圖案 Civerb's Icon
+	S9 依雷撒的項圈 Iratha's Collar
+	S20 維達拉的陷阱 Vidala's Snare
+	S28 卡珊的魔咒 Cathan's Sigil
+	S33 坦克雷的怪誕 Tancred's Weird
+	S53 天使之翼 Angelic Wings
+	S58 阿卡娜的符號 Arcanna's Sign
+	S77 塔-拉夏的判決 Tal Rasha's Adjudication
+	S95 述說之珠 Telling of Beads
+idx2014 txt521 type12:Amulet code:vip 赫拉迪克之杖頂端 赫拉迪克之杖頂端
+	Item Colours[2014][7]:-1,-2,-2,-2 //U123蝮蛇護符
+	U123 蝮蛇護符
+idx2015 txt522 type10:Ring code:rin 戒指 Ring 戒指 Ring
+	Item Colours[2015][7]:-1,-2,-2,-2 //U120拿各的戒指 NagelringU121瑪那得的治療 Manald HealU122喬丹之石 The Stone of JordanU263收縮戒指 Constricting RingU268布爾凱索之戒 Bul-Kathos' Wedding BandU274矮人之星 Dwarf StarU275烏鴉之霜 Raven FrostU300大自然的和平 Nature's PeaceU319鬼火投射者 Wisp ProjectorU378腐肉之風 Carrion WindU474指節U475指節U476指節U477指節U491指節U492指節U493指節U494指節U495指節U496指節U497指節U498指節U499指節U500指節U501指節U502指節U503指節U504指節U505指節U506指節U507指節U508指節U509指節U510指節U511指節U512指節U513指節U514指節
+	U120 拿各的戒指 Nagelring
+	U121 瑪那得的治療 Manald Heal
+	U122 喬丹之石 The Stone of Jordan
+	U263 收縮戒指 Constricting Ring
+	U268 布爾凱索之戒 Bul-Kathos' Wedding Band
+	U274 矮人之星 Dwarf Star
+	U275 烏鴉之霜 Raven Frost
+	U300 大自然的和平 Nature's Peace
+	U319 鬼火投射者 Wisp Projector
+	U378 腐肉之風 Carrion Wind
+	U474 指節
+	U475 指節
+	U476 指節
+	U477 指節
+	U491 指節
+	U492 指節
+	U493 指節
+	U494 指節
+	U495 指節
+	U496 指節
+	U497 指節
+	U498 指節
+	U499 指節
+	U500 指節
+	U501 指節
+	U502 指節
+	U503 指節
+	U504 指節
+	U505 指節
+	U506 指節
+	U507 指節
+	U508 指節
+	U509 指節
+	U510 指節
+	U511 指節
+	U512 指節
+	U513 指節
+	U514 指節
+	Item Colours[2015][5]:-1,-2,-2,-2 //S29卡珊的封印 Cathan's SealS52天使之光 Angelic Halo
+	S29 卡珊的封印 Cathan's Seal
+	S52 天使之光 Angelic Halo
+idx2016 txt523 type4:Gold code:gld 黃金 黃金
+idx2017 txt524 type39:Quest code:bks 艾尼弗斯卷軸 艾尼弗斯卷軸
+idx2018 txt525 type39:Quest code:bkd 石塚之鑰 石塚之鑰
+idx2019 txt526 type5:Arrow code:aqv 箭矢 箭矢
+idx2020 txt527 type21:Torch code:tch 火焰 火焰
+idx2021 txt528 type6:Bolts code:cqv 十字弓彈 十字弓彈
+idx2022 txt529 type22:Scroll code:tsc 城鎮傳送卷軸 城鎮傳送卷軸
+idx2023 txt530 type22:Scroll code:isc 辨視卷軸 辨視卷軸
+idx2024 txt531 type40:BodyPart code:hrt 心臟 心臟
+idx2025 txt532 type40:BodyPart code:brz 腦 腦
+idx2026 txt533 type40:BodyPart code:jaw 顎骨 顎骨
+idx2027 txt534 type40:BodyPart code:eyz 眼球 眼球
+idx2028 txt535 type40:BodyPart code:hrn 角 角
+idx2029 txt536 type40:BodyPart code:tal 尾巴 尾巴
+idx2030 txt537 type40:BodyPart code:flg 旗幟 旗幟
+idx2031 txt538 type40:BodyPart code:fng 尖牙 尖牙
+idx2032 txt539 type40:BodyPart code:qll 硬毛 硬毛
+idx2033 txt540 type40:BodyPart code:sol 靈魂 靈魂
+idx2034 txt541 type40:BodyPart code:scz 頭皮 頭皮
+idx2035 txt542 type40:BodyPart code:spe 脾臟 脾臟
+idx2036 txt543 type41:Skeleton code:key 鑰匙 鑰匙
+idx2037 txt544 type41:Skeleton code:luv 黑塔之鑰 黑塔之鑰
+idx2038 txt545 type39:Quest code:xyz 生命葯劑 生命葯劑
+idx2039 txt546 type39:Quest code:j34 玉製小人 玉製小人
+idx2040 txt547 type39:Quest code:g34 黃金鳥 黃金鳥
+idx2041 txt548 type39:Quest code:bbb 藍-依森之書 藍-依森之書
+idx2042 txt549 type39:Quest code:box 赫拉迪克方塊 赫拉迪克方塊
+idx2043 txt550 type39:Quest code:tr1 赫拉迪克卷軸 赫拉迪克卷軸
+idx2044 txt551 type39:Quest code:mss 墨菲斯托的靈魂之石 墨菲斯托的靈魂之石
+idx2045 txt552 type39:Quest code:ass 技能之書 技能之書
+idx2046 txt553 type39:Quest code:qey 克林姆的眼球 克林姆的眼球
+idx2047 txt554 type39:Quest code:qhr 克林姆的心臟 克林姆的心臟
+idx2048 txt555 type39:Quest code:qbr 克林姆的大腦 克林姆的大腦
+idx2049 txt556 type7:Ear code:ear 耳 耳
+idx2050 txt557 type96:Amethyst code:gcv 碎裂的紫寶石 碎裂的紫寶石
+idx2051 txt558 type96:Amethyst code:gfv 裂開的紫寶石 裂開的紫寶石
+idx2052 txt559 type96:Amethyst code:gsv 紫寶石 紫寶石
+idx2053 txt560 type96:Amethyst code:gzv 無暇疵的紫寶石 無暇疵的紫寶石
+idx2054 txt561 type96:Amethyst code:gpv 完美的紫寶石 完美的紫寶石
+idx2055 txt562 type101:Topaz code:gcy 碎裂的黃寶石 碎裂的黃寶石
+idx2056 txt563 type101:Topaz code:gfy 裂開的黃寶石 裂開的黃寶石
+idx2057 txt564 type101:Topaz code:gsy 黃寶石 黃寶石
+idx2058 txt565 type101:Topaz code:gly 無暇疵的黃寶石 無暇疵的黃寶石
+idx2059 txt566 type101:Topaz code:gpy 完美的黃寶石 完美的黃寶石
+idx2060 txt567 type100:Sapphire code:gcb 碎裂的藍寶石 碎裂的藍寶石
+idx2061 txt568 type100:Sapphire code:gfb 裂開的藍寶石 裂開的藍寶石
+idx2062 txt569 type100:Sapphire code:gsb 藍寶石 藍寶石
+idx2063 txt570 type100:Sapphire code:glb 無暇疵的藍寶石 無暇疵的藍寶石
+idx2064 txt571 type100:Sapphire code:gpb 完美的藍寶石 完美的藍寶石
+idx2065 txt572 type98:Emerald code:gcg 碎裂的綠寶石 碎裂的綠寶石
+idx2066 txt573 type98:Emerald code:gfg 裂開的綠寶石 裂開的綠寶石
+idx2067 txt574 type98:Emerald code:gsg 綠寶石 綠寶石
+idx2068 txt575 type98:Emerald code:glg 無暇疵的綠寶石 無暇疵的綠寶石
+idx2069 txt576 type98:Emerald code:gpg 完美的綠寶石 完美的綠寶石
+idx2070 txt577 type99:Ruby code:gcr 碎裂的紅寶石 碎裂的紅寶石
+idx2071 txt578 type99:Ruby code:gfr 裂開的紅寶石 裂開的紅寶石
+idx2072 txt579 type99:Ruby code:gsr 紅寶石 紅寶石
+idx2073 txt580 type99:Ruby code:glr 無暇疵的紅寶石 無暇疵的紅寶石
+idx2074 txt581 type99:Ruby code:gpr 完美的紅寶石 完美的紅寶石
+idx2075 txt582 type97:Diamond code:gcw 碎裂的鑽石 碎裂的鑽石
+idx2076 txt583 type97:Diamond code:gfw 裂開的鑽石 裂開的鑽石
+idx2077 txt584 type97:Diamond code:gsw 鑽石 鑽石
+idx2078 txt585 type97:Diamond code:glw 無暇疵的鑽石 無暇疵的鑽石
+idx2079 txt586 type97:Diamond code:gpw 完美的鑽石 完美的鑽石
+idx2080 txt587 type76:healing code:hp1 輕微治療葯劑 輕微治療葯劑
+idx2081 txt588 type76:healing code:hp2 輕型治療葯劑 輕型治療葯劑
+idx2082 txt589 type76:healing code:hp3 治療葯劑 治療葯劑
+idx2083 txt590 type76:healing code:hp4 強力葯劑 強力葯劑
+idx2084 txt591 type76:healing code:hp5 超級治療葯劑 超級治療葯劑
+idx2085 txt592 type77:mana code:mp1 輕微法力葯劑 輕微法力葯劑
+idx2086 txt593 type77:mana code:mp2 輕型法力葯劑 輕型法力葯劑
+idx2087 txt594 type77:mana code:mp3 法力葯劑 法力葯劑
+idx2088 txt595 type77:mana code:mp4 強力法力葯劑 強力法力葯劑
+idx2089 txt596 type77:mana code:mp5 超級法力葯劑 超級法力葯劑
+idx2090 txt597 type102:Skull code:skc 碎裂的骷髏 碎裂的骷髏
+idx2091 txt598 type102:Skull code:skf 裂開的骷髏 裂開的骷髏
+idx2092 txt599 type102:Skull code:sku 骷髏 骷髏
+idx2093 txt600 type102:Skull code:skl 無暇疵的骷髏 無暇疵的骷髏
+idx2094 txt601 type102:Skull code:skz 完美的骷髏 完美的骷髏
+idx2095 txt602 type8:Herb code:hrb 藥草 藥草
+idx2096 txt603 type82:Charm code:cm1 小護身符 小護身符
+	Item Colours[2096][7]:-1,-2,-2,-2 //U381毀滅 Annihilus
+	U381 毀滅 Annihilus
+idx2097 txt604 type83:Charm code:cm2 大型護身符 大型護身符
+	Item Colours[2097][7]:-1,-2,-2,-2 //U400地獄火炬 Hellfire Torch
+	U400 地獄火炬 Hellfire Torch
+idx2098 txt605 type84:Charm code:cm3 超大型護身符 超大型護身符
+	Item Colours[2098][7]:-1,-2,-2,-2 //U352冥府烏鴉 NethercrowU359基得的運氣 Gheed's FortuneU454這頭牛咬人U455力量靈葯U456敏捷靈葯U457體力靈葯U458能量靈葯U459護符U460庇護U461守衛U462披風U463聖歌U464緊握U465翅膀U466古巫醫-印都U467沙地騎士U468瘋狂血腥女巫U469可汗U470叢林獵人U471暴風施術者U472戰場處子-沙利娜U473黑暗之王U478惡魔U479陷阱門U480偷取生命U481京子U482法力靈葯U483忿怒U484震驚攻擊U485生命靈葯U486死亡之環...U487庇護所U488強壯之U489君王之U490天使之
+	U352 冥府烏鴉 Nethercrow
+	U359 基得的運氣 Gheed's Fortune
+	U454 這頭牛咬人
+	U455 力量靈葯
+	U456 敏捷靈葯
+	U457 體力靈葯
+	U458 能量靈葯
+	U459 護符
+	U460 庇護
+	U461 守衛
+	U462 披風
+	U463 聖歌
+	U464 緊握
+	U465 翅膀
+	U466 古巫醫-印都
+	U467 沙地騎士
+	U468 瘋狂血腥女巫
+	U469 可汗
+	U470 叢林獵人
+	U471 暴風施術者
+	U472 戰場處子-沙利娜
+	U473 黑暗之王
+	U478 惡魔
+	U479 陷阱門
+	U480 偷取生命
+	U481 京子
+	U482 法力靈葯
+	U483 忿怒
+	U484 震驚攻擊
+	U485 生命靈葯
+	U486 死亡之環...
+	U487 庇護所
+	U488 強壯之
+	U489 君王之
+	U490 天使之
+idx2099 txt606 type76:healing code:rps 一股邪惡力量 一股邪惡力量
+idx2100 txt607 type76:healing code:rpl 一股邪惡力量 一股邪惡力量
+idx2101 txt608 type77:mana code:bps 一股邪惡力量 一股邪惡力量
+idx2102 txt609 type77:mana code:bpl 一股邪惡力量 一股邪惡力量
+idx2103 txt610 type74:Rune code:r01 符文：艾爾 El 符文：艾爾 El
+idx2104 txt611 type74:Rune code:r02 符文：艾德 Eld 符文：艾德 Eld
+idx2105 txt612 type74:Rune code:r03 符文：特爾 Tir 符文：特爾 Tir
+idx2106 txt613 type74:Rune code:r04 符文：那夫 Nef 符文：那夫 Nef
+idx2107 txt614 type74:Rune code:r05 符文：愛斯 Eth 符文：愛斯 Eth
+idx2108 txt615 type74:Rune code:r06 符文：伊司 Ith 符文：伊司 Ith
+idx2109 txt616 type74:Rune code:r07 符文：塔爾 Tal 符文：塔爾 Tal
+idx2110 txt617 type74:Rune code:r08 符文：拉爾 Ral 符文：拉爾 Ral
+idx2111 txt618 type74:Rune code:r09 符文：歐特 Ort 符文：歐特 Ort
+idx2112 txt619 type74:Rune code:r10 符文：書爾 Thul 符文：書爾 Thul
+idx2113 txt620 type74:Rune code:r11 符文：安姆 Amn 符文：安姆 Amn
+idx2114 txt621 type74:Rune code:r12 符文：索爾 Sol 符文：索爾 Sol
+idx2115 txt622 type74:Rune code:r13 符文：夏 Shael (13#) 符文：夏 Shael (13#)
+idx2116 txt623 type74:Rune code:r14 符文：多爾 Dol 符文：多爾 Dol
+idx2117 txt624 type74:Rune code:r15 符文：海爾 Hel 符文：海爾 Hel
+idx2118 txt625 type74:Rune code:r16 符文：埃歐 Io (16#) 符文：埃歐 Io (16#)
+idx2119 txt626 type74:Rune code:r17 符文：盧姆 Lum 符文：盧姆 Lum
+idx2120 txt627 type74:Rune code:r18 符文：科 Ko 符文：科 Ko
+idx2121 txt628 type74:Rune code:r19 符文：法爾 Fal 符文：法爾 Fal
+idx2122 txt629 type74:Rune code:r20 符文：藍姆 Lem 符文：藍姆 Lem
+idx2123 txt630 type74:Rune code:r21 符文：普爾 Pul 符文：普爾 Pul
+idx2124 txt631 type74:Rune code:r22 符文：烏姆 Um 符文：烏姆 Um
+idx2125 txt632 type74:Rune code:r23 符文：馬爾 Mal 符文：馬爾 Mal
+idx2126 txt633 type74:Rune code:r24 ÿc8符文：伊斯特 Ist ÿc8符文：伊斯特 Ist
+idx2127 txt634 type74:Rune code:r25 ÿc8符文：古爾 Gul ÿc8符文：古爾 Gul
+idx2128 txt635 type74:Rune code:r26 ÿc8符文：伐克斯 Vex ÿc8符文：伐克斯 Vex
+idx2129 txt636 type74:Rune code:r27 ÿc8符文：歐姆 Ohm ÿc8符文：歐姆 Ohm
+idx2130 txt637 type74:Rune code:r28 ÿc8符文：羅 Lo ÿc8符文：羅 Lo
+idx2131 txt638 type74:Rune code:r29 ÿc8符文：瑟 Sur ÿc8符文：瑟 Sur
+idx2132 txt639 type74:Rune code:r30 ÿc8符文：貝 Ber ÿc8符文：貝 Ber
+idx2133 txt640 type74:Rune code:r31 符文：喬 Jah (31#) 符文：喬 Jah (31#)
+idx2134 txt641 type74:Rune code:r32 ÿc8符文：查姆 Cham ÿc8符文：查姆 Cham
+idx2135 txt642 type74:Rune code:r33 ÿc8符文：薩德 Zod ÿc8符文：薩德 Zod
+idx2136 txt643 type58:Jewel code:jew 珠寶 Jewel 珠寶 Jewel
+	Item Colours[2136][7]:-1,-2,-2,-2 //U392彩虹刻面 Rainbow FacetU393彩虹刻面 Rainbow FacetU394彩虹刻面 Rainbow FacetU395彩虹刻面 Rainbow FacetU396彩虹刻面 Rainbow FacetU397彩虹刻面 Rainbow FacetU398彩虹刻面 Rainbow FacetU399彩虹刻面 Rainbow FacetU515珠寶 JewelU516珠寶 JewelU517珠寶 JewelU518珠寶 JewelU519珠寶 JewelU520珠寶 JewelU521珠寶 Jewel
+	U392 彩虹刻面 Rainbow Facet
+	U393 彩虹刻面 Rainbow Facet
+	U394 彩虹刻面 Rainbow Facet
+	U395 彩虹刻面 Rainbow Facet
+	U396 彩虹刻面 Rainbow Facet
+	U397 彩虹刻面 Rainbow Facet
+	U398 彩虹刻面 Rainbow Facet
+	U399 彩虹刻面 Rainbow Facet
+	U515 珠寶 Jewel
+	U516 珠寶 Jewel
+	U517 珠寶 Jewel
+	U518 珠寶 Jewel
+	U519 珠寶 Jewel
+	U520 珠寶 Jewel
+	U521 珠寶 Jewel
+idx2137 txt644 type39:Quest code:ice 馬拉之藥，使用它來 馬拉之藥，使用它來
+idx2138 txt645 type22:Scroll code:0sc 知識卷軸 知識卷軸
+idx2139 txt646 type39:Quest code:tr2 抵抗卷軸 抵抗卷軸
+idx2140 txt647 type39:Quest code:pk1 恐懼之鑰 Key of Terror =A1= 恐懼之鑰 Key of Terror =A1=
+idx2141 txt648 type39:Quest code:pk2 憎恨之鑰 Key of Hate =A2= 憎恨之鑰 Key of Hate =A2=
+idx2142 txt649 type39:Quest code:pk3 毀滅之鑰 Key of Destruction =A5= 毀滅之鑰 Key of Destruction =A5=
+idx2143 txt650 type39:Quest code:dhn 暗黑破壞神之角 Diablo's Horn 暗黑破壞神之角 Diablo's Horn
+idx2144 txt651 type39:Quest code:bey 巴爾之眼 Baal's Eye 巴爾之眼 Baal's Eye
+idx2145 txt652 type39:Quest code:mbr 墨菲斯托之腦 Mephisto's Brain 墨菲斯托之腦 Mephisto's Brain
+idx2146 txt653 type39:Quest code:toa 赦免徽章 赦免徽章
+idx2147 txt654 type39:Quest code:tes ＝A1/A2＝扭曲的苦痛精華 Twisted Essence of Suffering ＝A1/A2＝扭曲的苦痛精華 Twisted Essence of Suffering
+idx2148 txt655 type39:Quest code:ceh  ＝A3＝充盈的憎恨精華 Charged Essence of Hatred  ＝A3＝充盈的憎恨精華 Charged Essence of Hatred
+idx2149 txt656 type39:Quest code:bet  ＝A4＝燃燒的恐懼精華 Burning Essence of Terror  ＝A4＝燃燒的恐懼精華 Burning Essence of Terror
+idx2150 txt657 type39:Quest code:fed ＝A5＝潰爛的毀滅精華 Festering Essence of Destruction ＝A5＝潰爛的毀滅精華 Festering Essence of Destruction
+idx2151 txt658 type39:Quest code:std 英雄旗幟 Standard of Heroes 英雄旗幟 Standard of Heroes
+idx2152 txt659 type11:Elixir code:elc 靈葯 靈葯
+idx2153 txt660 type103:(null) code:ibg ÿc8玉凈瓶:符石收納器 ÿc8玉凈瓶:符石收納器
+idx2154 txt661 type82:Charm code:cm1 聖符 聖符
+	Item Colours[2154][7]:-1,-2,-2,-2 //U522ÿc2【白羊的技能符】
+	U522 ÿc2【白羊的技能符】
+idx2155 txt662 type82:Charm code:cm1 聖符 聖符
+	Item Colours[2155][7]:-1,-2,-2,-2 //U523ÿc2【金牛的技能符】
+	U523 ÿc2【金牛的技能符】
+idx2156 txt663 type82:Charm code:cm1 聖符 聖符
+	Item Colours[2156][7]:-1,-2,-2,-2 //U524ÿc2【雙子的技能符】
+	U524 ÿc2【雙子的技能符】
+idx2157 txt664 type82:Charm code:cm1 聖符 聖符
+	Item Colours[2157][7]:-1,-2,-2,-2 //U525ÿc2【巨蟹的技能符】
+	U525 ÿc2【巨蟹的技能符】
+idx2158 txt665 type82:Charm code:cm1 聖符 聖符
+	Item Colours[2158][7]:-1,-2,-2,-2 //U526ÿc2【獅子的技能符】
+	U526 ÿc2【獅子的技能符】
+idx2159 txt666 type82:Charm code:cm1 聖符 聖符
+	Item Colours[2159][7]:-1,-2,-2,-2 //U527ÿc2【處女的技能符】
+	U527 ÿc2【處女的技能符】
+idx2160 txt667 type82:Charm code:cm1 聖符 聖符
+	Item Colours[2160][7]:-1,-2,-2,-2 //U528ÿc2【天秤的技能符】
+	U528 ÿc2【天秤的技能符】
+idx2161 txt668 type82:Charm code:cm1 聖符 聖符
+	Item Colours[2161][7]:-1,-2,-2,-2 //U529ÿc2【天蠍的技能符】
+	U529 ÿc2【天蠍的技能符】
+idx2162 txt669 type82:Charm code:cm1 聖符 聖符
+	Item Colours[2162][7]:-1,-2,-2,-2 //U530ÿc2【射手的技能符】
+	U530 ÿc2【射手的技能符】
+idx2163 txt670 type82:Charm code:cm2 聖符 聖符
+	Item Colours[2163][7]:-1,-2,-2,-2 //U531ÿc2【山羊的技能符】
+	U531 ÿc2【山羊的技能符】
+idx2164 txt671 type82:Charm code:cm2 聖符 聖符
+	Item Colours[2164][7]:-1,-2,-2,-2 //U532c2【水瓶的技能符】
+	U532 c2【水瓶的技能符】
+idx2165 txt672 type82:Charm code:cm2 聖符 聖符
+	Item Colours[2165][7]:-1,-2,-2,-2 //U533ÿc2【雙魚的技能符】
+	U533 ÿc2【雙魚的技能符】
+idx2166 txt673 type82:Charm code:cm2 聖符 聖符
+	Item Colours[2166][7]:-1,-2,-2,-2 //U534ÿc2【波塞冬的肝】
+	U534 ÿc2【波塞冬的肝】
+idx2167 txt674 type82:Charm code:cm2 聖符 聖符
+	Item Colours[2167][7]:-1,-2,-2,-2 //U535ÿc2【哈迪斯的靈魂】
+	U535 ÿc2【哈迪斯的靈魂】
+idx2168 txt675 type82:Charm code:cm2 聖符 聖符
+	Item Colours[2168][7]:-1,-2,-2,-2 //U536ÿc2【智慧女神的守護】
+	U536 ÿc2【智慧女神的守護】
+idx2169 txt676 type74:Rune code:r34 ÿc8符文：艾克 Aix ÿc8符文：艾克 Aix
+idx2170 txt677 type74:Rune code:r35 ÿc8符文：摩尼 Mon ÿc8符文：摩尼 Mon
+idx2171 txt678 type74:Rune code:r36 ÿc8符文：奧斯卡 Osk ÿc8符文：奧斯卡 Osk
+idx2172 txt679 type11:Elixir code:pr1 白羊宮鑰匙 白羊宮鑰匙
+idx2173 txt680 type11:Elixir code:pr2 金牛宮鑰匙 金牛宮鑰匙
+idx2174 txt681 type11:Elixir code:pr3 雙子宮鑰匙 雙子宮鑰匙
+idx2175 txt682 type11:Elixir code:pr4 巨蟹宮鑰匙 巨蟹宮鑰匙
+idx2176 txt683 type11:Elixir code:pr5 獅子宮鑰匙 獅子宮鑰匙
+idx2177 txt684 type11:Elixir code:pr6 處女宮鑰匙 處女宮鑰匙
+idx2178 txt685 type11:Elixir code:pr7 天秤宮鑰匙 天秤宮鑰匙
+idx2179 txt686 type11:Elixir code:pr8 天蠍宮鑰匙 天蠍宮鑰匙
+idx2180 txt687 type11:Elixir code:pr9 射手宮鑰匙 射手宮鑰匙
+idx2181 txt688 type11:Elixir code:pr1 山羊宮鑰匙 山羊宮鑰匙
+idx2182 txt689 type11:Elixir code:pr1 水瓶宮鑰匙 水瓶宮鑰匙
+idx2183 txt690 type11:Elixir code:pr1 雙魚宮鑰匙 雙魚宮鑰匙
+idx2184 txt691 type11:Elixir code:pr1 海皇宮鑰匙 海皇宮鑰匙
+idx2185 txt692 type11:Elixir code:pr1 冥王宮鑰匙 冥王宮鑰匙
+idx2186 txt693 type11:Elixir code:pr1 女神宮鑰匙 女神宮鑰匙
+idx2187 txt694 type11:Elixir code:pr3 <<人馬座>> <<人馬座>>
+idx2188 txt695 type11:Elixir code:pr3 <<十字座>> <<十字座>>
+idx2189 txt696 type11:Elixir code:pr3 <<船底座>> <<船底座>>
+idx2190 txt697 type11:Elixir code:pr4 <<仙女座>> <<仙女座>>
+idx2191 txt698 type11:Elixir code:pr4 <<仙後座>> <<仙後座>>
+idx2192 txt699 type11:Elixir code:pr4 <<仙王座>> <<仙王座>>
+idx2193 txt700 type11:Elixir code:pr4 <<獵戶座>> <<獵戶座>>
+idx2194 txt701 type11:Elixir code:pr4 <<小熊座>> <<小熊座>>
+idx2195 txt702 type11:Elixir code:pr4 <<大熊座>> <<大熊座>>
+idx2196 txt703 type11:Elixir code:pr4 <<盾牌座>> <<盾牌座>>
+idx2197 txt704 type11:Elixir code:pr4 <<天龍座>> <<天龍座>>
+idx2198 txt705 type11:Elixir code:pr4 <<鳳凰座>> <<鳳凰座>>
+idx2199 txt706 type11:Elixir code:pr4 <<白鳥座>> <<白鳥座>>
+idx2200 txt707 type11:Elixir code:pr5 <<天狼座>> <<天狼座>>
+idx2201 txt708 type11:Elixir code:pr5 <<英仙座>> <<英仙座>>
+idx2202 txt709 type11:Elixir code:pr5 <<天琴座>> <<天琴座>>
+idx2203 txt710 type11:Elixir code:pr5 <<海蛇座>> <<海蛇座>>
+idx2204 txt711 type11:Elixir code:pr5 <<巨犬座>> <<巨犬座>>
+idx2205 txt712 type11:Elixir code:pr5 <<蛇夫座>> <<蛇夫座>>
+idx2206 txt713 type11:Elixir code:pr5 <<天鷹座>> <<天鷹座>>
+idx2207 txt714 type82:Charm code:cm2 聖符 聖符
+	Item Colours[2207][7]:-1,-2,-2,-2 //U537ÿc2【天堂的祝福】
+	U537 ÿc2【天堂的祝福】
+idx2208 txt715 type11:Elixir code:pr5 天堂的鑰匙 天堂的鑰匙

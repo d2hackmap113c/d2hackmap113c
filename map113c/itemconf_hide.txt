@@ -1,0 +1,242 @@
+
+ShowIdentifiedItem: 0, VK_
+//不显示以下套装装备 
+Item Colours[3][5]:-1,-2,-2,-2 //S46狂戰士的手斧 Berserker's Hatchet
+Item Colours[4][5]:-1,-2,-2,-2 //S30坦克雷的鴉嘴鉗 Tancred's Crowbill
+Item Colours[13][5]:-1,-2,-2,-2 //S126山德的迷信 Sander's Superstition(20FCR)
+Item Colours[14][5]:-1,-2,-2,-2 //S42地獄火炬 Infernal Torch
+Item Colours[17][5]:-1,-2,-2,-2 //S2希弗伯的短棍 Civerb's Cudgel
+Item Colours[18][5]:-1,-2,-2,-2 //S22米拉伯佳之杖 Milabrega's Rod
+Item Colours[28][5]:-1,-2,-2,-2 //S50天使的鐮刀 Angelic Sickle
+Item Colours[31][5]:-1,-2,-2,-2 //S13依森哈德的光之烙鐵 Isenhart's Lightbrand
+Item Colours[32][5]:-1,-2,-2,-2 //S6克雷得勞之牙 Cleglaw's Tooth
+Item Colours[33][5]:-1,-2,-2,-2 //S49死亡之觸Death's Touch
+Item Colours[67][5]:-1,-2,-2,-2 //S25卡珊之尺Cathan's Rule
+Item Colours[74][5]:-1,-2,-2,-2 //S17維達拉之倒刺 Vidala's Barb
+Item Colours[75][5]:-1,-2,-2,-2 //S54北極號角 Arctic Horn
+Item Colours[114][5]:-1,-2,-2,-2 //S68艾爾多的律動 Aldur's Rhythm
+Item Colours[152][5]:-1,-2,-2,-2 //S111華寧的正義 Hwanin's Justice
+Item Colours[216][5]:-1,-2,-2,-2 //S100丹弓的教導Dangoon's Teaching(40IAS)
+Item Colours[220][5]:-1,-2,-2,-2 //S75不朽之王的碎魂者 Immortal King's Stone Crusher
+//Item Colours[1001][5]:-1,-2,-2,-2 //S41地獄頭骨 Infernal Cranium(resist+10)S123山德的模範 Sander's Paragon(?)
+Item Colours[1002][5]:-1,-2,-2,-2 //S60阿卡娜的頭 Arcanna's Head
+Item Colours[1003][5]:-1,-2,-2,-2 //S44狂戰士的頭戴 Berserker's Headgear
+Item Colours[1004][5]:-1,-2,-2,-2 //S16依森哈德的號角 Isenhart's Horns
+Item Colours[1005][5]:-1,-2,-2,-2 //S36西剛之面甲 Sigon's Visor(+30Mana)
+Item Colours[1006][5]:-1,-2,-2,-2 //S11依雷撒的線圈 Iratha's Coil(LR30,FR30)S23米拉伯佳的王冠 Milabrega's Diadem(+15HP+15Mana)
+Item Colours[1007][5]:-1,-2,-2,-2 //S27卡珊的容貌Cathan's Visage
+Item Colours[1009][5]:-1,-2,-2,-2 //S19維達拉的突襲 Vidala's Ambush(+11DEX)
+Item Colours[1011][5]:-1,-2,-2,-2 //S118牛魔王之皮 Cow King's Hide
+Item Colours[1012][5]:-1,-2,-2,-2 //S51天使的披風 Angelic Mantle
+Item Colours[1014][5]:-1,-2,-2,-2 //S26卡珊之網Cathan's Mesh
+Item Colours[1015][5]:-1,-2,-2,-2 //S15依森哈德的外殼Isenhart's Case
+Item Colours[1016][5]:-1,-2,-2,-2 //S45狂戰士的鎖子甲Berserker's Hauberk
+Item Colours[1019][5]:-1,-2,-2,-2 //S37西剛的遮蔽Sigon's Shelter
+Item Colours[1020][5]:-1,-2,-2,-2 //S31坦克雷的脊柱 Tancred's Spine(+15STR +40HP)
+Item Colours[1021][5]:-1,-2,-2,-2 //S24米拉伯佳之袍 Milabrega's Robe
+Item Colours[1025][5]:-1,-2,-2,-2 //S0希弗柏的防護Civerb's Ward
+Item Colours[1026][5]:-1,-2,-2,-2 //S21米拉伯佳之球 Milabrega's Orb
+Item Colours[1032][5]:-1,-2,-2,-2 //S10依雷撒的袖口Iratha's Cuff(CR+30) S57北極手套 Arctic Mitts(10IAS20HP)
+Item Colours[1023][5]:-1,-2,-2,-2 //S4哈斯拉柏的鐵拳 Hsarus' Iron Fist
+Item Colours[1024][5]:-1,-2,-2,-2 //S7克雷得勞之爪 Cleglaw's Claw
+Item Colours[1028][5]:-1,-2,-2,-2 //S14依森哈德的閃避 Isenhart's Parry
+Item Colours[1029][5]:-1,-2,-2,-2 //S47死亡之手 Death's Hand(PR+50)
+Item Colours[1031][5]:-1,-2,-2,-2 //S8克雷得勞之鉗 Cleglaw's Pincers
+Item Colours[1033][5]:-1,-2,-2,-2 //S35西剛的挑戰 Sigon's Gage(+10STR)
+Item Colours[1034][5]:-1,-2,-2,-2 //S32坦克雷的平頭釘 Tancred's Hobnails(+10DEX)
+Item Colours[1036][5]:-1,-2,-2,-2 //S3哈斯拉柏的鐵後跟 Hsarus' Iron Heel(L3 +20FRW +25FR)
+Item Colours[1037][5]:-1,-2,-2,-2 //S18維達拉的距毛Vidala's Fetlock(30FRW)
+Item Colours[1038][5]:-1,-2,-2,-2 //S38西剛的木鞋 Sigon's Sabot(20FRW 40CR)
+Item Colours[1040][5]:-1,-2,-2,-2 //S56北極捆縛Arctic Binding
+Item Colours[1041][5]:-1,-2,-2,-2 //S5哈斯拉柏的鐵胸衣 Hsarus' Iron Stay(20HP 20CR)S110華寧的祝福 Hwanin's Blessing
+Item Colours[1042][5]:-1,-2,-2,-2 //S12依雷撒之繩 Iratha's Cord S43地獄符號 Infernal Sign(+20HP)
+Item Colours[1039][5]:-1,-2,-2,-2 //S48死亡的守護 Death's Guard
+Item Colours[1043][5]:-1,-2,-2,-2 //S39西剛的披肩 Sigon's Wrap(L6 20HP 20FR)
+Item Colours[1044][5]:-1,-2,-2,-2 //S34坦克雷之骷髏 Tancred's Skull
+Item Colours[1052][5]:-1,-2,-2,-2 //S108華寧的光輝Hwanin's Splendor(20REP 37CR)
+Item Colours[1059][5]:-1,-2,-2,-2 //S109華寧的保護 Hwanin's Refuge
+Item Colours[1061][5]:-1,-2,-2,-2 //S102黑摩蘇的堅決 Haemosu's Adamant
+Item Colours[1080][5]:-1,-2,-2,-2 //S97儀式的走道 Rite of Passage
+Item Colours[1088][5]:-1,-2,-2,-2 //S105威廉的自尊 Wilhelm's Pride (5LL 5LM 10CR)
+Item Colours[1113][5]:-1,-2,-2,-2 //S122娜吉的小環 Naj's Circlet(+15STR)
+Item Colours[1121][5]:-1,-2,-2,-2 //S103安戴爾的全靈 Ondal's Almighty(+10STR +15DEX)
+Item Colours[1124][5]:-1,-2,-2,-2 //S98黑暗信徒 Dark Adherent
+Item Colours[1129][5]:-1,-2,-2,-2 //S64娜塔亞的影子 Natalya's Shadow
+Item Colours[1145][5]:-1,-2,-2,-2 //S96手掌的安置 Laying of Hands(+20IAS +50FR)
+Item Colours[1165][5]:-1,-2,-2,-2 //S66艾爾多的冷酷凝視 Aldur's Stony Gaze
+
+//不显示以下暗金装备 
+Item Colours[1][7]:-1,-2,-2,-2 //U0牙齒 The Gnasher
+Item Colours[2][7]:-1,-2,-2,-2 //U1死亡之鏟Deathspade
+Item Colours[3][7]:-1,-2,-2,-2 //U2肩胛骨 Bladebone
+Item Colours[4][7]:-1,-2,-2,-2 //U3切開骷髏Skull Splitter
+Item Colours[5][7]:-1,-2,-2,-2 //U4火鉤之傷 Rakescar(+30IAS+50PR)
+Item Colours[6][7]:-1,-2,-2,-2 //U5費屈瑪之斧 Axe of Fechmar
+Item Colours[7][7]:-1,-2,-2,-2 //U6血塊之鏟Goreshovel
+Item Colours[8][7]:-1,-2,-2,-2 //U7族長 The Chieftain
+Item Colours[9][7]:-1,-2,-2,-2 //U8腦袋 Brainhew
+Item Colours[10][7]:-1,-2,-2,-2 //U9巨大無比 Humongous(33CB,20-30STR)
+Item Colours[11][7]:-1,-2,-2,-2 //U10衣洛的火炬 Torch of Iro(+1nec)
+Item Colours[12][7]:-1,-2,-2,-2 //U11漩渦 Maelstrom
+Item Colours[15][7]:-1,-2,-2,-2 //U14兇猛橡樹 Felloak
+Item Colours[16][7]:-1,-2,-2,-2 //U15敲擊喪鐘者 Knell Striker(25CB+20FR+20PR)
+Item Colours[17][7]:-1,-2,-2,-2 //U16腐蝕的把手 Rusthandle(+1pal)
+Item Colours[18][7]:-1,-2,-2,-2 //U17暴風眼 Stormeye
+Item Colours[19][7]:-1,-2,-2,-2 //U18堅硬的指甲Stoutnail
+Item Colours[20][7]:-1,-2,-2,-2 //U19壓碎的凸邊 Crushflange(33CB,15STR)
+Item Colours[21][7]:-1,-2,-2,-2 //U20血昇Bloodrise
+Item Colours[22][7]:-1,-2,-2,-2 //U21坦-杜-裡-嘎將軍 The General's Tan Do Li Ga
+Item Colours[23][7]:-1,-2,-2,-2 //U22鐵石 Ironstone
+Item Colours[24][7]:-1,-2,-2,-2 //U23碎骨 Bonesnap
+Item Colours[25][7]:-1,-2,-2,-2 //U24鐵製大鎚 Steeldriver(40IAS)
+Item Colours[26][7]:-1,-2,-2,-2 //U25瑞克撒特的輓歌 Rixot's Keen
+Item Colours[27][7]:-1,-2,-2,-2 //U26血紅新月 Blood Crescent(15IAS 15LL 33OW 15res)
+Item Colours[28][7]:-1,-2,-2,-2 //U27格林提斯的肉叉 Skewer of Krintiz
+Item Colours[29][7]:-1,-2,-2,-2 //U28閃耀的鐮刀 Gleamscythe
+Item Colours[31][7]:-1,-2,-2,-2 //U30格瑞斯華爾德的銳利 Griswold's Edge
+Item Colours[32][7]:-1,-2,-2,-2 //U31地獄瘟疫 Hellplague(+2fireSkill)
+Item Colours[33][7]:-1,-2,-2,-2 //U32庫爾溫的尖端 Culwen's Point(+1skill)
+Item Colours[34][7]:-1,-2,-2,-2 //U33影之牙 Shadowfang
+Item Colours[35][7]:-1,-2,-2,-2 //U34剝皮靈魂 Soulflay
+Item Colours[36][7]:-1,-2,-2,-2 //U35金麥爾的錐子 Kinemil's Awl
+Item Colours[37][7]:-1,-2,-2,-2 //U36黑色之舌 Blacktongue
+Item Colours[38][7]:-1,-2,-2,-2 //U37粗齒大鋸 Ripsaw
+Item Colours[39][7]:-1,-2,-2,-2 //U38族長 The Patriarch
+Item Colours[41][7]:-1,-2,-2,-2 //U40迪格勒 The Diggler(30IAS 10DEX 25CR 25FR)
+Item Colours[42][7]:-1,-2,-2,-2 //U41坦杜之玉 The Jade Tan Do(95PR 20最大毒抗 无法冰冻)
+Item Colours[43][7]:-1,-2,-2,-2 //U42妖怪碎片 Spectral Shard (50FCR 50Mana 10Resist)
+Item Colours[53][7]:-1,-2,-2,-2 //U43張龍 The Dragon Chang
+Item Colours[54][7]:-1,-2,-2,-2 //U44剃刀之叉 Razortine
+Item Colours[55][7]:-1,-2,-2,-2 //U45血之偷 Bloodthief
+Item Colours[56][7]:-1,-2,-2,-2 //U46雅該長矛 Lance of Yaggai
+Item Colours[57][7]:-1,-2,-2,-2 //U47坦之血杖 The Tannr Gorerod
+Item Colours[58][7]:-1,-2,-2,-2 //U48迪馬克之劈砍 Dimoak's Hew
+Item Colours[59][7]:-1,-2,-2,-2 //U49鐵刺棒Steelgoad
+Item Colours[60][7]:-1,-2,-2,-2 //U50靈魂採集者 Soul Harvest
+Item Colours[61][7]:-1,-2,-2,-2 //U51戰鬥支系 The Battlebranch
+Item Colours[62][7]:-1,-2,-2,-2 //U52煩惱詩集 Woestave
+Item Colours[63][7]:-1,-2,-2,-2 //U53冷酷開膛手 The Grim Reaper
+Item Colours[64][7]:-1,-2,-2,-2 //U54禍根之灰 Bane Ash
+Item Colours[65][7]:-1,-2,-2,-2 //U55海蛇之王 Serpent Lord
+Item Colours[66][7]:-1,-2,-2,-2 //U56拉撒羅斯之螺旋 Spire of Lazarus
+Item Colours[67][7]:-1,-2,-2,-2 //U57火精靈 The Salamander
+Item Colours[68][7]:-1,-2,-2,-2 //U58鐵檢棒 The Iron Jang Bong
+Item Colours[69][7]:-1,-2,-2,-2 //U59勇氣之眼 Pluckeye
+Item Colours[73][7]:-1,-2,-2,-2 //U63暴風之擊 Stormstrike
+Item Colours[74][7]:-1,-2,-2,-2 //U64凋謝之畫 Wizendraw
+Item Colours[75][7]:-1,-2,-2,-2 //U65作響的地獄 Hellclap
+Item Colours[76][7]:-1,-2,-2,-2 //U66爆裂的吠叫Blastbark
+Item Colours[77][7]:-1,-2,-2,-2 //U67引導烏鴉 Leadcrow
+Item Colours[78][7]:-1,-2,-2,-2 //U68靈液之刺Ichorsting
+Item Colours[79][7]:-1,-2,-2,-2 //U69投擲地獄Hellcast(L27火焰爆炸)
+Item Colours[94][7]:-1,-2,-2,-2 //U129冷殺 Coldkill(+15MaxCR 30IAS 15CR)
+Item Colours[95][7]:-1,-2,-2,-2 //U130屠夫之瞳 Butcher's Pupil
+Item Colours[97][7]:-1,-2,-2,-2 //U132龐貝之怒 Pompeii's Wrath
+Item Colours[98][7]:-1,-2,-2,-2 //U133蛇神守護者 Guardian Naga
+Item Colours[99][7]:-1,-2,-2,-2 //U134戰爵之證 Warlord's Trust
+Item Colours[100][7]:-1,-2,-2,-2 //U135鋼鐵魔咒 Spellsteel
+Item Colours[101][7]:-1,-2,-2,-2 //U136暴風騎士 Stormrider
+Item Colours[102][7]:-1,-2,-2,-2 //U137碎骨者之刃 Boneslayer Blade
+Item Colours[103][7]:-1,-2,-2,-2 //U138牛頭怪 The Minotaur
+Item Colours[109][7]:-1,-2,-2,-2 //U144撒卡蘭姆之手 Zakarum's Hand
+Item Colours[112][7]:-1,-2,-2,-2 //U147血肉裁決者 Fleshrender(+1dru 20CB 25OW)
+Item Colours[113][7]:-1,-2,-2,-2 //U148尖嘯冰霜 Sureshrill Frost
+Item Colours[114][7]:-1,-2,-2,-2 //U149落月 Moonfall
+Item Colours[115][7]:-1,-2,-2,-2 //U150貝西爾的漩渦 Baezil's Vortex
+Item Colours[116][7]:-1,-2,-2,-2 //U151撼地者 Earthshaker
+Item Colours[117][7]:-1,-2,-2,-2 //U152血樹殘株 Bloodtree Stump
+Item Colours[118][7]:-1,-2,-2,-2 //U153痛苦木槌 The Gavel of Pain
+Item Colours[119][7]:-1,-2,-2,-2 //U154血書 Bloodletter
+Item Colours[120][7]:-1,-2,-2,-2 //U155冰鋼之眼 Coldsteel Eye
+Item Colours[123][7]:-1,-2,-2,-2 //U158金瑟的裂縫 Ginther's Rift
+Item Colours[124][7]:-1,-2,-2,-2 //U159擊頭者 Headstriker
+Item Colours[125][7]:-1,-2,-2,-2 //U160疫病帶原者 Plague Bearer
+Item Colours[127][7]:-1,-2,-2,-2 //U162克林鐵-弗姆 Crainte Vomir
+Item Colours[128][7]:-1,-2,-2,-2 //U163兵之王 Bing Sz Wang
+Item Colours[129][7]:-1,-2,-2,-2 //U164卑劣軀殼 The Vile Husk(kp利器?)
+Item Colours[130][7]:-1,-2,-2,-2 //U165雲裂 Cloudcrack
+Item Colours[131][7]:-1,-2,-2,-2 //U166特迪斯法雷-芙法米 Todesfaelle Flamme
+Item Colours[132][7]:-1,-2,-2,-2 //U167劍衛 Swordguard
+Item Colours[133][7]:-1,-2,-2,-2 //U168裂脊者 Spineripper
+Item Colours[134][7]:-1,-2,-2,-2 //U169刻心者Heart Carver
+Item Colours[135][7]:-1,-2,-2,-2 //U170黑沼之鋒 Blackbog's Sharp(speed-20 +30IAS slow50)
+Item Colours[136][7]:-1,-2,-2,-2 //U171暴風尖刺 Stormspike
+Item Colours[137][7]:-1,-2,-2,-2 //U291死亡碎片 Deathbit
+Item Colours[138][7]:-1,-2,-2,-2 //U288圓鑿 The Scalper
+Item Colours[146][7]:-1,-2,-2,-2 //U172穿刺者 The Impaler
+Item Colours[147][7]:-1,-2,-2,-2 //U173水魔陷阱 Kelpie Snare(减速75%)_
+Item Colours[148][7]:-1,-2,-2,-2 //U174噬魂叉 Soulfeast Tine
+Item Colours[149][7]:-1,-2,-2,-2 //U175宏-森丹 Hone Sundan
+Item Colours[150][7]:-1,-2,-2,-2 //U176榮耀的尖塔 Spire of Honor
+Item Colours[151][7]:-1,-2,-2,-2 //U177刮肉者 The Meat Scraper
+Item Colours[152][7]:-1,-2,-2,-2 //U178黑水之刃 Blackleach Blade
+Item Colours[153][7]:-1,-2,-2,-2 //U179雅典娜的忿怒 Athena's Wrath
+Item Colours[154][7]:-1,-2,-2,-2 //U180皮爾-通把-考恩特 Pierre Tombale Couant
+Item Colours[155][7]:-1,-2,-2,-2 //U181胡索丹-依弗 Husoldal Evo
+Item Colours[156][7]:-1,-2,-2,-2 //U182驚怖焰亡靈 Grim's Burning Dead
+Item Colours[157][7]:-1,-2,-2,-2 //U183擺動剃刀 Razorswitch
+Item Colours[159][7]:-1,-2,-2,-2 //U185五彩的怒氣 Chromatic Ire
+Item Colours[160][7]:-1,-2,-2,-2 //U186扭曲之矛 Warpspear
+Item Colours[161][7]:-1,-2,-2,-2 //U187骷髏收集者 Skull Collector
+Item Colours[162][7]:-1,-2,-2,-2 //U188天擊 Skystrike
+Item Colours[163][7]:-1,-2,-2,-2 //U189撕裂之鉤 Riphook
+Item Colours[164][7]:-1,-2,-2,-2 //U190社角久子 Kuko Shakaku(L33爆炸箭矢)
+Item Colours[165][7]:-1,-2,-2,-2 //U191無休止的冰雹Endlesshail
+Item Colours[166][7]:-1,-2,-2,-2 //U192狂野之弦Witchwild String(+40抗)
+Item Colours[167][7]:-1,-2,-2,-2 //U193岩壁殺手 Cliffkiller
+Item Colours[168][7]:-1,-2,-2,-2 //U194巫師之怒 Magewrath
+Item Colours[170][7]:-1,-2,-2,-2 //U196蘭格-布里瑟 Langer Briser
+Item Colours[171][7]:-1,-2,-2,-2 //U197毒液怪 Pus Spitter
+Item Colours[172][7]:-1,-2,-2,-2 //U198布理撒-多-凱南 Buriza-Do Kyanon
+Item Colours[173][7]:-1,-2,-2,-2 //U199惡魔機器 Demon Machine(L41爆炸箭矢)
+Item Colours[197][7]:-1,-2,-2,-2 //U294刀鋒邊緣 Razor's Edge
+Item Colours[199][7]:-1,-2,-2,-2 //U313符文大師 Rune Master(+5MaxCR)
+Item Colours[200][7]:-1,-2,-2,-2 //U383鶴嘴 Cranebeak
+Item Colours[201][7]:-1,-2,-2,-2 //U314死亡之刀 Death Cleaver
+Item Colours[203][7]:-1,-2,-2,-2 //U324永恆邊界 Ethereal Edge
+Item Colours[211][7]:-1,-2,-2,-2 //U384諾德的蝕肉藥 Nord's Tenderizer
+Item Colours[215][7]:-1,-2,-2,-2 //U296惡魔爪牙 Demon Limb
+Item Colours[217][7]:-1,-2,-2,-2 //U256巴拉那之星 Baranar's Star
+Item Colours[219][7]:-1,-2,-2,-2 //U257史恰佛之鎚 Schaefer's HammerU307碎石者 Stone Crusher
+Item Colours[220][7]:-1,-2,-2,-2 //U337風之鎚 Windhammer(60IAS 50CB)
+Item Colours[221][7]:-1,-2,-2,-2 //U258碎腦鎚 The Cranium BasherU385大地變形者 Earth Shifter(20IAS 75CB)
+Item Colours[223][7]:-1,-2,-2,-2 //U290魔靈殺手 Djinn Slayer
+Item Colours[224][7]:-1,-2,-2,-2 //U289血月 Bloodmoon
+Item Colours[241][7]:-1,-2,-2,-2 //U335碎片貪婪者 Gimmershred
+Item Colours[249][7]:-1,-2,-2,-2 //U382愛理歐克之針 Arioc's Needle
+Item Colours[259][7]:-1,-2,-2,-2 //U264暴風尖塔 Stormspire(30IAS)
+Item Colours[275][7]:-1,-2,-2,-2 //U328地獄拷問 Hellrack
+Item Colours[1003][7]:-1,-2,-2,-2 //U73光榮布帽 Coif of Glory
+Item Colours[1004][7]:-1,-2,-2,-2 //U74黃昏深處Duskdeep
+Item Colours[1005][7]:-1,-2,-2,-2 //U76怒號長牙 Howltusk
+Item Colours[1008][7]:-1,-2,-2,-2 //U79薄暮外觀 Greyform(L7 5LL 10DEX CR+20 FR+20)
+Item Colours[1012][7]:-1,-2,-2,-2 //U83擴散黑暗Darkglow
+Item Colours[1013][7]:-1,-2,-2,-2 //U84鷹甲 Hawkmail(10FRW 15MaxCR 15CR CannotFreeze)
+Item Colours[1014][7]:-1,-2,-2,-2 //U85火花之甲 Sparking Mail(LR+30)
+Item Colours[1015][7]:-1,-2,-2,-2 //U86毒液牢房 Venom Ward(+90PR +15MaxPR)
+Item Colours[1016][7]:-1,-2,-2,-2 //U87冰雪眨眼 Iceblink
+Item Colours[1019][7]:-1,-2,-2,-2 //U90作響之籠 Rattlecage(+25CB)
+Item Colours[1025][7]:-1,-2,-2,-2 //U96暴風公會 Stormguild
+Item Colours[1027][7]:-1,-2,-2,-2 //U100貝弗提的紀念 Bverrit Keep(FR+75 STR+5)
+Item Colours[1036][7]:-1,-2,-2,-2 //U109凱松的征服 Treads of Cthon
+Item Colours[1041][7]:-1,-2,-2,-2 //U114夜煙 Nightsmoke
+Item Colours[1018][7]:-1,-2,-2,-2 //U89石之毛 Rockfleece
+Item Colours[1040][7]:-1,-2,-2,-2 //U113蛇索 Snakecord (L12 5REP 25PR)
+Item Colours[1043][7]:-1,-2,-2,-2 //U116鋒利扣帶 Bladebuckle(+5STR +10DEX)
+Item Colours[1045][7]:-1,-2,-2,-2 //U97無眼之牆 Wall of the Eyeless(20FCR 5EK)
+Item Colours[1046][7]:-1,-2,-2,-2 //U98劍背之架 Swordback Hold
+Item Colours[1048][7]:-1,-2,-2,-2 //U202岩石制動器 Rockstopper
+Item Colours[1050][7]:-1,-2,-2,-2 //U204暗視之盔 Darksight Helm
+Item Colours[1053][7]:-1,-2,-2,-2 //U207黑角面具 Blackhorn's Face (20LA 15LR 20slow)
+Item Colours[1057][7]:-1,-2,-2,-2 //U212擲鐵 Iron Pelt (DR15-20)
+Item Colours[1059][7]:-1,-2,-2,-2 //U214鴉鳴 Crow Caw(15IAS 15FHR 15DEX)
+Item Colours[1064][7]:-1,-2,-2,-2 //U219排齒 Toothrow
+Item Colours[1070][7]:-1,-2,-2,-2 //U225摩西祝福之環 Moser's Blessed Circle(25resist 2socket)
+Item Colours[1076][7]:-1,-2,-2,-2 //U233墓穴的撫弄 Gravepalm(+10STR)
+Item Colours[1086][7]:-1,-2,-2,-2 //U243剃刀之尾 Razortail(+15DEX)
+Item Colours[1087][7]:-1,-2,-2,-2 //U244陰影陷阱 Gloom's Trap
+Item Colours[1091][7]:-1,-2,-2,-2 //U230警戒之牆 Lidless Wall
+Item Colours[1092][7]:-1,-2,-2,-2 //U231長槍守衛 Lance Guard
+Item Colours[1136][7]:-1,-2,-2,-2 //U348鋼鐵鎧甲 Steel Carapace
+Item Colours[1147][7]:-1,-2,-2,-2 //U312吸魂者 Soul Drainer
+Item Colours[1185][7]:-1,-2,-2,-2 //U327靈魂看守者 Spirit Keeper

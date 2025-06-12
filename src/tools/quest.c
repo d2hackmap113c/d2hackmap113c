@@ -4,6 +4,7 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <assert.h>
+#define RR_LV 45	
 typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
@@ -200,10 +201,10 @@ void check(int accountId,char *realm,char *account,char *name) {
 	PRT("F%d ",accountId);
 	sprintf(path,"%s\\%s\\dat\\%s_%s.soj.txt",snapshotPath,realm,account,name);
 	FILE *fp2=fopen(path,"rb");
+	int soj=0;
 	if (fp2) {
 		int n=fread(buf2,32,1,fp2);fclose(fp2);
-		int soj=strtol(buf2,0,10);
-		PRT(" %4dsoj",soj);
+		soj=strtol(buf2,0,10);
 		total_soj+=soj;
 	}
 	for (int d=0;d<=2;d++) {
@@ -211,7 +212,7 @@ void check(int accountId,char *realm,char *account,char *name) {
 		FILE *fp2=fopen(path,"rb");
 		if (fp2) {fread((char *)quest,96,1,fp2);fclose(fp2);}
 		else {
-			PRT(d<2?"  --------":"  -----");
+			PRT(d<2?"  --------":"  --");
 			continue;
 		}
 		PRT("  ");
@@ -226,7 +227,7 @@ void check(int accountId,char *realm,char *account,char *name) {
 			if (quest[36]&1) PRT("  ");
 			else PRT("r%d",d);
 		}
-		if (header.charLevel>=40) {
+		if (header.charLevel>RR_LV) {
 			PRT(" ");if (!exp||quest[1]&1) PRT("  ");else PRT("A%d",d,quest[1]);//Den of Evil
 			PRT(" ");if (!exp||quest[9]&0x8001) PRT("  ");else PRT("B%d",d,quest[9]);//Radament's Lair
 			PRT(" ");if (quest[20]&1) PRT("  ");else PRT("G%d",d);//The Golden Bird
@@ -245,6 +246,7 @@ void check(int accountId,char *realm,char *account,char *name) {
 	if (header.charLevel<10) PRT(" ");
 	
 	PRT(" %s%d",diffName[dL],act);
+	if (soj||header.charLevel>RR_LV) PRT(" %3dsoj",soj);
 	PRT(" %s/%s",account,name);
 	struct CharTag ct;ct.name=name;
 	struct CharTag *pct=(struct CharTag *)bsearch(&ct,charTags,nCharTag,sizeof(struct CharTag),compareCharTag);
@@ -260,10 +262,10 @@ void check(int accountId,char *realm,char *account,char *name) {
 int compareChar(const void *a,const void *b) {
 	Char *c1=(Char *)a;
 	Char *c2=(Char *)b;
-	if (c1->lv<5&&c2->lv<5) {
+	if (c1->lv<=RR_LV&&c2->lv<=RR_LV) {
 		int t=c1->accountId-c2->accountId;if (t) return t;
 		return strcmp(c1->name,c2->name);
-	} else if (c1->lv>5&&c2->lv>5) {
+	} else if (c1->lv>RR_LV&&c2->lv>RR_LV) {
 		int t=c1->accountId-c2->accountId;if (t) return t;
 	}
 	int t=c1->lv-c2->lv;if (t) return -t;

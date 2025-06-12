@@ -3,7 +3,6 @@
 #include "multi.h"
 
 int BackToTown();
-int QuickToLevel();
 int QuickNextGame(int addnum);
 void SaveGameName();
 int QuickExitGame();
@@ -14,16 +13,25 @@ static int takeWPtoTownDis=6;
 wchar_t	wszGameName[32]={0};
 wchar_t wszGamePassword[32]={0};
 wchar_t wszGameDescription[32]={0};
-static int quickToLevel[2]={Level_KurastDocks,Level_DuranceofHateLevel2};
+//static int quickToLevel[2]={Level_KurastDocks,Level_DuranceofHateLevel2};
+//static int quickToLevel2[2]={Level_KurastDocks,Level_DuranceofHateLevel2};
+//static int quickToLevel3[2]={Level_KurastDocks,Level_DuranceofHateLevel2};
 ToggleVar tBackToTown={TOGGLEVAR_DOWN,	0,	-1,		1,	"Quick Back Town",		&BackToTown};
-ToggleVar tQuickToLevel={TOGGLEVAR_DOWN,	0,	-1,		1,	"QuickToLevel",		&QuickToLevel};
+//ToggleVar tQuickToLevel={TOGGLEVAR_DOWN,	0,	-1,		1,	"QuickToLevel",		&QuickToLevel};
+//ToggleVar tQuickToLevel2={TOGGLEVAR_DOWN,	0,	-1,		1,	"QuickToLevel2",		&QuickToLevel2};
+//ToggleVar tQuickToLevel3={TOGGLEVAR_DOWN,	0,	-1,		1,	"QuickToLevel3",		&QuickToLevel3};
 ToggleVar tExitGame={TOGGLEVAR_DOWN,	0,	-1,	 1, 	"ExitGame",	&QuickExitGame, 0};
 ToggleVar tQuickNextGame={TOGGLEVAR_DOWNPARAM,	0,	-1,	 1, "NextGame",	&QuickNextGame,	1};
 ToggleVar tQuickNextGame2={TOGGLEVAR_DOWNPARAM,	0,	-1,	 1, "NextGame2",	&QuickNextGame,	2};
 static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_KEY, "QuickBackToTownKey",   &tBackToTown		    	},
-	{CONFIG_VAR_TYPE_KEY, "QuickToLevelKey",   &tQuickToLevel		    	},
-  {CONFIG_VAR_TYPE_INT_ARRAY1, "QuickToLevel",&quickToLevel,2,{0}},
+//	{CONFIG_VAR_TYPE_KEY, "QuickToLevelKey",   &tQuickToLevel		    	},
+//	{CONFIG_VAR_TYPE_KEY, "QuickToLevelKey2",   &tQuickToLevel2		    	},
+//	{CONFIG_VAR_TYPE_KEY, "QuickToLevelKey3",   &tQuickToLevel3		    	},
+//  {CONFIG_VAR_TYPE_INT_ARRAY1, "QuickToLevel",&quickToLevel,2,{0}},
+//  {CONFIG_VAR_TYPE_INT_ARRAY1, "QuickToLevel2",&quickToLevel2,2,{0}},
+//  {CONFIG_VAR_TYPE_INT_ARRAY1, "QuickToLevel3",&quickToLevel3,2,{0}},
+  {CONFIG_VAR_TYPE_QUICK_TO_LEVEL, "QuickToLevel",NULL,0,{0}},
 	{CONFIG_VAR_TYPE_INT, "TakeWaypointToTownDis",  &takeWPtoTownDis, 4    },
 	{CONFIG_VAR_TYPE_INT, "TownportalNumsAlert",  &nTownportalAlertNums, 4    },
   {CONFIG_VAR_TYPE_KEY, "QuickExitGameKey",      &tExitGame              },
@@ -77,11 +85,28 @@ int BackToTown() {
 	switchRightSkill(skillCount(219)>0?219:220);//use scroll first
 	return 0;
 }
-int QuickToLevel() {
-	int lvl=quickToLevel[0];
-	if (dwCurrentLevel==lvl) lvl=quickToLevel[1];
-	if (takeWPtoTownDis) takeWaypointToLvl(lvl,takeWPtoTownDis);
+struct stQuickToLevel {
+	int key,area1,area2;struct stQuickToLevel *next;
+};
+static stQuickToLevel *quickToLevels=NULL;
+int QuickToLevel(stQuickToLevel *p) {
+	int lvl=p->area1;
+	if (dwCurrentLevel==lvl) lvl=p->area2;
+	if (takeWPtoTownDis) return takeWaypointToLvl(lvl,takeWPtoTownDis);
 	return 0;
+}
+void addQuickToLevel(int key,int area1,int area2) {
+	for (stQuickToLevel *p=quickToLevels;p;p=p->next) {
+		if (p->key==key) {p->area1=area1;p->area2=area2;return;}
+	}
+	stQuickToLevel *p=(stQuickToLevel *)HeapAlloc(confHeap,0,sizeof(stQuickToLevel));
+	p->key=key;p->area1=area1;p->area2=area2;
+	p->next=quickToLevels;quickToLevels=p->next;
+	ToggleVar *ptv=addExtraKey(key);if (!ptv) {LOG("ERROR: too many keys\n");return;}
+	ptv->type=TOGGLEVAR_DOWNPTR;ptv->key=key;
+	ptv->paramPtr=p;ptv->keyType=0;
+	ptv->func=&QuickToLevel;ptv->funcUp=NULL;
+	ptv->desc="QuickToLevel";
 }
 void quickLoop() {
 	if (fPlayerInTown||dwCurMs>dwBackToTownTimeout) {dwBackToTownTimeout=0;return;}

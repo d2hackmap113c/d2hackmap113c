@@ -10,6 +10,9 @@ int dwRescueBarSafeDistance;
 extern int fUserOperating;
 void recheckSelfItems();
 int autoCubeTransform();
+int autoSimpleItemStack();
+int autoIdentify();
+static int autoIdentifying=0;
 
 ToggleVar tAutoForegroundSkill2={TOGGLEVAR_DOWN,0,-1, 1,"Auto Foreground Skill 2",&AutoSkillNow};
 static ConfigVar aConfigVars[] = {
@@ -198,7 +201,12 @@ void checkAutoSkill() {
 }
 void checkAutoSkillStatus() {
 	fAutoSkill=leftSkill.valid||rightSkill.valid;
-	if (fAutoSkillNow&&(dwRightSkill==Skill_Teleport||*d2client_pUiCubeOn)) fAutoSkill=1;
+	if (fAutoSkillNow&&(
+		dwRightSkill==Skill_Teleport
+		||dwRightSkill==Skill_Telekinesis
+		||*d2client_pUiCubeOn
+		||*d2client_pUiInventoryOn
+		||*d2client_pUiStashOn)) fAutoSkill=1;
 	if (!fAutoSkill) return;
 	fAutoSkill=fWinActive&&(tAutoForegroundSkillToggle.isOn||fAutoSkillNow)&&!fUserOperating
 		||!fWinActive&&tAutoBackgroundSkill.isOn;
@@ -310,6 +318,7 @@ static int canUse(struct AutoSkillInfo *info) {
 int AutoTeleport();
 int AutoTeleportStart();
 int AutoTeleportEnd();
+int autoTelekinesis();
 extern int fAutoTeleporting;
 int AutoSkillNow() {
 	if (!fAutoSkillNow&&dwRightSkill==Skill_Teleport) AutoTeleportStart();
@@ -320,6 +329,7 @@ void AutoSkillRunLoop() {
 	if (fAutoSkillNow&&!IsKeyDown(tAutoForegroundSkill.key)&&!IsKeyDown(tAutoForegroundSkill2.key)) {
 		fAutoSkillNow=0;checkAutoSkillStatus();
 		if (dwRightSkill==Skill_Teleport) AutoTeleportEnd();
+		if (autoIdentifying) autoIdentifying=0;
 		return;
 	}
 	if (dwSkillChangeCountVerify!=dwSkillChangeCount) {
@@ -328,8 +338,15 @@ void AutoSkillRunLoop() {
 		dwSkillChangeCountVerify=dwSkillChangeCount;
 	}
 	if (fAutoSkillNow) {
+		if (*d2client_pUiStashOn) {autoSimpleItemStack();return;}
 		if (*d2client_pUiCubeOn) {autoCubeTransform();return;}
-		if (dwRightSkill==Skill_Teleport) {
+		if (*d2client_pUiInventoryOn) {
+			if (autoIdentify()) {autoIdentifying=1;return;}
+		}
+		if (dwRightSkill==Skill_Telekinesis) {
+			if (autoTelekinesis()) return;
+		}
+		if (dwRightSkill==Skill_Teleport&&!autoIdentifying) {
 			if (!AutoTeleport()) return;
 		} else if (fAutoTeleporting) AutoTeleportEnd();
 	}
@@ -523,4 +540,35 @@ void __fastcall autoSkillDimVision(char *packet) {
 	if (packet[1]!=1) return;
 	int id=*(int *)(packet+2);
 	monsterSkillMs[id&MONSTER_MASK]=dwCurMs;
+}
+int autoTelekinesis() {
+	if (dwRightSkill!=Skill_Telekinesis) return 0;
+	UnitAny *pUnit=NULL;int testBlock=0;
+	switch (dwCurrentLevel) {
+		case Level_TalRashaTomb1:case Level_TalRashaTomb2:case Level_TalRashaTomb3:
+		case Level_TalRashaTomb4:case Level_TalRashaTomb5:case Level_TalRashaTomb6:case Level_TalRashaTomb7:{
+			pUnit=findObjectByTxt(100,100,2);if (!pUnit) return 0;
+			testBlock=0;
+			break;
+		}
+		case Level_ChaosSanctuary: {
+			//right_bottom:392, right_top:393, top:394,left_bottom:395,left_top:396, 
+			pUnit=findObjectByTxt(392,396,0);
+			if (!pUnit) return 0;
+			break;
+		}
+	}
+	if (!pUnit) return 0;
+	if (testBlock) {
+		POINT p1,p2;
+		p1.x=PLAYER->pMonPath->wUnitX;p1.y=PLAYER->pMonPath->wUnitY;
+		p2.x=pUnit->pMonPath->wUnitX;p2.y=pUnit->pMonPath->wUnitY;
+		if (d2common_IsLineBlocked(PLAYER->pMonPath->pAreaRectData,&p1,&p2,4)) {
+			//LOG("blocked %X\n",pUnit);
+			return 0;
+		}
+	}
+	//LOG("skill %X\n",pUnit);
+	RightSkillUnit(pUnit);
+	return 1;
 }

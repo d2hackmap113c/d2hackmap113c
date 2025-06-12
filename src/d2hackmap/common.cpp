@@ -2,6 +2,7 @@
 #include "header.h"
 #include <sys/stat.h>
 
+//cls: 0:ama 1:sor 2:nec 3:pal 4:bar 5:dru 6:asn
 World *singlePlayerWorld=NULL;
 int forceStandStill=0;
 
@@ -16,7 +17,10 @@ void common_addConfigVars() {
 
 /*IAS:frame
 ama(Hunter Bow): 0:12 10:11 25:10 45:9 75:8 145:7
+ama(Composite-Bow): 0:12 10:11 25:10 45:9 75:8 145:7
 ama(Long Bow): 0:13 10:12 20:11 40:10 65:9 105:8 200:7
+ama(Repeating-Crossbow): 0:14 5:13 20:12 35:11
+
 bar(Long Bow): 0:14 10:13 20:12 35:11 55:10 90:9 155:8 
 pal(Long Bow): 0:15 10:14 20:13 30:12 50:11 75:10 125:9 
 dru(Long Bow): 0:15 10:14 20:13 30:12 50:11 75:10 125:9 
@@ -409,6 +413,18 @@ UnitAny *getAreatileByTxt(int txt) {
 		}
 	}
 	return NULL;
+}
+UnitAny *findObjectByTxt(int from,int to,int mode) {
+	UnitAny *pMinUnit=NULL;int minDis=0;
+	for (int i=0;i<128;i++) {
+		for (UnitAny *pUnit=d2client_pUnitTable[2*128+i];pUnit;pUnit=pUnit->pHashNext) {
+			if (from<=pUnit->dwTxtFileNo&&pUnit->dwTxtFileNo<=to&&pUnit->dwMode==mode) {
+				int dis=getPlayerDistanceM256(pUnit);
+				if (!pMinUnit||dis<minDis) {pMinUnit=pUnit;minDis=dis;}
+			}
+		}
+	}
+	return pMinUnit;
 }
 //level 0:town -1:any
 UnitAny *getPortalToArea(int level,char *owner) {
@@ -1327,4 +1343,21 @@ void dc6cell2bmp(GfxCell *pcell,char *outpath) {
 		fclose(fpout);
 	}
 	free(buf);
+}
+int getSimpleItemStackContent(UnitAny *pUnit,int *ptxt) {
+	if (!pUnit||!ptxt) return 0;
+	*ptxt=0;
+	StatList *plist=pUnit->pStatList;
+	if (!(plist->dwListFlag&0x80000000)) return 0;
+	if (!plist->sFullStat.pStats) return 0;
+	Stat *stat=&plist->sFullStat;
+	int n=stat->wStats;
+	if (n>=511) return 0;
+	StatEx *se=stat->pStats;
+	for (int i=0;i<n;i++) {
+		int id=se[i].wStatId;if (id!=simpleItemStackStatId) continue;
+		*ptxt=se[i].wParam&0xFFFF;
+		return se[i].dwStatValue;
+	}
+	return 0;
 }

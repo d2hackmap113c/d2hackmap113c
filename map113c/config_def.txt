@@ -50,6 +50,7 @@ TakeWaypointToTownDis: 6 //如果在这个距离内有传送站，则使用传�
 Use Custom Font Toggle:         2, -1               //中文输入
 Auto Invite Toggle:             1, -1 //             //自动邀请，最早进游戏的人物可以自动激活
 Auto Party Toggle:              1, -1 //             //自动接受组队邀请
+AutoPartyBugMFToggle: 0, VK_ //whether to auto party or not in hell difficulty if the character has a tag of bugKM, bugKD,bugKB,bugKCountess在地狱难度被标记为bugKM, bugKD,bugKB,bugKCountess的号在相应act时是否自动结盟,具体参见LoadTagFile命令
 Auto Loot Permit :              1, -1 //       //HC自动开锁，小键盘4
 Wisper Notice Toggle:           0, -1 //       //收到密语时以聊天方式提示，小键盘5
 View Equipment Key:             VK_K //                //查看其他玩家装备(鼠标点中其他玩家的情况下启用)
@@ -326,6 +327,7 @@ MapTargets[Durance of Hate Level 1][Durance of Hate Level 2]:0
 MapTargets[Durance of Hate Level 2][Durance of Hate Level 3]:1
 MapTargets[Durance of Hate Level 3][339]:3,"Teleport","传送点"
 DuranceOfHateLevel3TeleportShift: -20,0,3  //dx,dy,random
+DuranceOfHateLevel3TeleportShiftBugKM: -40,0,3  //dx,dy,random
 //Act4
 MapTargets[Outer Steppes][Plains of Despair]:0
 MapTargets[Plains of Despair][Izual on Minimap]:0
@@ -333,7 +335,7 @@ MapTargets[Plains of Despair][City of the Damned]:0
 MapTargets[City of the Damned][Plains of Despair]:0
 MapTargets[City of the Damned][River of Flame]:0
 MapTargets[River of Flame][Chaos Sanctuary]:0
-MapTargets[River of Flame][Hellforg on Minimap]:0,"Hellforg","Hellforg"
+MapTargets[River of Flame][Hellforg on Minimap]:3,"Hellforg","Hellforg"
 MapTargets[Chaos Sanctuary][255]:30,"Center","中心点"
 MapTargets[Chaos Sanctuary][3000]:60,"TopSeal","封印上"
 MapTargets[Chaos Sanctuary][3001]:60,"LeftTopSeal","封印左上"
@@ -424,6 +426,7 @@ MonsterColours[Frenzied Ice Spawn]:    0x9b        //自爆人
 MonsterColours[Tomb viper 1]:          0x9b        //毒蛇
 MonsterColours[Tomb Viper 2]:          0x9b        //毒蛇
 MonsterColours[Undead Soul Killer 2]:  0x9b        //灵魂杀手
+MonsterColours[Heirophant1,Heirophant2]:0x6e //崔凡克用闪电的法师
 
 // 防PK，地图上显示一些陷阱，刺客的和女巫的火龙，白色
 MonsterColours[410]:           0x20  //wake of fire
@@ -588,7 +591,8 @@ Chicken Max Life:        1500 //最大血量大于此值时才使用绝对值血
 Chicken Life:            600 //血保数值
 Chicken Life Min Clevel: 3   //3级以下不使用血保
 ChickenLifeForcedClevel: 85  //超过85级强制血保
-//进入游戏时自动打开保护,换号无忧 0:无操作 1:打开ChickenLife,DropProtection,ResetProtection,SocketProtect,如果设置过Bug Auto Quit Hell和Bug Auto Quit Hell Act5也会打开
+NoQuitIfDeadClevel: 90  //超过90级如果被秒了不退出游戏
+//进入游戏时自动打开保护,换号无忧 0:无操作 1:打开ChickenLife,DropProtection,ResetProtection,SocketProtect,RunewordProtect如果设置过Bug Auto Quit Hell和Bug Auto Quit Hell Act5也会打开
 AutoProtectionNewGame:    1   
 //--------------- 根据人物级别显示物品 ---------------
 Item Show CLvl[2006]: 15,-1  //Stamina Mina Light Healing
@@ -775,6 +779,7 @@ LogTPToggle: 0,VK_ //将每次传送的数据记录到runtime/d2hackmap*.log中
 AutoTeleportMonsterDefaultDistance: 6 //未设置的用此距离
 AutoTeleportMonsterDistance[1-8]: 5,7 
 AutoTeleportMonsterDistance[9-33]: 6,8 
+AutoTeleportArcaneSanctuaryYard: 3 //神秘庇难所的距离，太大了找不到路径
 //------------- AutoSummonSection 自动召唤设置，双开时可在后台自动执行 ---------------
 //当前右键设定召满后自动切换右键技能,召唤顺序:骷髅,骷髅法师,重生
 Auto Summon Toggle: 1, CTRL+ALT+VK_S //自动召唤
@@ -876,6 +881,8 @@ SimpleItemStackStatId: 359
 DrawSimpleItemStackCount: 1,VK_ //显示玉净瓶的内容和数量
 BatchSimpleItemStackCount: 3 //按住Shift键点击玉净瓶一次取出的数量
 DrawInvItemInfoToggle: 1, VK_ //在暗金绿色神符之语物品上显示名称，方便在集市上快速找装备
+DrawMarketItemInfoDy: -40 //集市上的名称往上一点显示
+DrawCursorItemInfoDy: -20 //拿起的物品名称往上一点显示
 //---Some server has different resist offset
 ResistOffsetClassic: 0,-20,-50 //only for display
 ResistOffsetExpansion: 0,-40,-100 //only for display
@@ -900,7 +907,13 @@ HostileNameColor:6,0x62,0x6f //敌对是红色
 //TpSwitchBackground[ClassSor]: SkillBlizzard
 //---switch skill to when enter door in background
 //EnterDoorInBackgroundSkill[ClassNec][The Worldstone Chamber]: SkillDimVision
-QuickToLevelKey: SHIFT+VK_G
-QuickToLevel: Kurast Docks,Durance of Hate Level 2
+QuickToLevel[SHIFT+VK_G]: Black Marsh,Rogue Encampment 
+//QuickToLevel[SHIFT+VK_G]: Durance of Hate Level 2,Kurast Docks
+QuickToLevel[SHIFT+VK_H]: Arcane Sanctuary,Rogue Encampment
+QuickToLevel[SHIFT+VK_V]: Harrogath,The Pandemonium Fortress
+QuickToLevel[SHIFT+VK_5]: Rogue Encampment,The Pandemonium Fortress
 MultiClientTalkToNpcKey: SHIFT+VK_B //talk to NPC to go to next act
-EnableGemAutoMerge: 1, VK_ //在打开盒子时按住自动技能键F时自动合并背包中的宝石，速度极快。
+EnableGemAutoMerge: 1, VK_ //在打开盒子时按住自动技能键AutoForegroundSkillKey(默认为F)时自动合并背包中的宝石，速度极快。
+AutoIdentifyCount: 10 //在打开背包并且辨识书剩余10个以上时按住自动技能键F自动辨识背包中未辨识物品
+EnableAutoSimpleItemStack: 1, VK_ //在打开箱子按住自动技能键F自动把背包中的宝石放到玉净瓶中
+HasCowKing: 0 //是否有牛王

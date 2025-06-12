@@ -17,6 +17,7 @@ r<rune_id 1-33>: Create rune掉落符文
 s<set_id 0-126>: Create set item掉落套装物品
 u<unique_id 0-400>: Create unique item掉落暗金物品
 w<runeword_id 0-168>i<item_id 1-306,1001-1202,2001-2151>: drop runeword with item
+X: set undentified (for debugging)
 */
 ,q3i1002b1
 发送,i2042,stat{253,254},i2011,i2012掉落回城书辨识书和盒子

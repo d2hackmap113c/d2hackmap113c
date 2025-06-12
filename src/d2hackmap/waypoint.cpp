@@ -56,18 +56,19 @@ UnitAny *findWaypoint(int maxdis) {
 	}
 	return NULL;
 }
-void takeWaypointToLevel(UnitAny *waypoint,int level) {
+int takeWaypointToLevel(UnitAny *waypoint,int level) {
+	if (!hasWaypoint(level)) return 0;
 	dwTakeWaypointToLevel=level;
 	BYTE packet[9];packet[0]=0x13;
 	*(int *)(packet+1)=waypoint->dwUnitType;
 	*(int *)(packet+5)=waypoint->dwUnitId;
 	SendPacket(packet,sizeof(packet));
+	return 1;
 }
 int takeWaypointToLvl(int lvl,int maxdis) {
 	UnitAny *waypoint=findWaypoint(maxdis);
 	if (!waypoint) return 0;
-	takeWaypointToLevel(waypoint,lvl);
-	return 1;
+	return takeWaypointToLevel(waypoint,lvl);
 }
 
 // 00: 63 1b 00 00 - 00 02 01 ff - ff ff ff 77 - 00 00 00 00 |c          w    

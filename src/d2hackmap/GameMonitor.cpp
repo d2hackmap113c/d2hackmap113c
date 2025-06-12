@@ -26,7 +26,7 @@ static int dwLocalNameColor[3]={6,0x84,0x10};
 static int dwPartyNameColor[3]={6,0x20,0x5b};
 static int dwNeutralNameColor[3]={0,0x5b,0x10};
 static int dwHostileNameColor[3]={6,0x62,0x6f};
-int bossX,bossY,bossHp=-1;
+int bossX=0,bossY=0,bossHps[3],bossId=0,nBoss=0;
 
 void ShowGameCount();
 ToggleVar tCountDown={TOGGLEVAR_ONOFF,0,-1,1,"Count Down"};
@@ -51,7 +51,9 @@ ToggleVar tDrawBossHpToggle={TOGGLEVAR_ONOFF,0,-1,1,"DrawBossHpToggle"};
 int bossLineColor=0x62;
 ToggleVar tDrawPlayerNameToggle={TOGGLEVAR_ONOFF,0,-1,1,"DrawPlayerName",0,0,0,2};
 int dwDrawPlayerNameDy=66;
+int HasCowKing=1;
 static ConfigVar aConfigVars[] = {
+	{CONFIG_VAR_TYPE_INT,"HasCowKing",&HasCowKing,4},
 	{CONFIG_VAR_TYPE_INT,"TargetNameColor",&targetNameColor,1},
 	{CONFIG_VAR_TYPE_INT,"MonitorQuantity",&fMonitorQuantity,  4},
 	{CONFIG_VAR_TYPE_INT,"MonitorDurability",&fMonitorDurability,  4},
@@ -679,12 +681,30 @@ void DrawMonitorInfo(){
 			ypos = ypos-dwCountDownGap;
 		}
 	}
-	if (tDrawBossHpToggle.isOn&&bossHp>=0) {
-			wsprintfW(wszTemp, L"Boss: %d%%", bossHp);
+	if (tDrawBossHpToggle.isOn) {
+		for (int i=0;i<3;i++) {
+			if (bossHps[i]==0) continue;
+			wsprintfW(wszTemp, L"Boss%d: %d%%",i+1,bossHps[i]);
 			d2win_GetTextAreaSize(wszTemp, &sw, &sh);
 			int x=xpos-sw;
 			d2gfx_DrawRectangle(x,ypos-12,x+sw,ypos,0x10,5);d2win_DrawText(wszTemp, x , ypos, 0, 0);
 			ypos = ypos-12;
+		}
+		if (dwCurrentLevel>=Level_FurnaceofPain&&bossX&&bossY) {
+			int drawX=(bossX-bossY)*16;int drawY=(bossX+bossY)*8;
+			if (*d2client_pAutomapOn) {
+				POINT ptMon,ptPlayer; 
+				draw2map(&ptPlayer,PLAYER->pMonPath->drawX,PLAYER->pMonPath->drawY);
+				draw2map(&ptMon,drawX,drawY);
+				d2gfx_DrawLine(ptPlayer.x,ptPlayer.y,ptMon.x,ptMon.y,bossLineColor,-1);
+			} else {
+				d2gfx_DrawLine(
+					PLAYER->pMonPath->drawX-screenDrawX,
+					PLAYER->pMonPath->drawY-screenDrawY,
+					drawX-screenDrawX,
+					drawY-screenDrawY, bossLineColor,-1);
+			}
+		}
 	}
 	if (nStashPages&&*d2client_pUiStashOn&&tDrawMultiPageStashCount.isOn) {
 		int x=(SCREENSIZE.x-800)/2+dwDrawMultiPageStashXY[0];
@@ -1008,6 +1028,7 @@ static void drawPlayerName(UnitAny *pUnit) {
 	for (int i=0;i<16;i++) {char c=*s++;wname[i]=c;if (!c) break;}
 	wname[16]=0;
 	int hp=0,mana=0;
+	D2Window *pWin=NULL;
 	if (pUnit==PLAYER) {
 		hp=dwPlayerMaxHP<=0?0:dwPlayerHP*100/dwPlayerMaxHP;
 		mana=dwPlayerMaxMana<=0?0:dwPlayerMana*100/dwPlayerMaxMana;
@@ -1015,6 +1036,7 @@ static void drawPlayerName(UnitAny *pUnit) {
 		D2Window *pwin=&d2wins[1];
 		for (int i=1;i<=d2winLastId;i++,pwin++) {
 			if (pwin->uid==pUnit->dwUnitId) {
+				pWin=pwin;
 				int maxhp=pwin->hpMax;
 				hp=maxhp<=0?0:pwin->hp*100/maxhp;
 				int maxmana=pwin->manaMax;
@@ -1038,18 +1060,30 @@ static void drawPlayerName(UnitAny *pUnit) {
 	d2gfx_DrawRectangle(x,y-12,x+rw,y,bg,5);
 	d2gfx_DrawRectangle(x+rw,y-12,x+w,y,bg2,5);
 	d2win_DrawText(wname,x,y,fg,0);
-}
-static void drawBossHp(UnitAny *pUnit) {
-	wchar_t wbuf[32];
-	int hp=0;
-	if (pUnit->dwMode==0||pUnit->dwMode==12) hp=0;
-	else {
-		int maxhp=d2common_GetUnitStat(pUnit, STAT_MAXHP, 0);
-		hp=maxhp<=0?0:d2common_GetUnitStat(pUnit, STAT_HP, 0)*100/maxhp;
+	if (pWin&&pWin->replyMs&&dwCurMs<pWin->replyMs) {
+		wchar_t wbuf[32];
+		wchar_t *fmt=L"%d:";
+		int fg=6,bg=0x84;
+		switch (pWin->reply) {
+			case MCR_OK:fmt=dwGameLng?L"%d:好滴":L"%d:roger";bg=0x68;break;
+			case MCR_DONE:fmt=dwGameLng?L"%d:搞定":L"%d:done";break;
+			case MCR_ERROR:fmt=dwGameLng?L"%d:错误":L"%d:error";bg=0x62;break;
+			case MCR_GOT_RUNES:fmt=dwGameLng?L"%d:有了":L"%d:rune";break;
+		}
+		wsprintfW(wbuf,fmt,pWin->index);
+		drawBgText(wbuf,x,y-17,fg,bg);
 	}
-	bossX=pUnit->pMonPath->wUnitX;
-	bossY=pUnit->pMonPath->wUnitY;
-	bossHp=hp;
+}
+static void drawBossHp(UnitAny *pUnit,int boss) {
+	wchar_t wbuf[32];
+	if (pUnit->dwMode==0||pUnit->dwMode==12) return;
+	int maxhp=d2common_GetUnitStat(pUnit, STAT_MAXHP, 0);
+	int hp=maxhp<=0?0:d2common_GetUnitStat(pUnit, STAT_HP, 0)*100/maxhp;
+	if (boss) {
+		bossX=pUnit->pMonPath->wUnitX;
+		bossY=pUnit->pMonPath->wUnitY;
+		if (bossId<3) bossHps[bossId++]=hp;
+	}
 	wsprintfW(wbuf,L"%d%%",hp);
 	int drawX = pUnit->pMonPath->drawX;
 	int drawY = pUnit->pMonPath->drawY;
@@ -1083,16 +1117,31 @@ static void drawUnitsInfoInRect(AreaRectData *pData) {
 						case Mon_BaalCrab:
 						case Mon_TheSummoner:
 						case Mon_Nihlathak:
+						case Mon_Talic:case Mon_Madawc:case Mon_Korlic:
 						case Mon_UberMephisto:case Mon_UberDiablo:case Mon_UberIzual:
 						case Mon_UberAndariel:case Mon_UberDuriel:case Mon_UberBaal:
-							drawBossHp(pUnit);
+							drawBossHp(pUnit,1);
+							break;
+						case Mon_CouncilMember1:
+						case Mon_CouncilMember2:
+						case Mon_CouncilMember3:
+							if (dwCurrentLevel==Level_Travincal&&pUnit->pMonsterData->fBoss&&pUnit->pMonsterData->fUnique) {
+								drawBossHp(pUnit,1);
+							}
 							break;
 						case Mon_OblivionKnight1: 
 						case Mon_StormCaster1:
 						case Mon_VenomLord:
 						case Mon_DarkStalker:
 							if (pUnit->pMonsterData->fBoss&&pUnit->pMonsterData->fUnique) {
-								drawBossHp(pUnit);
+								drawBossHp(pUnit,1);
+							}
+							break;
+						default:
+							switch (dwCurrentLevel) {
+								case Level_ArreatSummit:
+									if (pUnit->pMonsterData->fBoss||pUnit->pMonsterData->fUnique) drawBossHp(pUnit,0);
+									break;
 							}
 							break;
 					}

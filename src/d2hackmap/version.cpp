@@ -1,3 +1,3 @@
 #include "stdafx.h"
-char *szVersion="20250525";
-char *compileTime="2025-05-25 19:01:41";
+char *szVersion="20250612";
+char *compileTime="2025-06-12 16:15:41";

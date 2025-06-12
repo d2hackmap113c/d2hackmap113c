@@ -101,6 +101,7 @@ int 			dwScreenScrollOffset[16][2]={ {0}};
 ToggleVar tMiniMapScrollKeys[16]={ 0};
 int 			dwMiniMapScrollOffset[16][2]={ 0};
 int dwDuranceOfHateLevel3TeleportShift[3]={-20,0,3};
+int dwDuranceOfHateLevel3TeleportShiftBugKM[3]={-20,0,3};
 static int dwTravincalShift[2];
 static int dwWayPointRandom;
 static ConfigVar aConfigVars[] = {
@@ -215,6 +216,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "RescueBarDx",&dwRescueBarDx      , 4 },
   {CONFIG_VAR_TYPE_INT, "RescueBarDy",&dwRescueBarDy      , 4 },
   {CONFIG_VAR_TYPE_INT_ARRAY1, "DuranceOfHateLevel3TeleportShift",&dwDuranceOfHateLevel3TeleportShift,3,{0}},
+  {CONFIG_VAR_TYPE_INT_ARRAY1, "DuranceOfHateLevel3TeleportShiftBugKM",&dwDuranceOfHateLevel3TeleportShiftBugKM,3,{0}},
   {CONFIG_VAR_TYPE_INT_ARRAY1, "TravincalShift",&dwTravincalShift,2,{0}},
 	{CONFIG_VAR_TYPE_INT,"WayPointRandom",&dwWayPointRandom,1}, 
 };
@@ -517,18 +519,22 @@ static void modifyTempleTarget() {
 		}
 	}
 }
+extern int dwBugFlag;
 static void modifyTeleportTarget() {
 	MinimapLevel *pMapLevel=&minimapLevels[Level_DuranceofHateLevel3];if (!pMapLevel->targets) return;
 	for (MinimapLevelTarget *pTarget=pMapLevel->targets;pTarget;pTarget=pTarget->next) {
 		if (pTarget->dstLvl==339) {
-				int random=dwDuranceOfHateLevel3TeleportShift[2];
-				int t=((rand()&0x7FFFFFFF)%(random<<1))-random;
-				pTarget->p.unitX+=dwDuranceOfHateLevel3TeleportShift[0]+t;
-				t=((rand()&0x7FFFFFFF)%(random<<1))-random;
-				pTarget->p.unitY+=dwDuranceOfHateLevel3TeleportShift[1]+t;
-				pTarget->ready|=2;
-				pTarget->p.drawX=(pTarget->p.unitX-pTarget->p.unitY)*16;
-				pTarget->p.drawY=(pTarget->p.unitX+pTarget->p.unitY)*8;
+			int *settings;
+			if (DIFFICULTY==2&&(dwBugFlag&4)) settings=dwDuranceOfHateLevel3TeleportShiftBugKM;
+			else settings=dwDuranceOfHateLevel3TeleportShift;
+			int random=settings[2];
+			int t=((rand()&0x7FFFFFFF)%(random<<1))-random;
+			pTarget->p.unitX+=settings[0]+t;
+			t=((rand()&0x7FFFFFFF)%(random<<1))-random;
+			pTarget->p.unitY+=settings[1]+t;
+			pTarget->ready|=2;
+			pTarget->p.drawX=(pTarget->p.unitX-pTarget->p.unitY)*16;
+			pTarget->p.drawY=(pTarget->p.unitX+pTarget->p.unitY)*8;
 		}
 	}
 }

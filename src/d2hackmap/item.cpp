@@ -39,11 +39,11 @@ ToggleVar 	tShowIdentifiedItem={  TOGGLEVAR_ONOFF,	0,	-1,		1,	"Show Identified i
 ToggleVar     tHiddenItems={         TOGGLEVAR_ONOFF,	1,	VK_ADD,	1,	"Show hidden items"};
 ToggleVar 	tPermShowItems={				TOGGLEVAR_ONOFF,	0,	-1,	1,	"Perm show items"};
 ToggleVar 	tLockAltToggle={				TOGGLEVAR_ONOFF,	0,	-1,	1,	"Lock Alt"};
-ToggleVar 	tItemBasicStat={				TOGGLEVAR_ONOFF,	0,	-1,	1 , "Item basic stat"};
-ToggleVar 	tViewSocketable={			TOGGLEVAR_ONOFF,	0,	-1,	1 , "View socketables"};
-ToggleVar 	tViewSocketBase={			TOGGLEVAR_ONOFF,	0,	-1,	1 , "View socketed base"};
-ToggleVar 	tShowItemVariableProp={	  TOGGLEVAR_ONOFF,	0,	-1,	1 , "Item Variable Prop"};
-ToggleVar 	tSocketProtect={				TOGGLEVAR_ONOFF,	0,	-1,	1 , "Socket protect"};
+ToggleVar tItemBasicStat={TOGGLEVAR_ONOFF,0,-1,1,"Item basic stat"};
+ToggleVar tViewSocketable={TOGGLEVAR_ONOFF,0,-1,1,"View socketables"};
+ToggleVar tViewSocketBase={TOGGLEVAR_ONOFF,0,-1,1,"View socketed base"};
+ToggleVar tShowItemVariableProp={TOGGLEVAR_ONOFF,0,-1,1,"Item Variable Prop"};
+ToggleVar tSocketProtect={				TOGGLEVAR_ONOFF,	0,	-1,	1 , "Socket protect"};
 ToggleVar tRunewordProtect={TOGGLEVAR_ONOFF,0,-1,1,"Runeword protect"};
 ToggleVar tDrawInvItemInfo={TOGGLEVAR_ONOFF,0,-1,1,"DrawInvItemInfo"};
 char 			szItemExtInfoCfgName[2][256]	={			{'\0'}};
@@ -52,9 +52,11 @@ BYTE 			nDefaultExtInfoColour=				8;
 int maxTownPortalCount=20,maxIdentifyPortalCount=20;
 int batchSimpleItemStackCount=3;
 ToggleVar tDrawSimpleItemStackCount={TOGGLEVAR_ONOFF,0,-1,1,"Draw Simple Item Stack Count"};
-static int showUnidentifiedItemInfo=0;
+static int dwDrawMarketItemInfoDy,dwDrawCursorItemInfoDy,showUnidentifiedItemInfo=0;
 static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "ShowUnidentifiedItemInfo", &showUnidentifiedItemInfo,     4 },
+  {CONFIG_VAR_TYPE_INT, "DrawMarketItemInfoDy", &dwDrawMarketItemInfoDy,     4 },
+  {CONFIG_VAR_TYPE_INT, "DrawCursorItemInfoDy", &dwDrawCursorItemInfoDy,     4 },
 	{CONFIG_VAR_TYPE_KEY,"DrawSimpleItemStackCount",&tDrawSimpleItemStackCount},
   {CONFIG_VAR_TYPE_INT, "BatchSimpleItemStackCount", &batchSimpleItemStackCount,     4 },
   {CONFIG_VAR_TYPE_INT, "MaxTownPortalCount", &maxTownPortalCount,     4 },
@@ -410,9 +412,15 @@ void __fastcall ItemNamePatch(wchar_t *wscNameOld, UnitAny *pItem ,ItemTxt *pIte
 	
 		// item file index
 		if (tItemFileIndex.isOn) {
-			wsprintfW(wscTemp, L" [TXT:%d F:%d Type:%d]\n",pItem->dwTxtFileNo, d2common_GetItemFileIndex(pItem) ,pItemTxt->nType );
+			if (dwQuality==ITEM_QUALITY_UNIQUE-1) {
+				wsprintfW(wscTemp, L" [TXT:%d U%d Type:%d]\n",pItem->dwTxtFileNo, d2common_GetItemFileIndex(pItem) ,pItemTxt->nType );
+			} else if (dwQuality==ITEM_QUALITY_SET-1) {
+				wsprintfW(wscTemp, L" [TXT:%d S%d Type:%d]\n",pItem->dwTxtFileNo, d2common_GetItemFileIndex(pItem) ,pItemTxt->nType );
+			} else
+				wsprintfW(wscTemp, L" [TXT:%d F:%d Type:%d]\n",pItem->dwTxtFileNo, d2common_GetItemFileIndex(pItem) ,pItemTxt->nType );
 			wcs_insert(wscName,wscTemp);
 		}
+			
 
 	}
 	if (nColour != (BYTE)-1) ColourD2String(wscName, nColour);
@@ -1120,9 +1128,9 @@ static char *clsNames[2][8]={
 extern char *runeWordNames[];
 extern char *uniqueNames[];
 extern char *setItemNames[];
-#define MAX_INFO_LEN 2
 int cpLocaleName(wchar_t *dst,wchar_t *s,int max);
 void drawSimpleItemStackInfo(UnitAny *pUnit,int xpos,int ypos);
+int marketItemCount=0,marketItemCount1=0;
 void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 	wchar_t wbuf[128];int lines[8];
 	int index = GetItemIndex(pItem->dwTxtFileNo)+1;
@@ -1132,22 +1140,48 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 	}
 	ItemTxt *pItemTxt=d2common_GetItemTxt(pItem->dwTxtFileNo);
 	int w=pItemTxt->nInvwidth;
+	int maxNameLen=2*w;
 	int dwQuality=pItem->pItemData->dwQuality;
-	int pos=0,color=0,ln=0;
+	int pos=0,color=0,color1=0,ln=0;
 	lines[ln++]=pos;
-	int showClassSkill=0,showResist=0,showAttr=0,showFcr=0,showMF=0,dy=0;
-	int showLL=0,showSTR=0,showDEX=0;
-	if (dwQuality>=ITEM_QUALITY_MAGIC) {
-		if (!showUnidentifiedItemInfo&&!d2common_CheckItemFlag(pItem,ITEMFLAG_IDENTIFIED,0,"?")) return;
+	int dy=0,centerY=1;
+	if (pItem->pItemData->nLocation==0) {
+		if (pItem==PLAYER->pInventory->pCursorItem) dy=dwDrawCursorItemInfoDy;
+		else {
+			dy=dwDrawMarketItemInfoDy;centerY=0;marketItemCount1++;
+		}
+		maxNameLen=6;
 	}
+	if (dwQuality>=ITEM_QUALITY_MAGIC) {
+		if (!d2common_CheckItemFlag(pItem,ITEMFLAG_IDENTIFIED,0,"?")) {
+			if (pItem->pItemData->nLocation==1||!showUnidentifiedItemInfo||pItem==PLAYER->pInventory->pCursorItem) {
+				switch (dwQuality) {
+					case ITEM_QUALITY_MAGIC:color=3;break;
+					case ITEM_QUALITY_UNIQUE:color=7;break;
+					case ITEM_QUALITY_SET:color=2;break;
+					case ITEM_QUALITY_RARE:color=9;break;
+					case ITEM_QUALITY_CRAFTED:color=9;break;
+					case ITEM_QUALITY_TAMPERED:color=9;break;
+				}
+				wchar_t *wName=d2lang_GetLocaleText(pItemTxt->wLocaleTxtNo);
+				pos+=cpLocaleName(wbuf+pos,wName,maxNameLen);
+				wbuf[pos++]=0;lines[ln++]=pos;color1=1;
+				wbuf[pos++]='?';
+				goto done;
+			}
+		}
+	}
+	int showClassSkill=0,showResist=0,showAttr=0,showFcr=0,showMF=0;
+	int showLL=0,showSTR=0,showDEX=0,showQuautity=0,checkStat=0;
 	switch (dwQuality) {
 		case ITEM_QUALITY_UNIQUE: {
 			color=7;
 			int fileindex = d2common_GetItemFileIndex(pItem);
 			UniqueItemTxt *txt = d2common_GetUniqueItemTxt(fileindex);if (!txt) break;
 			if (txt) {
+				if (IsBadReadPtr(txt,sizeof(UniqueItemTxt))) return;
 				wchar_t *s=d2lang_GetLocaleText(txt->wLocaleTxtNo);if (!s) break;
-				pos+=cpLocaleName(wbuf+pos,s,MAX_INFO_LEN*w);
+				pos+=cpLocaleName(wbuf+pos,s,maxNameLen);
 			}
 			switch (fileindex) {
 				case 101: //囚房 The Ward
@@ -1193,7 +1227,7 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 			SetItemTxt *txt = d2common_GetSetItemTxt(fileindex);if (!txt) break;
 			if (txt) {
 				wchar_t *s=d2lang_GetLocaleText(txt->wLocaleTxtNo);
-				pos+=cpLocaleName(wbuf+pos,s,MAX_INFO_LEN*w);
+				pos+=cpLocaleName(wbuf+pos,s,maxNameLen);
 			}
 			break;
 		}
@@ -1204,7 +1238,7 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 				RuneWordTxt *txt = d2common_GetRuneWordTxt(fileindex);
 				if (txt) {
 					wchar_t *s=d2lang_GetLocaleText(txt->wLocaleTxtNo);
-					pos+=cpLocaleName(wbuf+pos,s,MAX_INFO_LEN*w);
+					pos+=cpLocaleName(wbuf+pos,s,maxNameLen);
 				}
 				switch (fileindex) {
 					case 37: //橡树之心 Heart of the Oak
@@ -1225,17 +1259,97 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 					case 2148:name=L"A3";break;
 					case 2149:name=L"A4";break;
 					case 2150:name=L"A5";break;
+					case 2019:case 2021:case 2036:case 2011:case 2012:showQuautity=1;break;
+					case 2096:case 2097:case 2098: //charm
+					case 2013:case 2015: //ring necklace
+					case 2136: //jewel
+						checkStat=1;
+						break;
 					default:
 						if (2103<=idx&&idx<=2135) {
 							color=0;dy=-8;
 							pos+=wsprintfW(wbuf+pos,L"R%d",idx-2102);
 						}
+						switch (pItemTxt->nType) {
+							case 37://Helm头盔
+							case 75://Circlet头环
+								checkStat=1;
+								break;
+						}
+						break;
 				}
 				if (name) {
 					pos+=wsprintfW(wbuf+pos,L"%s",name);
 				}
 			}
 			break;
+	}
+	if (checkStat) {
+		if (pItem->pStatList) {
+			StatList *plist=pItem->pStatList;
+			if (plist->dwListFlag&0x80000000) {
+				if (plist->sFullStat.pStats) {
+					Stat *stat=&plist->sFullStat;
+					int n=stat->wStats;
+					StatEx *se=stat->pStats;
+					if (n<10) {
+						for (int i=0;i<n;i++) {
+							if (ln>3) break;
+							int id=se[i].wStatId;
+							int value=se[i].dwStatValue;
+							switch (id) {
+								case STAT_STRENGTH:showSTR=1;break;
+								case STAT_DEXTERITY:showDEX=1;break;
+								case STAT_FIRE_RESIST:
+									if (n-i>=4&&se[i+1].wStatId==STAT_LIGHTING_RESIST
+										&&se[i+2].wStatId==STAT_COLD_RESIST
+										&&se[i+3].wStatId==STAT_POSION_RESIST
+										&&value==se[i+1].dwStatValue
+										&&value==se[i+2].dwStatValue
+										&&value==se[i+3].dwStatValue) {
+										showResist=1;
+										i+=3;
+									} else {
+										if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+										pos+=wsprintfW(wbuf+pos,L"%dFR",value);
+									}
+									break;
+								case STAT_LIGHTING_RESIST:
+									if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+									pos+=wsprintfW(wbuf+pos,L"%dLR",value);
+									break;
+								case STAT_COLD_RESIST:
+									if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+									pos+=wsprintfW(wbuf+pos,L"%dCR",value);
+									break;
+								case STAT_POSION_RESIST:
+									if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+									pos+=wsprintfW(wbuf+pos,L"%dPR",value);
+									break;
+								case STAT_MAGIC_FIND:
+									showMF=1;
+									break;
+								case STAT_CLASS_ONLY_SKILL: {
+									static wchar_t *clsSkills[7][3]={
+										{L"弓",L"被",L"标"},
+										{L"火",L"电",L"冰"},
+										{L"诅",L"毒",L"招"},
+										{L"战",L"攻",L"防"},
+										{L"斗",L"专",L"嚎"},
+										{L"唤",L"形",L"素"},
+										{L"陷",L"影",L"武"},
+									};
+									int param=se[i].wParam;
+									if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+									pos+=wsprintfW(wbuf+pos,L"+%d%s",value,clsSkills[param>>3][param&3]);
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	if (showClassSkill) {
 		int type;
@@ -1247,47 +1361,61 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 	}
 	if (showAttr) {
 		int attr=d2common_GetUnitStat(pItem, STAT_STRENGTH, 0);
-		wbuf[pos++]=0;lines[ln++]=pos;
-		pos+=wsprintfW(wbuf+pos,L"a%d",attr);
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+		pos+=wsprintfW(wbuf+pos,L"%d属",attr);
 	}
 	if (showResist) {
 		int resist=d2common_GetUnitStat(pItem, STAT_FIRE_RESIST, 0);
-		wbuf[pos++]=0;lines[ln++]=pos;
-		pos+=wsprintfW(wbuf+pos,L"r%d\n",resist);
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+		pos+=wsprintfW(wbuf+pos,L"%d抗\n",resist);
 	}
 	if (showFcr) {
 		int fcr = d2common_GetUnitStat(pItem, STAT_FCR, 0);
-		wbuf[pos++]=0;lines[ln++]=pos;
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
 		pos+=wsprintfW(wbuf+pos,L"%dFCR",fcr);
 	}
 	if (showMF) {
 		int fcr = d2common_GetUnitStat(pItem,STAT_MAGIC_FIND,0);
-		wbuf[pos++]=0;lines[ln++]=pos;
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
 		pos+=wsprintfW(wbuf+pos,L"%dMF",fcr);
 	}
 	if (showLL) {
 		int ll = d2common_GetUnitStat(pItem,STAT_LIFE_LEECH,0);
-		wbuf[pos++]=0;lines[ln++]=pos;
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
 		pos+=wsprintfW(wbuf+pos,L"%dLL",ll);
 	}
 	if (showSTR) {
 		int ed = d2common_GetUnitStat(pItem,STAT_STRENGTH,0);
-		wbuf[pos++]=0;lines[ln++]=pos;
-		pos+=wsprintfW(wbuf+pos,L"%dSTR",ed);
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+		pos+=wsprintfW(wbuf+pos,L"%d力",ed);
 	}
 	if (showDEX) {
 		int ed = d2common_GetUnitStat(pItem,STAT_DEXTERITY,0);
-		wbuf[pos++]=0;lines[ln++]=pos;
-		pos+=wsprintfW(wbuf+pos,L"%dDEX",ed);
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+		pos+=wsprintfW(wbuf+pos,L"%d敏",ed);
 	}
+	if (showQuautity) {
+		int value = d2common_GetUnitStat(pItem,STAT_AMMOQUANTITY,0);
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+		pos+=wsprintfW(wbuf+pos,L"%d",value);
+	}
+	if (0) {
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+		pos+=wsprintfW(wbuf+pos,L"%d,%d",pItem->pItemData->nLocation,pItem->pItemData->nItemLocation);
+	}
+done:
 	if (!pos) return;
 	wbuf[pos]=0;
 	int x=px+((pItemTxt->nInvwidth*29)>>1);
-	int y=py-((pItemTxt->nInvheight*29)>>1)+12-ln*6+dy;
+	int y=py-((pItemTxt->nInvheight*29)>>1)+dy;
+	if (centerY) y+=12-ln*6;
 	for (int i=0;i<ln;i++) {
 		if (i==0) {
 			DrawCenterText(8,wbuf+lines[i],x+1,y+1,6,1,0);
 			DrawCenterText(8,wbuf+lines[i],x,y,color,1,0);
+		} else if (i==1) {
+			DrawCenterText(8,wbuf+lines[i],x+1,y+1,6,1,0);
+			DrawCenterText(8,wbuf+lines[i],x,y,color1,1,0);
 		} else {
 			DrawCenterText(8,wbuf+lines[i],x+1,y+1,6,1,0);
 			DrawCenterText(8,wbuf+lines[i],x,y,0,1,0);
@@ -1323,14 +1451,12 @@ original_code:
 	}
 }
 void __fastcall activeBufferItem(int id,int x,int y) {
-	//LOG("activeBufferItem %d (%d,%d)\n",id,x,y);
 	UnitAny *pItem=d2client_GetUnitFromId(id,UNITNO_ITEM);if (!pItem) return;
 	int index=GetItemIndex(pItem->dwTxtFileNo)+1;
 	if (index==simpleItemStackIdx) {
 		if (GetKeyState(VK_SHIFT)&0x8000) {
 			int x=PLAYER->pMonPath->wUnitX;
 			int y=PLAYER->pMonPath->wUnitY;
-			LOG("player (%d,%d)\n",x,y);
 			BYTE packet[13];
 			packet[0]=0x20;*(DWORD*)&packet[1]=id;
 			*(DWORD*)&packet[5]=x;
@@ -1338,6 +1464,11 @@ void __fastcall activeBufferItem(int id,int x,int y) {
 			for (int i=1;i<3;i++) SendPacket(packet,13);
 		}
 		return;
+	} else if (index==2012) {
+		int x=PLAYER->pMonPath->wUnitX;
+		int y=PLAYER->pMonPath->wUnitY;
+		//LOG("activeIdentify %d (%d,%d)\n",id,x,y);
+		//LOG("player (%d,%d)\n",x,y);
 	}
 }
 /*

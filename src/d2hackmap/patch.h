@@ -203,3 +203,5 @@ void SkipDrawMenuPatch2_ASM();
 void DrawInvItemPatch_ASM();
 void ActiveBufferItemPatch_ASM();
 void RecvPacket0EPatch_ASM();
+void RecvPacket3FPatch_ASM();
+void RecvCommand_28_Patch_ASM();

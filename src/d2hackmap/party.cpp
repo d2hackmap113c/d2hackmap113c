@@ -7,18 +7,31 @@ int fCanInvite=0,mAutoPartyDelays=500,dwPartyResponseMs=0;
 ToggleVar tAutoParty={TOGGLEVAR_ONOFF,	0,	-1, 1,	"Auto Party Toggle"};
 ToggleVar tAutoInvite={TOGGLEVAR_ONOFF,	0,	-1,	1,  "Auto Invite Toggle"};
 ToggleVar tAutoPermit={TOGGLEVAR_ONOFF,	0,	-1,	1,  "Auto Loot Permit Toggle"};
+ToggleVar tAutoPartyBugMF={TOGGLEVAR_ONOFF,	0,	-1, 1,	"Auto Party BugMF Toggle"};
 static ConfigVar aConfigVars[] = {
-  {CONFIG_VAR_TYPE_KEY, "AutoPartyToggle",      &tAutoParty         },
-  {CONFIG_VAR_TYPE_KEY, "AutoInviteToggle",     &tAutoInvite        },
-  {CONFIG_VAR_TYPE_KEY, "AutoLootPermit",       &tAutoPermit        },
-  {CONFIG_VAR_TYPE_INT, "AutoPartyDelays",      &mAutoPartyDelays, 4},
+  {CONFIG_VAR_TYPE_KEY,"AutoPartyBugMFToggle",&tAutoPartyBugMF},
+  {CONFIG_VAR_TYPE_KEY,"AutoPartyToggle",&tAutoParty},
+  {CONFIG_VAR_TYPE_KEY,"AutoInviteToggle",&tAutoInvite},
+  {CONFIG_VAR_TYPE_KEY,"AutoLootPermit",&tAutoPermit},
+  {CONFIG_VAR_TYPE_INT,"AutoPartyDelays",&mAutoPartyDelays, 4},
 };
 void PartyHelp_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
 }
 struct AcceptInvite {int uid;struct AcceptInvite *next;};
 static AcceptInvite *acceptInvites=NULL,*recycleInvite=NULL;
+extern int dwBugFlag;
+static int checkBugMF() {
+	if (DIFFICULTY==2&&dwBugFlag&&!tAutoPartyBugMF.isOn) {
+		if (dwBugFlag&(1<<dwCurrentAct)) {
+			//LOG("dwBugFlag=0x%X act=%d\n",dwBugFlag,dwCurrentAct);
+			return 0;
+		}
+	}
+	return 1;
+}
 void PartyHelpNewGame() {
+	if (!checkBugMF()) return;
 	if (CheckInvite()) {
 		if (tAutoInvite.isOn) {
 			for (RosterUnit *pUnit = PLAYERLIST; pUnit; pUnit = pUnit->pNext) {
@@ -40,6 +53,7 @@ void PartyHelpNewGame() {
 void PartyHelpEndGame() {fCanInvite=0;}
 void ResponseInvite() {
 	if (!tAutoParty.isOn||!acceptInvites||dwCurMs<dwPartyResponseMs) return;
+	if (!checkBugMF()) return;
 	while (acceptInvites) {
 		AcceptInvite *p=acceptInvites;acceptInvites=p->next;p->next=recycleInvite;recycleInvite=p;
 		BYTE packet[6]={0x5E,0x08};*(int *)&packet[2]=p->uid;
@@ -58,6 +72,7 @@ extern int fPartyListValid;
 void __stdcall AutoParty(BYTE *aPacket) {
 	fPartyListValid=0;
 	if ( tAutoParty.isOn && aPacket[1] == 0x07 && aPacket[2] == 0x02 && aPacket[7] == 0x05 ) {
+		if (!checkBugMF()) return;
 		// Player Is Asking To Party With You
 		// Player ID = aPacket[3~6]
 		// Send packet back: 5E 08 xx xx xx xx
@@ -87,6 +102,7 @@ void __declspec(naked) RecvCommand_5A_Patch_ASM() {
 //Player In Game 5b [WORD Packet Length] [DWORD Player Id] [BYTE Char Type] [NULLSTRING[16] Char Name] [WORD Char Lvl] [WORD Party Id] 00 00 00 00 00 00 00 00 
 void __fastcall AutoInvite(BYTE *aPacket) {
 	if (tAutoInvite.isOn && fCanInvite ) {
+		if (!checkBugMF()) return;
 		//自动邀请
 		int recPlayerId= *(int *)&aPacket[3];
 		if (recPlayerId==dwPlayerId) return;
@@ -95,6 +111,7 @@ void __fastcall AutoInvite(BYTE *aPacket) {
 		SendPacket(InvitePlayer,sizeof(InvitePlayer));		
 	}
 	if (tAutoPermit.isOn && fInGame ){
+		if (!checkBugMF()) return;
 		int recPlayerId= *(int *)&aPacket[3];
 		if (recPlayerId==dwPlayerId) return;
 		BYTE PermitPlayer[7] = {0x5D,0x01,0x01};

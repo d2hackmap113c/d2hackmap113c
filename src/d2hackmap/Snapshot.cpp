@@ -41,7 +41,7 @@ struct RuneInfo {
 	int nRune[34];
 	int nGem[5][7],hasGem[5];
 	int hasLRune,hasHRune,rpotions;
-	int totalGems;
+	int totalGems,totalRunes; //perfect gems, rune 22
 };
 static RuneInfo runeInfo={0};
 
@@ -251,7 +251,7 @@ static int getLvPercent(UnitAny *pUnit) {
 		return currentlvlgainedexp*10000/totalexpneedtoupgrade;
 }
 void countAllGemRunes();
-static int enterGameGems=0;
+static int enterGameGems=0,enterGameRunes=0,enterGameSoj;
 void SnapshotNewGame() {
 	startGameMs=GetTickCount();
 	startLv = d2common_GetUnitStat(PLAYER, STAT_LEVEL, 0);
@@ -261,6 +261,8 @@ void SnapshotNewGame() {
 	if (tSnapshotLog.isOn) {
 		countAllGemRunes();
 		enterGameGems=runeInfo.totalGems;
+		enterGameRunes=runeInfo.totalRunes;
+		enterGameSoj=d2common_GetUnitBaseStat(PLAYER,192,0);
 	}
 	if (tSnapshotNewGame.isOn) dumpInventory();
 	if (logfp&&*d2client_pGameInfo) {
@@ -274,8 +276,10 @@ void SnapshotNewGame() {
 void SnapshotEndGame() {
 	if (!tSnapshot.isOn) return;
 	if (tSnapshotEndGame.isOn) dumpInventory();
-	if (tSnapshotLog.isOn&&GetTickCount()-startGameMs>60000) {
-		FILE *fp=openSnapshotFile("log","log","a+",'_',"log",1);
+	if (tSnapshotLog.isOn&&(
+		GetTickCount()-startGameMs>60000
+		||runeInfo.totalGems!=enterGameGems)) {
+		FILE *fp=openSnapshotFile("log","txt","a+",'_',"log",1);
 		if (fp) {
 			char *ip=(*d2client_pGameInfo)->szGameServerIp;
 			char *game=(*d2client_pGameInfo)->szGameName;
@@ -283,14 +287,18 @@ void SnapshotEndGame() {
 			char *realm=(*d2client_pGameInfo)->szRealmName;
 			DWORD lvl = d2common_GetUnitStat(PLAYER, STAT_LEVEL, 0);
 			int lvP=getLvPercent(PLAYER);
-			fprintf(fp,"%s/%s",ip,game);
+			fprintf(fp,"%s/%s",realm,game);
 			fprintf(fp," Lv%d.%04d",startLv,startLvPercent);
 			fprintf(fp,"->%d.%04d", lvl, lvP);
 			int inc=(lvl-startLv)*10000+lvP-startLvPercent;
 			fprintf(fp," +%d.%04d", inc/10000,inc%10000);
 			int totalS=(GetTickCount()-startGameMs)/1000;
 			fprintf(fp," %d:%02d:%02d",totalS/3600,totalS/60%60,totalS%60);
-			fprintf(fp," gems:%d",runeInfo.totalGems-enterGameGems);
+			fprintf(fp," gems:%.3f->%.3f %.3f",
+				enterGameGems/81.0f,runeInfo.totalGems/81.0f,(runeInfo.totalGems-enterGameGems)/81.0f);
+			fprintf(fp," runes:%d->%d %d",
+				enterGameRunes,runeInfo.totalRunes,runeInfo.totalRunes-enterGameRunes);
+			fprintf(fp," soj:%d->%d",enterGameSoj,d2common_GetUnitBaseStat(PLAYER,192,0));
 			fputc('\n',fp);
 			fclose(fp);
 		}
@@ -300,22 +308,26 @@ void dumpStat(FILE *fp,int id,int param,int *pvalue) {
 	char buf[128];
 	int unknown=id<0||id>=MAX_NAMES||!propNames[id];
 	int value=*pvalue;
+	fprintf(fp,"S%d:",id);
 	if (unknown||debug) {
-		fprintf(fp,"S(%d",id);
+		fprintf(fp,"(");
 		if (value||param) {
-			if (debug) fprintf(fp,",%X:%d",pvalue,value);
-			else fprintf(fp,",%d",value);
 			if (param) {
-				if (param>10000) fprintf(fp,",0x%x)",param);
-				else fprintf(fp,",%d)",param);
+				if (param>10000) fprintf(fp,"0x%x:)",param);
+				else fprintf(fp,"%d:)",param);
 			}
+			if (debug) fprintf(fp,"%X:%d",pvalue,value);
+			else fprintf(fp,"%d",value);
 		}
 		fprintf(fp,")");fflush(fp);
 		if (unknown) return;
 	}
 	switch (id) {
+		case 6:
 		case 7:
+		case 8:
 		case 9:
+		case 10:
 		case 11:
 			fprintf(fp,propNames[id],value>>8);break;
 		case 83:fprintf(fp,propNames[id],value,clsSkillNames[param]);break;
@@ -377,34 +389,16 @@ static int dumpStats(FILE *fp,Stat *stat) {
 			continue;
 		}
 		switch (id) {
-			case 6:
-			case 8:
-			case 10:
-				if (i<n-1&&se[i+1].wStatId==id+1) {
-					fprintf(fp,propNames[id],value>>8,se[i+1].dwStatValue>>8);
-					i++;
-				}
-				break;
 			case 39:fr+=value;break;
 			case 41:lr+=value;break;
 			case 43:cr+=value;break;
 			case 45:pr+=value;break;
-			case 194:
-				sockets=value;
-				fprintf(fp," 有%d孔",value);
-				//if (debug) fprintf(fp," %x",&se[i].dwStatValue);
-				break;
-			default:
-				dumpStat(fp,id,param,(int *)&(se[i].dwStatValue));
+			case 194:sockets=value;break;
 		}
+		dumpStat(fp,id,param,(int *)&(se[i].dwStatValue));
 	}
 	if (fr&&fr==lr&&fr==cr&&fr==pr) {
-		fprintf(fp," 所有抗性resist+%d",fr);
-	} else {
-		if (fr) fprintf(fp," FR+%d",fr);
-		if (lr) fprintf(fp," LR+%d",lr);
-		if (cr) fprintf(fp," CR+%d",cr);
-		if (pr) fprintf(fp," PR+%d",pr);
+		fprintf(fp," 所有抗性allResist+%d",fr);
 	}
 	return sockets;
 }
@@ -440,25 +434,32 @@ static void countGemRunes(UnitAny *pUnit) {
 			}
 		}
 	}
+	int q=-1;
 	if (2103<=index&&index<=2135) {
 		int r=index-2102;runeInfo.nRune[r]+=count;
 		if (r<22) runeInfo.hasLRune+=count;
 		else runeInfo.hasHRune+=count;
+		if (r==7) runeInfo.totalGems+=27*count;
+		else if (r==8) runeInfo.totalGems+=81*count;
+		else if (r==9) runeInfo.totalGems+=(81*count)>>1;
+		else if (r>=22) {
+			runeInfo.totalRunes+=count<<(r-22);
+		}
 	} else if (2050<=index&&index<=2079) {
 		int t=index-2050;
-		int q=t%5;
+		q=t%5;
 		runeInfo.nGem[q][t/5]+=count;
 		runeInfo.hasGem[q]+=count;
-		if (q==3) runeInfo.totalGems+=count;
-		else if (q==4) runeInfo.totalGems+=count*3;
 	} else if (2090<=index&&index<=2094) {
-		int q=index-2090;
+		q=index-2090;
 		runeInfo.nGem[q][6]+=count;
 		runeInfo.hasGem[q]+=count;
-		if (q==3) runeInfo.totalGems+=count;
-		else if (q==4) runeInfo.totalGems+=count*3;
 	} else if (index==2008||index==2009) {
 		runeInfo.rpotions+=count;
+	}
+	if (q>=0) {
+		static int qs[5]={1,3,9,27,81};
+		runeInfo.totalGems+=qs[q]*count;
 	}
 }
 static void outputGemRune(FILE *fp) {
@@ -614,12 +615,15 @@ static void dumpItem(FILE *fp,UnitAny *pUnit,int level,int loc) {
 			case 5:type="Arrow箭矢";break;
 			case 6:type="Bolts十字弓弹";break;
 			case 7:type="Ear";break;
+			case 8:type="Herb";break;
 			case 10:type="Ring戒指";break;
+			case 11:type="Elixir";break;
 			case 12:type="Amulet项链";break;
 			case 15:type="Boot靴";break;
 			case 16:type="Glove手套";break;
 			case 18:type="Book";break;
 			case 19:type="Belt腰带";break;
+			case 21:type="Torch";break;
 			case 22:type="Scroll卷轴";break;
 			case 24:type="Sceptre权杖";break;
 			case 25:type="Wand法杖";needSocket=1;break;
@@ -635,7 +639,9 @@ static void dumpItem(FILE *fp,UnitAny *pUnit,int level,int loc) {
 			case 35:type="CrossBow十字弓";break;
 			case 36:type="Maces钉头锤";break;
 			case 37:type="Helm头盔";needSocket=1;break;
+			case 38:type="ThrowingPotion";break;
 			case 39:type="Quest";break;
+			//case 39:type="BodyPart";break;
 			case 41:type="Skeleton Key 钥匙";break;
 			case 42:type="ThrowingKnife飞刀";break;
 			case 43:type="ThrowingAxe飞斧";break;
@@ -1258,6 +1264,7 @@ static void dumpInventory() {
 		if (fp) {
 			fprintf(fp,"HasValuableEquipment:%d\n",hasValuableEquipment);
 			fprintf(fp,"MercDead:%d\n",*d2client_pMercData16!=0xFFFF?1:0);
+			if (soj) fprintf(fp,"soj:%d\n",soj);
 			fclose(fp);
 		}
 	}
@@ -1719,7 +1726,7 @@ int DoSnapshot() {
 		}
 		fclose(fp);
 	}
-	if (0) {
+	if (1) {
 		fp=openDbgFile("_areatile.txt");
 		if (fp) {
 			for (int i=0;i<128;i++) {

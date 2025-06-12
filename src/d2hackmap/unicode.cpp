@@ -274,3 +274,44 @@ oldcode:
 		ret;
 	}
 }
+/*
+wchar_t *__fastcall d2lang_GetLocaleText(int dwLocaleTxtNo) {
+	if (dwLocaleTxtNo>=20000) {
+		eax=*(int *)d2lang_10A84;(->0x26B004C(->"/"))
+		if (!eax) {
+			dwLocaleTxtNo=11078;
+		} else {
+			ecx=[d2lang_10A70](->0x257F684(->","))
+			edx=dwLocaleTxtNo-20000;
+			eax=d2lang_getLocalText9050(ecx);
+			if (eax) return eax;
+		}
+	}
+	eax=[d2lang_10A80](->0x2569DE4(->4915DA6(->802B0404)))
+	if (eax) {
+		if (dwLocaleTxtNo>=10000) {
+			ecx=[d2lang_10A6C](->0x94E51C(->"<nW"))
+			edx=dwLocaleTxtNo-10000;
+			d2lang_getLocalText9050(ecx);
+			if (eax) return eax;
+		}
+	}
+	eax=[d2lang_10A64](->0x2496CBC(->"+"))
+	assert(eax);
+	edx=[d2lang_10A68](->0x24F6594(->24FB9E4(->"Q"))) ; esp-4!
+	push edx(=0x24F6594))
+	edx=dwLocaleTxtNo
+	d2lang_getLocalText9050()
+}
+eax: d2lang_map *d2str
+edx: txtNo
+wchar_t *d2lang_getLocalText9050(wchar_t **strs) {
+	if (txtNo>=d2str->mapSize) txtNo=500;
+	int idx=d2str->map[txtNo];assrt(idx<d2str->count);
+	char *array17=idx*17+(char *)&d2str->map[d2str->mapSize];
+	char *end=(char *)d2str+d2str->totalSize;
+	assert(array17<end);
+	assert(array17[0]==1);
+	return strs[idx];
+}
+*/

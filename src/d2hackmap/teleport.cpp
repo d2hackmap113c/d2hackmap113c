@@ -5,15 +5,17 @@
 #include "map.h"
 
 int isWaypointTxt(int txt);
-void takeWaypointToLevel(UnitAny *waypoint,int level);
+int takeWaypointToLevel(UnitAny *waypoint,int level);
 void markNextPathInvalid(int ms);
 int RerouteRectPath();
 
+extern int bossX,bossY,bossId,nBoss,bossHps[3];
 POINT TPtarget;
 AreaRectData *TPtargetRect,*TPfailedRect;
 int dwTpMs,dwTpDoneMs;
 static int fTpAvoiding,fTpAutoTarget,dwLastTpMs;
 static char aMonYard[32][2];
+static int dwArcaneSanctuaryYard=4;
 static int defMonYard,maxTpYard,tpDelayMs,tpMinStep,stepInvalidMs,avoidEdge=0,dwAutoTeleportSafeDistance;
 static int reachDis=6;
 static ToggleVar tLogTP={TOGGLEVAR_ONOFF,0,-1,1,"Log TP Toggle"};
@@ -28,6 +30,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT,"ForceEnterCharLevelNightmare",&forceEnterCharLevelNightmare,4},
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportSafeDistance",&dwAutoTeleportSafeDistance,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportMonsterDefaultDistance",&defMonYard,4 },
+	{CONFIG_VAR_TYPE_INT,"AutoTeleportArcaneSanctuaryYard",&dwArcaneSanctuaryYard,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportMaxDistance",&maxTpYard,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportDelayMs",&tpDelayMs,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportAvoidEdge",&avoidEdge,4 },
@@ -113,12 +116,16 @@ static void findMonsters() {
 			if (nMons>=monCap) {monCap*=2;mons=(Mon *)HeapReAlloc(dllHeap,0,mons,sizeof(Mon)*monCap);}
 			Mon *pmon=&mons[nMons++];
 			int x=pMon->pMonPath->wUnitX;int y=pMon->pMonPath->wUnitY;pmon->p.x=x;pmon->p.y=y;
-			pmon->dis=aMonYard[dwPlayerFcrFrame][(mtype&MONSTER_TYPE_DANGROUS)?1:0];
-			if (!pmon->dis) pmon->dis=defMonYard;
-			if (pMon->dwTxtFileNo==434&&LEVELNO==111) { //rescue mission: prison door
-				int done=QUESTDATA->quests[36]&3;
-				if (done||dwBarbrianLeft==5)
-					pmon->dis=dwAutoTeleportRescueBarAvoid;
+			if (dwCurrentLevel==Level_ArcaneSanctuary) {
+				pmon->dis=dwArcaneSanctuaryYard;
+			} else {
+				pmon->dis=aMonYard[dwPlayerFcrFrame][(mtype&MONSTER_TYPE_DANGROUS)?1:0];
+				if (!pmon->dis) pmon->dis=defMonYard;
+				if (pMon->dwTxtFileNo==Mon_PrisonDoor&&LEVELNO==Level_FrigidHighlands) { //rescue mission: prison door
+					int done=QUESTDATA->quests[36]&3;
+					if (done||dwBarbrianLeft==5)
+						pmon->dis=dwAutoTeleportRescueBarAvoid;
+				}
 			}
 			pmon->dis=(pmon->dis*3)>>1;
 			addMonMap(x-2,y-2);addMonMap(x-2,y+2);addMonMap(x+2,y-2);addMonMap(x+2,y+2);
@@ -500,8 +507,26 @@ static int autoTarget() {
 	int kbMode=dwLeftSkill==Skill_ChargedStrike||dwLeftSkill==Skill_Smite;
 	switch (dwCurrentLevel) {
 		case Level_ArcaneSanctuary:
-			if ((GAMEQUESTDATA->quests[14]&0x8000)&&kbMode) {
-				if (findBoss(Mon_TheSummoner,0)) return tpToBoss();
+		case Level_HallsofVaught:
+			if (dwPlayerClass==1) {
+				if (DIFFICULTY==2) {
+					//if (bossHp>0) {dst.x=bossX;dst.y=bossY;}
+					curdis=getDistanceM256(dst.x-src.x,dst.y-src.y)>>8;
+					//LOG("Summoner %d\n",curdis);
+					if (curdis<15) {
+						if (dwCurrentLevel==Level_HallsofVaught) BackToTown();
+						startProcessMs=dwCurMs+100;
+						return 0;
+					}
+					if (teleportForward()) return 0;
+				}
+			}
+			if (kbMode) {
+				if (dwCurrentLevel==Level_ArcaneSanctuary&&(GAMEQUESTDATA->quests[14]&0x8000)) {
+					if (findBoss(Mon_TheSummoner,0)) return tpToBoss();
+				} else if (dwCurrentLevel==Level_HallsofVaught) {
+					if (findBoss(Mon_Nihlathak,1)) return tpToBoss();
+				}
 			}
 			break;
 		case Level_TalRashaTomb1:case Level_TalRashaTomb2:case Level_TalRashaTomb3:
@@ -516,16 +541,10 @@ static int autoTarget() {
 			break;
 		case Level_DuranceofHateLevel3:
 			return autoDuranceofHateLevel3();
-		case Level_HallsofVaught:
-			if (kbMode) {
-				if (findBoss(Mon_Nihlathak,1)) return tpToBoss();
-			}
-			break;
 	}
 	return teleportToSafety()?0:1;
 }
 //return 1 if auto skill can be used
-extern int bossX,bossY,bossHp;
 int AutoTeleport() {
 	if (!tposs) {posCap=4096;tposs=(TPPos *)HeapAlloc(dllHeap,0,sizeof(TPPos)*posCap);}
 	targetType=0;targetTxt=0;hasTarget=0;dstType=0;
@@ -554,7 +573,10 @@ int AutoTeleport() {
 			if (findBoss(Mon_BaalCrab,0)) hasTarget=1;
 			break;
 		case Level_ChaosSanctuary:
-			if (bossHp>0) {dst.x=bossX;dst.y=bossY;hasTarget=1;}
+			if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal
+				||DIFFICULTY==1&&dwPlayerLevel>=forceEnterCharLevelNightmare) {
+				if (nBoss>0&&bossHps[0]>0) {dst.x=bossX;dst.y=bossY;hasTarget=1;}
+			}
 			break;
 		//case Level_TowerCellarLevel5:if (findBoss(Mon_DarkStalker,1)) hasTarget=1;break;
 	}
@@ -565,6 +587,13 @@ int AutoTeleport() {
 	for (int retries=0;retries<6;retries++) {
 		dstType=AutoTeleportGetTarget(&dst,&targetType,&targetTxt,&rectCountFromTarget);
 		//0:noTarget 1:continue 2:end 3:interact 4:forceEnter 5:auto >=6:keep safe distance
+		if (dstType==5) {
+			switch (dwCurrentLevel) {
+				case Level_RiverofFlame:
+					dstType=DIFFICULTY>=2?60:0; 
+					break;
+			}
+		}
 		if (dstType>=6) {
 			if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal
 				||DIFFICULTY==1&&dwPlayerLevel>=forceEnterCharLevelNightmare) {

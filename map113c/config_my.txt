@@ -64,6 +64,7 @@ MinLoopMs: 10 //每次循环最小时间,如果不够则调用Sleep,20ms对应50
 //Chicken Life Action: 2  //1:exit game 2:back to town
 MultiClientGroupSize2: 3 
 
+Bug Auto Quit Hell Act1 Toggle: 1,CTRL+ALT+VK_B  //地狱难度ACT1 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Auto Quit Hell Act4 Toggle: 0,CTRL+ALT+VK_B  //地狱难度ACT4 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Auto Quit Hell Act5 Toggle: 1,CTRL+ALT+VK_B  //地狱难度ACT5 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Lock Mouse Toggle: 0,CTRL+VK_L //锁定鼠标在窗口内,进入游戏后出城有效
@@ -71,11 +72,10 @@ Chicken Life Min Clevel: 6   //6级以下不使用血保
 Perm Show Items Toggle: 1, ALT+VK_S             //强制显示物品开关,不按ALT显示物品,抢DD方便,Y键
 Socket Protect Toggle: 1, VK_OEM_5        // SOCKET保护，防止不小心把DD镶到不应该镶的地方.\|键
 Load Config File: "config_server.txt"
-ServerNoMonsterDrop: 1 //怪物不掉落物品
+//ServerNoMonsterDrop: 1 //怪物不掉落物品
 MinimapDebugToggle: 0, CTRL+ALT+VK_M
 //---switch skill from teleport/telekinesis/town portal when switch to background
 TpSwitchBackground[ClassSor]: SkillBlizzard
 //---switch skill to when enter door in background
 EnterDoorInBackgroundSkill[ClassNec][1-136]: SkillDimVision
-ShowTestInfoToggle: 1,SHIFT+CTRL+ALT+VK_T //显示调试信息
-DrawInvItemInfoToggle: 1, VK_
+ShowTestInfoToggle: 0,SHIFT+CTRL+ALT+VK_T //显示调试信息

@@ -27,6 +27,8 @@ int dwPlayerMana=0,dwPlayerMaxMana=0;
 int dwPlayerFcrFrame=0,dwPlayerFcrMs=0;
 int dwSlowMs=100,dwSlowSkipMs=1000,dwSlowRestoreMs=0;
 int screenDrawX,screenDrawY;
+int autoTerminateNpcInteractMs;
+extern int autoNpcTxt,npcChatTxt;
 
 static int fShowDllVersion=1,dwMinLoopMs=0,dwMinHackmapMs=0,dwMinHackmapMsInTown=0,dwSkillChangeCountVerify=0;
 static ConfigVar aConfigVars[] = {
@@ -48,6 +50,8 @@ extern ToggleVar tBugAllHellAlert,tAutoMap;
 extern int nDrawInvItems;
 extern int dwUpdateQuestMs;
 extern int dwSendPacketCount;
+extern int marketItemCount,marketItemCount1;
+extern int bossHps[3],bossX,bossY,bossId,nBoss;
 
 void recheckSelfItems();
 void ShowWarningMessage();
@@ -79,8 +83,10 @@ void AutoMapNewGame();void AutoMapNewLevel();
 void AutoRouteNewGame();
 void WaypointNewGame();
 void panelNewGame();void panelEndGame();
+void quickswap_NewGame();
 extern int chatPasteMs;
 void processChatPaste();
+void pressESC();
 
 #pragma comment(lib,"imm32.lib")   
 void ToggleIMEInput(BOOL fChatInput){
@@ -91,11 +97,22 @@ void ToggleIMEInput(BOOL fChatInput){
 	fImmEnable = fChatInput;
 }
 extern ToggleVar tBugAutoQuitHellAct1,tBugAutoQuitHellAct3,tBugAutoQuitHellAct4,tBugAutoQuitHellAct5;
+int dwBugFlag=0;
+/*
+static void checkCharName(char *name) {
+	if (strstr(name,"bugKM")) {
+		if (!tBugAutoQuitHellAct3.isOn) gameMessage("BugAutoQuitHellAct3 is on");
+		tBugAutoQuitHellAct3.isOn=1;dwBugFlag|=4;
+	} else if (strstr(name,"bugKD")) {tBugAutoQuitHellAct4.isOn=1;dwBugFlag|=8;}
+	else if (strstr(name,"bugKB")) {tBugAutoQuitHellAct5.isOn=1;dwBugFlag|=16;}
+	else if (strstr(name,"bugKCountess")) {tBugAutoQuitHellAct1.isOn=1;dwBugFlag|=1;}
+}
+*/
 static void checkTag(char *tag) {
-	if (_stricmp(tag,"bugKM")==0) tBugAutoQuitHellAct3.isOn=1;
-	else if (_stricmp(tag,"bugKD")==0) tBugAutoQuitHellAct4.isOn=1;
-	else if (_stricmp(tag,"bugKB")==0) tBugAutoQuitHellAct5.isOn=1;
-	else if (_stricmp(tag,"bugKCountess")==0) tBugAutoQuitHellAct1.isOn=1;
+	if (_stricmp(tag,"bugKM")==0) {tBugAutoQuitHellAct3.isOn=1;dwBugFlag|=4;}
+	else if (_stricmp(tag,"bugKD")==0) {tBugAutoQuitHellAct4.isOn=1;dwBugFlag|=8;}
+	else if (_stricmp(tag,"bugKB")==0) {tBugAutoQuitHellAct5.isOn=1;dwBugFlag|=16;}
+	else if (_stricmp(tag,"bugKCountess")==0) {tBugAutoQuitHellAct1.isOn=1;dwBugFlag|=1;}
 }
 char *getCharTag(char *name);
 extern int fPartyListValid,dwPetListChangeCount,dwPetListChangeVerify;
@@ -121,7 +138,7 @@ static void gameStart() {
 	SnapshotNewGame();infoNewGame();quick_NewGame();GameMonitorNewGame();ItemExtInfoNewGame();
 	lifebarNewGame();QuestNewGame();MultiClientNewGame();AutoSummonNewGame();AutoSkillNewGame();
 	NpcTradeNewGame();ChickenLifeNewGame();PacketNewGame();item_NewGame();WaypointNewGame();
-	panelNewGame();
+	panelNewGame();quickswap_NewGame();
 	if (dwEnterGameShowDifficultyMs) {
 		if (EXPANSION) SetBottomAlertMsg1(dwGameLng?L"资料片":L"Expansion",dwEnterGameShowDifficultyMs,2,0);
 		else SetBottomAlertMsg1(dwGameLng?L"经典版":L"Classic",dwEnterGameShowDifficultyMs,2,0);
@@ -134,12 +151,15 @@ static void gameStart() {
 	if (tPacketHandler.isOn) SetBottomAlertMsg3(L"Warning: Network Packet Patch Installed",6000,1,1);
 	dwSendPacketCount=0;
 	char *name=(*d2client_pGameInfo)->szCharName;
+	dwBugFlag=0;
+	//checkCharName(name);
 	char *tag=getCharTag(name);
 	while (tag&&*tag) {
 		char *e=strchr(tag,',');
 		if (e) {*e=0;checkTag(tag);*e=',';tag=e+1;}
 		else {checkTag(tag);break;}
 	}
+	autoTerminateNpcInteractMs=0;
 }
 
 void GameLoopPatch() {
@@ -193,6 +213,8 @@ void GameLoopPatch() {
 	}
 	if (!fPlayerInTown&&dwCurMs-lastMs<dwMinHackmapMs||fPlayerInTown&&dwCurMs-lastMs<dwMinHackmapMsInTown) return;
 	lastMs=dwCurMs;
+	nBoss=bossId;
+	bossId=0;
 	//QueryPerformanceCounter(&perfStart);
 	screenDrawX=d2client_GetScreenDrawX();
 	screenDrawY=d2client_GetScreenDrawY();
@@ -224,7 +246,13 @@ void GameLoopPatch() {
 		dwPlayerFcrMs=dwPlayerFcrFrame*40;
 		dwSkillChangeCountVerify=dwSkillChangeCount;
 	}
-	if (lastAct!=dwCurrentAct) {lastAct=dwCurrentAct;QuestNewAct();}
+	if (lastAct!=dwCurrentAct) {
+		lastAct=dwCurrentAct;
+		QuestNewAct();
+		bossHps[0]=0;
+		bossHps[1]=0;
+		bossHps[2]=0;
+	}
 	if (lastLevel!=dwCurrentLevel) {
 		lastLevel=dwCurrentLevel;
 		dwLevelChangeMs=dwCurMs;
@@ -232,6 +260,7 @@ void GameLoopPatch() {
 		if (tBugAllHellAlert.isOn&&DIFFICULTY==2
 			||dwCurrentLevel==46||66<=dwCurrentLevel&&dwCurrentLevel<=72) QuestNewLevel();
 		AutoMapNewLevel();
+		bossX=0;bossY=0;
 	}
 	if (dwChangeLeftSkill!=-1) {selectSkill(0,dwChangeLeftSkill);dwChangeLeftSkill=-1;}
 	if (dwBackToTownTimeout) quickLoop();
@@ -257,6 +286,16 @@ void GameLoopPatch() {
 	*d2client_pShowLifeStr=*d2client_pAutomapOn;
 	*d2client_pShowManaStr=*d2client_pAutomapOn;
 	if (chatPasteMs&&dwCurMs>chatPasteMs) processChatPaste();
+	marketItemCount=marketItemCount1;
+	marketItemCount1=0;
+	if (!fWinActive&&autoTerminateNpcInteractMs&&dwCurMs>autoTerminateNpcInteractMs) {
+		if (npcChatTxt) { //*d2client_pUiInteractOn
+			autoTerminateNpcInteractMs=dwCurMs+300;
+			LOG("AutoTerminateNpcInteract\n");
+			pressESC();
+		} else if (!autoNpcTxt) 
+			autoTerminateNpcInteractMs=0;
+	}
 }
 
 void GameEndPatch() {

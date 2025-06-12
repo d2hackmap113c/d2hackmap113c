@@ -77,7 +77,10 @@ DLL_FUN(d2client,0x3F6C0,GetScreenDrawX,long,__stdcall, ())
 DLL_FUN(d2client,0x3F6D0,GetScreenDrawY,long,__stdcall, ())
 DLL_FUN(d2client,0x46150,Unknown6150,int,__stdcall, ())
 DLL_FUN(d2client,0x483B0,drawNpcInteractMenu,int,__stdcall,())
+DLL_FUN(d2client,0x48870,clickGotoAct3MenuItem,int,__stdcall,())
+DLL_FUN(d2client,0x488D0,clickGotoAct2MenuItem,int,__stdcall,())
 DLL_FUN(d2client,0x49440,clickHireMercMenu,int,__stdcall,())
+DLL_FUN(d2client,0x4B8A0,fun_4B8A0,int,__stdcall,(int off2,short *quest,char off6))
 DLL_FUN(d2client,0x51A80,GetSelectedUnit,UnitAny *,__stdcall, ())
 DLL_FUN(d2client,0x5C7F0,drawAllHeads,int,__stdcall,())
 DLL_FUN(d2client,0x5F6B0,NewAutomapNode,AutomapNode *,__fastcall, ())
@@ -94,8 +97,11 @@ DLL_FUN(d2client,0x77C50,getSkillTreeButtonX,int,__fastcall,()) //al=col 1-3
 DLL_FUN(d2client,0x77CA0,getSkillTreeButtonY,int,__fastcall,()) //al=row 1-7
 DLL_FUN(d2client,0x7D610,ShowPartyMessage,void,__stdcall, (wchar_t* text, int nColor))
 DLL_FUN(d2client,0x7D850,ShowGameMessage,void,__stdcall, (wchar_t* text, int nColor))
+DLL_FUN(d2client,0x7E970,isNpcConversitionEnd,int,__fastcall,(void* arg))
+DLL_FUN(d2client,0x7EA90,drawNpcConversition,int,__fastcall,()) //eax:void *npcConv
 DLL_FUN(d2client,0x7FC70,drawEnvironment,void,__stdcall,(void *setting,void *b))
 DLL_FUN(d2client,0x84750,packet9C_4,void,__fastcall,()) //eax:char *packet
+DLL_FUN(d2client,0x86A40,useStackableItem,void,__stdcall,(char *packet))
 DLL_FUN(d2client,0x8AFD0,CalcShake,void,__stdcall, (int *pPosX, int *pPosY))
 DLL_FUN(d2client,0x8B110,DrawAllUnits,int,__stdcall, ())
 DLL_FUN(d2client,0x958A0,func_958A0,int,__stdcall,(UnitAny *pUnit))
@@ -113,6 +119,7 @@ DLL_FUN(d2client,0xACE20,PacketHandler,void,__stdcall, (int len)) //eax:char *bu
 DLL_FUN(d2client,0xAE080,RecvPacket9C,void,__fastcall,(char *packet))
 DLL_FUN(d2client,0xAE870,RecvPacket9D,void,__fastcall,(char *packet))
 DLL_FUN(d2client,0xAF560,RecvPacket0E,void,__fastcall,(int arg,char *packet))
+DLL_FUN(d2client,0xAF910,RecvPacket3F,void,__fastcall,(char *packet))
 DLL_FUN(d2client,0xBE400,CheckUiStatusStub,int,__fastcall, (int dwUiNo))//dwUiNo ==> eax
 DLL_FUN(d2client,0xBF6C0,LoadUiImageSubpath,CellFile*,__fastcall,()) //esi=subpath data/global/ui/%s
 DLL_FUN(d2client,0xC2790,SetUiStatus,int,__fastcall, (int dwUiNo, int howset, DWORD unknown1))
@@ -218,6 +225,7 @@ DLL_VAR(d2client,0x11C3A0,InGame,BOOL ) //是否在游戏中?
 DLL_VAR(d2client,0x11C3A0,MButton,BOOL )
 DLL_VAR(d2client,0x11C3A4,notAcceptKeys,int ) //not accept input?
 DLL_VAR(d2client,0x11C3B8,DrlgAct,DrlgAct *)
+DLL_VAR(d2client,0x11C3C4,NpcConvData,void *)
 DLL_VAR(d2client,0x11C3F0,StandStill,BOOL ) //是否站立不动
 DLL_VAR(d2client,0x11C414,ScreenBlocked,int) //bit0 right half blocked, bit 1 left half blocked
 DLL_VAR(d2client,0x11C418,screenDrawXsub,int)
@@ -677,10 +685,17 @@ DLL_VAR(d2gfx,0x11268,callbackTable,void *)
 DLL_VAR(d2gfx,0x148CC,DrawGoundH2,int)
 DLL_VAR(d2gfx,0x1D468,DrawGoundH1,int)
 DLL_VAR(d2gfx,0x1D66C,WinState,int)
+DLL_FUN(d2lang,0x9050,getLocalText9050,wchar_t *,__stdcall,(wchar_t **strs)) //eax:d2lang_map *d2str,edx:int txtNo
 DLL_ORD(d2lang,0x9450,10003,GetLocaleText,wchar_t*,__fastcall, (int dwLocaleTxtNo))
 DLL_ORD(d2lang,0x9E20,10005,uninit,int,__stdcall,())
 DLL_ORD(d2lang,0xA130,10008,initLanguage,int,__fastcall,(int zero,char *language,int one)) //ret 0 if failed
 DLL_FUN(d2lang,0xAFE0,strcat,wchar_t *,__fastcall,(wchar_t *dst,wchar_t *src)) //ret dst
+DLL_VAR(d2lang,0x10A64,localeTxtMap0,d2lang_map *) //0-9999
+DLL_VAR(d2lang,0x10A68,localeTxt0,wchar_t **) //0-9999
+DLL_VAR(d2lang,0x10A6C,localeTxt10000,wchar_t **) //10000-19999
+DLL_VAR(d2lang,0x10A70,localeTxt20000,wchar_t **) //20000-29999
+DLL_VAR(d2lang,0x10A80,localeTxtMap10000,d2lang_map *) //20000-29999
+DLL_VAR(d2lang,0x10A84,localeTxtMap20000,d2lang_map *) //20000-29999
 DLL_FUN(d2launch,0x101B,sprintf,int,__cdecl,(char *buf,char *fmt,...))
 DLL_FUN(d2launch,0xDB60,DeleteSelectedCharacter,int,__stdcall,(int arg)) //return 0:failed 1:deleted
 DLL_FUN(d2launch,0xF3A0,DeleteCharacter,void,__fastcall,(char *name)) //eax:region

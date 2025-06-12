@@ -10,8 +10,12 @@ struct BugQuestInfo{
 	char *szMsg; //名称
 };
 
+void send_multi_reply(int info);
+void pressESC();
+extern int autoNpcTxt;
 extern ToggleVar tQuickNextGame;
 int NextMapTarget();
+void incMapTargetIf(int cur);
 int QuickExitGame();
 int QuickNextGame(int addnum);
 int ReSetTimer();
@@ -360,7 +364,7 @@ Q25
 Q26
 	5D 0D 00 0C 00 00 //can't complete
 	5D 0D 00 05 00 00 //talk to Angel
-	5D 0D 00 06 00 00 //talk to king
+	5D 0D 00 06 00 00 //after talk to Jerhyn
 Q35
 	5D 13 00 01 00 00 //
 	5D 13 00 03 00 00 //enter Travincal
@@ -377,13 +381,6 @@ Q43
 	5D 17 00 01 00 00 //enter Chaos Sanctuary
 	5D 17 00 0D 00 00 //killed Diablo
 	5D 17 02 00 00 00 //killed Diablo
-Q52
-	5D 20 00 05 0F 00 //rescue 5
-	5D 20 20 02 0A 00 //rescue 5
-	5D 20 20 02 05 00 //rescue 10
-	5D 20 00 05 05 00 //rescue 15
-	5D 20 00 03 00 00 //rescue 15
-	5D 20 02 00 00 00 //got runes quest code 202A, update quest->3001
 	*/
 	switch (aPacket[1]) {
 		case 0x05:
@@ -410,6 +407,14 @@ Q52
 				}
 			}
 			break;
+		case 0x0D:
+			if (aPacket[3]==0x06) {//5D 0D 00 06 00 00 //after talk to Jerhyn
+				d2client_ShowGameMessage(L"Finish conversition with Jerhyn", 2);
+				if (autoNpcTxt&&!fWinActive) {
+					send_multi_reply(MCR_DONE);
+				}
+			}
+			break;
 		case 0x14:
 			if (aPacket[2] == 0x00&&aPacket[3]==0x04) {
 				d2client_ShowGameMessage(L"Someone enter Durance of Hate Level 3", 2);
@@ -429,30 +434,48 @@ Q52
 				d2client_ShowGameMessage(L"Q42 (5D 18) Mephisto's stone is destoried", 2);
 				dwUpdateQuestMs=dwCurMs+500;return;
 			}
+/*
+Q52
+	5D 20 00 05 0F 00 //rescue 5
+	5D 20 20 02 0A 00 //rescue 5
+	5D 20 20 02 05 00 //rescue 10
+	5D 20 00 05 05 00 //rescue 15
+	5D 20 00 03 00 00 //rescue 15
+	5D 20 02 00 00 00 //got runes quest code 202A, update quest->3001
+*/
 		case 0x20:
-			switch (aPacket[1]) {
+			switch (aPacket[2]) {
 				case 0x20:
-					if (aPacket[2]==0x20) {
-						if (aPacket[3]==0x02) {
-							dwBarbrianLeft=aPacket[4];
-							wsprintfW(wszbuf, L"Q52: %d barbrian to rescue",aPacket[4]);
-							d2client_ShowPartyMessage(wszbuf, 2);
-							if (fWinActive) {
-								NextMapTarget();
-							} else {
-								if (aPacket[4]==10) send_multi_quest_info(MCQ_10BB);
-								else if (aPacket[4]==5) send_multi_quest_info(MCQ_5BB);
+					if (aPacket[3]==0x02) {
+						dwBarbrianLeft=aPacket[4];
+						wsprintfW(wszbuf, L"Q52: %d barbrian to rescue",aPacket[4]);
+						d2client_ShowPartyMessage(wszbuf, 2);
+						if (fWinActive) {
+							switch (aPacket[4]) {
+							case 10:incMapTargetIf(0);break;
+							case 5:incMapTargetIf(1);break;
 							}
-						} else if (aPacket[3]==0x03) {
-							dwBarbrianLeft=0;
-							d2client_ShowPartyMessage(L"Q52: All barbrian rescued",2);
+						} else {
+							if (aPacket[4]==10) send_multi_quest_info(MCQ_10BB);
+							else if (aPacket[4]==5) send_multi_quest_info(MCQ_5BB);
 						}
-					} else if (aPacket[2]==0x2) { 
-						d2client_ShowPartyMessage(L"got runes",2);
-						dwUpdateQuestMs=dwCurMs+500;
 					}
 					break;
-				case 2:dwUpdateQuestMs=dwCurMs+500;break;
+				case 0:
+					if (aPacket[3]==0x03) {
+						dwBarbrianLeft=0;
+						d2client_ShowPartyMessage(L"Q52: All barbrian rescued",2);
+						if (!fWinActive) send_multi_reply(MCR_DONE);
+					}
+					break;
+				case 2:
+					d2client_ShowPartyMessage(L"got runes",2);
+					if (autoNpcTxt&&!fWinActive) {
+						pressESC();
+						send_multi_reply(MCR_GOT_RUNES);
+					}
+					dwUpdateQuestMs=dwCurMs+500;
+					break;
 			}
 			break;
 		case 0x24:
@@ -564,7 +587,7 @@ void __fastcall DrawQuestPagePatch(int ypos, int xpos) {
 	unsigned short *game=GAMEQUESTDATA->quests;
 	DWORD dwOldFone = d2win_SetTextFont(8);
 	switch (QUESTPAGE) {
-	case 0:
+	case 0: //act1
 		drawQuestState(player,game,1,0,0);
 		drawQuestState(player,game,2,0,1);
 		drawQuestState(player,game,4,0,2);
@@ -572,7 +595,7 @@ void __fastcall DrawQuestPagePatch(int ypos, int xpos) {
 		drawQuestState(player,game,3,1,1);
 		drawQuestState(player,game,6,1,2);
 		break;
-	case 1:
+	case 1: //act2
 		drawQuestState(player,game,9,0,0);
 		drawQuestState(player,game,10,0,1);
 		drawQuestState(player,game,11,0,2);
@@ -581,7 +604,7 @@ void __fastcall DrawQuestPagePatch(int ypos, int xpos) {
 		drawQuestState(player,game,14,1,2); 
 		//102D->1035->1025
 		break;
-	case 2:
+	case 2: //act3
 		drawQuestState(player,game,20,0,0);
 		drawQuestState(player,game,19,0,1);
 		drawQuestState(player,game,18,0,2);
@@ -589,12 +612,12 @@ void __fastcall DrawQuestPagePatch(int ypos, int xpos) {
 		drawQuestState(player,game,21,1,1);
 		drawQuestState(player,game,22,1,2);
 		break;
-	case 3:
+	case 3: //act4
 		drawQuestState(player,game,25,0,0);
 		drawQuestState(player,game,27,0,1);
 		drawQuestState(player,game,26,0,2);
 		break;
-	case 4:
+	case 4: //act5
 		drawQuestState(player,game,35,0,0);
 		drawQuestState(player,game,36,0,1);
 		drawQuestState(player,game,37,0,2);
@@ -708,6 +731,47 @@ void __declspec(naked) RecvCommand_4D_Patch_ASM() {
 		popad
 //original code
 		mov ecx, 0x15
+		ret
+	}
+}
+extern int npcChatTxt;
+static void __fastcall recv28_quest(char *packet) {
+	if (!autoNpcTxt||fWinActive) return;
+	short *quest=(short *)(packet+7);
+	switch (dwCurrentLevel) {
+		case Level_RogueEncampment:
+			LOG("A1 quest=%X txt=%d %d\n",quest[6]&0xFFFF,autoNpcTxt,npcChatTxt);
+			if (npcChatTxt==Mon_Warriv1&&(quest[6]&1)) {
+				d2client_clickGotoAct2MenuItem();
+			}
+			break;
+		case Level_LutGholein:
+			LOG("A2 quest=%X txt=%d %d\n",quest[14]&0xFFFF,autoNpcTxt,npcChatTxt);
+			if (npcChatTxt==Mon_Meshif1&&(quest[14]&1)) {
+				d2client_clickGotoAct3MenuItem();
+			}
+			break;
+	}
+}
+/*
+	d2client_AFA70: 33 C0              xor eax, eax
+	d2client_AFA72: 8A 41 06           mov al, [ecx+0x6]
+	d2client_AFA75: 8D 51 07           lea edx, [ecx+0x7]
+	d2client_AFA78: 50                 push eax
+	d2client_AFA79: 8B 41 02           mov eax, [ecx+0x2]
+	d2client_AFA7C: 52                 push edx
+	d2client_AFA7D: 50                 push eax
+	d2client_AFA7E: 8A 41 01           mov al, [ecx+0x1]
+	d2client_AFA81: E8 1A BE F9 FF     call d2client_4B8A0(3 args)
+	d2client_AFA86: C3                 ret 
+*/
+void __declspec(naked) RecvCommand_28_Patch_ASM() {
+	__asm {
+		pushad
+		call recv28_quest
+		popad
+//original code
+		jmp d2client_fun_4B8A0
 		ret
 	}
 }

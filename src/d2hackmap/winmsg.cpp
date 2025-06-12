@@ -26,7 +26,7 @@ int client_mouse_stat(int mx,int my);
 int client_mouse_skillBtn(int mx,int my);
 int DropProtection(UnitAny *pItem);
 
-static int need_paint=0;
+int need_paint=0;
 static int altDown=0,ctrlDown=0,shiftDown=0;
 static int dwCheckCTAMs=0,checkCTA=0,dwSwapWeaponKey=0;
 static int isKeyDown[256],isCombKeyDown[0x800];
@@ -485,13 +485,19 @@ void WinMessageRunLoop() {
 		if (ison!=on) GameControl(7);
 	}
 }
+extern int marketItemCount;
+extern ToggleVar tViewSocketable;
 static int shouldProcessKey(int vk,int winMsg) {
 //winMsg 0:gameKeyEvent 1:windowKeyEvent 2:mouseClickAndWheel
 	if (*d2client_pUiDropGoldWindow) return 0;
 	if (*d2client_pUiChatOn) return 0;
 	if (fInGame) {
 		if ((d2client_pScreenBlocked[0]&3)==3) {
+			if (marketItemCount>10) {
+				if (vk==tViewSocketable.key) return winMsg!=0;
+			}
 			if (*d2client_pUiCubeOn) return winMsg!=0; //auto merge
+			if (*d2client_pUiStashOn) return winMsg!=0; //auto simple item stack
 			if ('0'<=vk&&vk<='9'||'A'<=vk&&vk<='Z'||vk==VK_BACK) return ctrlDown||altDown?1:0;
 			return winMsg!=1;
 		}
@@ -940,8 +946,8 @@ static void beforeDrawControl() {
 }
 static void debugMsDrawControlStart() {LOG("	drawControlStart=%d ms\n",GetTickCount()-dwCurMs);}
 static void debugMsDrawControlEnd() {LOG("	drawControlEnd=%d ms\n",GetTickCount()-dwCurMs);}
-//6FAF437A - 52                    - push edx
-//6FAF437B - E8 60F60700           - call 6FB739E0
+//d2client_4437A: push edx
+//d2client_4437B: call d2client_DrawControls(1 args)
 void __declspec(naked) DrawControlsPatch_ASM() {
 	__asm {
 		pushad
@@ -978,7 +984,17 @@ static void clearScreen() {
 	ReleaseDC(hwnd,hdc);
 }
 static int shouldSkipAllDrawing() {
-	if (fSkipPainting) {if (need_paint) return 0;return 1;}
+	if (fSkipPainting) {
+		if (need_paint) return 0;
+		if (*d2client_pNpcConvData) {
+			__asm {
+				mov eax, d2client_pNpcConvData
+				mov eax, [eax]
+				call d2client_drawNpcConversition
+			}
+		}
+		return 1;
+	}
 	static int lastDrawMs=0;
 	int ms=dwCurMs-lastDrawMs;
 	if (fPlayerInTown&&ms<dwMinFrameMsInTown||!fPlayerInTown&&ms<dwMinFrameMs) {Sleep(1);return 1;}
@@ -988,6 +1004,7 @@ static int shouldSkipAllDrawing() {
 static int shouldSkipDrawUnitAndControl() {
 	if (fSkipPainting) {
 		DrawCenterText(3, L"Screen Saver" , SCREENSIZE.x/2, SCREENSIZE.y/2,0,1,0);
+		if (need_paint>=2) {need_paint=1;return 0;}
 		need_paint=0;
 		return 1;
 	}

@@ -35,6 +35,7 @@ void addAccount(int key,char *name,char *pass);
 void addMapTarget(int srcLvl,int dstLvl,int type,wchar_t *enName,wchar_t *chName);
 int MiniMapScroll(int id);
 void addQuickMessage(int key,wchar_t *msg,int len);
+void addQuickToLevel(int key,int area1,int area2);
 
 static ConfigVar **configVars=NULL;int configVarCap=0,configVarCount=0;
 static ConfigVar aConfigVars[] = {
@@ -114,7 +115,7 @@ static void InitValues(){
 		pSymbols=(struct Symbol *)malloc(capSymbols*sizeof(struct Symbol));
 	}
 	nSymbols=0;warningMsgCount=0;
-	memset(tKeyEventMap,0,sizeof(tKeyEventMap) );
+	memset(tKeyEventMap,0,sizeof(tKeyEventMap));
 	warningMsgs=NULL;
 	login_initConfigVars();winmsg_initConfigVars();automap_initConfigVars();env_initConfigVars();
 	lifebar_initConfigVars();item_initConfigVars();dangerous_initConfigVars();
@@ -714,6 +715,16 @@ addTargetEnd:
 				addQuickMessage(key,buf,len);
 			}
 			break;
+		case CONFIG_VAR_TYPE_QUICK_TO_LEVEL: 
+			if (arrays[0]!='[') AddWarningMessage(arrays,0);
+			else {
+				char *p=arrays+1;
+				int key=parseInt(p,&p);
+				int ibuf[2];
+				parseValues32(ibuf,right,2);
+				addQuickToLevel(key,ibuf[0],ibuf[1]);
+			}
+			break;
 		default:
 			break;
 	}
@@ -746,6 +757,16 @@ static void loadTagFile(char *path) {
 	if (!fp) {LOG("load tag file %s failed\n",path);return;}
 	int size=0;char *p=loadFile(confHeap,fp,&size);if (!p) {fclose(fp);return;}
 	char *end=p+size;
+	if (p[0]==(char)0xef&&p[1]==(char)0xbb&&p[2]==(char)0xbf) {
+		p+=3;
+		wchar_t *ws=(wchar_t *)HeapAlloc(confHeap,0,size*sizeof(wchar_t));
+		int nws=MultiByteToWideChar(CP_UTF8,0,p,end-p,ws,size);
+		char *acp=(char *)HeapAlloc(confHeap,0,(size+1)*sizeof(char));
+		int n=WideCharToMultiByte(CP_ACP,0,ws,nws,acp,size,NULL,NULL);
+		HeapFree(confHeap,0,p-3);
+		acp[n]=0;p=acp;end=p+n;
+		HeapFree(confHeap,0,ws);
+	}
 	int n=0;
 	while (p<end) {
 		char *e=strchr(p,'\n');if (!e) e=end;

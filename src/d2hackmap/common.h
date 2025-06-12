@@ -110,4 +110,6 @@ int getStatMaxValue(int id);
 int cpLocaleName(wchar_t *dst,wchar_t *s,int max);
 int acpLocaleName(char *dst,wchar_t *s,int bufsize);
 void dc6cell2bmp(GfxCell *pcell,char *outpath);
+int getSimpleItemStackContent(UnitAny *pUnit,int *ptxt);
+UnitAny *findObjectByTxt(int from,int to,int mode);
 #endif

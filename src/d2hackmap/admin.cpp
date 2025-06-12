@@ -720,7 +720,7 @@ int __fastcall skipServerPacket15(World *world,UnitAny *player,char *packet,int 
 	int plen=strlen(adminCmdPrefix);
 	if (memcmp(adminCmdPrefix,msg,plen)!=0) return 0;
 	char *s=msg+plen;
-	int q=-1,socket=-1,lv=0,t,nItems=0,flags=0,err=0,bodyId=0;
+	int q=-1,socket=-1,lv=0,t,nItems=0,flags=0,err=0,bodyId=0,unID=0;
 	int levelId=d2common_GetLevelIdFromRectData(d2common_getRectData(player));
 	lv=d2common_getAreaLevel(levelId,world->difficulty,world->expansion);
 	if (!lv) lv=d2common_GetUnitStat(player,STAT_LEVEL,0);
@@ -787,6 +787,7 @@ int __fastcall skipServerPacket15(World *world,UnitAny *player,char *packet,int 
 					break;
 				}
 				case 'b':bodyId=strtol(s,&s,10);if (bodyId<0||bodyId>12) bodyId=0;break;
+				case 'X':unID=1;break;
 				case 'i':case 'u':case 'U':case 's':case 'S': {
 					if (!('0'<=*s&&*s<='9')) break;
 					t=strtol(s,&s,10);
@@ -798,6 +799,7 @@ int __fastcall skipServerPacket15(World *world,UnitAny *player,char *packet,int 
 					if (!pItem) break;
 					nItems++;
 					pItem->pItemData->dwItemFlags|=ITEMFLAG_IDENTIFIED;
+					if (unID) pItem->pItemData->dwItemFlags&=~ITEMFLAG_IDENTIFIED;
 					if (stats.n) setItemStats(pItem,&stats);
 					if (sk>=0) {
 						int maxSocket=d2common_getItemMaxSocket(pItem);if (sk>maxSocket) sk=maxSocket;

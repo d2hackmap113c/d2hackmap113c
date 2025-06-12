@@ -836,7 +836,7 @@ struct ItemTxt {				//size = 0x1A8
 	char szInvfile[96];			//+20 ==>three names 32*3
 	union{
 		DWORD dwCode[5];
-		char szCode[20];
+		char szCode[20]; //itemCode, classCodes[3], class
 	};							//+80
 	BYTE nPotionflag;			//+94 //potion cube ,book 
 	BYTE _1[39];				//+95  have 2byte only misc have ,and heal potion is diff
@@ -1688,6 +1688,14 @@ struct D2FloatingWindow {
 	int y,w,h,off3C; //+30
 	int off40,off44,off48,off4C; //+40
 	int off50,off54,off58,off5C; //+50
+};
+struct d2lang_map {
+	short off0,mapSize; //+00
+	int count; //+04
+	char uk_08[9]; //+08
+	int totalSize; //+11
+	short map[1]; //+15 size=mapSize*2
+	//after map is count*17
 };
 
 #endif 

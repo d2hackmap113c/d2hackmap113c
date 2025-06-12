@@ -389,7 +389,7 @@ void mod(char *path) {
 	f.attrs[STAT_NEWSKILLS]=100;
 	//f.attrs[STAT_HP]=f.attrs[STAT_MAXHP]=4096<<8;
 	//f.attrs[STAT_MANA]=f.attrs[STAT_MAXMANA]=4096<<8;
-	//memset(f.skills,20,30);
+	memset(f.skills,99,30);
 	for (int i=0;i<3;i++) memcpy(f.header.waypoints[i],allWaypoints,7);
 	//f.header.mercDead=1;
 	//f.header.mercNameId=0x55;
@@ -433,6 +433,7 @@ int main() {
 	//updateName("D:/d2hackmap/d2server113c/pvpgn-1.99.r578/var","sor","csor");return 0;
 	assert(sizeof(struct d2s_header)==767);
 	char *path="D:\\game\\diablo2\\save\\nec.d2s";
+	path="D:\\game\\diablo2\\save\\ttt.d2s";mod(path);return 0;
 	path="D:\\game\\diablo2\\save\\csor.d2s";mod(path);
 	path="D:\\game\\diablo2\\save\\sor.d2s";mod(path);
 	path="D:\\game\\diablo2\\save\\nec.d2s";mod(path);
