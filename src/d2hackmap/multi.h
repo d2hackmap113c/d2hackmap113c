@@ -12,6 +12,9 @@ enum MulticlientCmd {
 	MCC_BackToTown=3,
 	MCC_EnterDoor=4,
 	MCC_TalkToNpc=5,
+	MCC_Trade=6,
+	MCC_NextGame=7,
+	MCC_JoinGame=8,
 };
 enum MulticlientInfo {
 	MCI_CpuUsage=0x10,
@@ -31,12 +34,16 @@ enum MulticlientInfo {
 enum MulticlientQuest {
 	MCQ_10BB=1,
 	MCQ_5BB=2,
+	MCQ_0BB=3,
+	MCQ_BB_ERR=4,
 };
 enum MulticlientReply {
 	MCR_OK=1,
 	MCR_DONE=2,
 	MCR_ERROR=3,
 	MCR_GOT_RUNES=4,
+	MCR_FAILED=5,
+	MCR_PASSED=6,
 };
 struct D2Window {
 	HWND hwnd;
@@ -51,6 +58,7 @@ struct D2Window {
 	char switchkey[32];
 	//int questData,questDataMs; //not cleared
 	int reply,replyMs; //not cleared
+	char password[32];
 };
 HWND getGameWindowHwnd(int id);
 extern D2Window d2wins[32];

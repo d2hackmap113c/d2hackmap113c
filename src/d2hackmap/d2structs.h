@@ -1137,6 +1137,13 @@ struct D2AccountInfo {
 	char off00[0x48];
 	char accountName[16];
 };
+struct D2Character {
+	char name[16]; //+00
+	char off10[0xF0]; //+10
+	wchar_t realm[16]; //+100
+	char off110[0x22C]; //+120
+	D2Character *next; //+34C
+};
 struct MonStatsBIN;
 struct World10F4_18 {
 	char uk_00[0x1C]; //+00

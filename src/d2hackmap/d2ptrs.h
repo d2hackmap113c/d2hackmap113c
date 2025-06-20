@@ -32,13 +32,6 @@ struct FogBits {
 struct InvLayout {char cols,rows,uk[2];int x0,x1,y0,y1;char gridW,gridH,uk2[2];};
 struct EquipmentLayout20 {int x0,x1,y0,y1;char w,h,uk[2];};
 struct EquipmentLayout16 {int x0,x1,y0,y1;char w,h,uk[2];};
-struct D2Character {
-	char name[16]; //+00
-	char off10[0xF0]; //+10
-	wchar_t realm[16]; //+100
-	char off110[0x22C]; //+120
-	struct D2Character *next; //+34C
-};
 typedef struct {
 	int off0,off4;
 	char path[256]; //+08
@@ -82,6 +75,8 @@ DLL_FUN(d2client,0x488D0,clickGotoAct2MenuItem,int,__stdcall,())
 DLL_FUN(d2client,0x49440,clickHireMercMenu,int,__stdcall,())
 DLL_FUN(d2client,0x4B8A0,fun_4B8A0,int,__stdcall,(int off2,short *quest,char off6))
 DLL_FUN(d2client,0x51A80,GetSelectedUnit,UnitAny *,__stdcall, ())
+DLL_FUN(d2client,0x59980,clickAcceptTradeMenuItem,int,__stdcall,())
+DLL_FUN(d2client,0x59ED0,recvCmd77ButtonAction,void,__stdcall, ()) //eax:packet
 DLL_FUN(d2client,0x5C7F0,drawAllHeads,int,__stdcall,())
 DLL_FUN(d2client,0x5F6B0,NewAutomapNode,AutomapNode *,__fastcall, ())
 DLL_FUN(d2client,0x5F8A0,SetAutomapNamesStub ,void,__fastcall, (DWORD flag))    //parm = flag  ==> esi 

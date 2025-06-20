@@ -129,7 +129,9 @@ int patchValue(char *name,char *dll,int offset,int addr,int param,int len,char *
 
 int waypointExist(int area);
 int hasWaypoint(int area);
+void refresh_clients();
 int isLocalPlayer(int uid);
+int isLocalPlayerName(char *name);
 void check_d2ptrs();
 void draw2map(POINT *minimap,int drawX,int drawY);
 void __stdcall dumpStack(int n);
@@ -143,7 +145,7 @@ extern char *szVersion;
 extern HANDLE dllHeap,confHeap,gameHeap;
 extern int dwGameWindowId;
 extern char szRuntimePath[256];
-extern int fIsSinglePlayer,fIsTcpIp,fIsRealmServer,fIsRealmClient,fInGame,fPlayerInTown,dwGameLng;
+extern int fIsSinglePlayer,fIsTcpIp,fIsRealmServer,fIsRealmClient,fStartingGame,fInGame,fPlayerInTown,dwGameLng;
 extern volatile int	dwCurMs;
 extern int actlvls[6];
 extern int dwCurrentAct,dwCurrentLevel;

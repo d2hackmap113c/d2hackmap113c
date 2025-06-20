@@ -5,6 +5,8 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned int u32;
 
+void saveItems();
+void rebuild_snap();
 extern UnitAny *pViewingItem;
 extern char *bnetIp;
 #define printf ERROR
@@ -25,11 +27,6 @@ static char *clsSkills[7][3]={
 	{"druSummon","shape","element"},
 	{"trap","shadow","martial"},
 };
-/*char *runeWordNames[MAX_NAMES];
-char *uniqueNames[MAX_NAMES];
-char *setItemNames[MAX_NAMES];
-char *itemNames[3000]={0};
-*/
 static char *skillNames[MAX_NAMES];
 static char *propNames[MAX_NAMES];
 static int itemNamesLoaded=0;
@@ -48,7 +45,7 @@ static RuneInfo runeInfo={0};
 int DoSnapshot();
 char szSnapshotPath[256]="snapshot";
 char szSnapshotNamesPath[256]="names.txt";
-ToggleVar 	tDoSnapshot={			  TOGGLEVAR_DOWN,	0,	-1,	 1, "Do Snapshot",			&DoSnapshot};
+ToggleVar tDoSnapshot={TOGGLEVAR_DOWN,0,-1,1,"Do Snapshot",&DoSnapshot,0,0,2};
 ToggleVar 	tSnapshot={TOGGLEVAR_ONOFF,	1,	-1,	 1,	"EnableSnapshot"};
 ToggleVar 	tSnapshotNewGame={		TOGGLEVAR_ONOFF,	1,	-1,	 1,	"Snapshot Enter Game"};
 ToggleVar 	tSnapshotEndGame={		TOGGLEVAR_ONOFF,	1,	-1,	 1,	"Snapshot Exit Game"};
@@ -105,12 +102,6 @@ void LoadLogNames(FILE *logfp) {
 		acp[n]=0;p=acp;end=p+n;
 		HeapFree(confHeap,0,ws);
 	}
-	/*
-	memset(runeWordNames,0,MAX_NAMES*sizeof(char *));
-	memset(uniqueNames,0,MAX_NAMES*sizeof(char *));
-	memset(setItemNames,0,MAX_NAMES*sizeof(char *));
-	memset(itemNames,0,3000*sizeof(char *));
-	*/
 	memset(skillNames,0,MAX_NAMES*sizeof(char *));
 	memset(propNames,0,MAX_NAMES*sizeof(char *));
 	memset(questNames,0,sizeof(questNames));
@@ -122,19 +113,11 @@ void LoadLogNames(FILE *logfp) {
 		if (line[0]=='#') continue;
 		if (line[0]=='/'&&line[1]=='/') continue;
 		char *value=strchr(line,'=');if (!value) continue;*value=0;value++;
-		if (memcmp(line,"runeWord",8)==0) {
-			int id=strtol(line+8,NULL,10);
-			//if (id<MAX_NAMES) runeWordNames[id]=value;
-		} else if (memcmp(line,"unique",6)==0) {
-			int id=strtol(line+6,NULL,10);
-			//if (id<MAX_NAMES) uniqueNames[id]=value;
-		} else if (memcmp(line,"set",3)==0) {
-			int id=strtol(line+3,NULL,10);
-			//if (id<MAX_NAMES) setItemNames[id]=value;
-		} else if (memcmp(line,"item",4)==0) {
-			int id=strtol(line+4,NULL,10);
-			//if (id<3000) itemNames[id]=value;
-		} else if (memcmp(line,"skill",5)==0) {
+		char *comment=strstr(value,"//");
+		if (comment) {
+			*comment=0;comment--;if (*comment==' ') *comment=0;
+		}
+		if (memcmp(line,"skill",5)==0) {
 			int id=strtol(line+5,NULL,10);
 			if (id<MAX_NAMES) skillNames[id]=value;
 		} else if (memcmp(line,"stat",4)==0) {
@@ -174,9 +157,8 @@ void LoadLogNames(FILE *logfp) {
 	}
 	itemNamesLoaded=1;
 }
-void getSnapshotPath(char *buf,char *realm,char *account,char *name,
+void getSnapshotPath1(char *buf,char *realm,char *account,char *name,
 	char *subfolder,char *ext,char sep) {
-	if (bnetIp&&bnetIp[0]) realm=bnetIp;
 	if (!szSnapshotPath[0])
 		sprintf(buf,"%ssnapshot",szPluginPath);
 	else if (szSnapshotPath[0]&&szSnapshotPath[1]==':') //absolute path
@@ -206,7 +188,12 @@ void getSnapshotPath(char *buf,char *realm,char *account,char *name,
 		sprintf(buf+len,"\\%s.%s",name,ext);
 	}
 }
-static FILE *openSnapshotFile(char *subfolder,char *ext,char *mode,char sep,char *action,int msg) {
+void getSnapshotPath(char *buf,char *realm,char *account,char *name,
+	char *subfolder,char *ext,char sep) {
+	if (fIsRealmClient&&bnetIp&&bnetIp[0]) realm=bnetIp;
+	getSnapshotPath1(buf,realm,account,name,subfolder,ext,sep);
+}
+FILE *openSnapshotFile(char *subfolder,char *ext,char *mode,char sep,char *action,int msg) {
 	char buf[1024];
 	char *realm=(*d2client_pGameInfo)->szRealmName;
 	char *account=(*d2client_pGameInfo)->szAccountName;
@@ -275,7 +262,9 @@ void SnapshotNewGame() {
 }
 void SnapshotEndGame() {
 	if (!tSnapshot.isOn) return;
-	if (tSnapshotEndGame.isOn) dumpInventory();
+	if (tSnapshotEndGame.isOn) {
+		dumpInventory();
+	}
 	if (tSnapshotLog.isOn&&(
 		GetTickCount()-startGameMs>60000
 		||runeInfo.totalGems!=enterGameGems)) {
@@ -304,11 +293,12 @@ void SnapshotEndGame() {
 		}
 	}
 }
+int showStatNum=1;
 void dumpStat(FILE *fp,int id,int param,int *pvalue) {
 	char buf[128];
 	int unknown=id<0||id>=MAX_NAMES||!propNames[id];
 	int value=*pvalue;
-	fprintf(fp,"S%d:",id);
+	if (showStatNum) fprintf(fp,"s%d:",id);
 	if (unknown||debug) {
 		fprintf(fp,"(");
 		if (value||param) {
@@ -349,13 +339,18 @@ void dumpStat(FILE *fp,int id,int param,int *pvalue) {
 			fprintf(fp,propNames[id],value/2048.0f,param);break;
 			break;
 		case 359: {
-			ItemTxt *pItemTxt=d2common_GetItemTxt(param);
-			if (pItemTxt) {
-				wchar_t *wName=d2lang_GetLocaleText(pItemTxt->wLocaleTxtNo);
-				acpLocaleName(buf,wName,128);
-				fprintf(fp,propNames[id],buf,value);
+			int r=param-609;
+			if (1<=r&&r<=33) {
+				fprintf(fp,"R%d*%d",r,value);
 			} else {
-				fprintf(fp,propNames[id],"?",value);
+				ItemTxt *pItemTxt=d2common_GetItemTxt(param);
+				if (pItemTxt) {
+					wchar_t *wName=d2lang_GetLocaleText(pItemTxt->wLocaleTxtNo);
+					acpLocaleName(buf,wName,128);
+					fprintf(fp,propNames[id],buf,value);
+				} else {
+					fprintf(fp,propNames[id],"?",value);
+				}
 			}
 			//int index=GetItemIndex(param)+1;
 			//fprintf(fp,propNames[id],0<=index&&index<3000&&itemNames[index]?itemNames[index]:"?" ,value);
@@ -402,6 +397,15 @@ static int dumpStats(FILE *fp,Stat *stat) {
 	}
 	return sockets;
 }
+static int isStartEq(UnitAny *pUnit) {
+	if (pUnit->pItemData->dwQuality!=ITEM_QUALITY_NORMAL) return 0;
+	int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
+	switch (index) {
+		case 11:case 26:case 48:case 64:case 1023:
+			return 1;
+	}
+	return 0;
+}
 static void countGemRunes(UnitAny *pUnit) {
 	if (pUnit->dwUnitType!=UNITNO_ITEM) return;
 	int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
@@ -432,6 +436,22 @@ static void countGemRunes(UnitAny *pUnit) {
 					}
 				}
 			}
+		}
+	}
+	if (2103<=index&&index<=2135) { //runes
+		hasValuableEquipment++;
+	} else if (2050<=index&&index<=2079) { //gems
+		hasValuableEquipment++;
+	} else if (2090<=index&&index<=2094) { //skull
+		hasValuableEquipment++;
+	} else if (2006<=index&&index<=2012) { //potions & books
+	} else if (2017<=index&&index<=2049) { //arrows & quest
+	} else if (2080<=index&&index<=2089) { //potions
+	//} else if (index==simpleItemStackIdx) { //simple item collector
+	} else {
+		BYTE color=GetItemColour(pUnit,0);
+		if (color!=(BYTE)-2) {
+			if (!isStartEq(pUnit)) hasValuableEquipment++;
 		}
 	}
 	int q=-1;
@@ -581,8 +601,7 @@ static void dumpItem(FILE *fp,UnitAny *pUnit,int level,int loc) {
 		DWORD dwQuality = pUnit->pItemData->dwQuality;
 		int ethereal=d2common_CheckItemFlag(pUnit, ITEMFLAG_ETHEREAL, 0, "?");
 		int location= pUnit->pItemData->nItemLocation;
-		char code[5];
-		memcpy(code,pItemTxt->szCode,4);code[4]=0;
+		char code[5];memcpy(code,pItemTxt->szCode,4);code[4]=0;
 		for (int i=0;i<level;i++) fprintf(fp,"\t");
 		fprintf(fp,"------");
 		if (pUnit->pItemData->nItemLocation==255) { //equipped
@@ -711,7 +730,7 @@ static void dumpItem(FILE *fp,UnitAny *pUnit,int level,int loc) {
 			fprintf(fp,"@(%X:%d,%d)",&pUnit->pItemPath->unitX,pUnit->pItemPath->unitX,pUnit->pItemPath->unitY);
 		}
 		//if (pItemTxt->nSocket) fprintf(fp," 最多%d孔",pItemTxt->nSocket);
-		if (pUnit->pItemData->dwFingerPrint) fprintf(fp," finger=%x",pUnit->pItemData->dwFingerPrint);
+		//if (pUnit->pItemData->dwFingerPrint) fprintf(fp," finger=%x",pUnit->pItemData->dwFingerPrint);
 		int fileindex,isRuneword=0;
 		switch (dwQuality) {
 			case ITEM_QUALITY_RARE:fprintf(fp," 亮金");break;
@@ -765,7 +784,7 @@ static void dumpItem(FILE *fp,UnitAny *pUnit,int level,int loc) {
 			fprintf(fp," 已用%d孔",pUnit->pInventory->dwFilledSockets);
 			//dumpItems(fp,pUnit->pInventory->pFirstItem,level+1);
 		}
-		if (pUnit->pStatList) {
+		if (debug&&pUnit->pStatList) {
 			StatList *plist=pUnit->pStatList;
 			dumpStatList(fp,plist,0);
 		}
@@ -793,15 +812,6 @@ struct myItem {
 };
 static int compareItem(const void *arg1,const void *arg2) {
 	return ((struct myItem *)arg1)->sort - ((struct myItem *)arg2)->sort;
-}
-static int isStartEq(UnitAny *pUnit) {
-	if (pUnit->pItemData->dwQuality!=ITEM_QUALITY_NORMAL) return 0;
-	int index = GetItemIndex(pUnit->dwTxtFileNo)+1;
-	switch (index) {
-		case 11:case 26:case 48:case 64:case 1023:
-			return 1;
-	}
-	return 0;
 }
 static struct myItem items[512];
 static int nItem=0;
@@ -1071,27 +1081,29 @@ static void dumpUnit(FILE *fp,UnitAny *pUnit) {
 			dumpQuests(fp);
 			dumpWaypoints(fp);
 		}
-		if (pUnit->pStatList) {
-			StatList *plist=pUnit->pStatList;
-			dumpStatList(fp,plist,1);
-		}
-		fprintf(fp,"\n");
-		dumpSkills(fp,pUnit);fprintf(fp,"\n");
-		if (debug&&fIsSinglePlayer) {
-			UnitAny *real=getSinglePlayerUnit(dwUnitId,unitType);
-			if (real) {
-				fprintf(fp,"  GameServer: %x",real);fflush(fp);
-				StatList *plist=real->pStatList;
-				if (plist&&!IsBadReadPtr(plist,sizeof(StatList)))
-					dumpStatList(fp,plist,1);
-				fprintf(fp,"\n");
-				dumpSkills(fp,real);fprintf(fp,"\n");
-				char *wp=(char *)(real->pPlayerData->waypoints[0]);
-				fprintf(fp,"waypoint %X\n",wp);fflush(fp);
-				if (wp) {
-					hex(fp,0,wp,8);
+		if (1) {
+			if (debug&&pUnit->pStatList) {
+				StatList *plist=pUnit->pStatList;
+				dumpStatList(fp,plist,1);
+			}
+			fprintf(fp,"\n");
+			dumpSkills(fp,pUnit);fprintf(fp,"\n");
+			if (debug&&fIsSinglePlayer) {
+				UnitAny *real=getSinglePlayerUnit(dwUnitId,unitType);
+				if (real) {
+					fprintf(fp,"  GameServer: %x",real);fflush(fp);
+					StatList *plist=real->pStatList;
+					if (plist&&!IsBadReadPtr(plist,sizeof(StatList)))
+						dumpStatList(fp,plist,1);
+					fprintf(fp,"\n");
+					dumpSkills(fp,real);fprintf(fp,"\n");
+					char *wp=(char *)(real->pPlayerData->waypoints[0]);
+					fprintf(fp,"waypoint %X\n",wp);fflush(fp);
+					if (wp) {
+						hex(fp,0,wp,8);
+					}
+					fprintf(fp,"Cursor Item %X: %X\n",&real->pInventory->pCursorItem,real->pInventory->pCursorItem);
 				}
-				fprintf(fp,"Cursor Item %X: %X\n",&real->pInventory->pCursorItem,real->pInventory->pCursorItem);
 			}
 		}
 		UnitAny *pItem = pUnit->pInventory->pCursorItem;
@@ -1153,7 +1165,7 @@ static void dumpUnit(FILE *fp,UnitAny *pUnit) {
 			pMonsterTxt->nflag1,pMonsterTxt->nflag2,pMonsterTxt->flag3,pMonsterTxt->nflag4);
 		if (pMonsterTxt->fNpc) fprintf(fp," NPC");
 		fprintf(fp," %s",name);
-		if (pUnit->pStatList) {
+		if (debug&&pUnit->pStatList) {
 			StatList *plist=pUnit->pStatList;
 			dumpStatList(fp,plist,1);
 		}
@@ -1216,10 +1228,19 @@ void saveWaypoints(char *packet,int len) {
 	if (fp) {fwrite(packet,len,1,fp);fclose(fp);}
 }
 int d2s_generate(FILE *fp, UnitAny *pUnit,UnitAny *m,u16 *quest,char *wp,UnitAny *ironGolem);
+void formatItems(char *realm,char *account,char *name);
 static void dumpInventory() {
 	FILE *fp;
 	char ext[16];
 	if (nStashPages>1000) {LOG("ERROR nStashPages=%d\n",nStashPages);nStashPages=0;}
+	saveItems();
+	if (*d2client_pGameInfo) {
+		char *realm=(*d2client_pGameInfo)->szRealmName;
+		char *account=(*d2client_pGameInfo)->szAccountName;
+		char *name=(*d2client_pGameInfo)->szCharName;
+		if (bnetIp&&bnetIp[0]) realm=bnetIp;
+		formatItems(realm,account,name);
+	}
 	if (tSnapshot.isOn) {
 		sprintf(ext,"quest%d.bin",DIFFICULTY);
 		if (QUESTDATA) {
@@ -1228,29 +1249,38 @@ static void dumpInventory() {
 			if (fp) {fwrite(ptr,84,1,fp);fclose(fp);}
 		}
 	}
-	fp=openSnapshotFile(NULL,"txt","w+",'_',"inventory",1);if (!fp) return;
 	hasValuableEquipment=0;
-	dumpUnit(fp,PLAYER);
-	UnitAny *m=NULL,*golem=NULL;
-	PetUnit *pGolem = GetPetByType(PLAYER,3);
-	if (pGolem&&pGolem->dwTxtFileNo==291) {
-		golem=GetUnitFromIdSafe(pGolem->dwUnitId , UNITNO_MONSTER ) ;
-		if (golem) {
-			fprintf(fp,"------- Iron Golem -------\n");
-			lastLocation=0;
-			dumpUnit(fp,golem);
-		}
-	}
-	fclose(fp);
+	countAllGemRunes();
 	PetUnit *pMerc = GetPetByType(PLAYER,7);
 	if (pMerc) {
-		m=GetUnitFromIdSafe(pMerc->dwUnitId , UNITNO_MONSTER ) ;
-		if (m) {
-			fp=openSnapshotFile(NULL,"m.txt","w+",'_',"mercenary",1);
-			if (fp) {
+		for (UnitAny *pItem=d2common_GetFirstItemInInv(PLAYER->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem))
+			countGemRunes(pItem);
+	}
+	if (0) {
+		fp=openSnapshotFile(NULL,"txt","w+",'_',"inventory",1);if (!fp) return;
+		hasValuableEquipment=0;
+		dumpUnit(fp,PLAYER);
+		UnitAny *m=NULL,*golem=NULL;
+		PetUnit *pGolem = GetPetByType(PLAYER,3);
+		if (pGolem&&pGolem->dwTxtFileNo==291) {
+			golem=GetUnitFromIdSafe(pGolem->dwUnitId , UNITNO_MONSTER ) ;
+			if (golem) {
+				fprintf(fp,"------- Iron Golem -------\n");
 				lastLocation=0;
-				dumpUnit(fp,m);
-				fclose(fp);
+				dumpUnit(fp,golem);
+			}
+		}
+		fclose(fp);
+		PetUnit *pMerc = GetPetByType(PLAYER,7);
+		if (pMerc) {
+			m=GetUnitFromIdSafe(pMerc->dwUnitId , UNITNO_MONSTER ) ;
+			if (m) {
+				fp=openSnapshotFile(NULL,"m.txt","w+",'_',"mercenary",1);
+				if (fp) {
+					lastLocation=0;
+					dumpUnit(fp,m);
+					fclose(fp);
+				}
 			}
 		}
 	}
@@ -1262,37 +1292,40 @@ static void dumpInventory() {
 	if (tSnapshot.isOn) {
 		fp=openSnapshotFile("dat","CanDel.txt","w+",'_',"CanDelete",1);
 		if (fp) {
+			fprintf(fp,"Lv:%d\n",d2common_GetUnitStat(PLAYER, STAT_LEVEL, 0));
 			fprintf(fp,"HasValuableEquipment:%d\n",hasValuableEquipment);
 			fprintf(fp,"MercDead:%d\n",*d2client_pMercData16!=0xFFFF?1:0);
 			if (soj) fprintf(fp,"soj:%d\n",soj);
 			fclose(fp);
 		}
 	}
-	u16 quest[3][48]={0};
-	char wp[3][24]={0};
-	for (int d=0;d<=2;d++) {
-		sprintf(ext,"quest%d.bin",d);
-		FILE *fp2=openSnapshotFile("dat",ext,"rb",'_',"quest",0);
-		if (fp2) {
-			int pos=readFully(fp2,(char *)quest[d],96);
-			fclose(fp2);
-		}
-		sprintf(ext,"wp%d.bin",d);
-		fp2=openSnapshotFile("dat",ext,"rb",'_',"waypoint",0);
-		if (fp2) {
-			fseek(fp2,5,0);
-			int pos=readFully(fp2,(char *)wp[d],24);
-			fclose(fp2);
-		} else {
-			static unsigned char wpDef[7]={2,1,0xFF,0xFF,0xFF,0xFF,0x77};
-			memcpy((char *)wp[d],wpDef,7);
-		}
-	}
 	if (tSnapshotSaveD2s.isOn) {
-		UnitAny *ironGolem=NULL;
+		u16 quest[3][48]={0};
+		char wp[3][24]={0};
+		for (int d=0;d<=2;d++) {
+			sprintf(ext,"quest%d.bin",d);
+			FILE *fp2=openSnapshotFile("dat",ext,"rb",'_',"quest",0);
+			if (fp2) {
+				int pos=readFully(fp2,(char *)quest[d],96);
+				fclose(fp2);
+			}
+			sprintf(ext,"wp%d.bin",d);
+			fp2=openSnapshotFile("dat",ext,"rb",'_',"waypoint",0);
+			if (fp2) {
+				fseek(fp2,5,0);
+				int pos=readFully(fp2,(char *)wp[d],24);
+				fclose(fp2);
+			} else {
+				static unsigned char wpDef[7]={2,1,0xFF,0xFF,0xFF,0xFF,0x77};
+				memcpy((char *)wp[d],wpDef,7);
+			}
+		}
+		UnitAny *m=NULL,*ironGolem=NULL;
+		PetUnit *pMerc = GetPetByType(PLAYER,7);
+		if (pMerc) m=GetUnitFromIdSafe(pMerc->dwUnitId,UNITNO_MONSTER);
 		PetUnit *pPetUnit = GetPetByType(PLAYER,3);
 		if (pPetUnit&&pPetUnit->dwTxtFileNo==291) {
-			ironGolem=GetUnitFromIdSafe(pPetUnit->dwUnitId , UNITNO_MONSTER );
+			ironGolem=GetUnitFromIdSafe(pPetUnit->dwUnitId,UNITNO_MONSTER);
 		}
 		fp=openSnapshotFile(NULL,"d2s","wb+",'\\',"d2s",1);if (!fp) return;
 		d2s_generate(fp,PLAYER,m,(u16 *)&quest,(char *)&wp,ironGolem);
@@ -1633,6 +1666,7 @@ void dumpServerQuest(FILE *fp) {
 }
 int DoSnapshot() {
 	check_d2ptrs();
+	rebuild_snap();
 	if (!fInGame) return 0;
 	debug=0;
 	if (tSnapshot.isOn) dumpInventory();

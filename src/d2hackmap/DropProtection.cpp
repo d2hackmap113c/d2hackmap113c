@@ -1,21 +1,23 @@
 ﻿#include "stdafx.h"
 #include "header.h"
 
-ToggleVar tDropProtectionToggle={TOGGLEVAR_ONOFF,0,-1,1,"Drop Protection",NULL,NULL,0,2};
-ToggleVar 	tResetProtectionToggle={				TOGGLEVAR_ONOFF,	0,	-1,	1,  "Reset Protection" };
-char 			aDropProtectRune[34]	={0};
-char 			aDropProtectRuneword[256]	={0};
-char 			aDropProtectUnique[512]	={0};
-char 			aDropProtectSet[256]	={0};
+ToggleVar tDropProtectionToggle={TOGGLEVAR_ONOFF,1,-1,1,"Drop Protection",NULL,NULL,0,2};
+ToggleVar tResetProtectionToggle={TOGGLEVAR_ONOFF,0,-1,1, "Reset Protection" };
+char aDropProtectRune[34]={0};
+char aDropProtectRuneword[256]	={0};
+char aDropProtectUnique[512]	={0};
+char aDropProtectSet[256]	={0};
 int dwSimpleItemProtectionCount=0;
+int protectCharLv=60;
 static ConfigVar aConfigVars[] = {
-	{CONFIG_VAR_TYPE_KEY, "DropProtectionToggle",          &tDropProtectionToggle         },
+	{CONFIG_VAR_TYPE_KEY,"DropProtectionToggle",&tDropProtectionToggle         },
 	{CONFIG_VAR_TYPE_KEY, "ResetProtectionToggle",          &tResetProtectionToggle         },
   {CONFIG_VAR_TYPE_CHAR_ARRAY1, "DropProtectionRune",       &aDropProtectRune,       1, {34}},
   {CONFIG_VAR_TYPE_CHAR_ARRAY0, "DropProtectionRuneword",       &aDropProtectRuneword,       1, {256}},
   {CONFIG_VAR_TYPE_CHAR_ARRAY0, "DropProtectionUnique",       &aDropProtectUnique,       1, {512}},
   {CONFIG_VAR_TYPE_CHAR_ARRAY0, "DropProtectionSet",       &aDropProtectSet,       1, {256}},
 	{CONFIG_VAR_TYPE_INT,"SimpleItemProtectionCount",&dwSimpleItemProtectionCount,4},
+	{CONFIG_VAR_TYPE_INT,"ProtectCharLv",&protectCharLv,4},
 };
 void DropProtection_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
@@ -262,10 +264,12 @@ static int __fastcall canDeleteCharacter(D2Character *pchar) {
 	wchar_t wbuf[512];
 	unicode2win(realm,pchar->realm,255);
 	char *account=d2mcpclient_pAccountInfo->accountName;
-	LOG("Deleting character realm=%s account=%s name=%s\n",realm,account,pchar->name);
+	LOG("Deleting character realm=%s account=%s name=%s protect=%d\n",realm,account,pchar->name,tDropProtectionToggle.isOn);
+	//hex(logfp,0,pchar,0x400);fflush(logfp);
 	if (!tDropProtectionToggle.isOn) return 1;
 	char keyname[64];formatKey(keyname,tDropProtectionToggle.key);
 	getSnapshotPath(path,realm,account,pchar->name,"dat","CanDel.txt",'_');
+	LOG("open path=%s\n",path);
 	if (!fileExist(path)) {
 		int pos=wsprintfW(wbuf,dwGameLng?L"hackmap装备保护":L"hackmap Drop Protection");
 		pos+=wsprintfW(wbuf+pos,dwGameLng?L"未知人物状态,按%hs关闭保护"
@@ -281,21 +285,23 @@ static int __fastcall canDeleteCharacter(D2Character *pchar) {
 		gameMessageW(wbuf);
 		return 0;
 	}
-	int hasEq=1,mercDead=1,soj=0;
+	int hasEq=1,mercDead=1,soj=0,lv=99;
 	while (1) {
 		char buf[512];
 		char *line=fgets(buf,512,fp);if (!line) break;
 		char *value=strchr(line,':');if (!value) continue;
 		char *key=line;*value=0;value++;
 		if (strcmp(key,"HasValuableEquipment")==0) hasEq=strtol(value,0,0);
+		else if (strcmp(key,"Lv")==0) lv=strtol(value,0,0);
 		else if (strcmp(key,"MercDead")==0) mercDead=strtol(value,0,0);
 		else if (strcmp(key,"soj")==0) soj=strtol(value,0,0);
 	}
-	if (hasEq||mercDead||soj) {
+	if (hasEq||mercDead||soj||lv>=protectCharLv) {
 		int pos=wsprintfW(wbuf,dwGameLng?L"hackmap装备保护":L"hackmap Drop Protection");
 		if (hasEq) pos+=wsprintfW(wbuf+pos,dwGameLng?L"人物有%d装备":L"Character has %d equipment",hasEq);
 		if (soj) pos+=wsprintfW(wbuf+pos,dwGameLng?L"人物有%dsoj":L"%dsoj",soj);
 		if (mercDead) pos+=wsprintfW(wbuf+pos,dwGameLng?L"雇佣兵死亡装备未知":L"Merc dead");
+		if (lv>=protectCharLv) pos+=wsprintfW(wbuf+pos,dwGameLng?L"人物>=%d级":L"Lv>=%d",protectCharLv);
 		pos+=wsprintfW(wbuf+pos,dwGameLng?L"按%hs关闭保护":L"press %hs to disable protection",keyname);
 		gameMessageW(wbuf);
 		return 0;
@@ -364,8 +370,12 @@ static int __fastcall skipMenuItem(MenuItem *m) {
 	return 0;
 }
 /*
-6F8EF4E6 - 8B 33                 - mov esi,[ebx]
-6F8EF4E8 - 83 3E 06              - cmp dword ptr [esi],06 { 6 }
+	d2win_F4E0: push ebx(input_ebx)  ; esp+0
+	d2win_F4E1: mov ebx, [esp+0x8 (arg0)] ; esp-4
+	d2win_F4E5: push esi(input_esi)
+	d2win_F4E6: 8B 33    - mov esi,[ebx]
+	d2win_F4Ei: 83 3E 06 - cmp dword ptr [esi],06 { 6 }
+	d2win_F4EB: jz d2win_F4F7 ->+10 BF4F7 ; esp-4
 */
 void __declspec(naked) ClickMenuItem_Patch_ASM() {
 	__asm {

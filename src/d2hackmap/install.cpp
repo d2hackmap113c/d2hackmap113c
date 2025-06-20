@@ -375,7 +375,7 @@ patchFill("killautomapscroll,wipeout4adjustments",PATCH_ADDR(d2client,0x5FB10),I
 //d2client_AD2F0: 83 EC 08           sub esp, 8
 //d2client_AD2F3: 8B 01              mov eax, [ecx]
 PatchCall(d2client,0xAD2F0,RecvCommand_60_Patch_ASM,5,"83 EC 08 8B 01");
-//--- m_PartyHelp.h ---
+//--- party.cpp ---
 //d2client_AD6B0: 83 EC 28           sub esp, 0x28 (40)
 //d2client_AD6B3: 56                 push esi
 //d2client_AD6B4: 57                 push edi
@@ -384,6 +384,9 @@ PatchCall(d2client,0xAD6B0,RecvCommand_5A_Patch_ASM,5,"83 EC 28 56 57");
 //d2client_AD8F1: 8D 71 22           lea esi, [ecx+0x22]
 //d2client_AD8F4: 8B C6              mov eax, esi
 PatchCall(d2client,0xAD8F0,RecvCommand_5B_Patch_ASM,6,"56 8D 71 22 8B C6");
+//d2client_ADF20: 0F B7 51 18        movzx edx, word ptr [ecx+0x18]
+//d2client_ADF24: 8D 41 06           lea eax, [ecx+0x6]
+PatchCall(d2client,0xADF20,RecvCommand_59_Patch_ASM,7,"0F B7 51 18 8D 41 06");
 //--- m_OutTownSelect.h ---
 //d2client_A6941: C1 E8 15           shr eax, 0x15 (21)
 //d2client_A6944: 83 E0 01           and eax, 1
@@ -702,11 +705,16 @@ PatchCall(d2net,0x7458,FixSocketErrRet_ASM,10,"3B C6 7E 15 8B 0D $(+B244)");
 //d2win_173F8: 6A 01              push 1
 //d2win_173FA: E8 93 03 FF FF     call d2win_7792->d2gfx_7FC0 d2gfx/Ordinal10059
 PatchCall(d2win,0x173F6,NoHidePatch_ASM,9,"74 07 6A 01 E8 93 03 FF FF");
-//--- m_MultiClient.h ---
+//--- multi.h ---
 //d2client_1BDE5: E8 F6 C7 FF FF     call d2client_185E0
 PatchCall(d2client,0x1BDE5,LeftClick_Patch_ASM,5,"E8 F6 C7 FF FF");
 //d2client_1BC42: E8 99 C9 FF FF     call d2client_185E0
 PatchCall(d2client,0x1BC42,RightClick_Patch_ASM,5,"E8 99 C9 FF FF");
+//d2client_AF932: E9 99 A5 FA FF     jmp d2client_59ED0
+PatchCall(d2client,0xAF932,RecvCommand_77_Patch_ASM,5,"E9 99 A5 FA FF");
+//d2client_ABFD3: 8B 01              mov eax, [ecx]
+//d2client_ABFD5: 8B 51 04           mov edx, [ecx+0x4]
+PatchCall(d2client,0xABFD3,RecvCommand_78_Patch_ASM,5,"8B 01 8B 51 04");
 //--- m_NpcTrade.h ---
 //d2client_4AEE0: A1 AC 97 BC 6F     mov eax, [d2client_1197AC](->0)
 PatchCall(d2client,0x4AEE0,NpcTradePatch_ASM,5,"A1 $(+1197AC)");

@@ -1,5 +1,6 @@
 ﻿//开荒物品设置，根据进度修改
 
+NpcTradeShowInfo: 0,VK_ 
 Bug Auto Quit Hell Act3 Toggle: 0, CTRL+ALT+VK_B  //地狱难度ACT3 bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Auto Quit Hell Act4 Toggle: 0, CTRL+ALT+VK_B  //地狱难度ACT3 bug保护提示后是否自动退出游戏 0 不退出 1退出
 

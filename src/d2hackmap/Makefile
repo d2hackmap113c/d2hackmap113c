@@ -43,6 +43,7 @@ OBJ=\
  ./Release/resolution.obj\
  ./Release/skill.obj\
  ./Release/Snapshot.obj\
+ ./Release/snap.obj\
  ./Release/summon.obj\
  ./Release/teleport.obj\
  ./Release/txt.obj\

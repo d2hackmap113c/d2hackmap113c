@@ -9,6 +9,7 @@ typedef unsigned short u16;
 typedef unsigned int u32;
 
 void send_multi_reply(int info);
+int MultiClientJoinGame();
 extern ToggleVar tResetProtectionToggle;
 extern int dwTeamMemberCount;
 int npcChatTxt;
@@ -1002,6 +1003,18 @@ int __fastcall blockSendPacket(int *esp) {
 		case 0x61: //change merc equipment
 			//TODO save merc
 			break;
+		case 0x68: {//Game Join Request
+			fStartingGame=1;
+			if (gameHeap) HeapDestroy(gameHeap);gameHeap=HeapCreate(0,0,0);
+			GameStructInfo *pinfo=*d2client_pGameInfo;
+			if (fWinActive&&pinfo) {
+				char *game=pinfo->szGameName;
+				char *password=pinfo->szGamePassword;
+				LOG("Send Game Join Request: game=%s password=%s\n",game,password);
+				if (game&&game[0]) MultiClientJoinGame();
+			}
+			break;
+		}
 	}
 	return 0;
 }
@@ -1026,4 +1039,5 @@ void initSendPacketCheckTable() {
 	sendPacketCheckTable[0x3C]=1; //select skill
 	sendPacketCheckTable[0x49]=1; //Take WP/Close WP
 	sendPacketCheckTable[0x61]=1; //change merc equipment
+	sendPacketCheckTable[0x68]=1; //Game Join Request
 }

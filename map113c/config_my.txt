@@ -1,4 +1,4 @@
-﻿//ShowDllVersion: 0
+﻿ShowDllVersion: 0
 AutoTeleportTelekinesisEnterChamber: 1 //服务器是否支持用法师之手进都瑞尔的房间
 LogTPToggle: 1,VK_ //将每次传送的数据记录到runtime/d2hackmap*.log中
 Monster TC Toggle: 0,VK_ //怪物TC等级显示开关
@@ -79,3 +79,6 @@ TpSwitchBackground[ClassSor]: SkillBlizzard
 //---switch skill to when enter door in background
 EnterDoorInBackgroundSkill[ClassNec][1-136]: SkillDimVision
 ShowTestInfoToggle: 0,SHIFT+CTRL+ALT+VK_T //显示调试信息
+Automap Screen Area Toggle:     1,VK_        //地图上显示屏幕区域,配合Scroll复位使用
+3BBProtect: 1, VK_ //当窗口在后台时如果在地狱A5，当3BB激活时自动退出
+Chicken Life Min Clevel: 25   //25级以下不使用血保

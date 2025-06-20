@@ -27,7 +27,7 @@ int client_mouse_skillBtn(int mx,int my);
 int DropProtection(UnitAny *pItem);
 
 int need_paint=0;
-static int altDown=0,ctrlDown=0,shiftDown=0;
+int altDown=0,ctrlDown=0,shiftDown=0;
 static int dwCheckCTAMs=0,checkCTA=0,dwSwapWeaponKey=0;
 static int isKeyDown[256],isCombKeyDown[0x800];
 extern ToggleVar *tKeyEventMap[8*256];
@@ -363,7 +363,9 @@ extern int fHighRes;
 extern int forceStandStill;
 void fitWindowToResolution();
 void WinMessageNewGame() {
-	fSkipPainting=0;dwDrawCount=0;
+	refreshScreenSaver();
+	refreshMenuScreenSaver();
+	dwDrawCount=0;
 	forceStandStill=0;
 	dwBtnReleaseMs=0;fUserOperating=0;
 	dwQuickSwapItemMs=0;dwCheckCTAMs=0;dwSwapWeaponKey=0;
@@ -380,7 +382,8 @@ void WinMessageNewGame() {
 	}
 }
 void WinMessageEndGame() {
-	fSkipPainting=0;
+	refreshScreenSaver();
+	refreshMenuScreenSaver();
 	LockMouse();
 	HWND hwnd=d2gfx_GetHwnd();
 	setWinTitle(hwnd,0);
@@ -1053,21 +1056,27 @@ skip:
 	}
 }
 int get_cpu_usage(int *ucpu,int *kcpu);
-extern int dwAutoLoginMs,dwAutoSelectCharMs;
+extern int dwAutoLoginMs,dwAutoSelectCharMs,autoJoinGameMs;
 void autoLogin();
 void autoSelectChar();
+void autoJoinGame();
 static int mainMenuSkip() {
 	static int calFpsMs=0,dwLoopCount=0,ln=0;
 	dwLoopCount++;dwCurMs=GetTickCount();
 	fInMainMenu=1;
 	if (dwAutoLoginMs&&dwCurMs>dwAutoLoginMs&&(*d2win_pFocusedControl)) {dwAutoLoginMs=0;autoLogin();}
 	if (dwAutoSelectCharMs&&dwCurMs>dwAutoSelectCharMs) {dwAutoSelectCharMs=0;autoSelectChar();}
-	if (fSkipPaintingMenu) {if (need_paint) return 0;return 1;}
+	if (autoJoinGameMs&&dwCurMs>autoJoinGameMs) {autoJoinGameMs=0;autoJoinGame();}
+	if (fSkipPaintingMenu) {
+		if (need_paint) return 0;
+		return 1;
+	}
 	return 0;
 }
 static int skipDrawMenu2() {
 	if (fSkipPaintingMenu) {
 		DrawCenterText(3, L"Screen Saver" , SCREENSIZE.x/2, SCREENSIZE.y/2,0,1,0);
+		if (need_paint>=2) {need_paint=1;return 0;}
 		need_paint=0;
 		return 1;
 	}

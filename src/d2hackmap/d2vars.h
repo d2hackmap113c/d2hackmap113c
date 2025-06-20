@@ -104,6 +104,8 @@ enum UnitStat {
 	STAT_EnhancedMinDamage=18,
 	STAT_AttackRating=19,
 	STAT_TOBLOCK =				20	,		// to block
+	STAT_MinDamage=23,
+	STAT_MaxDamage=24,
 	STATS_MANARECOVERY =		26	,		//
 	STAT_LASTEXP =				29	,		//
 	STAT_NEXTEXP=30,
@@ -146,8 +148,10 @@ enum UnitStat {
 	STAT_EK =					138	,		// mana after each kill
 	STAT_DS =					141	,		//deadly strike 
 	STAT_FIRE_ABSORB =			143	,
+	STAT_LIGHTING_ABSORB_PERCENT=144,
 	STAT_LIGHTING_ABSORB =		145	,
 	STAT_COLD_ABSORB =			148	,
+	STAT_AURA=151,
 	STAT_CLASS_ONLY_SKILL=188,
 	STAT_NUMSOCKETS	=			194	,
 	STATS_ITEM_HP_PERLEVEL =	216	,

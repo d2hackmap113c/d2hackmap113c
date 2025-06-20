@@ -1060,18 +1060,29 @@ static void drawPlayerName(UnitAny *pUnit) {
 	d2gfx_DrawRectangle(x,y-12,x+rw,y,bg,5);
 	d2gfx_DrawRectangle(x+rw,y-12,x+w,y,bg2,5);
 	d2win_DrawText(wname,x,y,fg,0);
+	y-=17;
 	if (pWin&&pWin->replyMs&&dwCurMs<pWin->replyMs) {
 		wchar_t wbuf[32];
 		wchar_t *fmt=L"%d:";
 		int fg=6,bg=0x84;
 		switch (pWin->reply) {
-			case MCR_OK:fmt=dwGameLng?L"%d:好滴":L"%d:roger";bg=0x68;break;
+			case MCR_OK:fmt=dwGameLng?L"%d:好滴":L"%d:ok";bg=0x68;break;
 			case MCR_DONE:fmt=dwGameLng?L"%d:搞定":L"%d:done";break;
 			case MCR_ERROR:fmt=dwGameLng?L"%d:错误":L"%d:error";bg=0x62;break;
 			case MCR_GOT_RUNES:fmt=dwGameLng?L"%d:有了":L"%d:rune";break;
+			case MCR_FAILED:fmt=dwGameLng?L"%d:搞砸了":L"%d:error";bg=0x62;break;
+			case MCR_PASSED:fmt=dwGameLng?L"%d:过了":L"%d:passed";break;
 		}
 		wsprintfW(wbuf,fmt,pWin->index);
-		drawBgText(wbuf,x,y-17,fg,bg);
+		drawBgText(wbuf,x,y,fg,bg);
+		y-=12;
+	}
+	if (pUnit==PLAYER) {
+		if (dwCurrentLevel==Level_LutGholein) {
+			short q=QUESTDATA->quests[14];
+			if (q&8) drawBgText(L"找杰海因",x,y,6,0x68);
+			else if (q&0x10) drawBgText(L"找马席夫",x,y,6,0x68);
+		}
 	}
 }
 static void drawBossHp(UnitAny *pUnit,int boss) {

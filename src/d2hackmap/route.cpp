@@ -324,10 +324,10 @@ static int initRectRoute(MinimapLevelTarget *pTarget) {
 			}
 		}
 	}
-	if (dwCurrentLevel==Level_FrigidHighlands&&3000<=pTarget->dstLvl&&pTarget->dstLvl<=3002) { //rescue mission
+	if (dwCurrentLevel==Level_FrigidHighlands&&pTarget->dstLvl==3002) { //rescue mission
 		if (pTarget->dstRect&&pTarget->dstRect->dir[AAR_RIGHT]) {
 			int done=QUESTDATA->quests[36]&3;
-			if (done||dwBarbrianLeft==5)
+			if (done)
 				pTarget->dstRect->dir[AAR_RIGHT]->valid=0;
 		}
 	}

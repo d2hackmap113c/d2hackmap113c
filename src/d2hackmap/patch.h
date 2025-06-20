@@ -205,3 +205,6 @@ void ActiveBufferItemPatch_ASM();
 void RecvPacket0EPatch_ASM();
 void RecvPacket3FPatch_ASM();
 void RecvCommand_28_Patch_ASM();
+void RecvCommand_77_Patch_ASM();
+void RecvCommand_78_Patch_ASM();
+void RecvCommand_59_Patch_ASM();

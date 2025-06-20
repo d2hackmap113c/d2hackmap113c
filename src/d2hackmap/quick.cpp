@@ -2,6 +2,7 @@
 #include "header.h"
 #include "multi.h"
 
+extern int need_paint;
 int BackToTown();
 int QuickNextGame(int addnum);
 void SaveGameName();
@@ -13,30 +14,22 @@ static int takeWPtoTownDis=6;
 wchar_t	wszGameName[32]={0};
 wchar_t wszGamePassword[32]={0};
 wchar_t wszGameDescription[32]={0};
-//static int quickToLevel[2]={Level_KurastDocks,Level_DuranceofHateLevel2};
-//static int quickToLevel2[2]={Level_KurastDocks,Level_DuranceofHateLevel2};
-//static int quickToLevel3[2]={Level_KurastDocks,Level_DuranceofHateLevel2};
 ToggleVar tBackToTown={TOGGLEVAR_DOWN,	0,	-1,		1,	"Quick Back Town",		&BackToTown};
-//ToggleVar tQuickToLevel={TOGGLEVAR_DOWN,	0,	-1,		1,	"QuickToLevel",		&QuickToLevel};
-//ToggleVar tQuickToLevel2={TOGGLEVAR_DOWN,	0,	-1,		1,	"QuickToLevel2",		&QuickToLevel2};
-//ToggleVar tQuickToLevel3={TOGGLEVAR_DOWN,	0,	-1,		1,	"QuickToLevel3",		&QuickToLevel3};
 ToggleVar tExitGame={TOGGLEVAR_DOWN,	0,	-1,	 1, 	"ExitGame",	&QuickExitGame, 0};
 ToggleVar tQuickNextGame={TOGGLEVAR_DOWNPARAM,	0,	-1,	 1, "NextGame",	&QuickNextGame,	1};
 ToggleVar tQuickNextGame2={TOGGLEVAR_DOWNPARAM,	0,	-1,	 1, "NextGame2",	&QuickNextGame,	2};
+ToggleVar tAllNextGame={TOGGLEVAR_DOWNPARAM,	0,	-1,	 1, "AllNextGame",	&QuickNextGame,	3};
+ToggleVar tAutoJoinGame={TOGGLEVAR_ONOFF,	0,	-1,	 1, "AutoJoinGame",0,0,0,2};
 static ConfigVar aConfigVars[] = {
+  {CONFIG_VAR_TYPE_KEY, "AutoJoinGameToggle",     &tAutoJoinGame},
 	{CONFIG_VAR_TYPE_KEY, "QuickBackToTownKey",   &tBackToTown		    	},
-//	{CONFIG_VAR_TYPE_KEY, "QuickToLevelKey",   &tQuickToLevel		    	},
-//	{CONFIG_VAR_TYPE_KEY, "QuickToLevelKey2",   &tQuickToLevel2		    	},
-//	{CONFIG_VAR_TYPE_KEY, "QuickToLevelKey3",   &tQuickToLevel3		    	},
-//  {CONFIG_VAR_TYPE_INT_ARRAY1, "QuickToLevel",&quickToLevel,2,{0}},
-//  {CONFIG_VAR_TYPE_INT_ARRAY1, "QuickToLevel2",&quickToLevel2,2,{0}},
-//  {CONFIG_VAR_TYPE_INT_ARRAY1, "QuickToLevel3",&quickToLevel3,2,{0}},
   {CONFIG_VAR_TYPE_QUICK_TO_LEVEL, "QuickToLevel",NULL,0,{0}},
 	{CONFIG_VAR_TYPE_INT, "TakeWaypointToTownDis",  &takeWPtoTownDis, 4    },
 	{CONFIG_VAR_TYPE_INT, "TownportalNumsAlert",  &nTownportalAlertNums, 4    },
   {CONFIG_VAR_TYPE_KEY, "QuickExitGameKey",      &tExitGame              },
   {CONFIG_VAR_TYPE_KEY, "QuickNextGameKey",      &tQuickNextGame         },
   {CONFIG_VAR_TYPE_KEY, "QuickNextGameKey2",     &tQuickNextGame2        },
+  {CONFIG_VAR_TYPE_KEY, "AllNextGameKey",     &tAllNextGame},
   {CONFIG_VAR_TYPE_INT, "AutoNextGameName",      &fAutoNextGameName  ,     4 },
   {CONFIG_VAR_TYPE_INT, "AutoNextGamePassword",  &fAutoNextGamePassword  , 4 },
   {CONFIG_VAR_TYPE_INT, "AutoNextGameDescription",  &fAutoNextGameDescription  , 4 },
@@ -166,6 +159,71 @@ void __declspec(naked) RecvCommand_60_Patch_ASM() {
 		jmp edx
 	}
 }
+void setGameNamePassword(char *name,char *pass) {
+	if (!name||!name[0]) return;
+	MultiByteToWideChar(CP_ACP, 0, name, -1, wszGameName, 32);
+	if (pass&&pass[0]) {
+		MultiByteToWideChar(CP_ACP, 0, pass, -1, wszGamePassword, 32);
+	} else {
+		wszGamePassword[0]=0;
+	}
+}
+static int autoJoinState=0;
+int autoJoinGameMs=0;
+void autoJoinGame() {
+	if (!autoJoinState) return;
+	void *p=*d2win_pvar_214A0;if (!p) {
+		LOG("auto join: no screen\n");
+		return;
+	}
+	int type=*(int *)p;if (type!=6) {
+		LOG("auto join: screen type=%d\n",type);
+		return;
+	}
+	D2EditBox *focus=(*d2win_pFocusedControl);
+	if (focus) {
+		LOG("joinGame state=%d focus=%d %d %d %d\n",autoJoinState,focus->dwPosX,focus->dwPosY,focus->dwSizeX,focus->dwSizeY);
+	} else {
+		LOG("joinGame state=%d\n",autoJoinState);
+	}
+	switch (autoJoinState) {
+		case 1: {
+			if (focus) return;
+			LOG("click join button\n");
+			int mx=704,my=461;
+			HWND hwnd=d2gfx_GetHwnd();int wParam=0;
+			SendMessage(hwnd,WM_MOUSEMOVE,wParam, MAKELONG(mx,my));
+			SendMessage(hwnd,WM_LBUTTONDOWN,wParam,MAKELONG(mx,my));
+			SendMessage(hwnd,WM_LBUTTONUP,wParam, MAKELONG(mx,my));
+			//SendMessage(hwnd,WM_MOUSEMOVE,wParam, MAKELONG(mx,my));
+			autoJoinGameMs=dwCurMs+100;need_paint=2;
+			autoJoinState=2;
+			break;
+		}
+		case 2: {
+			if (!focus) return;
+			if (focus->dwPosX!=432) return;
+			if (focus->dwPosY!=148) return;
+			if (focus->dwSizeX!=155) return;
+			if (focus->dwSizeY!=20) return;
+			LOG("click join game button\n");
+			int mx=680,my=420;
+			HWND hwnd=d2gfx_GetHwnd();int wParam=0;
+			SendMessage(hwnd,WM_MOUSEMOVE,wParam, MAKELONG(mx,my));
+			SendMessage(hwnd,WM_LBUTTONDOWN,wParam,MAKELONG(mx,my));
+			SendMessage(hwnd,WM_LBUTTONUP,wParam, MAKELONG(mx,my));
+			//SendMessage(hwnd,WM_MOUSEMOVE,wParam, MAKELONG(mx,my));
+			autoJoinGameMs=0;need_paint=2;
+			autoJoinState=0;
+			break;
+		}
+	}
+}
+void joinGame(char *name,char *pass) {
+	setGameNamePassword(name,pass);
+	if (!tAutoJoinGame.isOn) return;
+	autoJoinState=1;autoJoinGameMs=dwCurMs+100;need_paint=2;
+}
 void SaveGameName() {
 	if(GAMEINFO->szGameName[0]) {
 		int n=MultiByteToWideChar(CP_ACP, 0, GAMEINFO->szGameName, -1, wszGameName, 32);
@@ -182,9 +240,14 @@ int QuickExitGame(){
 	return 0;
 }
 
+int MultiClientAllNextGame();
 int QuickNextGame(int addnum) {	
 	if (fCanExitGame==FALSE) return -1;
 	fCanExitGame = FALSE;
+	if (addnum==3) {
+		MultiClientAllNextGame();
+		addnum=1;
+	}
 	SaveGameName();
 	wchar_t *s = wszGameName;
 	wchar_t *endptr;

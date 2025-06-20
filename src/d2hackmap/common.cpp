@@ -173,6 +173,17 @@ void __cdecl gameMessage(char *fmt, ...) {
 	LOG("%s\n",buf);
 	d2msg(0,wszbuf,0);
 }
+void __cdecl gameMessageColor(int color,char *fmt, ...) {
+	va_list va;
+	wchar_t wszbuf[256];
+	char buf[256];
+	va_start(va, fmt);
+	int len = wvsprintf(buf, fmt, va);
+	if (len>255) buf[255]=0;
+	wsprintfW(wszbuf, L"%hs",buf);
+	LOG("%s\n",buf);
+	d2msg(0,wszbuf,color);
+}
 void __cdecl partyMessage(char *fmt, ...) {
 	va_list va;
 	wchar_t wszbuf[256];
@@ -190,6 +201,13 @@ void __cdecl gameMessageW(wchar_t *fmt, ...) {
 	va_start(va, fmt);
 	wvsprintfW(wszbuf, fmt,va);
 	d2msg(0,wszbuf,0);
+}
+void __cdecl gameMessageWColor(int color,wchar_t *fmt, ...) {
+	va_list va;
+	wchar_t wszbuf[256];
+	va_start(va, fmt);
+	wvsprintfW(wszbuf, fmt,va);
+	d2msg(0,wszbuf,color);
 }
 void __cdecl partyMessageW(wchar_t *fmt, ...) {
 	va_list va;
@@ -916,8 +934,13 @@ int drawBgTextLeft(wchar_t *s,int x,int y,int color,int bgColor) {
 	return w;
 }
 extern int fSkipPainting;
+extern int need_paint;
+void refreshScreenSaver();
+void refreshMenuScreenSaver();
 void ExitGame() {
-	fSkipPainting=0;
+	need_paint=2;
+	refreshScreenSaver();
+	refreshMenuScreenSaver();
 	*d2client_pExitAppFlag = 0;
 	SendMessage(d2gfx_GetHwnd(), WM_CLOSE, 0, 0);
 }
@@ -1293,11 +1316,14 @@ int cpLocaleName(wchar_t *dst,wchar_t *s,int max) {
 	return n;
 }
 int acpLocaleName(char *dst,wchar_t *s,int bufsize) {
+	if (!s) {if (dst) *dst=0;return 0;}
 	wchar_t *src=s;int n=0;
 	while (*s) {
 		wchar_t c=*s++;if (c) n++;
 		if (c=='\n'&&*s) {src=s;n=0;}
 	}
+	if (src[0]==0xFF&&src[1]=='c') src+=3;
+	*dst=0;
 	n=WideCharToMultiByte(CP_ACP,0,src,n,dst,bufsize,NULL,NULL);
 	if (n>=bufsize) n=bufsize-1;
 	if (n>=0) dst[n]=0;

@@ -28,7 +28,6 @@ static int minimapTargetId=3000;
 int dwRevealMapMs=0;
 int dwAutoRevealMode=1;
 int dwAutoRevealCLevel=0;
-int dwRescueBarDx,dwRescueBarDy;
 ToggleVar tRevealAct={TOGGLEVAR_DOWN,0,-1,1,"RevealAutomap",&RevealCurAct};
 ToggleVar tRevealLevel={TOGGLEVAR_DOWN,0,-1,1,"RevealLevel",&RevealLevelPlayerIn};
 ToggleVar tPrevMapTarget={TOGGLEVAR_DOWN,0,-1,1,"PrevMapTarget",&PrevMapTarget};
@@ -104,6 +103,7 @@ int dwDuranceOfHateLevel3TeleportShift[3]={-20,0,3};
 int dwDuranceOfHateLevel3TeleportShiftBugKM[3]={-20,0,3};
 static int dwTravincalShift[2];
 static int dwWayPointRandom;
+static int dwRescueBarIncompleteShift[2],dwRescueBarCompleteShift[2];
 static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_KEY, "RevealActAutomapKey",      &tRevealAct       },
 	{CONFIG_VAR_TYPE_KEY, "RevealLevelAutomapKey",    &tRevealLevel     },
@@ -213,8 +213,8 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "ScrollMode",              &nScrollMode      , 4 },
   {CONFIG_VAR_TYPE_MINIMAP_SCROLL, "MiniMapScrollOffset",  0, },
   {CONFIG_VAR_TYPE_SCREEN_SCROLL, "ScreenScrollOffset",  0, },
-  {CONFIG_VAR_TYPE_INT, "RescueBarDx",&dwRescueBarDx      , 4 },
-  {CONFIG_VAR_TYPE_INT, "RescueBarDy",&dwRescueBarDy      , 4 },
+  {CONFIG_VAR_TYPE_INT_ARRAY1, "RescueBarIncompleteShift",&dwRescueBarIncompleteShift,2,{0}},
+  {CONFIG_VAR_TYPE_INT_ARRAY1, "RescueBarCompleteShift",&dwRescueBarCompleteShift,2,{0}},
   {CONFIG_VAR_TYPE_INT_ARRAY1, "DuranceOfHateLevel3TeleportShift",&dwDuranceOfHateLevel3TeleportShift,3,{0}},
   {CONFIG_VAR_TYPE_INT_ARRAY1, "DuranceOfHateLevel3TeleportShiftBugKM",&dwDuranceOfHateLevel3TeleportShiftBugKM,3,{0}},
   {CONFIG_VAR_TYPE_INT_ARRAY1, "TravincalShift",&dwTravincalShift,2,{0}},
@@ -462,8 +462,12 @@ static void modifyRescueBarTarget() {
 		//LOG("modifyRescueBarTarget %d %d\n",pTarget->dstLvl,getDistanceM256(dwPlayerX-pTarget->p.unitX,dwPlayerY-pTarget->p.unitY));
 		if (pTarget->dstLvl>=3000) {
 			pTarget->dstLvl=lvl++;
-			if (done||dwBarbrianLeft==5) {
-				pTarget->p.unitX+=dwRescueBarDx;pTarget->p.unitY+=dwRescueBarDy;
+			if (pTarget->dstLvl==3002) {
+				if (done) {
+					pTarget->p.unitX+=dwRescueBarCompleteShift[0];pTarget->p.unitY+=dwRescueBarCompleteShift[1];
+				} else {
+					pTarget->p.unitX+=dwRescueBarIncompleteShift[0];pTarget->p.unitY+=dwRescueBarIncompleteShift[1];
+				}
 				pTarget->ready|=2;
 				pTarget->p.drawX=(pTarget->p.unitX-pTarget->p.unitY)*16;
 				pTarget->p.drawY=(pTarget->p.unitX+pTarget->p.unitY)*8;

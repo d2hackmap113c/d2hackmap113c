@@ -4,6 +4,7 @@
 
 //InvAma=0,InvSor=1,InvNec=2,InvPal=3,InvBar=4,Inv5=5,Inv6=6,Inv7=7,InvStashClassic=8,
 //InvCube=9,Inv10=10,Inv11=11,InvStashExpansion=12,Inv13=13,InvDru=14,InvAsn=15
+extern int hasRune789;
 extern int dwQuickSwapItemDelayMs;
 ToggleVar tRightClickSwap={TOGGLEVAR_ONOFF,	1,	-1,	1 ,	"Right Click Swap"};
 ToggleVar tQuickDropToggle={TOGGLEVAR_ONOFF,	0,	-1,	1 , "Quick Drop"};
@@ -598,4 +599,26 @@ int autoSimpleItemStack() {
 	}
 	startProcessMs=dwCurMs+300;
 	return 0;
+}
+void dropRune789() {
+	if (!hasRune789) return;
+	if (!*d2client_pUiInventoryOn) {GameControl(1);return;}
+	UnitAny *pCursorItem = PLAYER->pInventory->pCursorItem;
+	if (pCursorItem) {
+		int index=GetItemIndex(pCursorItem->dwTxtFileNo)+1;
+		if (2109<=index&&index<=2111) {
+			dropItemToGound();
+			hasRune789--;
+		}
+		return;
+	}
+	for (UnitAny *pItem=d2common_GetFirstItemInInv(PLAYER->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem)) {
+		if (pItem->dwUnitType!=UNITNO_ITEM) continue ;
+		if (pItem->pItemData->nLocation!=1) continue; //cube/stash/inv
+		if (pItem->pItemData->nItemLocation!=0) continue; //inv
+		int index=GetItemIndex(pItem->dwTxtFileNo)+1;
+		if (2109<=index&&index<=2111) {
+			pickupItem(pItem);return;
+		}
+	}
 }

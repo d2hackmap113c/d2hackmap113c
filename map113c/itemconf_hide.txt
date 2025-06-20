@@ -1,4 +1,12 @@
 
+//以下有很多就不显示了
+Item Colours[2148]:-1,-2,-2,-2 //A3 essence
+Item Colours[1030][5]:-1,-2,-2,-2 //S125山德的禁忌 Sander's Taboo (L28 +20IAS +40HP)
+Item Colours[1086][5]:-1,-2,-2,-2 //S93馬維娜的教義 M'avina's Tenet(L45 +20FRW)
+
+//Crossbows-弩 (太慢了)
+Item Colours[77-80,170-173,273-276]:-1,-2,-2,-2 
+
 ShowIdentifiedItem: 0, VK_
 //不显示以下套装装备 
 Item Colours[3][5]:-1,-2,-2,-2 //S46狂戰士的手斧 Berserker's Hatchet
@@ -12,6 +20,7 @@ Item Colours[31][5]:-1,-2,-2,-2 //S13依森哈德的光之烙鐵 Isenhart's Ligh
 Item Colours[32][5]:-1,-2,-2,-2 //S6克雷得勞之牙 Cleglaw's Tooth
 Item Colours[33][5]:-1,-2,-2,-2 //S49死亡之觸Death's Touch
 Item Colours[67][5]:-1,-2,-2,-2 //S25卡珊之尺Cathan's Rule
+Item Colours[68][5]:-1,-2,-2,-2 //S59阿卡娜的死亡之杖 Arcanna's Deathwand
 Item Colours[74][5]:-1,-2,-2,-2 //S17維達拉之倒刺 Vidala's Barb
 Item Colours[75][5]:-1,-2,-2,-2 //S54北極號角 Arctic Horn
 Item Colours[114][5]:-1,-2,-2,-2 //S68艾爾多的律動 Aldur's Rhythm
@@ -210,17 +219,23 @@ Item Colours[1003][7]:-1,-2,-2,-2 //U73光榮布帽 Coif of Glory
 Item Colours[1004][7]:-1,-2,-2,-2 //U74黃昏深處Duskdeep
 Item Colours[1005][7]:-1,-2,-2,-2 //U76怒號長牙 Howltusk
 Item Colours[1008][7]:-1,-2,-2,-2 //U79薄暮外觀 Greyform(L7 5LL 10DEX CR+20 FR+20)
+Item Colours[1009][7]:-1,-2,-2,-2 //U80眨眼蝙蝠的外觀 Blinkbat's Form(L12 10FRW 40FHR)
+Item Colours[1010][7]:-1,-2,-2,-2 //U81百夫長 The Centurion(L15 REP+5)
 Item Colours[1012][7]:-1,-2,-2,-2 //U83擴散黑暗Darkglow
 Item Colours[1013][7]:-1,-2,-2,-2 //U84鷹甲 Hawkmail(10FRW 15MaxCR 15CR CannotFreeze)
 Item Colours[1014][7]:-1,-2,-2,-2 //U85火花之甲 Sparking Mail(LR+30)
 Item Colours[1015][7]:-1,-2,-2,-2 //U86毒液牢房 Venom Ward(+90PR +15MaxPR)
 Item Colours[1016][7]:-1,-2,-2,-2 //U87冰雪眨眼 Iceblink
+Item Colours[1018][7]:-1,-2,-2,-2 //U89石之毛 Rockfleece
 Item Colours[1019][7]:-1,-2,-2,-2 //U90作響之籠 Rattlecage(+25CB)
+Item Colours[1022][7]:-1,-2,-2,-2 //U93天堂裝束 Heavenly Garb(L29 resist+10)
 Item Colours[1025][7]:-1,-2,-2,-2 //U96暴風公會 Stormguild
+Item Colours[1026][7]:-1,-2,-2,-2 //U99作響的金屬 Steelclash(+1pal +15resist)
 Item Colours[1027][7]:-1,-2,-2,-2 //U100貝弗提的紀念 Bverrit Keep(FR+75 STR+5)
 Item Colours[1036][7]:-1,-2,-2,-2 //U109凱松的征服 Treads of Cthon
 Item Colours[1041][7]:-1,-2,-2,-2 //U114夜煙 Nightsmoke
-Item Colours[1018][7]:-1,-2,-2,-2 //U89石之毛 Rockfleece
+Item Colours[1035][7]:-1,-2,-2,-2 //U108血腳 Gorefoot
+Item Colours[1038][7]:-1,-2,-2,-2 //U111淚之臀 Tearhaunch
 Item Colours[1040][7]:-1,-2,-2,-2 //U113蛇索 Snakecord (L12 5REP 25PR)
 Item Colours[1043][7]:-1,-2,-2,-2 //U116鋒利扣帶 Bladebuckle(+5STR +10DEX)
 Item Colours[1045][7]:-1,-2,-2,-2 //U97無眼之牆 Wall of the Eyeless(20FCR 5EK)
@@ -232,7 +247,9 @@ Item Colours[1057][7]:-1,-2,-2,-2 //U212擲鐵 Iron Pelt (DR15-20)
 Item Colours[1059][7]:-1,-2,-2,-2 //U214鴉鳴 Crow Caw(15IAS 15FHR 15DEX)
 Item Colours[1064][7]:-1,-2,-2,-2 //U219排齒 Toothrow
 Item Colours[1070][7]:-1,-2,-2,-2 //U225摩西祝福之環 Moser's Blessed Circle(25resist 2socket)
+Item Colours[1071][7]:-1,-2,-2,-2 //U226風暴追逐者 Stormchaser(50LR)
 Item Colours[1076][7]:-1,-2,-2,-2 //U233墓穴的撫弄 Gravepalm(+10STR)
+Item Colours[1077][7]:-1,-2,-2,-2 //U234食屍鬼外皮 Ghoulhide
 Item Colours[1086][7]:-1,-2,-2,-2 //U243剃刀之尾 Razortail(+15DEX)
 Item Colours[1087][7]:-1,-2,-2,-2 //U244陰影陷阱 Gloom's Trap
 Item Colours[1091][7]:-1,-2,-2,-2 //U230警戒之牆 Lidless Wall

@@ -36,6 +36,7 @@ void addMapTarget(int srcLvl,int dstLvl,int type,wchar_t *enName,wchar_t *chName
 int MiniMapScroll(int id);
 void addQuickMessage(int key,wchar_t *msg,int len);
 void addQuickToLevel(int key,int area1,int area2);
+void multiclient_load_config();
 
 static ConfigVar **configVars=NULL;int configVarCap=0,configVarCount=0;
 static ConfigVar aConfigVars[] = {
@@ -971,6 +972,7 @@ int LoadConfigFile(char *path,int isServer) {
 			}
 		}
 	}
+	multiclient_load_config();
 	//LOG("DoTest function: %x\n", &DoTest);
 	//LOG("Packet debug function: %x\n", &packetDebug);
 	//LOG("Weapons=%d Armors=%d\n",*d2common_pWeaponsTxts,*d2common_pArmorTxts);//Weapons=306 Armors=202

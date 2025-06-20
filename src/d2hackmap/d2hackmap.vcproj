@@ -432,6 +432,10 @@
 						>
 					</File>
 					<File
+						RelativePath=".\snap.cpp"
+						>
+					</File>
+					<File
 						RelativePath=".\summon.cpp"
 						>
 					</File>

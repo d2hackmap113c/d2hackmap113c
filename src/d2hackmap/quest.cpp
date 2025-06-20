@@ -2,7 +2,7 @@
 #include "header.h"
 #include "multi.h"
 
-struct BugQuestInfo{
+struct BugQuestInfo {
 	int nQuestNo; //任务编号
 	int nStatus ; //任务状态
 	int nType ;   //保护模式
@@ -26,6 +26,7 @@ void setKBCountDown(int team,int en);
 int dwQuestAlertMs;
 int dwUpdateQuestMs;
 int dwBarbrianLeft=15;
+int hasRune789=0;
 static int alertCount;
 static BugQuestInfo aBugInfo[5] ;
 
@@ -44,6 +45,7 @@ ToggleVar tBugAutoQuitHellAct5={TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle
 ToggleVar tBugAutoQuitAct5={TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(Act5)"	,&ReSetTimer};
 ToggleVar tBugAllHellAlert={TOGGLEVAR_ONOFF,	0,	-1,	1, "Bug All Hell Aert Toggle(Hell)"	,&ReSetTimer};
 ToggleVar tAlertNoBug={TOGGLEVAR_ONOFF,	1,	-1,	1, "AlertNoBug"};
+ToggleVar t3BBProtect={TOGGLEVAR_ONOFF,	0,	-1,	1, "3BB Protect"};
 static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY, "BugKCountessToggle",          &tBugKCountess         },
   {CONFIG_VAR_TYPE_KEY, "BugKMToggle",          &tBugKM         },
@@ -59,6 +61,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY, "BugAllHellAlertToggle",    &tBugAllHellAlert   },
   {CONFIG_VAR_TYPE_INT, "BugAlertTimes",        &dwBugAlertTimes ,4 },
   {CONFIG_VAR_TYPE_KEY, "AlertNoBug",           &tAlertNoBug    },
+  {CONFIG_VAR_TYPE_KEY,"3BBProtect",&t3BBProtect},
   {CONFIG_VAR_TYPE_WSTR, "BugKBAlertMessage",       &wszBugKBAlertMessage,     1,  {256 }},
 };
 void quest_addConfigVars() {
@@ -207,7 +210,8 @@ void QuestNewGame() {
 			if (fPlayer==0) {//玩家还没完成指定任务
 				aBugInfo[i].nStatus=1;
 				if (DIFFICULTY==2&& aBugInfo[i].nType == 2 && *(aBugInfo[i].fEnable)){
-					gameMessage("<Hackmap>: Not A %s Game,will check when active" , aBugInfo[i].szMsg);
+					if (tAlertNoBug.isOn) 
+						gameMessage("<Hackmap>: Not A %s Game,will check when active" , aBugInfo[i].szMsg);
 				}
 			} else {//玩家已完成指定任务
 				if (DIFFICULTY==2&&tAlertNoBug.isOn){
@@ -300,9 +304,10 @@ void __fastcall BugKDProtect(DWORD param2 ) {
 	}
 }
 
+extern ToggleVar tShowTestInfo;
 void __fastcall BugKBProtect(BYTE *aPacket) {
 	wchar_t wszbuf[256];int pos=0;
-	if (tPacketHandler.isOn) {
+	if (tPacketHandler.isOn||tShowTestInfo.isOn) {
 		pos+=wsprintfW(wszbuf+pos, L"Recv quest packet:");
 		for (int i=0;i<6;i++) 
 			pos+=wsprintfW(wszbuf+pos, L" %02X",aPacket[i]);
@@ -314,75 +319,47 @@ void __fastcall BugKBProtect(BYTE *aPacket) {
 			fflush(logfp);
 		}
 	}
-	/*
-Q11 
+	switch (aPacket[1]) {
+/* Q11 
 	5D 01 00 02 00 00 //Someone enter Dens of Evil
 	5D 01 20 04 (05-01) 00 // only 5-1 monster left
 	5D 01 00 0C 00 00 //done
-Q12 
+*/
+		case 1:
+			if (aPacket[2]==0x20) {
+				gameMessageWColor(2,L"only %d monsters left",aPacket[4]);
+			}
+			break;
+/*Q12 
 	5D 02 00 02 00 00 //Enter Burial Grounds 
 	5D 02 00 03 00 00 //kill Blood Raven
-Q13
+*/
+		case 2:
+			if (aPacket[3]==3) {
+				gameMessageWColor(2,L"Blood Raven is dead");
+			}
+			break;
+/* Q15
+	5D 03 00 02 00 00 //got the tool
+	5D 03 00 04 00 00 //can't complete
+	5D 03 00 0a 00 00 //talk to Charsi
+*/
+		case 3:
+			break;
+/*Q13
 	5D 04 00 02 00 00 //get sroll
 	5D 04 00 03 00 00 //identify sroll
 	5D 04 00 04 00 00 //open red portal
 	5D 04 00 06 00 00 //saved cain
 	5D 04 02 00 00 00 //get ring
-Q14
+*/
+		case 4:
+			break;
+/*Q14
 	5D 05 00 03 00 00 //enter forgotten tower
 	5D 05 00 02 00 00 //enter forgotten tower level 5
 	5D 05 00 0d 00 00 //killed Countess
-Q15
-	5D 03 00 02 00 00 //got the tool
-	5D 03 00 04 00 00 //can't complete
-	5D 03 00 0a 00 00 //talk to Charsi
-Q16
-	5D 06 00 02 00 00 //someone enter Catacombs Level 4
-	5D 06 00 03 00 00 //killed Andariel
-Q21
-	5D 08 00 02 00 00 //reached 
-	5D 08 00 03 00 00 //killed Quest=0x2032
-	5D 08 02 00 00 00 //used book of skill Quest=0x2012
-	5D 08 00 0d 00 00 //talk to NPC Quest=0x3011
-Q22
-	5D 09 00 04 00 00 //got cube
-	5D 09 00 02 00 00 //got staff of king
-	5D 09 00 03 00 00 //got the amulet
-Q23
-	5D 0A 00 01 00 00 //quest player receive this
-	5D 0A 10 00 00 00 //enter Claw Viper Temple Level 1 & Level 2
-	5D 0A 00 03 00 00 //got the amulet
-Q24
-	5D 0B 00 01 00 00 //combine the staff
-	5D 0B 00 02 00 00 //after talk to Drogman, palace is open
-	5D 0B 00 03 00 00 //after talk to king
-	5D 0B 00 04 00 00 //someone enter Arcane Sanctuary
-Q25
-	5D 0C 00 02 00 00 //get close to the summoner
-	5D 0C 00 04 00 00 //summoner is dead Quest=2006
-	5D 0C 00 0D 00 00 //talk to cain Quest=3005 game=2000
-Q26
-	5D 0D 00 0C 00 00 //can't complete
-	5D 0D 00 05 00 00 //talk to Angel
-	5D 0D 00 06 00 00 //after talk to Jerhyn
-Q35
-	5D 13 00 01 00 00 //
-	5D 13 00 03 00 00 //enter Travincal
-	5D 13 00 0C 00 00 //killed
-Q36
-	5D 14 00 04 00 00 //some enter Durance of Hate Level 3
-Q41
-	5D 16 00 02 00 00 //get close
-	5D 16 00 03 00 00 //killed
-	5D 16 02 00 00 00 //got skill points
-Q42
-	5D 18 00 0D 00 00 //Mephisto's stone is destoried
-Q43
-	5D 17 00 01 00 00 //enter Chaos Sanctuary
-	5D 17 00 0D 00 00 //killed Diablo
-	5D 17 02 00 00 00 //killed Diablo
-	*/
-	switch (aPacket[1]) {
+*/
 		case 0x05:
 			if (aPacket[2] == 0x00) {
 				if (aPacket[3]==0x03||aPacket[3]==0x02) {
@@ -398,23 +375,100 @@ Q43
 					d2client_ShowGameMessage(L"Countess is dead", 2);
 			}
 			break;
+/*
+Q16
+	5D 06 00 02 00 00 //someone enter Catacombs Level 4
+	5D 06 00 03 00 00 //party has killed Andariel
+	5D 06 00 0C 00 00 //someone else has killed Andariel
+*/
 		case 0x06:
 			if (aPacket[2] == 0x00) {
 				if (aPacket[3]==0x03) {
 					d2client_ShowGameMessage(L"Andariel is dead", 2);
-					//talk to Warriv txt=155 action=0 param=40
-	//00: 38 00 00 00 - 00 0a 00 00 - 00 28 00 00 - 00          |8        (      
+					if (!fWinActive) send_multi_reply(MCR_PASSED);
+				} else if (aPacket[3]==0x0C) {
+					d2client_ShowGameMessage(L"Someone else has killed Andariel", 1);
+					if (!fWinActive) send_multi_reply(MCR_FAILED);
 				}
 			}
 			break;
+/*Q21
+	5D 08 00 02 00 00 //reached 
+	5D 08 00 03 00 00 //killed Quest=0x2032
+	5D 08 02 00 00 00 //used book of skill Quest=0x2012
+	5D 08 00 0d 00 00 //talk to NPC Quest=0x3011
+*/
+		case 8:
+			break;
+/* Q22
+	5D 09 00 04 00 00 //got cube
+	5D 09 00 02 00 00 //got staff of king
+	5D 09 00 03 00 00 //got the amulet
+*/
+		case 9:
+			break;
+/*Q23
+	5D 0A 00 01 00 00 //quest player receive this
+	5D 0A 10 00 00 00 //enter Claw Viper Temple Level 1 & Level 2
+	5D 0A 00 03 00 00 //got the amulet
+*/
+		case 0xA:
+			break;
+/*Q24
+	5D 0B 00 01 00 00 //combine the staff
+	5D 0B 00 02 00 00 //after talk to Drogman, palace is open
+	5D 0B 00 03 00 00 //after talk to king
+	5D 0B 00 04 00 00 //someone enter Arcane Sanctuary
+*/
+		case 0xB:
+			break;
+/*Q25
+	5D 0C 00 02 00 00 //get close to the summoner
+	5D 0C 00 04 00 00 //summoner is dead Quest=2006
+	5D 0C 00 0D 00 00 //talk to cain Quest=3005 game=2000
+*/
+		case 0xC:
+			break;
+/*Q26
+	5D 0D 00 0C 00 00 //can't complete
+	5D 0D 00 05 00 00 //should talk to Angel
+  5D 0D 00 00 00 00 //talk to Angel again
+	5D 0D 00 06 00 00 //after talk to Jerhyn
+*/
 		case 0x0D:
-			if (aPacket[3]==0x06) {//5D 0D 00 06 00 00 //after talk to Jerhyn
-				d2client_ShowGameMessage(L"Finish conversition with Jerhyn", 2);
-				if (autoNpcTxt&&!fWinActive) {
-					send_multi_reply(MCR_DONE);
-				}
+			switch (aPacket[3]) {
+				case 0:case 5:dwUpdateQuestMs=dwCurMs+500;break;
+				case 0xC:gameMessageWColor(2,L"Duriel is dead");break;
+				case 6:
+					d2client_ShowGameMessage(L"Finish conversition with Jerhyn", 2);
+					if (autoNpcTxt&&!fWinActive) send_multi_reply(MCR_DONE);
+					break;
 			}
 			break;
+/*
+Q35
+	5D 13 00 01 00 00 //
+	5D 13 00 03 00 00 //enter Travincal
+	5D 13 00 0C 00 00 //should talk to Cain
+	5D 13 00 0C 00 00 //can't complete
+*/
+		case 0x13: {
+			static int state=0;
+			switch (aPacket[3]) {
+				case 3:state=0;break;
+				case 0xC:
+					state++;
+					if (!fWinActive) {
+						if (state<=1) send_multi_reply(MCR_PASSED);
+						else send_multi_reply(MCR_FAILED);
+					}
+					break;
+			}
+			break;
+		}
+/*Q36
+	5D 14 00 04 00 00 //some enter Durance of Hate Level 3
+*/
 		case 0x14:
 			if (aPacket[2] == 0x00&&aPacket[3]==0x04) {
 				d2client_ShowGameMessage(L"Someone enter Durance of Hate Level 3", 2);
@@ -424,11 +478,26 @@ Q43
 				}
 			}
 			break;
+/*Q41
+	5D 16 00 02 00 00 //get close
+	5D 16 00 03 00 00 //killed
+	5D 16 02 00 00 00 //got skill points
+*/
+		case 0x16:
+			break;
+/*Q43
+	5D 17 00 01 00 00 //enter Chaos Sanctuary
+	5D 17 00 0D 00 00 //killed Diablo
+	5D 17 02 00 00 00 //killed Diablo
+	*/
 		case 0x17:
 			if (aPacket[2] == 0x00&&aPacket[3]==0x01) {
 				//QuestNewLevel();
 			}
 			break;
+/* Q42
+	5D 18 00 0D 00 00 //Mephisto's stone is destoried
+*/
 		case 0x18:
 			if (aPacket[2] == 0x00&&aPacket[3]==0x0D) {
 				d2client_ShowGameMessage(L"Q42 (5D 18) Mephisto's stone is destoried", 2);
@@ -436,11 +505,12 @@ Q43
 			}
 /*
 Q52
-	5D 20 00 05 0F 00 //rescue 5
-	5D 20 20 02 0A 00 //rescue 5
-	5D 20 20 02 05 00 //rescue 10
-	5D 20 00 05 05 00 //rescue 15
-	5D 20 00 03 00 00 //rescue 15
+	5D 20 00 05 0F 00 //rescued 5
+	5D 20 20 02 0A 00 //rescued 5
+	5D 20 20 02 05 00 //rescued 10
+	5D 20 00 05 05 00 //rescued 15
+	5D 20 00 03 00 00 //rescued 15
+	5D 20 00 0C 00 00 //If someone else has finished
 	5D 20 02 00 00 00 //got runes quest code 202A, update quest->3001
 */
 		case 0x20:
@@ -465,17 +535,39 @@ Q52
 					if (aPacket[3]==0x03) {
 						dwBarbrianLeft=0;
 						d2client_ShowPartyMessage(L"Q52: All barbrian rescued",2);
-						if (!fWinActive) send_multi_reply(MCR_DONE);
+						if (!fWinActive) {
+							send_multi_quest_info(MCQ_0BB);
+							send_multi_reply(MCR_DONE);
+						}
+					} else if (aPacket[3]==0x0C) {
+						send_multi_quest_info(MCQ_BB_ERR);
+						send_multi_reply(MCR_FAILED);
 					}
 					break;
 				case 2:
 					d2client_ShowPartyMessage(L"got runes",2);
+					hasRune789=3;
 					if (autoNpcTxt&&!fWinActive) {
 						pressESC();
 						send_multi_reply(MCR_GOT_RUNES);
 					}
 					dwUpdateQuestMs=dwCurMs+500;
 					break;
+			}
+			break;
+		case 0x23:
+			if (aPacket[2]==0) {
+				if (aPacket[3]==3) {
+					d2client_ShowPartyMessage(L"3BB activated",2);
+					if (!fWinActive&&DIFFICULTY==2&&ACTNO==4&&t3BBProtect.isOn&&dwPlayerLevel<98) {
+						if ((GAMEQUESTDATA->quests[39]&0x8000)==0) { //游戏可完成
+							if ((QUESTDATA->quests[39]&1)==0) {//玩家未完成
+								d2client_ShowPartyMessage(L"3BB protect, exit game",0);
+								QuickNextGame(1);
+							}
+						}
+					}
+				}
 			}
 			break;
 		case 0x24:

@@ -587,13 +587,6 @@ int AutoTeleport() {
 	for (int retries=0;retries<6;retries++) {
 		dstType=AutoTeleportGetTarget(&dst,&targetType,&targetTxt,&rectCountFromTarget);
 		//0:noTarget 1:continue 2:end 3:interact 4:forceEnter 5:auto >=6:keep safe distance
-		if (dstType==5) {
-			switch (dwCurrentLevel) {
-				case Level_RiverofFlame:
-					dstType=DIFFICULTY>=2?60:0; 
-					break;
-			}
-		}
 		if (dstType>=6) {
 			if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal
 				||DIFFICULTY==1&&dwPlayerLevel>=forceEnterCharLevelNightmare) {
@@ -608,6 +601,17 @@ int AutoTeleport() {
 		if (dstType!=4) findMonsters();
 		else resetMonsters();
 		curdis=getDistanceM256(dst.x-src.x,dst.y-src.y)>>8;
+		if (dstType==5) {
+			switch (dwCurrentLevel) {
+				case Level_RiverofFlame:
+					if (DIFFICULTY>=2) dstType=60;
+					else {
+						if (curdis<10) dstType=2;	
+						else dstType=1;
+					}
+					break;
+			}
+		}
 		if (curdis<reachDis&&dstType==3) {
 			interact(&src,targetType,targetTxt);startProcessMs=dwCurMs+300;return 0;
 		}

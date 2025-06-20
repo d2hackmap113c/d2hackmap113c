@@ -28,7 +28,7 @@ int dwPlayerFcrFrame=0,dwPlayerFcrMs=0;
 int dwSlowMs=100,dwSlowSkipMs=1000,dwSlowRestoreMs=0;
 int screenDrawX,screenDrawY;
 int autoTerminateNpcInteractMs;
-extern int autoNpcTxt,npcChatTxt;
+extern int autoNpcTxt,npcChatTxt,clickAcceptTradeMs;
 
 static int fShowDllVersion=1,dwMinLoopMs=0,dwMinHackmapMs=0,dwMinHackmapMsInTown=0,dwSkillChangeCountVerify=0;
 static ConfigVar aConfigVars[] = {
@@ -45,6 +45,7 @@ void loop_addConfigVars() {
 }
 
 extern int dwDrawCount,dwBackToTownTimeout,dwPartyResponseMs,dwOrgMode,dwNpcTradeCheckMs,dwQuestAlertMs;
+extern int dwPartyInvideMs;
 extern World *singlePlayerWorld;
 extern ToggleVar tBugAllHellAlert,tAutoMap;
 extern int nDrawInvItems;
@@ -55,7 +56,7 @@ extern int bossHps[3],bossX,bossY,bossId,nBoss;
 
 void recheckSelfItems();
 void ShowWarningMessage();
-void ResponseInvite();
+void ResponseInvite();void AutoInviteLocalPlayer();
 void CheckD2WinEditBox();
 extern D2EditBox*	pD2WinEditBox;
 void SetViewUnit();
@@ -106,6 +107,7 @@ static void checkCharName(char *name) {
 	} else if (strstr(name,"bugKD")) {tBugAutoQuitHellAct4.isOn=1;dwBugFlag|=8;}
 	else if (strstr(name,"bugKB")) {tBugAutoQuitHellAct5.isOn=1;dwBugFlag|=16;}
 	else if (strstr(name,"bugKCountess")) {tBugAutoQuitHellAct1.isOn=1;dwBugFlag|=1;}
+	if (dwBugFlag) gameMessage("BugFlag=%X",dwBugFlag);
 }
 */
 static void checkTag(char *tag) {
@@ -166,7 +168,7 @@ void GameLoopPatch() {
 	LARGE_INTEGER perfFreq,perfStart,perfEnd;
 	static int lastAct,lastLevel,lastMs=0,calFpsMs,lastLoopMs=0;
 	if (!fInGame) {
-		if (gameHeap) HeapDestroy(gameHeap);gameHeap=HeapCreate(0,0,0);
+		if (!gameHeap) gameHeap=HeapCreate(0,0,0); //Destroyed at packet.cpp:case 0x68: {//Game Join Request
 		fInGame=1;fStartingGame=0;
 		fIsSinglePlayer=(*d2client_pGameInfo)->szGameServerIp[0]==0;
 		fIsRealmClient=(*d2client_pGameInfo)->szRealmName[0]!=0;
@@ -265,6 +267,7 @@ void GameLoopPatch() {
 	if (dwChangeLeftSkill!=-1) {selectSkill(0,dwChangeLeftSkill);dwChangeLeftSkill=-1;}
 	if (dwBackToTownTimeout) quickLoop();
 	if (dwPartyResponseMs&&dwCurMs>dwPartyResponseMs) ResponseInvite();
+	if (dwPartyInvideMs&&dwCurMs>dwPartyInvideMs) AutoInviteLocalPlayer();
 	if (fViewingTargetUnit) SetViewUnit();
 	if (dwQuestAlertMs&&dwCurMs>=dwQuestAlertMs
 		||dwUpdateQuestMs&&dwCurMs>=dwUpdateQuestMs) QuestRunLoop();
@@ -288,13 +291,19 @@ void GameLoopPatch() {
 	if (chatPasteMs&&dwCurMs>chatPasteMs) processChatPaste();
 	marketItemCount=marketItemCount1;
 	marketItemCount1=0;
-	if (!fWinActive&&autoTerminateNpcInteractMs&&dwCurMs>autoTerminateNpcInteractMs) {
-		if (npcChatTxt) { //*d2client_pUiInteractOn
-			autoTerminateNpcInteractMs=dwCurMs+300;
-			LOG("AutoTerminateNpcInteract\n");
-			pressESC();
-		} else if (!autoNpcTxt) 
-			autoTerminateNpcInteractMs=0;
+	if (!fWinActive) {
+		if (autoTerminateNpcInteractMs&&dwCurMs>autoTerminateNpcInteractMs) {
+			if (npcChatTxt) { //*d2client_pUiInteractOn
+				autoTerminateNpcInteractMs=dwCurMs+300;
+				LOG("AutoTerminateNpcInteract\n");
+				pressESC();
+			} else if (!autoNpcTxt) 
+				autoTerminateNpcInteractMs=0;
+		}
+		if (clickAcceptTradeMs&&dwCurMs>clickAcceptTradeMs) {
+			clickAcceptTradeMs=0;
+			d2client_clickAcceptTradeMenuItem();
+		}
 	}
 }
 

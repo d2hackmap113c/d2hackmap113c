@@ -10,7 +10,13 @@ int d2winLastId=0;
 wchar_t wszTransferClick[64]={0};
 int fAutoFollowMoving=0;
 void send_multi_reply(int info);
+int acceptTradeFromGid=0,acceptTradeFromUid=0,acceptTradeMs=0,clickAcceptTradeMs;
+extern int autoTerminateNpcInteractMs,hasRune789;
+static char tradingName[20]={0};
+static int tradingId=0;
 
+int QuickNextGame(int addnum);
+void joinGame(char *name,char *pass);
 extern int dwEnterDoorInBackgroundSkill[7][140];
 int takeWaypointToAreaUI(int level);
 extern int dwTakeWaypointToLevel;
@@ -35,7 +41,7 @@ ToggleVar tMCFormationKeys[32]={			 0};
 signed char aMCFormation[32][16]={					0};
 int 			dwMultiClientGroupSize1=					8;
 int 			dwMultiClientGroupSize2=					8;
-int 			fTransferClick=					0;
+int 			fTransferClick=0;
 int 			dwAutoFollowDistance=					4;
 int 			dwAutoFollowMaxDistance=					33;
 int 			dwAutoFollowMoveDistance=					10;
@@ -88,6 +94,7 @@ void multiclient_FixValues() {
 
 void refresh_team_info();
 void multiclient_winactive();
+static int refreshClientMs=0;
 void refresh_clients();
 D2Window d2wins[32]={0};
 void MultiClientSendPos();
@@ -113,7 +120,7 @@ void MultiClientNewGame() {
 	waitToMs=0;clickState=0;activeHwnd=0;fSendInfoErr=0;
 	fTransferClick=0;wszTransferClick[0]=0;transferClickType=0;
 	followerInteractType=0;followerInteractId=0;fAutoFollowMoving=0;followerClickCount=0;d2winLastId=0;
-	autoNpcTxt=0;
+	autoNpcTxt=0;acceptTradeFromUid=0;acceptTradeMs=0;tradingId=0;clickAcceptTradeMs=0;hasRune789=0;
 	saveRuntimeInfo(d2gfx_GetHwnd());
 	refresh_clients();
 }
@@ -129,25 +136,36 @@ int makeRuntimeInfoPath(char *path,int id) {
 	sprintf(path,"%s\\d2_%d.txt",dir,id);
 	return 0;
 }
-int saveRuntimeInfo(HWND hwnd) {
+int saveRuntimeInfo1(HWND hwnd,int uid) {
 	char path[512];
 	makeRuntimeInfoPath(path,dwGameWindowId);
 	FILE *fp=fopen(path,"w+");if (!fp) return -1;
 	fprintf(fp,"hwnd: 0x%x\n",hwnd);
-	if (fInGame) {
-		char *realm=(*d2client_pGameInfo)->szRealmName;
-		char *ip=(*d2client_pGameInfo)->szGameServerIp;
-		char *game=(*d2client_pGameInfo)->szGameName;
-		char *name=(*d2client_pGameInfo)->szCharName;
+	GameStructInfo *pinfo=*d2client_pGameInfo;
+	char *game="",*name="";
+	if (pinfo) {
+		char *realm=pinfo->szRealmName;
+		char *ip=pinfo->szGameServerIp;
+		game=pinfo->szGameName;
+		char *password=pinfo->szGamePassword;
+		name=pinfo->szCharName;
 		if (realm[0]) fprintf(fp,"realm: %s\n",realm);
 		if (ip[0]) fprintf(fp,"ip: %s\n",ip);
 		if (game[0]) fprintf(fp,"game: %s\n",game);
+		if (password[0]) fprintf(fp,"password: %s\n",password);
 		if (name[0]) fprintf(fp,"name: %s\n",name);
-		fprintf(fp,"uid: %d\n",dwPlayerId);
 	}
+	if (PLAYER) {
+		uid=PLAYER->dwUnitId;
+		fprintf(fp,"uid: %d\n",uid);
+	}
+	LOG("save runtime info game=%s name=%s uid=%d\n",game,name,uid);
 	fprintf(fp,"Command Line: %s\n",GetCommandLine());
 	fclose(fp);
 	return 0;
+}
+int saveRuntimeInfo(HWND hwnd) {
+	return saveRuntimeInfo1(hwnd,-1);
 }
 int loadRuntimeInfo(D2Window *pwin,int id) {
 	char buf[256],path[512];
@@ -165,6 +183,7 @@ int loadRuntimeInfo(D2Window *pwin,int id) {
 		if (!value) continue;*value=0;value++;while (*value==' ') value++;
 		if (strcmp(name,"ip")==0) strcpy(pwin->ip,value);
 		else if (strcmp(name,"game")==0) strcpy(pwin->game,value);
+		else if (strcmp(name,"password")==0) strcpy(pwin->password,value);
 		else if (strcmp(name,"name")==0) strcpy(pwin->name,value);
 		else if (strcmp(name,"hwnd")==0) pwin->hwnd=(HWND)strtol(value,0,16);
 		else if (strcmp(name,"uid")==0) pwin->uid=strtol(value,0,10);
@@ -175,16 +194,37 @@ int loadRuntimeInfo(D2Window *pwin,int id) {
 	memset(pwin,0,sizeof(D2Window)-8);
 	return 0;
 }
-int isLocalPlayer(int uid) {
+D2Window *getLocalPlayer(int uid) {
 	for (int i=1;i<=d2winLastId;i++) {
 		D2Window *pwin=&d2wins[i];
+		if (!pwin->hwnd||!pwin->sameGame) continue;
+		if (pwin->uid==uid) return pwin;
+	}
+	return NULL;
+}
+int isLocalPlayerName(char *name) {
+	if (!d2winLastId) refresh_clients();
+	for (int i=1;i<=d2winLastId;i++) {
+		D2Window *pwin=&d2wins[i];
+		//LOG("isLocalPlayer %d %X %d %d\n",i,pwin->hwnd,pwin->sameGame,pwin->uid);
+		if (!pwin->hwnd||!pwin->sameGame) continue;
+		if (strcmp(pwin->name,name)==0) return 1;
+	}
+	return 0;
+}
+int isLocalPlayer(int uid) {
+	if (!d2winLastId) refresh_clients();
+	for (int i=1;i<=d2winLastId;i++) {
+		D2Window *pwin=&d2wins[i];
+		//LOG("isLocalPlayer %d %X %d %d\n",i,pwin->hwnd,pwin->sameGame,pwin->uid);
 		if (!pwin->hwnd||!pwin->sameGame) continue;
 		if (pwin->uid==uid) return 1;
 	}
 	return 0;
 }
 void refresh_clients() {
-	GameStructInfo *info=!fInGame?NULL:*d2client_pGameInfo;
+	GameStructInfo *info=*d2client_pGameInfo;
+	if (IsBadReadPtr(info,sizeof(GameStructInfo))) info=NULL;
 	int last=d2winLastId;
 	for (int i=1;i<=dwMultiClientMaxWindowId;i++) {
 		if (i==dwGameWindowId) {d2winLastId=i;continue;}
@@ -196,7 +236,17 @@ void refresh_clients() {
 		}
 		d2winLastId=i;
 	}
+	refreshClientMs=dwCurMs;
 	if (fWinActive&&d2winLastId) multiclient_winactive();
+}
+void setGameNamePassword(char *name,char *pass);
+void multiclient_load_config() {
+	refresh_clients();
+	for (int i=1;i<=d2winLastId;i++) {
+		D2Window *pwin=&d2wins[i];
+		if (i==dwGameWindowId||!pwin->hwnd) continue;
+		if (pwin->game[0]) {setGameNamePassword(pwin->game,pwin->password);break;}
+	}
 }
 void multiclient_winactive() {
 	if (!d2winLastId) refresh_clients();
@@ -273,8 +323,28 @@ void incMapTargetIf(int cur);
 void recv_multi_quest_info(D2Window *pwin,int info) {
 	//gameMessage("recv quest info 0x%X",info);
 	switch (info&0xFF) {
-	case MCQ_10BB:if (dwCurrentLevel==Level_FrigidHighlands) incMapTargetIf(0);break;
-	case MCQ_5BB:if (dwCurrentLevel==Level_FrigidHighlands) incMapTargetIf(1);break;
+	case MCQ_10BB:
+		if (dwCurrentLevel==Level_FrigidHighlands) {
+			SetBottomAlertMsg1(L"搞定1/3",3000,2,0);
+			incMapTargetIf(0);
+		}
+		break;
+	case MCQ_5BB:
+		if (dwCurrentLevel==Level_FrigidHighlands) {
+			SetBottomAlertMsg1(L"搞定2/3",3000,2,0);
+			incMapTargetIf(1);
+		}
+		break;
+	case MCQ_0BB:
+		if (dwCurrentLevel==Level_FrigidHighlands) {
+			SetBottomAlertMsg1(L"全部搞定",3000,2,0);
+		}
+		break;
+	case MCQ_BB_ERR:
+		if (dwCurrentLevel==Level_FrigidHighlands) {
+			SetBottomAlertMsg1(L"搞砸了",3000,1,0);
+		}
+		break;
 	}
 }
 void send_multi_reply(int info) {
@@ -282,6 +352,10 @@ void send_multi_reply(int info) {
 	multiclient_send_info((MCI_Reply<<24)|(info&0xFFFFFF)|gid24);
 }
 void recv_multi_quest_reply(D2Window *pwin,int info) {
+	switch (info) {
+		case MCR_FAILED:SetBottomAlertMsg1(L"搞砸了",3000,1,0);break;
+		case MCR_PASSED:SetBottomAlertMsg1(L"搞定",3000,2,0);break;
+	}
 	pwin->reply=info;pwin->replyMs=dwCurMs+18000;
 }
 void multiclient_recv_info(int info) {
@@ -569,8 +643,12 @@ UnitAny *findClosetPortal() {
 	}
 	return minUnit;
 }
-extern int autoTerminateNpcInteractMs;
+void dropRune789();
 void talkToNpc() {
+	if (hasRune789) {
+		dropRune789();
+		return;
+	}
 	int npc1=0,npc2=0,qid=0;
 	autoNpcTxt=0;
 	switch (dwCurrentLevel) {
@@ -670,6 +748,22 @@ void follower_cmd(int lParam) {
 			talkToNpc();
 			break;
 		}
+		case MCC_Trade: {
+			int gid=lParam&0xFF;
+			acceptTradeFromGid=gid;
+			acceptTradeFromUid=d2wins[gid].uid;acceptTradeMs=dwCurMs+10000;
+			break;
+		}
+		case MCC_NextGame:QuickNextGame(1);break;
+		case MCC_JoinGame: {
+			if (fInGame) return;
+			int gid=lParam&0xFF;
+			D2Window *pwin=&d2wins[gid];
+			if (!loadRuntimeInfo(pwin,gid)) return;
+			LOG("receive join game command: game=%s password=%s\n",pwin->game,pwin->password);
+			joinGame(pwin->game,pwin->password);
+			break;
+		}
 	}
 }
 static int curGrpSize;
@@ -715,6 +809,28 @@ int MultiClientTalkToNpc() {
 	}
 	return 1;
 }
+int MultiClientAllNextGame() {
+	if (!tMultiClient.isOn||!fInGame) return 0;
+	MultiClientStopFollow();
+	refresh_followers(dwMultiClientGroupSize1);
+	for (int i=1;i<=d2winLastId;i++) {
+		D2Window *pwin=&d2wins[i];
+		if (i==dwGameWindowId||!pwin->hwnd||!pwin->sameGame) continue;
+		PostMessageA(pwin->hwnd,WM_KEYUP,VK_AUTOFOLLOW_CMD,(MCC_NextGame<<24)|dwGameWindowId);
+	}
+	return 1;
+}
+int MultiClientJoinGame() {
+	if (!tMultiClient.isOn) return 0;
+	saveRuntimeInfo(d2gfx_GetHwnd());
+	refresh_clients();
+	for (int i=1;i<=d2winLastId;i++) {
+		D2Window *pwin=&d2wins[i];
+		if (i==dwGameWindowId||!pwin->hwnd) continue;
+		PostMessageA(pwin->hwnd,WM_KEYUP,VK_AUTOFOLLOW_CMD,(MCC_JoinGame<<24)|dwGameWindowId);
+	}
+	return 1;
+}
 int leader_back_to_town() {
 	if (!tMultiClient.isOn||!fInGame) return 0;
 	for (int i=1;i<=d2winLastId;i++) {
@@ -737,6 +853,7 @@ int MultiClientEnterDoor() {
 			if (memcmp(name,pRU->szName,len)==0) {uid=pRU->dwUnitId;break;}
 		}
 	}
+	if (!d2winLastId||dwCurMs-refreshClientMs>6000) refresh_clients();
 	int lParam=(MCC_EnterDoor<<24)|((LEVELNO&0xFF)<<16)|((area&0xFF)<<8)|(uid&0xFFFF);
 	for (int i=1;i<=d2winLastId;i++) {
 		D2Window *pwin=&d2wins[i];
@@ -756,8 +873,7 @@ int MultiClientInitClick() {
 	}
 	return 1;
 }
-int transferClick(int right,UnitAny *pUnit,int x,int y) {
-	if (!IsKeyDown(tMultiClientClick.key)&&!IsKeyDown(tMultiClientClick2.key)) {fTransferClick=0;return 0;}
+static int doTransferClick(int right,UnitAny *pUnit,int x,int y) {
 	for (int runId=0;runId<2;runId++) {
 		if (!dwTeamMemberCount) {
 			MultiClientInitClick();
@@ -791,6 +907,10 @@ int transferClick(int right,UnitAny *pUnit,int x,int y) {
 	}
 	return 1;
 }
+int transferClick(int right,UnitAny *pUnit,int x,int y) {
+	if (!IsKeyDown(tMultiClientClick.key)&&!IsKeyDown(tMultiClientClick2.key)) {fTransferClick=0;return 0;}
+	return doTransferClick(right,pUnit,x,y);
+}
 int canTranferClick() {
 	if (d2client_pScreenBlocked[0]&1) { //right half blocked
 		if (*d2client_pMouseX>=SCREENSIZE.x/2) return 0;
@@ -799,6 +919,7 @@ int canTranferClick() {
 	}
 	return 1;
 }
+extern int ctrlDown;
 int __fastcall shouldLeftClick(int *args) {
 	int src=args[1];
 	UnitAny *pUnit=(UnitAny *)args[2];
@@ -807,10 +928,21 @@ int __fastcall shouldLeftClick(int *args) {
 	if (tPacketHandler.isOn) {
 		LOG("left click arg=0x%x x=%d y=%d unit=%x\n",args[0],x,y,pUnit);
 	}
+	if (fPlayerInTown&&pUnit&&pUnit->dwUnitType==UNITNO_PLAYER&&isLocalPlayer(pUnit->dwUnitId)) {
+		D2Window *pwin=getLocalPlayer(pUnit->dwUnitId);
+		if (pwin) {
+			acceptTradeFromGid=pwin->index;
+			acceptTradeFromUid=pwin->uid;
+			PostMessageA(pwin->hwnd,WM_KEYUP,VK_AUTOFOLLOW_CMD,(MCC_Trade<<24)|dwGameWindowId);
+		}
+	}
 	if (fTransferClick&&canTranferClick()) {
 		if (dwTeamMemberCount) MultiClientStopFollow();
 		transferClick(0,pUnit,x,y);
 		if (fTransferClick) return 0;
+	} else if (ctrlDown&&canTranferClick()) {
+		if (dwTeamMemberCount) MultiClientStopFollow();
+		doTransferClick(0,pUnit,x,y);
 	}
 	if (pUnit&&tNecNoAttackInHell.isOn&&DIFFICULTY==2&&dwPlayerClass==2
 		&&dwLeftSkill==0&&!fPlayerInTown&&pUnit->dwUnitType==UNITNO_MONSTER)
@@ -923,6 +1055,77 @@ void __declspec(naked) RightClick_Patch_ASM() {
 cancel_click:
 		popad
 		xor eax,eax
+		ret
+	}
+}
+static void __fastcall recvCommand77(char *packet) {
+	if (fWinActive) return;
+	int cmd=packet[1];
+	if (tPacketHandler.isOn) LOG("button action 0x%X\n",cmd);
+	switch (cmd) {
+		case 1: //trade request
+			tradingId=0;
+			if (acceptTradeFromUid&&dwCurMs<acceptTradeMs) {
+				need_paint=2;clickAcceptTradeMs=dwCurMs+100;
+			}
+			break;
+		case 6: //start trade
+			break;
+		case 5: {//remote complete trade
+			if (!acceptTradeFromUid) return;
+			if (acceptTradeFromUid!=tradingId) {
+				gameMessage("Trading ID mismatch %d %d",acceptTradeFromUid,tradingId);
+				return;
+			}
+			if (!isLocalPlayer(acceptTradeFromUid)) {
+				gameMessage("Not local player %d",acceptTradeFromUid);
+				return;
+			}
+			if (strcmp(d2wins[acceptTradeFromGid].name,tradingName)!=0) {
+				gameMessage("Trading name mismatch %s %s",d2wins[acceptTradeFromGid].name,tradingName);
+				return;
+			}
+			BYTE packet[7]={0x4f,4,0};
+			SendPacket(packet,sizeof(packet));
+			break;
+		}
+		case 0x10: //open stash
+			break; 
+		case 0xD: //trade end
+			tradingId=0;
+			break;
+	}
+}
+static void __fastcall recvCommand78(char *packet) {
+	memcpy(tradingName,packet+1,16);
+	tradingId=*(int *)(packet+0x11);
+	LOG("trade id=%d name=%s\n",tradingId,tradingName);
+}
+/*
+	d2client_AF930: 8B C1              mov eax, ecx
+	d2client_AF932: E9 99 A5 FA FF     jmp d2client_59ED0 <--
+*/
+void __declspec(naked) RecvCommand_77_Patch_ASM() {
+	__asm {
+		pushad
+		call recvCommand77
+		popad
+		add esp,4
+		jmp d2client_recvCmd77ButtonAction
+		ret
+	}
+}
+/*
+	d2client_ABFD3: 8B 01              mov eax, [ecx] <--
+	d2client_ABFD5: 8B 51 04           mov edx, [ecx+0x4]
+*/
+void __declspec(naked) RecvCommand_78_Patch_ASM() {
+	__asm {
+		pushad
+		call recvCommand78
+		popad
+		mov eax, [ecx]
+		mov edx, [ecx+4]
 		ret
 	}
 }
