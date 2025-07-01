@@ -79,7 +79,7 @@ static ConfigVar aConfigVars[] = {
   //{CONFIG_VAR_TYPE_CHAR_ARRAY1, "DiamondColours",    &anItemColours[2074], 4, {5, 8, 2, 7} },
   //{CONFIG_VAR_TYPE_CHAR_ARRAY1, "SkullColours",      &anItemColours[2089], 4, {5, 8, 2, 7} },
   {CONFIG_VAR_TYPE_CHAR_ARRAY1, "ItemHideLvl",       &anItemHideLevel,     1, {3000 , 8} },
-  {CONFIG_VAR_TYPE_CHAR_ARRAY1, "ItemShowCLvl",       &anItemShowCLevel,     2, {3000} },
+  {CONFIG_VAR_TYPE_CHAR_ARRAY1,"ItemShowCLvl",&anItemShowCLevel,2,{3000}},
   {CONFIG_VAR_TYPE_CHAR_ARRAY1, "GoodGoldColour",      &anGoldGoodCol,     4,{1}},
   {CONFIG_VAR_TYPE_CHAR_ARRAY1, "PoorGoldColour",      &anGoldPoorCol,     4,{1}},
   {CONFIG_VAR_TYPE_INT, "GoodGoldNumber",      &dwGoldGoodNum,     4 },
@@ -201,7 +201,10 @@ BYTE GetItemColour(UnitAny *pItem,int isMinimap) {
 	BYTE nShowClevel = anItemShowCLevel[index][0];
 	if (nShowClevel!=(BYTE)-1 ) {
 		DWORD lvl = d2common_GetUnitStat(PLAYER, STAT_LEVEL, 0);
-		if (lvl<=nShowClevel) return anItemShowCLevel[index][1];
+		if (lvl<=nShowClevel) {
+			if (isMinimap) return -1;
+			return anItemShowCLevel[index][1];
+		}
 	}
 	DWORD dwQuality = (pItem->pItemData->dwQuality-1)&7;
 	if ( arridx>0 ){
@@ -1172,7 +1175,7 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 		}
 	}
 	int showClassSkill=0,showResist=0,showAttr=0,showFcr=0,showMF=0;
-	int showLL=0,showSTR=0,showDEX=0,showQuautity=0,checkStat=0;
+	int showLL=0,showSTR=0,showDEX=0,showQuautity=0,checkStat=0,showLv=0;
 	switch (dwQuality) {
 		case ITEM_QUALITY_UNIQUE: {
 			color=7;
@@ -1184,6 +1187,12 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 				pos+=cpLocaleName(wbuf+pos,s,maxNameLen);
 			}
 			switch (fileindex) {
+				case 123: //U123蝮蛇護符
+				case 124: //U124國王之杖
+				case 125: //U125赫拉迪克法杖
+				case 127: //U127克林姆的連枷
+					showLv=1;
+					break;
 				case 101: //囚房 The Ward
 				case 210: //蛇魔法师之皮 Skin of the Vipermagi
 				case 272: //马拉的万花筒 Mara's Kaleidoscope
@@ -1252,6 +1261,23 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 				int idx=GetItemIndex(pItem->dwTxtFileNo)+1;
 				wchar_t *name=NULL;
 				switch (idx) {
+					case 89: //Wirt's Leg
+					case 174: //Khalim's Flail
+					case 175: //Khalim's Will
+					case 2038: //Potion of Life
+					case 2138: //Scroll of Knowledge
+					case 2139: //Scroll of Resistance
+					case 2039: //A Jade Figurine
+					case 2040: //The Golden Bird
+					case 2041: //Lam Esen's Tome
+					case 2044: //Mephisto's Soulstone
+					case 2045: //Book of Skill
+					case 2046: //Khalim's Eye
+					case 2047: //Khalim's Heart
+					case 2048: //Khalim's Brain
+						showLv=1;
+						break;
+					case 48:showQuautity=1;break;
 					case 2140:name=L"A1";break;
 					case 2141:name=L"A2";break;
 					case 2142:name=L"A5";break;
@@ -1398,6 +1424,10 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 		int value = d2common_GetUnitStat(pItem,STAT_AMMOQUANTITY,0);
 		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
 		pos+=wsprintfW(wbuf+pos,L"%d",value);
+	}
+	if (showLv) {
+		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
+		pos+=wsprintfW(wbuf+pos,L"L%d",pItem->pItemData->dwItemLevel);
 	}
 	if (0) {
 		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}

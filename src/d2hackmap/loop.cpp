@@ -6,11 +6,13 @@
 extern char *szVersion,*compileTime;
 static char *wszProgTitle = "<Hackmap>: Sting's Hackmap fixed by ding then ...(%s) (%s) https://github.com/d2hackmap113c/d2hackmap113c/";
 int dwLoopCount=0;
+extern int mainMenuLoopCount; 
 int fDebugMs=0;
 int dwChangeLeftSkill;
 int dwLevelChangeMs=0;
 static BOOL fImmEnable = 1;
 int dwCpuUser=0,dwCpuKernel=0,dwLoopFPS=0,dwDrawFPS=0;
+int exitGameMs;
 volatile int dwCurMs=0;
 int dwEnterGameMs=0,fStartingGame=0,fInGame=0,fPlayerInTown=1;
 int dwEnterGameShowDifficultyMs=0;
@@ -31,6 +33,7 @@ int autoTerminateNpcInteractMs;
 extern int autoNpcTxt,npcChatTxt,clickAcceptTradeMs;
 
 static int fShowDllVersion=1,dwMinLoopMs=0,dwMinHackmapMs=0,dwMinHackmapMsInTown=0,dwSkillChangeCountVerify=0;
+static int lastExp;
 static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT, "ShowDllVersion",&fShowDllVersion,4},
 	{CONFIG_VAR_TYPE_INT, "MinLoopMs",&dwMinLoopMs,4},
@@ -53,10 +56,11 @@ extern int dwUpdateQuestMs;
 extern int dwSendPacketCount;
 extern int marketItemCount,marketItemCount1;
 extern int bossHps[3],bossX,bossY,bossId,nBoss;
+extern ToggleVar tLogMonsterExp;
 
 void recheckSelfItems();
 void ShowWarningMessage();
-void ResponseInvite();void AutoInviteLocalPlayer();
+void ResponseInvite();void AutoInvite();
 void CheckD2WinEditBox();
 extern D2EditBox*	pD2WinEditBox;
 void SetViewUnit();
@@ -88,6 +92,8 @@ void quickswap_NewGame();
 extern int chatPasteMs;
 void processChatPaste();
 void pressESC();
+void playerAddExp(int exp);
+int canLeaveTown();
 
 #pragma comment(lib,"imm32.lib")   
 void ToggleIMEInput(BOOL fChatInput){
@@ -98,7 +104,7 @@ void ToggleIMEInput(BOOL fChatInput){
 	fImmEnable = fChatInput;
 }
 extern ToggleVar tBugAutoQuitHellAct1,tBugAutoQuitHellAct3,tBugAutoQuitHellAct4,tBugAutoQuitHellAct5;
-int dwBugFlag=0;
+int dwBugFlag=0,fIsHardCoreSafe=0;
 /*
 static void checkCharName(char *name) {
 	if (strstr(name,"bugKM")) {
@@ -115,12 +121,16 @@ static void checkTag(char *tag) {
 	else if (_stricmp(tag,"bugKD")==0) {tBugAutoQuitHellAct4.isOn=1;dwBugFlag|=8;}
 	else if (_stricmp(tag,"bugKB")==0) {tBugAutoQuitHellAct5.isOn=1;dwBugFlag|=16;}
 	else if (_stricmp(tag,"bugKCountess")==0) {tBugAutoQuitHellAct1.isOn=1;dwBugFlag|=1;}
+	else if (_stricmp(tag,"safe")==0) {fIsHardCoreSafe=1;}
 }
 char *getCharTag(char *name);
 extern int fPartyListValid,dwPetListChangeCount,dwPetListChangeVerify;
 extern int fInMainMenu;
+int fUsingHardCoreConfig=0;
+int fIsHardCoreGame=0,fHasHardCoreConfig=0,needReloadConfig=0;
 static void gameStart() {
 	if (fInMainMenu) fInMainMenu=0;
+	LOG("start game looping\n");
 	fPartyListValid=0;dwPetListChangeCount=1;dwPetListChangeVerify=0;
 //--- m_pub.h ---
 	dwPlayerFcrMs=600;dwSkillChangeCount=1;dwSkillChangeCountVerify=0;
@@ -128,7 +138,7 @@ static void gameStart() {
 	singlePlayerWorld=NULL;
 	dwPlayerId = PLAYER->dwUnitId;
 	dwPlayerClass = getPlayerClass(dwPlayerId);
-	//LOG("player class=%d\n",dwPlayerClass);
+	fIsHardCoreGame=*d2client_pGameInfo&&(*d2client_pGameInfo)->nGameMode&4;
 	if (dwPlayerClass<0) dwPlayerClass=0;
 	if (dwPlayerClass>6) dwPlayerClass=6;
 	dwRecheckSelfItemMs=dwCurMs+1000;
@@ -142,18 +152,20 @@ static void gameStart() {
 	NpcTradeNewGame();ChickenLifeNewGame();PacketNewGame();item_NewGame();WaypointNewGame();
 	panelNewGame();quickswap_NewGame();
 	if (dwEnterGameShowDifficultyMs) {
-		if (EXPANSION) SetBottomAlertMsg1(dwGameLng?L"资料片":L"Expansion",dwEnterGameShowDifficultyMs,2,0);
-		else SetBottomAlertMsg1(dwGameLng?L"经典版":L"Classic",dwEnterGameShowDifficultyMs,2,0);
+		int color=fIsHardCoreGame?1:2;
+		if (EXPANSION) setBottomAlertMsg(0,dwGameLng?L"资料片":L"Expansion",dwEnterGameShowDifficultyMs,0,color,0);
+		else setBottomAlertMsg(0,dwGameLng?L"经典版":L"Classic",dwEnterGameShowDifficultyMs,0,color,0);
 		switch (DIFFICULTY) {
-			case 1:SetBottomAlertMsg2(dwGameLng?L"噩梦难度":L"Nightmare Difficulty",dwEnterGameShowDifficultyMs,2,0);break;
-			case 2:SetBottomAlertMsg2(dwGameLng?L"地狱难度":L"Hell Difficulty",dwEnterGameShowDifficultyMs,2,0);break;
-			default:SetBottomAlertMsg2(dwGameLng?L"普通难度":L"Normal Difficulty",dwEnterGameShowDifficultyMs,2,0);break;
+			case 1:setBottomAlertMsg(1,dwGameLng?L"噩梦难度":L"Nightmare Difficulty",dwEnterGameShowDifficultyMs,0,color,0);break;
+			case 2:setBottomAlertMsg(1,dwGameLng?L"地狱难度":L"Hell Difficulty",dwEnterGameShowDifficultyMs,0,color,0);break;
+			default:setBottomAlertMsg(1,dwGameLng?L"普通难度":L"Normal Difficulty",dwEnterGameShowDifficultyMs,0,color,0);break;
 		}
+		if (fIsHardCoreGame) setBottomAlertMsg(2,dwGameLng?L"专家级":L"Hard Core",dwEnterGameShowDifficultyMs,0,1,0);
 	}
-	if (tPacketHandler.isOn) SetBottomAlertMsg3(L"Warning: Network Packet Patch Installed",6000,1,1);
+	if (tPacketHandler.isOn) setBottomAlertMsg(3,L"Warning: Network Packet Patch Installed",6000,1,1,2);
 	dwSendPacketCount=0;
 	char *name=(*d2client_pGameInfo)->szCharName;
-	dwBugFlag=0;
+	dwBugFlag=0;fIsHardCoreSafe=0;
 	//checkCharName(name);
 	char *tag=getCharTag(name);
 	while (tag&&*tag) {
@@ -162,6 +174,14 @@ static void gameStart() {
 		else {checkTag(tag);break;}
 	}
 	autoTerminateNpcInteractMs=0;
+	lastExp=d2common_GetUnitStat(PLAYER,STAT_EXP,0);
+	if (fHasHardCoreConfig&&fUsingHardCoreConfig!=fIsHardCoreGame) {
+		if (fIsHardCoreGame)
+			gameMessageW(dwGameLng?L"进入专家游戏，需重新加载配置":L"Enter Hard Core game, need to reload config");
+		else
+			gameMessageW(dwGameLng?L"进入非专家游戏，需重新加载配置":L"Enter Non-HC game, need to reload config");
+		needReloadConfig=1;
+	}
 }
 
 void GameLoopPatch() {
@@ -263,11 +283,30 @@ void GameLoopPatch() {
 			||dwCurrentLevel==46||66<=dwCurrentLevel&&dwCurrentLevel<=72) QuestNewLevel();
 		AutoMapNewLevel();
 		bossX=0;bossY=0;
+		if (fIsHardCoreGame&&!fPlayerInTown&&!canLeaveTown()) {
+			if (PLAYER&&PLAYER->dwMode!=PlayerMode_Death&&PLAYER->dwMode!=PlayerMode_Dead) {
+				gameMessage("Hardcore leave town protect. Exit game");
+				ExitGame();
+			}
+		}
+	}
+	{
+		int exp=d2common_GetUnitStat(PLAYER,STAT_EXP,0);
+		int add=exp-lastExp;
+		if (add) {
+			playerAddExp(add);
+			if (tLogMonsterExp.isOn) {
+				if (add>=1000000) {LOG("Player exp +%.2fM\n",add/1000000.0);}
+				else if (add>=1000) {LOG("Player exp +%.2fK\n",add/1000.0);}
+				else {LOG("Player exp %+d\n",add);}
+			}
+		}
+		lastExp=exp;
 	}
 	if (dwChangeLeftSkill!=-1) {selectSkill(0,dwChangeLeftSkill);dwChangeLeftSkill=-1;}
 	if (dwBackToTownTimeout) quickLoop();
 	if (dwPartyResponseMs&&dwCurMs>dwPartyResponseMs) ResponseInvite();
-	if (dwPartyInvideMs&&dwCurMs>dwPartyInvideMs) AutoInviteLocalPlayer();
+	if (dwPartyInvideMs&&dwCurMs>dwPartyInvideMs) AutoInvite();
 	if (fViewingTargetUnit) SetViewUnit();
 	if (dwQuestAlertMs&&dwCurMs>=dwQuestAlertMs
 		||dwUpdateQuestMs&&dwCurMs>=dwUpdateQuestMs) QuestRunLoop();
@@ -305,6 +344,10 @@ void GameLoopPatch() {
 			d2client_clickAcceptTradeMenuItem();
 		}
 	}
+	if (needReloadConfig) {
+		needReloadConfig=0;
+		ReloadConfig();
+	}
 }
 
 void GameEndPatch() {
@@ -329,6 +372,9 @@ void GameEndPatch() {
 	double timeMs=(perfEnd.QuadPart-perfStart.QuadPart)*1000.0/perfFreq.QuadPart;
 	LOG("Exit game time %.3lf ms\n",timeMs);
 	LOG("Send %d packet\n",dwSendPacketCount);
+	dwPlayerId=0;
+	exitGameMs=dwCurMs;
+	mainMenuLoopCount=0;
 }
 void __declspec(naked) GameLoopPatch_ASM() {
 	__asm {

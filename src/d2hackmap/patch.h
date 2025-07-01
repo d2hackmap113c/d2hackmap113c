@@ -208,3 +208,7 @@ void RecvCommand_28_Patch_ASM();
 void RecvCommand_77_Patch_ASM();
 void RecvCommand_78_Patch_ASM();
 void RecvCommand_59_Patch_ASM();
+void RecvCommand_19_to_1F_Patch_ASM();
+void RecvCommand_8C_Patch_ASM();
+void RecvCommand_4C_Patch_ASM();
+void RecvCommand_4D_Patch_ASM();

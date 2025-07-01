@@ -45,7 +45,7 @@ ServerTestKey: SHIFT+CTRL+ALT+VK_T
 ManaPotionMax: 190 //当人物法力上限超过此值时使用自动法力药剂
 ManaPotionValue: 60 //法力低于此值后喝药
 AutoEnchantMana: 150 //法力低于150不强化
-//ManaPotionValue: 20 //法力低于此值后喝药
+
 
 Item Value Toggle:              1,VK_,35000           //显示卖价35K物品卖出价值(金钱)
 Item Levels Toggle:             0, VK_              // iLvl显示
@@ -77,8 +77,23 @@ MinimapDebugToggle: 0, CTRL+ALT+VK_M
 //---switch skill from teleport/telekinesis/town portal when switch to background
 TpSwitchBackground[ClassSor]: SkillBlizzard
 //---switch skill to when enter door in background
-EnterDoorInBackgroundSkill[ClassNec][1-136]: SkillDimVision
+BackgroundEnterDoorSkillSwitch[ClassNec][1-136]: SkillDimVision
+BackgroundEnterDoorSkillSwitch[ClassNec][120]: 0
+KBSkillSwitch[ClassNec][1]:SkillAmplifyDamage
+KBSkillSwitch[ClassNec][2]:SkillLowerResist
 ShowTestInfoToggle: 0,SHIFT+CTRL+ALT+VK_T //显示调试信息
 Automap Screen Area Toggle:     1,VK_        //地图上显示屏幕区域,配合Scroll复位使用
-3BBProtect: 1, VK_ //当窗口在后台时如果在地狱A5，当3BB激活时自动退出
+3BBProtect: 1, CTRL+ALT+VK_3 //异次元3BB保护，当窗口在后台时如果在地狱A5玩家级别小于98级游戏3BB未完成玩家可完成，当3BB激活时立刻退出
 Chicken Life Min Clevel: 25   //25级以下不使用血保
+AutoTeleportEvadeToggle: 1, CTRL+ALT+VK_T //手动传送时自动躲避
+AutoTeleportEvadeYard: 6,8 //自动躲避距离(普通怪物，危险怪物)
+Item Colours[2042,2044,174]:  0, -1,-1,-1 //Cube,Stone, Khalim's Flail
+AutoLootPermit: 0, -1 //专家级允许非本机号抢装备
+ShowPlayerCastPath: 1,VK_ //显示玩家使用技能的目标
+HardCoreResistProtectToggle: 1, CTRL+ALT+VK_O //是否启用专家级大号抗性保护
+Hide3BB: 1, VK_ //异次元刷塔升级不显示3BB
+//----------------------------
+//LoadEasyCoreConfigFile: "D:\d2hackmap\map113c\itemconf_hide.txt"
+LoadConfigFile: "D:\d2hackmap\map113c\itemconf_hide.txt"
+LoadHardCoreConfigFile: "D:\d2hackmap\map113c\config_hc.txt"
+DrawBossHpToggle: 1, VK_ //draw HP percent on boss

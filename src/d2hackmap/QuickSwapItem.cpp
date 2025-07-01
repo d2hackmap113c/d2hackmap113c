@@ -63,7 +63,6 @@ static void updateCubeInvMap() {
 	memset(pSkeletonStack,0,sizeof(pSkeletonStack));
 	memset(pRuneStack,0,sizeof(pRuneStack));
 	nrune7=0;
-
 	for (UnitAny *pItem=d2common_GetFirstItemInInv(PLAYER->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem)) {
 		if (pItem->dwUnitType!=UNITNO_ITEM) continue ;
 		if (pItem->pItemData->nLocation!=1) continue; //cube/stash/inv
@@ -73,6 +72,7 @@ static void updateCubeInvMap() {
 		int x=pItem->pItemPath->unitX,y=pItem->pItemPath->unitY;
 		int w=pItemTxt->nInvwidth,h=pItemTxt->nInvheight;
 		char *map=NULL;
+		int autoMerge=0;
 		switch (pItem->pItemData->nItemLocation) {
 			case 0://inv
 				invUsed+=w*h;
@@ -83,16 +83,8 @@ static void updateCubeInvMap() {
 				if (index==2012) {
 					int count=d2common_GetUnitStat(pItem,STAT_AMMOQUANTITY,0);
 					if (count>autoIdentifyCount) idBook=pItem;
-				} else if (2050<=index&&index<=2079) {
-					pGem[index-2050]=pItem;
-					nGem[index-2050]++;
-				} else if (2090<=index&&index<=2094) {
-					pSkeleton[index-2090]=pItem;
-					nSkeleton[index-2090]++;
-				} else if (index==2109) {
-					rune7=pItem;
-					nrune7++;
 				}
+				if (*d2client_pUiInventoryOn||*d2client_pUiCubeOn||*d2client_pUiStashOn) autoMerge=1;
 				map=invMap;
 				break;
 			case 3: //cube
@@ -104,10 +96,25 @@ static void updateCubeInvMap() {
 					}
 					cubeN++;
 				}
+				//if (*d2client_pUiCubeOn) autoMerge=1;
 				map=cubeMap;
 				break;
 			case 4: //stash
+				//if (*d2client_pUiStashOn) autoMerge=1;
 				map=stashMap;
+				break;
+		}
+		if (autoMerge) {
+			if (2050<=index&&index<=2079) {
+				pGem[index-2050]=pItem;
+				nGem[index-2050]++;
+			} else if (2090<=index&&index<=2094) {
+				pSkeleton[index-2090]=pItem;
+				nSkeleton[index-2090]++;
+			} else if (index==2109) {
+				rune7=pItem;
+				nrune7++;
+			}
 		}
 		if (map) {
 			for (int i=0;i<h;i++) {
@@ -587,7 +594,7 @@ int autoSimpleItemStack() {
 	for (UnitAny *pItem=d2common_GetFirstItemInInv(PLAYER->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem)) {
 		if (pItem->dwUnitType!=UNITNO_ITEM) continue ;
 		if (pItem->pItemData->nLocation!=1) continue; //cube/stash/inv
-		if (pItem->pItemData->nItemLocation!=0) continue; //inv
+		if (pItem->pItemData->nItemLocation!=0&&pItem->pItemData->nItemLocation!=4) continue; //inv stash
 		int index=GetItemIndex(pItem->dwTxtFileNo)+1;
 		if (2103<=index&&index<=2135) {//runes
 			if (pRuneStack[index-2103]) {pickupItem(pItem);break;}

@@ -3,7 +3,6 @@
 #include "multi.h"
 
 extern int need_paint;
-int BackToTown();
 int QuickNextGame(int addnum);
 void SaveGameName();
 int QuickExitGame();
@@ -20,8 +19,10 @@ ToggleVar tQuickNextGame={TOGGLEVAR_DOWNPARAM,	0,	-1,	 1, "NextGame",	&QuickNext
 ToggleVar tQuickNextGame2={TOGGLEVAR_DOWNPARAM,	0,	-1,	 1, "NextGame2",	&QuickNextGame,	2};
 ToggleVar tAllNextGame={TOGGLEVAR_DOWNPARAM,	0,	-1,	 1, "AllNextGame",	&QuickNextGame,	3};
 ToggleVar tAutoJoinGame={TOGGLEVAR_ONOFF,	0,	-1,	 1, "AutoJoinGame",0,0,0,2};
+ToggleVar tCancelAutoJoinIfForeground={TOGGLEVAR_ONOFF,	0,	-1,	 1, "CancelAutoJoinIfForeground",0,0,0,2};
 static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY, "AutoJoinGameToggle",     &tAutoJoinGame},
+  {CONFIG_VAR_TYPE_KEY, "CancelAutoJoinIfForeground",     &tCancelAutoJoinIfForeground},
 	{CONFIG_VAR_TYPE_KEY, "QuickBackToTownKey",   &tBackToTown		    	},
   {CONFIG_VAR_TYPE_QUICK_TO_LEVEL, "QuickToLevel",NULL,0,{0}},
 	{CONFIG_VAR_TYPE_INT, "TakeWaypointToTownDis",  &takeWPtoTownDis, 4    },
@@ -170,8 +171,12 @@ void setGameNamePassword(char *name,char *pass) {
 }
 static int autoJoinState=0;
 int autoJoinGameMs=0;
+extern int mainMenuLoopCount; 
 void autoJoinGame() {
 	if (!autoJoinState) return;
+	if (fWinActive&&tCancelAutoJoinIfForeground.isOn) {
+		autoJoinState=0;return;
+	}
 	void *p=*d2win_pvar_214A0;if (!p) {
 		LOG("auto join: no screen\n");
 		return;
@@ -184,10 +189,15 @@ void autoJoinGame() {
 	if (focus) {
 		LOG("joinGame state=%d focus=%d %d %d %d\n",autoJoinState,focus->dwPosX,focus->dwPosY,focus->dwSizeX,focus->dwSizeY);
 	} else {
-		LOG("joinGame state=%d\n",autoJoinState);
+		LOG("joinGame state=%d menuLoop=%d\n",autoJoinState,mainMenuLoopCount);
 	}
 	switch (autoJoinState) {
 		case 1: {
+			autoJoinGameMs=dwCurMs+100;need_paint=2;
+			if (mainMenuLoopCount>10) autoJoinState=2;
+			break;
+		}
+		case 2: {
 			if (focus) return;
 			LOG("click join button\n");
 			int mx=704,my=461;
@@ -197,11 +207,14 @@ void autoJoinGame() {
 			SendMessage(hwnd,WM_LBUTTONUP,wParam, MAKELONG(mx,my));
 			//SendMessage(hwnd,WM_MOUSEMOVE,wParam, MAKELONG(mx,my));
 			autoJoinGameMs=dwCurMs+100;need_paint=2;
-			autoJoinState=2;
+			autoJoinState=3;
 			break;
 		}
-		case 2: {
-			if (!focus) return;
+		case 3: {
+			if (!focus) {
+				LOG("ERROR join game screen doesn't show up\n");
+				return;
+			}
 			if (focus->dwPosX!=432) return;
 			if (focus->dwPosY!=148) return;
 			if (focus->dwSizeX!=155) return;
@@ -219,10 +232,13 @@ void autoJoinGame() {
 		}
 	}
 }
+extern int exitGameMs;
 void joinGame(char *name,char *pass) {
 	setGameNamePassword(name,pass);
 	if (!tAutoJoinGame.isOn) return;
+	LOG("Auto join game: game=%s password=%s mainMenuLoopCount=%d\n",name,pass,mainMenuLoopCount);
 	autoJoinState=1;autoJoinGameMs=dwCurMs+100;need_paint=2;
+	if (mainMenuLoopCount<10) autoJoinGameMs=dwCurMs+500;
 }
 void SaveGameName() {
 	if(GAMEINFO->szGameName[0]) {
@@ -233,7 +249,9 @@ void SaveGameName() {
 		MultiByteToWideChar(CP_ACP, 0, GAMEINFO->szGameDescription, -1, wszGameDescription, 32);
 	}
 }
+int canExitGame();
 int QuickExitGame(){
+	if (!canExitGame()) return -1;
 	if (fCanExitGame==FALSE) return -1;
 	fCanExitGame = FALSE;
 	ExitGame();
@@ -242,6 +260,7 @@ int QuickExitGame(){
 
 int MultiClientAllNextGame();
 int QuickNextGame(int addnum) {	
+	if (!canExitGame()) return -1;
 	if (fCanExitGame==FALSE) return -1;
 	fCanExitGame = FALSE;
 	if (addnum==3) {

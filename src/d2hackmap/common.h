@@ -68,9 +68,8 @@ int skillUnusable(UnitAny *pUnit,Skill *pSkill);
 void SendPacket(BYTE *buf,int size);
 int getFcrFrame(int type,UnitAny *pUnit);
 int getGameControlKey(int cmd);
-void SetBottomAlertMsg1(wchar_t *wszMsg, int ms, int color,int blink);
-void SetBottomAlertMsg2(wchar_t *wszMsg, int ms, int color,int blink);
-void SetBottomAlertMsg3(wchar_t *wszMsg, int ms, int color,int blink);
+void setBottomAlertMsg(int id,wchar_t *msg,int ms,int blink,int color1,int color2);
+void setBottomAlertBg(int id,int bgColor1,int bgColor2);
 
 DWORD GetTextWidth(wchar_t *wStr);
 DWORD GetTextHeight(wchar_t *wStr);

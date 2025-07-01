@@ -2,7 +2,10 @@
 //以下有很多就不显示了
 Item Colours[2148]:-1,-2,-2,-2 //A3 essence
 Item Colours[1030][5]:-1,-2,-2,-2 //S125山德的禁忌 Sander's Taboo (L28 +20IAS +40HP)
+Item Colours[1036][5]:-1,-2,-2,-2 //S3哈斯拉柏的鐵後跟 Hsarus' Iron Heel(L3 +20FRW +25FR)
+Item Colours[1043][5]:-1,-2,-2,-2 //S39西剛的披肩 Sigon's Wrap(L6 20HP 20FR)
 Item Colours[1086][5]:-1,-2,-2,-2 //S93馬維娜的教義 M'avina's Tenet(L45 +20FRW)
+//Item Colours[147][7]:-1,-2,-2,-2 //U173水魔陷阱 Kelpie Snare(slow75)
 
 //Crossbows-弩 (太慢了)
 Item Colours[77-80,170-173,273-276]:-1,-2,-2,-2 
@@ -43,6 +46,7 @@ Item Colours[1016][5]:-1,-2,-2,-2 //S45狂戰士的鎖子甲Berserker's Hauberk
 Item Colours[1019][5]:-1,-2,-2,-2 //S37西剛的遮蔽Sigon's Shelter
 Item Colours[1020][5]:-1,-2,-2,-2 //S31坦克雷的脊柱 Tancred's Spine(+15STR +40HP)
 Item Colours[1021][5]:-1,-2,-2,-2 //S24米拉伯佳之袍 Milabrega's Robe
+Item Colours[1022][5]:-1,-2,-2,-2 //S61阿卡娜的血肉 Arcanna's Flesh
 Item Colours[1025][5]:-1,-2,-2,-2 //S0希弗柏的防護Civerb's Ward
 Item Colours[1026][5]:-1,-2,-2,-2 //S21米拉伯佳之球 Milabrega's Orb
 Item Colours[1032][5]:-1,-2,-2,-2 //S10依雷撒的袖口Iratha's Cuff(CR+30) S57北極手套 Arctic Mitts(10IAS20HP)
@@ -53,14 +57,12 @@ Item Colours[1029][5]:-1,-2,-2,-2 //S47死亡之手 Death's Hand(PR+50)
 Item Colours[1031][5]:-1,-2,-2,-2 //S8克雷得勞之鉗 Cleglaw's Pincers
 Item Colours[1033][5]:-1,-2,-2,-2 //S35西剛的挑戰 Sigon's Gage(+10STR)
 Item Colours[1034][5]:-1,-2,-2,-2 //S32坦克雷的平頭釘 Tancred's Hobnails(+10DEX)
-Item Colours[1036][5]:-1,-2,-2,-2 //S3哈斯拉柏的鐵後跟 Hsarus' Iron Heel(L3 +20FRW +25FR)
 Item Colours[1037][5]:-1,-2,-2,-2 //S18維達拉的距毛Vidala's Fetlock(30FRW)
 Item Colours[1038][5]:-1,-2,-2,-2 //S38西剛的木鞋 Sigon's Sabot(20FRW 40CR)
 Item Colours[1040][5]:-1,-2,-2,-2 //S56北極捆縛Arctic Binding
 Item Colours[1041][5]:-1,-2,-2,-2 //S5哈斯拉柏的鐵胸衣 Hsarus' Iron Stay(20HP 20CR)S110華寧的祝福 Hwanin's Blessing
 Item Colours[1042][5]:-1,-2,-2,-2 //S12依雷撒之繩 Iratha's Cord S43地獄符號 Infernal Sign(+20HP)
 Item Colours[1039][5]:-1,-2,-2,-2 //S48死亡的守護 Death's Guard
-Item Colours[1043][5]:-1,-2,-2,-2 //S39西剛的披肩 Sigon's Wrap(L6 20HP 20FR)
 Item Colours[1044][5]:-1,-2,-2,-2 //S34坦克雷之骷髏 Tancred's Skull
 Item Colours[1052][5]:-1,-2,-2,-2 //S108華寧的光輝Hwanin's Splendor(20REP 37CR)
 Item Colours[1059][5]:-1,-2,-2,-2 //S109華寧的保護 Hwanin's Refuge
@@ -173,7 +175,6 @@ Item Colours[136][7]:-1,-2,-2,-2 //U171暴風尖刺 Stormspike
 Item Colours[137][7]:-1,-2,-2,-2 //U291死亡碎片 Deathbit
 Item Colours[138][7]:-1,-2,-2,-2 //U288圓鑿 The Scalper
 Item Colours[146][7]:-1,-2,-2,-2 //U172穿刺者 The Impaler
-Item Colours[147][7]:-1,-2,-2,-2 //U173水魔陷阱 Kelpie Snare(减速75%)_
 Item Colours[148][7]:-1,-2,-2,-2 //U174噬魂叉 Soulfeast Tine
 Item Colours[149][7]:-1,-2,-2,-2 //U175宏-森丹 Hone Sundan
 Item Colours[150][7]:-1,-2,-2,-2 //U176榮耀的尖塔 Spire of Honor
@@ -256,4 +257,5 @@ Item Colours[1091][7]:-1,-2,-2,-2 //U230警戒之牆 Lidless Wall
 Item Colours[1092][7]:-1,-2,-2,-2 //U231長槍守衛 Lance Guard
 Item Colours[1136][7]:-1,-2,-2,-2 //U348鋼鐵鎧甲 Steel Carapace
 Item Colours[1147][7]:-1,-2,-2,-2 //U312吸魂者 Soul Drainer
+Item Colours[1183][7]:-1,-2,-2,-2 //U310地獄之吻 Cerebus' Bite
 Item Colours[1185][7]:-1,-2,-2,-2 //U327靈魂看守者 Spirit Keeper

@@ -46,6 +46,7 @@ ToggleVar tBugAutoQuitAct5={TOGGLEVAR_ONOFF,	1,	-1,	1, "Bug Auto Quit Toggle(Act
 ToggleVar tBugAllHellAlert={TOGGLEVAR_ONOFF,	0,	-1,	1, "Bug All Hell Aert Toggle(Hell)"	,&ReSetTimer};
 ToggleVar tAlertNoBug={TOGGLEVAR_ONOFF,	1,	-1,	1, "AlertNoBug"};
 ToggleVar t3BBProtect={TOGGLEVAR_ONOFF,	0,	-1,	1, "3BB Protect"};
+int dwKBSkillSwitch[7][6]={0};
 static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY, "BugKCountessToggle",          &tBugKCountess         },
   {CONFIG_VAR_TYPE_KEY, "BugKMToggle",          &tBugKM         },
@@ -63,7 +64,11 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY, "AlertNoBug",           &tAlertNoBug    },
   {CONFIG_VAR_TYPE_KEY,"3BBProtect",&t3BBProtect},
   {CONFIG_VAR_TYPE_WSTR, "BugKBAlertMessage",       &wszBugKBAlertMessage,     1,  {256 }},
+  {CONFIG_VAR_TYPE_INT_ARRAY1,"KBSkillSwitch",&dwKBSkillSwitch,1,{7,6}},
 };
+void quest_initConfigVars() {
+	memset(dwKBSkillSwitch,0,sizeof(dwKBSkillSwitch));
+}
 void quest_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
 }
@@ -251,12 +256,12 @@ static void questAlert() {
 		||ACTNO==4&&(tBugAutoQuitAct5.isOn||DIFFICULTY==2&&tBugAutoQuitHellAct5.isOn)) {
 		if (dwGameLng) wsprintfW(wszTemp, L"%hs保护开启, %d秒后退出", aBugInfo[ACTNO].szMsg, alertCount);
 		else wsprintfW(wszTemp, L"%hs Protect On, Will quit in %d secs", aBugInfo[ACTNO].szMsg, alertCount);
-		SetBottomAlertMsg1(wszTemp,3000,1,1);
+		setBottomAlertMsg(0,wszTemp,3000,1,1,2);
 	} else {
 		if (dwGameLng) wsprintfW(wszTemp, L"<Hackmap>: 警告!!!!非%hs游戏!!!!(%d)", aBugInfo[ACTNO].szMsg, alertCount);
 		else wsprintfW(wszTemp, L"<Hackmap>: Warning!!!!Not A %hs Game!!!!(%d)" , aBugInfo[ACTNO].szMsg, alertCount);
 		d2client_ShowGameMessage(wszTemp, 8);
-		SetBottomAlertMsg1(wszTemp,1000,1,1);
+		setBottomAlertMsg(0,wszTemp,1000,1,1,2);
 	}
 	dwQuestAlertMs=dwCurMs+1000;alertCount--;
 }
@@ -785,8 +790,11 @@ skill 11e: Baal Monster Spawn
 	00: 4d 01 b0 00 - 00 00 1e 01 - 00 00 01 f2 - 3a a0 13 00 |M           :   
 	10: 00          -             -             -             |                
 */
-void __fastcall Packet4D(char *buf) {
-	int skill=*(short *)(buf+6);
+extern ToggleVar tShowPlayerCastPath;
+void __fastcall playerSkillOnMap(char *packet);
+void __fastcall Packet4D(char *packet) {
+	if (tShowPlayerCastPath.isOn) playerSkillOnMap(packet);
+	int skill=*(short *)(packet+6);
 	switch (skill) {
 		case 0x11d: //laugh
 			break;

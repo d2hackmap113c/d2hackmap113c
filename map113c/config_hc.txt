@@ -1,0 +1,18 @@
+//专家级设置
+Auto Loot Permit: 0,-1 //专家级允许非本机号抢装备
+ManaPotionMax: 130 //当人物法力上限超过此值时使用自动法力药剂
+ManaPotionValue: 50 //法力低于此值后喝药
+Good Gold Number: 10000  // 优质gold定义
+ShowValuableItem: 30000 //显示卖价超过此值的物品
+Item Value Toggle: 1, VK_, 30000           //显示卖价35K物品卖出价值(金钱)
+ChickenLifeCondition: 3300 //最大血量大于此值时使用绝对值血保,小于此值使用百分比血保
+ChickenLife: 2500 //血保数值
+ChickenLifePercent: 60  //血保百分比0~100
+HCChickenLifePercent: 60 //专家级血保百分比0~100
+HealingPotionLifePercent: 75
+Chicken Hostile Nearby Toggle:  1, -1               //敌对在附近血保开关
+Chicken Hostile Nearby Life Percent:  120            //百分比0~100
+Chicken Life Min Clevel: 0   //0级以下不使用血保
+//MapTargets[Worldstone Keep Level 3][Throne of Destruction]:0
+TpSwitchBackground[ClassSor]: SkillHydra
+MonsterDistanceToggle: 1,-1               //怪物距离显示

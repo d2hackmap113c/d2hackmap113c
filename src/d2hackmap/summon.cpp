@@ -3,6 +3,7 @@
 #include "auto.h"
 #include "multi.h"
 
+extern ToggleVar tLogMonsterExp;
 int dwTotalMonsterCount=0;
 extern int fAutoEnchantCheckUnit;
 
@@ -40,7 +41,7 @@ static void checkSummonSkillLevel() {
 	dwReviveMaxCount=getSkillLevel(PLAYER,95);
 	if (EXPANSION) dwReviveMaxCount+=dwAutoSummonReviveLevelAdjust;
 	if (lastS!=dwSkeletonMaxCount||lastM!=dwSkeletonMageMaxCount||lastR!=dwReviveMaxCount) 
-		gameMessage("AutoSummon level=%d,%d count=%d,%d,%d",
+		gameMessageW(dwGameLng?L"自动召唤级别%d,%d 数量%d,%d,%d":L"AutoSummon level=%d,%d count=%d,%d,%d",
 			sLvl,mLvl,dwSkeletonMaxCount,dwSkeletonMageMaxCount,dwReviveMaxCount);
 }
 void checkSkeletonCount() {
@@ -248,13 +249,65 @@ void __declspec(naked) RemoveUnitPatch2_ASM() {
 		ret
 	}
 }
+static void __fastcall dumpMonsterInfo(int id) {
+	UnitAny *pUnit=d2client_GetUnitFromId(id,UNITNO_MONSTER);if (!pUnit) return;
+	if (pUnit->dwMode==12) return;
+	if (!logfp) return;
+	if (351<=pUnit->dwTxtFileNo&&pUnit->dwTxtFileNo<=353) return; //hydra
+	FILE *fp=logfp;
+	char name[64],def='?';BOOL used=FALSE;
+	MonsterTxt *pMonsterTxt = pUnit->pMonsterData->pMonsterTxt;
+	MonsterData *pMonsterData=pUnit->pMonsterData; 
+	WideCharToMultiByte(CP_ACP,0,pUnit->pMonsterData->wszMonName,-1,name,64,&def,&used);
+	fprintf(fp,"MonsterDeath: txt%d",pUnit->dwTxtFileNo);
+	fprintf(fp," id=%d",id);
+	fprintf(fp," mode=%d",pUnit->dwMode);
+	fprintf(fp," lv=%d",d2common_GetUnitStat(pUnit, STAT_LEVEL, 0));
+	fprintf(fp," areaLv=%d",GetAreaLevel());
+	fprintf(fp," cLv=%d",dwPlayerLevel);
+	fprintf(fp," type=%02x",pMonsterData->bTypeFlags);
+	if (pMonsterData->wUniqueNo)
+		fprintf(fp," unique=%d",pMonsterData->wUniqueNo);
+	fprintf(fp," flags=%02x,%02x,%02x,%02x",
+		pMonsterTxt->nflag1,pMonsterTxt->nflag2,pMonsterTxt->flag3,pMonsterTxt->nflag4);
+	if (pMonsterTxt->fNpc) fprintf(fp," NPC");
+	fprintf(fp," %s",name);
+	if (pMonsterData->fUnique) fprintf(fp," unique");
+	if (pMonsterData->fChamp) fprintf(fp," champ");
+	if (pMonsterData->fBoss) fprintf(fp," boss");
+	if (pMonsterData->fMinion) fprintf(fp," minion");
+	fprintf(fp," comp:{");
+	for (int i=0;i<16;i++) {
+		if (pMonsterData->nComponents[i]) fprintf(fp," %d:%d",i,pMonsterData->nComponents[i]);
+	}
+	fprintf(fp,"}");
+	fprintf(fp," enchants:{");
+	for (int i=0;i<9;i++) {
+		if (pMonsterData->anEnchants[i]) fprintf(fp," %d:%d",i,pMonsterData->anEnchants[i]);
+	}
+	fprintf(fp,"}");
+	fputc('\n',fp);
+	fflush(fp);
+}
+static void __fastcall recvCommand19to1F(char *packet) {
+	int cmd=packet[0];
+	unsigned int exp;
+	switch (cmd) {
+		case 0x1a:exp=packet[1]&0xFF;break;
+		case 0x1b:exp=*(unsigned short *)(packet+1);break;
+		case 0x1c:exp=*(unsigned int *)(packet+1)-(unsigned int)d2common_GetUnitStat(PLAYER,STAT_EXP,0);;break;
+		default:return;
+	}
+	LOG("Add exp: %d\n",exp);
+}
 /*
 monster dead: state->8->9
-6FB5F393 - 8B C2                 - mov eax,edx <--- edx,esi:packet
-6FB5F395 - 8B D1                 - mov edx,ecx <--- install here
-6FB5F397 - 0FB7 48 06            - movzx ecx,word ptr [eax+06]
+d2client_AF390: 83 EC 1C           sub esp, 0x1C (28)
+d2client_AF393: 8B C2                 - mov eax,edx <--- edx,esi:packet
+d2client_AF395: 8B D1                 - mov edx,ecx <--- install here
+d2client_AF397: 0F B7 48 06           - movzx ecx,word ptr [eax+06]
 ...
-6FB5F3BD - 0FB6 48 05            - movzx ecx,byte ptr [eax+05] <-state
+d2client_AF3BD: 0FB6 48 05            - movzx ecx,byte ptr [eax+05] <-state
 */
 void __declspec(naked) RecvCommand_69_Patch_ASM() {
 	__asm {
@@ -262,6 +315,13 @@ void __declspec(naked) RecvCommand_69_Patch_ASM() {
 		movzx ecx, byte ptr [eax+5]
 		cmp ecx, 9
 		jne original
+		cmp tLogMonsterExp.isOn, 0
+		je checkSummon
+		pushad
+		mov ecx, dword ptr [eax+1]
+		call dumpMonsterInfo
+		popad
+checkSummon:
 		cmp fAutoSummonNeedCorpse,0
 		je original
 		mov dwAutoSummonStartMs,0
@@ -303,6 +363,20 @@ void __declspec(naked) RecvCommand_21_Patch_ASM() {
 //original
 		mov esi,ecx
 		movzx edx,byte ptr [esi+1]
+		ret
+	}
+}
+//d2client_AEDF2: 8B 2D FC BB BC 6F  mov ebp, [d2client_11BBFC UnitAny *d2client_PlayerUnit]
+void __declspec(naked) RecvCommand_19_to_1F_Patch_ASM() {
+	__asm {
+		cmp tLogMonsterExp.isOn, 0
+		je original
+		pushad
+		call recvCommand19to1F
+		popad
+original:
+		mov ebp, d2client_pPlayerUnit
+		mov ebp, [ebp]
 		ret
 	}
 }

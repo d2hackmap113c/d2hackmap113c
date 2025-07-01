@@ -1,6 +1,7 @@
 ﻿英-------------汉---------------代码-----编号
 
 1.Cap头盔 1001-1007,1044,1047-1053,1090,1117-1123,1160,1113-1116
+3.Shield盾 1023-1028,1045-1046,1069-1074,1091-1092,1139-1144,1161-1162
 1.Circlet-头环
 9.PaladinShields-游侠盾牌 1103-1107 1173-1177 1193-1197
 8.Polearms-长杆武器
@@ -105,7 +106,7 @@ Light-Plate------轻型装甲--------ltp---1022 L0 socket3 STR41 ac90-107
 Mage-Plate-------法師鎧甲--------xtp---1068 L25 socket3 STR55 ac225-261 
 Archon-Plate-----执政官铠甲------utp---1138 L63 socket4 STR103 ac410-524 
 
-3.盾 1023-1028,1045-1046,1069-1074,1091-1092,1139-1144,1161-1162
+3.Shield盾 1023-1028,1045-1046,1069-1074,1091-1092,1139-1144,1161-1162
 socket2 STR60: 1024,1091,1045,1046
 socket3 STR60: 1025,1026,1028
 socket4 STR156: 1142
@@ -465,38 +466,43 @@ Lance------------长枪---------9p9---150
 War-Pike---------战枪---------7p7---253 L66 socket6 speed20 STR165 DEX106 (2hand)33-178 7p7 War Pike
 
 8.Polearms-长杆武器
-Nightmare ACTII merc:
+ACTII merc:
 Lvl	STR	DEX
-60	142	112
+20  76  56 (Normal)
+30  93  71
+40  111 86
+50  129 101
+60	142	112 (Nightmare)
 70	160	127
 80	177	142
 90	195	157
 98	209	169
+socket lv1-25,26-40,41-99
 Bardiche----------大砍刀-------bar---58 L0 socket3 speed10 STR40 (2hand)1-27
 Lochaber-Axe------罗佳伯斧-----9b7---151 L21 socket3 speed10 STR80 (2hand)6-58
 Ogre-Axe----------食人魔之斧---7o7---254 L45 socket3 STR195 DEX75 (2hand)28-145
 
 Voulge------------钩镰枪-------vou---59 L0 socket4 STR50 (2hand)6-21
-Bill--------------比尔长刀-----9vo---152 L25 socket4 STR95 (2hand)14-53
+Bill--------------比尔长刀-----9vo---152 L25 socket3,4,4 STR95 (2hand)14-53
 Colossus-Voulge---巨神之斧-----7vo---255 L48 socket4 speed10 STR210 DEX55 (2hand)17-165
 
 Scythe------------镰刀---------scy---60 L0 socket5 speed-10 STR41 DEX41 (2hand)8-20
-Battle-Scythe-----战斗镰刀-----9s8---153 L25 socket5 speed-10 STR82 DEX82 (2hand)18-45
+Battle-Scythe-----战斗镰刀-----9s8---153 L25 socket3,4,5 speed-10 STR82 DEX82 (2hand)18-45
 Thresher----------锐利之斧-----7s8---256 L53 socket5 speed-10 STR152 DEX118 (2hand)12-141
 Act2 Merc IAS 0:7.5 10:7 25:6.5 45:6 75:5.5 145:5
 
 Poleaxe-----------长柄战斧-----pax---61 L0 socket5 speed10 STR62 (2hand)18-39
-Partizan----------战戟---------9pa---154 L23 socket5 speed10 STR113 DEX67 (2hand)34-75
+Partizan----------战戟---------9pa---154 L23 socket3,4,5 speed10 STR113 DEX67 (2hand)34-75
 Cryptic-Axe-------神秘之斧-----7pa---257 L59 socket5 speed10 STR165 DEX103 (2hand)33-150
 Act2 Merc IAS 0:9 5:8.5 15:8 25:7.5 35:7 60:6.5 95:6 150:5.5 295:5
 
 Halberd-----------长戟---------hal---62 L0 socket6 STR75 DEX47 (2hand)12-45
-Bec-de-Corbin-----双锋战戟-----9h9---155 L25 socket6 STR133 DEX91 (2hand)13-85
+Bec-de-Corbin-----双锋战戟-----9h9---155 L25 socket3,4,6 STR133 DEX91 (2hand)13-85
 Great-Poleaxe-----巨长斧-------7h7---258 L63 socket6 STR179 DEX99 (2hand)46-127
 Act2 Merc IAS 0:8 10:7.5 20:7 40:6.5 65:6 105:5.5 200:5
 
 War-Scythe--------巨战镰刀-----wsc---63 L0 socket6 speed-10 STR80 DEX80 (2hand)15-36
-Grim-Scythe-------残酷镰刀-----9wc---156 L25 socket6 speed-10 STR140 DEX140 (2hand)30-70
+Grim-Scythe-------残酷镰刀-----9wc---156 L25 socket3,4,6 speed-10 STR140 DEX140 (2hand)30-70
 Giant-Thresher----鲛尾巨斧-----7wc---259 L66 socket6 speed-10 STR188 DEX140 (2hand)40-114
 Act2 Merc IAS 0:7.5 10:7 25:6.5 45:6 75:5.5 145:5
 

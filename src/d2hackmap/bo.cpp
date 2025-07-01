@@ -114,4 +114,5 @@ void AutoWarCryRunLoop() {
 			curState=0;break;
 		default:curState=0;checkMs=dwCurMs+3000;break;
 	}
+	checkMs=dwCurMs+300;
 }

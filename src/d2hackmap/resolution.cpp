@@ -86,7 +86,7 @@ void fitResolution() {
 	GetClientRect(hwnd, &crect); 
 	wsprintfW(wszbuf, L"framebuf: %d*%d client: %d*%d",*d2client_pScreenWidth,*d2client_pScreenHeight,
 		crect.right-crect.left,crect.bottom-crect.top);
-	SetBottomAlertMsg3(wszbuf,3000,2,0);
+	setBottomAlertMsg(2,wszbuf,3000,0,2,0);
 }
 //D2Gdi 6F876D3D - BE 20030000           - mov esi,00000320 { 800 }  eax!=0&&eax!=3 800*600
 //6F876D42 - BA 58020000           - mov edx,00000258 { 600 }

@@ -17,7 +17,11 @@ int SaveGame() {
 	return 1;
 }
 int DoTest() {
-	gameMessage("test");
+	wchar_t wbuf[32];
+	for (int i=0;i<6;i++) {
+		wsprintfW(wbuf,L"Test %d",i);
+		setBottomAlertMsg(i,wbuf,3000,1,2,1);
+	}
 	return 1;
 }
 
@@ -313,7 +317,7 @@ static void __fastcall drawCellFilePatch(CellContext *context,int x,int y) {
 	int esp=(int)&y;
 	esp+=0x38;
 	int ret=*(int *)esp;
-	if (ret!=0x6FB1B6B7) return;
+	//if (ret!=0x6FB1B6B7) return;
 	fprintf(logfp,"drawCellFile: context=%X (%d,%d)",context,x,y);
 	if (context) {
 		fprintf(logfp," cellNo=%d dir=%d,%d",context->dwCellNo,context->dwDirNo,context->dwDirection);
@@ -323,7 +327,8 @@ static void __fastcall drawCellFilePatch(CellContext *context,int x,int y) {
 			fprintf(logfp," cell[0]=%X",context->pCellFile->pCells[0]);
 			if (context->pCellFile->pCells[0]) {
 				_snprintf(path,128,"/t/dc6/%03d.bmp",cellId++);
-				dc6cell2bmp(context->pCellFile->pCells[0],path);
+				fprintf(logfp," path=%s",path);
+				dc6cell2bmp(context->pCellFile->pCells[context->dwCellNo],path);
 			}
 		}
 	}

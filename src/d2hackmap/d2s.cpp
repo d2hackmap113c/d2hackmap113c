@@ -20,7 +20,7 @@ struct d2s_header {
 	int checksum;
 	int active_weapon; //0x10 value=0 or 1
 	char charName[16]; //0x14
-	char charStatus; //0x24 value=0x20 Expansion
+	char charStatus; //0x24 value=0x20 Expansion 0x25(ExpansionHardCore)
 	char charProgression; //0x25 06 nightmare act2, 7 n3, 8 n4/n5, a h1, b h2, c h3, d h4/h5, f passed
 	char off26[2];//zero
 	char charClass;//0x28
@@ -171,6 +171,7 @@ int d2s_generate(FILE *fp, UnitAny *pUnit,UnitAny *m,u16 *quest,char *wp,UnitAny
 		f.header.charClass=dwPlayerClass;
 		f.header.charLevel=d2common_GetUnitStat(pUnit, STAT_LEVEL, 0);
 		f.header.charStatus=EXPANSION?0x20:0;
+		if (fIsHardCoreGame) f.header.charStatus|=4;
 		for (int i=0;i<16;i++) {
 			int hotkey=d2client_pSkillHotKeys[i];
 			int left=d2client_pSkillHotKeyLeft[i];

@@ -20,6 +20,7 @@ BYTE 			afMissileCorpses[1000]	={0};
 ToggleVar     tHiddenCorpse={        TOGGLEVAR_ONOFF,  0,  -1,  1,	"HiddenCorpse"};
 char skipMonsters[1024];
 ToggleVar tSkipDrawToggle={TOGGLEVAR_ONOFF,0,-1,1,"SkipDrawToggle",0,0,0,2};
+ToggleVar tHide3BB={TOGGLEVAR_ONOFF,0,-1,1,"Hide 3BB",0,0,0,2};
 
 static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "VisualEffectMode",              &dwVisualEffectMode      , 4 },
@@ -30,6 +31,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY, "HiddenCorpsesToggle",    &tHiddenCorpse      },
   {CONFIG_VAR_TYPE_CHAR_ARRAY0, "SkipDrawMonsters",skipMonsters,1,{1024}},
   {CONFIG_VAR_TYPE_KEY, "SkipDrawToggle",&tSkipDrawToggle},
+  {CONFIG_VAR_TYPE_KEY, "Hide3BB",&tHide3BB},
 };
 void env_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
@@ -84,6 +86,7 @@ lightold:
 	}
 }
 static int prisonDistance=0;
+extern int dwBarbrianLeft;
 //透视
 DWORD __fastcall InfravisionPatch(UnitAny *pUnit){
 	//此处物件是否隐藏，但可以做很多事~~
@@ -97,8 +100,13 @@ DWORD __fastcall InfravisionPatch(UnitAny *pUnit){
 		}
 		case UNITNO_OBJECT:
 			if (!fPlayerInTown) {
-				if (pUnit->dwTxtFileNo==473&&LEVELNO==111) {
+				if (pUnit->dwTxtFileNo==473&&LEVELNO==111&&dwBarbrianLeft==5) {
 					prisonDistance=(getPlayerDistanceM256(pUnit)>>8)*2/3;
+				}
+			}
+			if (dwCurrentLevel==Level_ArreatSummit&&tHide3BB.isOn) {
+				switch (pUnit->dwTxtFileNo) {
+					case 474:case 475:case 476:case 546:case 564:return 1;
 				}
 			}
 			break;
@@ -106,8 +114,9 @@ DWORD __fastcall InfravisionPatch(UnitAny *pUnit){
 			if (tChickenDangerousMonster.isOn) CheckDangerousMonster(pUnit);
 			if (tHiddenCorpse.isOn && pUnit->dwMode == 0x0C && afMonsterCorpses[pUnit->dwTxtFileNo] == 0) return 1;
 			if (!fPlayerInTown) {
-				if (pUnit->dwMode&&pUnit->dwMode!=12&&pUnit->pMonsterData->fBoss) checkBossMonster(pUnit);
-				if (pUnit->dwTxtFileNo==434&&LEVELNO==111) {
+				if (pUnit->dwMode&&pUnit->dwMode!=12&&(pUnit->pMonsterData->fBoss||pUnit->pMonsterData->fChamp))
+					checkBossMonster(pUnit);
+				if (pUnit->dwTxtFileNo==434&&LEVELNO==111&&dwBarbrianLeft==5) {
 					wchar_t wszbuf[128];int pos=0,color=2;
 					int tooClose=prisonDistance<=dwRescueBarSafeDistance;
 					pos+=wsprintfW(wszbuf+pos, L"Prison %d yard",prisonDistance);
@@ -115,7 +124,7 @@ DWORD __fastcall InfravisionPatch(UnitAny *pUnit){
 					int opened=pUnit->dwMode==0||pUnit->dwMode==12;
 					if (opened) pos+=wsprintfW(wszbuf+pos, L" OPEN");
 					else if (d2common_IsUnitBlocked(PLAYER,pUnit,4)) {color=1;pos+=wsprintfW(wszbuf+pos, L" blocked");}
-					SetBottomAlertMsg2(wszbuf,300,color,tooClose||opened);
+					setBottomAlertMsg(1,wszbuf,300,tooClose||opened,color,color==1?2:1);
 				}
 			}
 			int skip=tSkipDrawToggle.isOn&&skipMonsters[pUnit->dwTxtFileNo]<2

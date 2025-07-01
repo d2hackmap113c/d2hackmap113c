@@ -20,13 +20,15 @@ void clearCharacterTag() {
 	charTags=NULL;nCharTag=0;capCharTag=0;
 }
 void addCharacterTag(char *name,char *tag) {
+	name=heap_strdup(confHeap,name);
+	tag=heap_strdup(confHeap,tag);
 	if (!charTags) {nCharTag=0;capCharTag=32;charTags=(CharTag *)HeapAlloc(confHeap,0,sizeof(CharTag)*capCharTag);}
 	for (int i=0;i<nCharTag;i++) {
 		CharTag *p=&charTags[i];
 		if (strcmp(p->name,name)==0) {p->tag=tag;return;}
 	}
 	if (nCharTag>=capCharTag) {
-		capCharTag*=2;charTags=(CharTag *)HeapReAlloc(dllHeap,0,charTags,sizeof(CharTag)*capCharTag);
+		capCharTag*=2;charTags=(CharTag *)HeapReAlloc(confHeap,0,charTags,sizeof(CharTag)*capCharTag);
 	}
 	CharTag *p=&charTags[nCharTag++];
 	p->name=name;p->tag=tag;
@@ -38,7 +40,11 @@ char *getCharTag(char *name) {
 	if (pct) return pct->tag;
 	return NULL;
 }
-void doneCharacterTag() {qsort(charTags,nCharTag,sizeof(CharTag),compareCharTag);}
+void doneCharacterTag() {
+	if (!nCharTag) return;
+	LOG("%d character tags\n",nCharTag);
+	qsort(charTags,nCharTag,sizeof(CharTag),compareCharTag);
+}
 void drawCharTags() {
 	wchar_t wszbuf[256];
 	D2Character *pchar=*d2launch_pD2Characters;

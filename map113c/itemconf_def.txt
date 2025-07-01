@@ -35,29 +35,30 @@ Item Colours[1121][7]:        -1,0x63,0x63,0x63     //Nightwing's Veil Spired He
 Item Colours[1154][7]:        -1,0x63,0x63,0x63     //Shadow Dancer;Myrmidon Greaves  急速靴
 Item Colours[1061,1131][7][2]:-1,0x63,0x63,0x63     //Cuirass ETH督瑞而的壳 
 Item Colours[1176][7]:        -1,0x63,0x63,0x63     //Herald Of Zakarum 饰金盾牌;       
-Item Colours[1090,1160][7][2]:-1,0x63,0x63,0x63     //Vampire Gaze 吸血鬼的凝视_残酷头盔;   
-Item Colours[1032][7]:        -1,0x62,0x62,0x62      //MageFist 法师之拳(轻型铁手套); 
-Item Colours[1146][7]:        -1, -1 , -1 , -1      //(Dracul's Grasp Vampirebone Gloves)吸血鬼骸骨手套
-Item Colours[1084][7]:        -1,0x62,0x62,0x62      //Gore Rider War Boots 蚀肉骑士;  
-Item Colours[1083][7]:        -1, -1 , -1 , -1      //War Traveler 战争之旅;  
-Item Colours[1081][7]:        -1, -1 , -1 , -1      //[水上飘]（鲨皮之靴Sharkskin-Boots）;  
-Item Colours[1115][7]:        -1, -1 , -1 , -1      //Tiara; 三重冠；Kira's Guardian  
-Item Colours[1152][7]:        -1, -1 , -1 , -1      //Marrowwalk;Boneweave Boots  骸骨靴
-Item Colours[1155][7]:        -1, -1 , -1 , -1      //Arachnid Mesh;Spiderweb Sash蛛网腰带
-Item Colours[1117][7]:        -1,0x62,0x62,0x62      //Shako 军帽;   
-Item Colours[1142][7]:        -1, -1 , -1 , -1      //StormShield 物免盾; 
-Item Colours[1132][7]:        -1, -1 , -1 , -1      //Arkaine's Valor 阿凯尼的荣耀; 
-Item Colours[1031][7]:        -1, -1 , -1 , -1      //Chance Guards 幸运守护 (MF手套);
-Item Colours[1063][7]:        -1, -1 , -1 , -1      //Guardian angel Templar Coat 圣堂武士外袍;
-Item Colours[1068][7]:        -1, -1 , -1 , -1      //Que-Hegan's Wisdom 法师装甲;
-Item Colours[1082][7]:        -1, -1 , -1 , -1      //Mesh Boot 纱织；
+Item Colours[1090][7][2]:-1,0x63,0x63,0x63     //U208吸血鬼的凝視 Vampire Gaze
+Item Colours[1160][7][2]:-1,0x63,0x63,0x63     //U379巨骷髏 Giant Skull
+Item Colours[1032][7]:        -1,0x62,0x62,0x62     //U105法師之拳 Magefist
+Item Colours[1146][7]:        -1,0x62,0x62,0x62     //U364卓古拉之握 Dracul's Grasp
+Item Colours[1084][7]:        -1,0x62,0x62,0x62     //U241蝕肉騎士 Gore Rider
+Item Colours[1083][7]:        -1,0x62,0x62,0x62     //U240戰爭旅者 War Traveler
+Item Colours[1081][7]:        -1,0x62,0x62,0x62     //U238水上飄 Waterwalk
+Item Colours[1115][7]:        -1,0x62,0x62,0x62     //U357奇拉的守護 Kira's Guardian
+Item Colours[1152][7]:        -1,0x62,0x62,0x62     //U370骨髓行走 Marrowwalk
+Item Colours[1155][7]:        -1,0x62,0x62,0x62     //U373蜘蛛之網 Arachnid Mesh
+Item Colours[1117][7]:        -1,0x62,0x62,0x62     //U248諧角之冠 Harlequin Crest
+Item Colours[1142][7]:        -1,0x62,0x62,0x62     //U253暴風之盾 Stormshield
+Item Colours[1132][7]:        -1,0x62,0x62,0x62     //U251阿凱尼的榮耀 Arkaine's Valor
+Item Colours[1031][7]:        -1, -1 , -1 , -1      //U104運氣守護 Chance Guards
+Item Colours[1063][7]:        -1,0x62,0x62,0x62     //U218守護天使 Guardian Angel
+Item Colours[1068][7]:        -1, -1 , -1 , -1      //U223魁黑剛的智慧 Que-Hegan's Wisdom
+Item Colours[1082][7]:        -1, -1 , -1 , -1      //U239紗織 Silkweave
 Item Colours[1085][7]:        -1, -1 , -1 , -1      //String Of Ears 长串之耳 (物免腰带);
 Item Colours[1086][7]:        -1, -1 , -1 , -1      //Razortail 穿刺腰带;
-Item Colours[1089][7]:        -1, -1 , -1 , -1      //ThunderGod's Vigor 雷神之力 (腰带);
+Item Colours[1089][7]:        -1,0x62,0x62,0x62     //U246雷神之力 Thundergod's Vigor
 Item Colours[1091][7]:        -1, -1 , -1 , -1      //Lidless Wall 警戒之墙 (法师盾牌);
 Item Colours[1140][7]:        -1, -1 , -1 , -1      //Luna 橡木盾;
 Item Colours[1156][7]:        -1, -1 , -1 , -1      //Vampirefang Belt 吸血鬼獠牙腰带;
-Item Colours[1202][7]:        -1, -1 , -1 , -1      //Darkforce Spawn；Bloodlord Skull血王之骨
+Item Colours[1202][7]:        -1, -1 , -1 , -1      //U330魔力肇生 Darkforce Spawn
 Item Colours[1189][7]:        -1, -1 , -1 , -1      //Wolfhowl；Fury Visor  暴怒面甲
 Item Colours[1194][7]:        -1, -1 , -1 , -1      //Alma Negra；Sacred Rondache 神圣轻圆盾
 Item Colours[1134][7]:        -1, -1 , -1 , -1      //Leviathan；Kraken Shell
@@ -76,7 +77,7 @@ Item Colours[256][7][2]:    -1,0x63,0x63,0x63     //The Reaper's Toll;丧钟，�
 Item Colours[210][7]:       -1,0x63,0x63,0x63     //[死亡之网]（破隐法杖）Death's Web[Unearthed Wand]
 Item Colours[298][7]:       -1,0x63,0x63,0x63     //[艾丝屈塔的脾气]（怪异之球Eldritch-Orb）
 Item Colours[264][7]:       -1,0x63,0x63,0x63     //Mang Song's Lesson;Archon Staff执政官之仗
-Item Colours[212][7]:       -1, -1 , -1 , -1      //Heaven's Light or The Redeemer;强威权仗
+Item Colours[212][7]:       -1,0x62,0x62,0x62      //Heaven's Light or The Redeemer;强威权仗
 Item Colours[235][7]:       -1, -1 , -1 , -1      //The Grandfather 祖父之剑;
 Item Colours[201][7]:       -1, -1 , -1 , -1      //[死亡之刀]（狂战士斧）Death Cleaver[Berserker Axe]
 Item Colours[218][7]:       -1, -1 , -1 , -1      //[暴风之结]（天罚之锤）Stormlash[Scourge]
@@ -92,10 +93,10 @@ Item Colours[219][7]:       -1, -1 , -1 , -1      //Shaefer's Hammer 传说之�
 Item Colours[221][7]:       -1, -1 , -1 , -1      //The Cranium Basher 碎脑;
 Item Colours[226][7]:       -1, -1 , -1 , -1      //Azurewrath or Light Sabre;光刀
 Item Colours[233][7]:       -1, -1 , -1 , -1      //DoomBringer 冠军之剑;
-Item Colours[236][7]:       -1, -1 , -1 , -1      //Wizard Spike 骸骨小刀;
+Item Colours[236][7]:       -1,0x62,0x62,0x62      //Wizard Spike 骸骨小刀;
 Item Colours[259][7]:       -1, -1 , -1 , -1      //StormSpire 暴风尖塔;
 Item Colours[270][7]:       -1, -1 , -1 , -1      //EagleHorn 鹰弓;
-Item Colours[291][7]:       -1, -1 , -1 , -1      //The Oculus 涡流水晶;
+Item Colours[291][7]:       -1,0x62,0x62,0x62     //U284眼球 The Oculus
 Item Colours[247][7]:       -1, -1 , -1 , -1      //Wraith Flight;鬼魂尖枪
 Item Colours[253][7]:       -1, -1 , -1 , -1      //Steel Pillar;War Pike战枪
 Item Colours[209][7]:       -1, -1 , -1 , -1      //Boneshade;Lich Wand巫妖法仗
@@ -266,57 +267,57 @@ Item Colours[1043][5]:	2,-1,-1,-1 //西岗套装－腰带
 Item Colours[1016][5]:	2,-1,-1,-1 //板甲,＋1野蛮人技能
 Item Colours[1021][5]:	2,-1,-1,-1 //绿色古代装甲...可卖钱35000...
 //FZLP里真正的好东西就在这里了(小地图上显示亮黄色三角)
-Item Colours[1090][6]:	       8,0x6f,0x6f,0x6f  //残酷头盔(小地图显示亮黄色三角,下同)
-Item Colours[1053][6]:	       8,0x6f,0x6f,0x6f  //死亡面具
-Item Colours[1068][6]:	       8,0x6f,0x6f,0x6f  //法师铠甲
-Item Colours[1091][6]:	       8,0x6f,0x6f,0x6f  //冷酷盾
-Item Colours[1085][6]:	       8,0x6f,0x6f,0x6f  //魔皮动带
-Item Colours[1086][6]:	       8,0x6f,0x6f,0x6f  //鲨皮腰带
-Item Colours[1080][6]:	       8,0x6f,0x6f,0x6f  //魔皮靴
-Item Colours[1081][6]:	       8,0x6f,0x6f,0x6f  //鲨皮靴
-Item Colours[2013,2015][6]:    8,0x6f,0x6f,0x6f	 //项链,戒指
+Item Colours[1090][6]:	       8,-1,0x6f,0x6f  //残酷头盔(小地图显示亮黄色三角,下同)
+Item Colours[1053][6]:	       8,-1,0x6f,0x6f  //死亡面具
+Item Colours[1068][6]:	       8,-1,0x6f,0x6f  //法师铠甲
+Item Colours[1091][6]:	       8,-1,0x6f,0x6f  //冷酷盾
+Item Colours[1085][6]:	       8,-1,0x6f,0x6f  //魔皮动带
+Item Colours[1086][6]:	       8,-1,0x6f,0x6f  //鲨皮腰带
+Item Colours[1080][6]:	       8,-1,0x6f,0x6f  //魔皮靴
+Item Colours[1081][6]:	       8,-1,0x6f,0x6f  //鲨皮靴
+Item Colours[2013,2015][6]:    8,-1,0x6f,0x6f	 //项链,戒指
 //rare黄色装备小资版
 //这里是底子比较好的rare物品,不要的可以在该行前加上“//”屏蔽之
-Item Colours[1047][6]:	       9,0x6f,0x6f,0x6f  //战帽(小地图显示亮黄色三角,下同)
-Item Colours[1044][6]:	       9,0x6f,0x6f,0x6f  //白骨头盔
+Item Colours[1047][6]:	       9,-1,0x6f,0x6f  //战帽(小地图显示亮黄色三角,下同)
+Item Colours[1044][6]:	       9,-1,0x6f,0x6f  //白骨头盔
 Item Colours[1061][6]:	       9,-1,-1,-1      //护胸甲(拿到地狱可卖35000)
-Item Colours[1027][6]:	       9,0x6f,0x6f,0x6f  //塔盾
-Item Colours[1045][6]:	       9,0x6f,0x6f,0x6f  //骨盾
+Item Colours[1027][6]:	       9,-1,0x6f,0x6f  //塔盾
+Item Colours[1045][6]:	       9,-1,0x6f,0x6f  //骨盾
 Item Colours[1028][6]:	       9,-1,-1,-1      //歌德盾牌
-Item Colours[1035][6]:	       9,0x6f,0x6f,0x6f  //重靴
-Item Colours[1036][6]:	       9,0x6f,0x6f,0x6f  //锁链靴
-Item Colours[1082][6]:	       8,0x6f,0x6f,0x6f  //织网之靴
-Item Colours[1037][6]:	       9,0x6f,0x6f,0x6f  //轻型金属靴
-Item Colours[1087][6]:	       8,0x6f,0x6f,0x6f  //织网腰带
-Item Colours[1043][6]:	       9,0x6f,0x6f,0x6f  //金属扣带
+Item Colours[1035][6]:	       9,-1,0x6f,0x6f  //重靴
+Item Colours[1036][6]:	       9,-1,0x6f,0x6f  //锁链靴
+Item Colours[1082][6]:	       8,-1,0x6f,0x6f  //织网之靴
+Item Colours[1037][6]:	       9,-1,0x6f,0x6f  //轻型金属靴
+Item Colours[1087][6]:	       8,-1,0x6f,0x6f  //织网腰带
+Item Colours[1043][6]:	       9,-1,0x6f,0x6f  //金属扣带
 //rare黄色装备大力士版
 //大力士和tpsor为了高防御用的DD,高def和好的属性是关键,否则只有自用了
-Item Colours[1051][6]:	       9,0x6f,0x6f,0x6f      //翼盔
-Item Colours[1052][6]:	       9,0x6f,0x6f,0x6f      //巨皇冠
-Item Colours[1067][6]:	       8,0x6f,0x6f,0x6f  //华丽战甲
-Item Colours[1078][6]:	       9,0x6f,0x6f,0x6f      //战场手套
+Item Colours[1051][6]:	       9,-1,0x6f,0x6f      //翼盔
+Item Colours[1052][6]:	       9,-1,0x6f,0x6f      //巨皇冠
+Item Colours[1067][6]:	       8,-1,0x6f,0x6f  //华丽战甲
+Item Colours[1078][6]:	       9,-1,0x6f,0x6f      //战场手套
 //rare黄色装备武器版
 //杖系列(以下三者好的都是可以留下使用的,具体看solomon哥的帖子咯~)
-Item Colours[11-14,104-107][6]:     -1,0x6f,0x6f,0x6f     // Nec 杖 
-Item Colours[16-18,109-111][6]:     -1,0x6f,0x6f,0x6f     // Pal 杖 
-Item Colours[64-68,157-161][6]:     -1,0x6f,0x6f,0x6f     // Sor 杖 
+Item Colours[11-14,104-107][6]:     -1,-1,0x6f,0x6f     // Nec 杖 
+Item Colours[16-18,109-111][6]:     -1,-1,0x6f,0x6f     // Pal 杖 
+Item Colours[64-68,157-161][6]:     -1,-1,0x6f,0x6f     // Sor 杖 
 Item Colours[119][6]:-1,-1,-1,-1  //罗马短剑,力量Req低~+2Bar短剑好想要...
 //盾
 Item Colours[1024-1026,1028,1046][6]:9,-1,-1,-1       //由于底子的等级比较低所以相对容易出+2Pal,4Res的盾,不过充其量也是个过渡品~
-Item Colours[1027][6]:9,0x6f,0x6f,0x6f //SorRR塔盾,力量需求偏高,需要75,如果有后缀-30Req的话更好,主要看点是给力的格挡,Sor拿格挡能到64%
-Item Colours[1045][6]:9,0x6f,0x6f,0x6f //SorRR白骨盾,抽动0.0Sor的最爱,是本人最喜欢的底子,只需要25Str就可以使用,并且格挡率仅次于塔盾Sor拿格挡60%
+Item Colours[1027][6]:9,-1,0x6f,0x6f //SorRR塔盾,力量需求偏高,需要75,如果有后缀-30Req的话更好,主要看点是给力的格挡,Sor拿格挡能到64%
+Item Colours[1045][6]:9,-1,0x6f,0x6f //SorRR白骨盾,抽动0.0Sor的最爱,是本人最喜欢的底子,只需要25Str就可以使用,并且格挡率仅次于塔盾Sor拿格挡60%
 //手套
 Item Colours[1029-1033][6]:9,-1,-1,-1  //普通级手套(+9Str,+15Dex,+30fr给op+sor kd用,或者10IAS,15Dex给电枪AMA用)
 Item Colours[1075-1077][6]:9,-1,-1,-1  //扩展级手套
 //鞋子
-Item Colours[1034][6]:	       9,0x6f,0x6f,0x6f  //皮靴
-Item Colours[1038][6]:	       9,0x6f,0x6f,0x6f  //护胫
+Item Colours[1034][6]:	       9,-1,0x6f,0x6f  //皮靴
+Item Colours[1038][6]:	       9,-1,0x6f,0x6f  //护胫
 //腰带
 Item Colours[1039-1042][6]:	       9,-1,-1,-1  //4层以下腰带
 //材料
-Item Colours[1025,1027][2,3][1][4]:   -1,0x1b,0x1b,0x1b   //3s大盾牌 塔盾
-Item Colours[1007,1053][2,3][1][4]:		-1,0x1b,0x1b,0x1b   //3s面具 死亡面具
-Item Colours[1052][2,3][1][4]:        -1,0x1b,0x1b,0x1b     //3s巨皇冠in3红PG pk用
+Item Colours[1025,1027][2,3][1][4]:   -1,-1,0x1b,0x1b   //3s大盾牌 塔盾
+Item Colours[1007,1053][2,3][1][4]:		-1,-1,0x1b,0x1b   //3s面具 死亡面具
+Item Colours[1052][2,3][1][4]:        -1,-1,0x1b,0x1b     //3s巨皇冠in3红PG pk用
 //Item Colours[16,1068,1090,1091][1,2,3][1][1]:	10,0x74,0x74,0x74 //
 //Item Colours[1068][3]:			        10,0x74,0x74,0x74   //加强显示超强法师铠甲,可转ZLP做TP+材料(偶是纯Fzer哦~)
 //Item Colours[1091][1,2,3][1][1]:	        10,0x74,0x74,0x74   //白冷酷盾
@@ -325,7 +326,7 @@ Item Colours[1052][2,3][1][4]:        -1,0x1b,0x1b,0x1b     //3s巨皇冠in3红P
                          //         其他物品                      //
                          ///////////////////////////////////////////
 Item Colours[2013,2015][4]: 3,-1,-1,-1             // 蓝色项链,戒指;
-Item Colours[2013,2015][6]: -1,0x6f,0x6f,0x6f      // Rare 项链,戒指
+Item Colours[2013,2015][6]: -1,-1,0x6f,0x6f      // Rare 项链,戒指
 Item Colours[2013,2015][7]: -1,0x20,0x20,0x20      // unique 项链,戒指
 //Item Hide Lvl[2013][6,8]:   90                     //rare和橙色项链只显示90+的
 Item Colours[2015][5]:      10,-1 ,-1,-1        // Set 戒指,DCKey

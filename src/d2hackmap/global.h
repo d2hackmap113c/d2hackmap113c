@@ -83,6 +83,8 @@ enum ConfigVarType {
 	CONFIG_VAR_TYPE_ACCOUNT=18,
 	CONFIG_VAR_TYPE_SEND_MESSAGE=19,
 	CONFIG_VAR_TYPE_QUICK_TO_LEVEL=20,
+	CONFIG_VAR_TYPE_SET_TAG=21,
+	CONFIG_VAR_TYPE_STRING_VALUE=22,
 };
 struct ConfigVar {
 	int		type;
@@ -135,17 +137,21 @@ int isLocalPlayerName(char *name);
 void check_d2ptrs();
 void draw2map(POINT *minimap,int drawX,int drawY);
 void __stdcall dumpStack(int n);
+int ReloadConfig();
+int BackToTown();
 
 extern HMODULE addr_storm,addr_d2client,addr_d2common,addr_d2gfx,addr_d2win,addr_d2lang;
 extern HMODULE addr_d2cmp,addr_bnclient,addr_d2net,addr_fog,addr_d2game,addr_d2launch;
 extern HMODULE addr_d2gdi,addr_d2sound;
 extern HMODULE addr_d2multi,addr_d2mcpclient;
-extern int dwLoopCount;
+extern int dwLoopCount,dwDrawUnitCount;
 extern char *szVersion;
 extern HANDLE dllHeap,confHeap,gameHeap;
 extern int dwGameWindowId;
 extern char szRuntimePath[256];
-extern int fIsSinglePlayer,fIsTcpIp,fIsRealmServer,fIsRealmClient,fStartingGame,fInGame,fPlayerInTown,dwGameLng;
+extern int fIsSinglePlayer,fIsTcpIp,fIsRealmServer,fIsRealmClient;
+extern int fStartingGame,fInGame,fPlayerInTown,dwGameLng;
+extern int fIsHardCoreGame,fHasHardCoreConfig,fUsingHardCoreConfig,needReloadConfig,fIsHardCoreSafe;
 extern volatile int	dwCurMs;
 extern int actlvls[6];
 extern int dwCurrentAct,dwCurrentLevel;
@@ -167,6 +173,7 @@ extern int fWinActive;
 extern ToggleVar tShowTestInfo,tPacketHandler;
 extern int simpleItemStackTxt,simpleItemStackIdx,simpleItemStackStatId;
 extern int screenDrawX,screenDrawY;
+extern int altDown,ctrlDown,shiftDown,fUserOperating,hydraLock,hydraUid,hydraX,hydraY;
 
 #define MAX_STASH_PAGES 128
 #define MAX_ITEMS_PER_PAGE 128

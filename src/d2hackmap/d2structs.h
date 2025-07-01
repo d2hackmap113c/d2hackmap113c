@@ -504,14 +504,14 @@ struct MonsterData {
 	union{
 		BYTE	bTypeFlags;	//+16
 		struct {
-			BYTE fOther:1;		//set for some champs, uniques
-			BYTE fUnique:1;		//super unique
-			BYTE fChamp:1;		
-			BYTE fBoss:1;		//unique monster ,usually boss
-			BYTE fMinion:1;		
-			BYTE fPoss:1;		//possessed
-			BYTE fGhost:1;		//ghostly
-			BYTE fMulti:1;		//multishotfiring
+			BYTE fOther:1;	//0x1 set for some champs, uniques
+			BYTE fUnique:1;	//0x2 super unique
+			BYTE fChamp:1;	//0x4	
+			BYTE fBoss:1;		//0x8 unique monster ,usually boss
+			BYTE fMinion:1;	//0x10	
+			BYTE fPoss:1;		//possessed 0x20
+			BYTE fGhost:1;	//ghostly 0x40
+			BYTE fMulti:1;	//multishotfiring 0x80
 		};
 	};
 	BYTE	nLastMode;			//+17
@@ -1090,12 +1090,12 @@ struct GameStructInfo{
 	union{
 		BYTE nGameMode; //+1EB 
 		struct
-		{
-			BYTE nCharStat:2;
-			BYTE nHardcore:2;
-			BYTE _unk1:1;
-			BYTE nExpansion:1;
-			BYTE nLadder:2;	
+		{ //expLadder:0x60 expHardCoreLatter:0x64
+			BYTE nCharStat:2; //bit0-1
+			BYTE nHardcore:2; //bit2-3 0x4
+			BYTE _unk1:1; //bit4
+			BYTE nExpansion:1; //bit5 0x20
+			BYTE nLadder:2;	 //bit6-7
 		};
 	};
 	BYTE	nReadyAct;			//+1EC  quest info 

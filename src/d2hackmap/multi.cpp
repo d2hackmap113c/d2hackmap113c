@@ -14,10 +14,12 @@ int acceptTradeFromGid=0,acceptTradeFromUid=0,acceptTradeMs=0,clickAcceptTradeMs
 extern int autoTerminateNpcInteractMs,hasRune789;
 static char tradingName[20]={0};
 static int tradingId=0;
+int hydraLock=0,hydraUid=0,hydraX,hydraY;
+extern ToggleVar t3BBProtect;
 
 int QuickNextGame(int addnum);
 void joinGame(char *name,char *pass);
-extern int dwEnterDoorInBackgroundSkill[7][140];
+extern int dwEnterDoorInBackgroundSkill[7][200];
 int takeWaypointToAreaUI(int level);
 extern int dwTakeWaypointToLevel;
 int BackToTown();
@@ -281,6 +283,10 @@ void pressESC() {
 int canRemoteControl() {
 	if (fWinActive) return 0;
 	if (PLAYER->dwMode==PlayerMode_Death||PLAYER->dwMode==PlayerMode_Dead) return 0;
+	if (*d2client_pUiGameMenuOn) {
+		pressESC();
+		return 0;
+	}
 	if (npcChatTxt||*d2client_pUiInteractOn) {
 		pressESC();
 		return 0;
@@ -315,34 +321,51 @@ void leader_click_object(int type,int id) {
 	}
 }
 int loadRuntimeInfo(D2Window *pwin,int id);
+void send_multi_skill_info(int info) {
+	int gid24=dwGameWindowId<<24;
+	multiclient_send_info((MCI_Skill<<24)|(info&0xFFFFFF)|gid24);
+}
+void recv_multi_skill_info(D2Window *pwin,int info) {
+	wchar_t wbuf[32];
+	int value=(info>>8)&0xFFFF;
+	switch (info&0xFF) {
+		case MCS_HydraLock:
+			wsprintfW(wbuf,L"Hydra %d",value);setBottomAlertMsg(3,wbuf,1000,1,0,6);
+			break;
+	}
+}
 void send_multi_quest_info(int info) {
 	int gid24=dwGameWindowId<<24;
 	multiclient_send_info((MCI_Quest<<24)|(info&0xFFFFFF)|gid24);
 }
 void incMapTargetIf(int cur);
+extern int dwBarbrianLeft;
 void recv_multi_quest_info(D2Window *pwin,int info) {
 	//gameMessage("recv quest info 0x%X",info);
 	switch (info&0xFF) {
 	case MCQ_10BB:
+		dwBarbrianLeft=10;
 		if (dwCurrentLevel==Level_FrigidHighlands) {
-			SetBottomAlertMsg1(L"搞定1/3",3000,2,0);
+			setBottomAlertMsg(0,L"搞定1/3",3000,0,2,0);
 			incMapTargetIf(0);
 		}
 		break;
 	case MCQ_5BB:
+		dwBarbrianLeft=5;
 		if (dwCurrentLevel==Level_FrigidHighlands) {
-			SetBottomAlertMsg1(L"搞定2/3",3000,2,0);
+			setBottomAlertMsg(0,L"搞定2/3",3000,0,2,0);
 			incMapTargetIf(1);
 		}
 		break;
 	case MCQ_0BB:
+		dwBarbrianLeft=0;
 		if (dwCurrentLevel==Level_FrigidHighlands) {
-			SetBottomAlertMsg1(L"全部搞定",3000,2,0);
+			setBottomAlertMsg(0,L"全部搞定",3000,0,2,0);
 		}
 		break;
 	case MCQ_BB_ERR:
 		if (dwCurrentLevel==Level_FrigidHighlands) {
-			SetBottomAlertMsg1(L"搞砸了",3000,1,0);
+			setBottomAlertMsg(0,L"搞砸了",3000,1,1,0);
 		}
 		break;
 	}
@@ -353,8 +376,8 @@ void send_multi_reply(int info) {
 }
 void recv_multi_quest_reply(D2Window *pwin,int info) {
 	switch (info) {
-		case MCR_FAILED:SetBottomAlertMsg1(L"搞砸了",3000,1,0);break;
-		case MCR_PASSED:SetBottomAlertMsg1(L"搞定",3000,2,0);break;
+		case MCR_FAILED:setBottomAlertMsg(0,L"搞砸了",3000,1,1,0);break;
+		case MCR_PASSED:setBottomAlertMsg(0,L"搞定",3000,0,2,0);break;
 	}
 	pwin->reply=info;pwin->replyMs=dwCurMs+18000;
 }
@@ -390,6 +413,7 @@ void multiclient_recv_info(int info) {
 		case MCI_StopFollow:pwin->isTeam=0;break;break;
 		case MCI_AutoSkill:pwin->autoSkillId=info&0x7FFFFF;pwin->autoLeft=info&0x800000;break;
 		case MCI_Quest:recv_multi_quest_info(pwin,info&0xFFFFFF);break;
+		case MCI_Skill:recv_multi_skill_info(pwin,info&0xFFFFFF);break;
 		case MCI_Reply:recv_multi_quest_reply(pwin,info&0xFFFFFF);break;
 	}
 }
@@ -477,7 +501,27 @@ static void interactObject() {
 		default:clickState=0;break;
 	}
 }
+void send_multi_skill_info(int info);
+void autoHydra() {
+	if (!hydraLock) return;
+	if (dwRightSkill!=Skill_Hydra) {hydraLock=0;return;}
+	if (PLAYER->dwMode==PlayerMode_Attacking1||PLAYER->dwMode==PlayerMode_Attacking2||PLAYER->dwMode==PlayerMode_Cast) return;
+	if (!fCanUseRightSkill) return;
+	if (!fWinActive) send_multi_skill_info((hydraLock<<8)|MCS_HydraLock);
+	wchar_t wbuf[32];
+	if (hydraUid) {
+		UnitAny *pUnit=d2client_GetUnitFromId(hydraUid,UNITNO_MONSTER);
+		if (!pUnit||pUnit->dwMode==MonsterMode_Death||pUnit->dwMode==MonsterMode_Dead) {hydraLock=0;return;}
+		RightSkillUnit(pUnit);
+		wsprintfW(wbuf,L"Hydra %d:%d",hydraLock++,hydraUid);
+	} else {
+		RightSkillPos(hydraX,hydraY);
+		wsprintfW(wbuf,L"Hydra %d:(%d,%d)",hydraLock++,hydraX,hydraY);
+	}
+	setBottomAlertMsg(3,wbuf,1000,0,0,6);
+}
 void MultiClientLoop() {
+	if (hydraLock) autoHydra();
 	if (!fWinActive&&dwCurMs>infoMs) {
 		int n=0;
 		if (fUsingBow) n=dwArrowCount+d2common_GetUnitStat(PLAYER, 70, 0);
@@ -511,6 +555,7 @@ void MultiClientLoop() {
 			case 4:pUnit=d2client_GetUnitFromId(transferClickUnitId,transferClickUnitType);
 				if (pUnit) RightSkillUnit(pUnit);
 		}
+		if (fAutoSkill) dwAutoSkillCheckMs=dwCurMs+500;
 		transferClickType=0;
 	}
 	if (dwWaitTeamEnterPortalMs) {
@@ -521,8 +566,12 @@ void MultiClientLoop() {
 		LeftClickUnit(pUnit);dwWaitTeamEnterPortalMs=0;
 		return;
 	}
-	if (!dwLeaderId) return;
-	if (fWinActive) {if (dwLeaderId&&fPlayerInTown) follower_stop_follow();return;}
+	if (!dwLeaderId) {fAutoFollowMoving=0;return;}
+	if (fWinActive) {
+		if (dwLeaderId&&(fPlayerInTown||dwCurrentLevel==Level_ArreatSummit))
+			follower_stop_follow();
+		fAutoFollowMoving=0;return;
+	}
 	if (waitToMs&&dwCurMs<waitToMs) return;
 	RosterUnit *pRU=getRosterUnit(dwLeaderId);
 	if (!pRU) {follower_stop_follow();return;}
@@ -689,6 +738,7 @@ done:
 	send_multi_reply(MCR_DONE);
 }
 void follower_cmd(int lParam) {
+	if (hydraLock) hydraLock=0;
 	int cmd=(lParam>>24)&0xFF;
 	switch (cmd) {
 		case MCC_StartFollow: {
@@ -760,7 +810,6 @@ void follower_cmd(int lParam) {
 			int gid=lParam&0xFF;
 			D2Window *pwin=&d2wins[gid];
 			if (!loadRuntimeInfo(pwin,gid)) return;
-			LOG("receive join game command: game=%s password=%s\n",pwin->game,pwin->password);
 			joinGame(pwin->game,pwin->password);
 			break;
 		}
@@ -920,6 +969,15 @@ int canTranferClick() {
 	return 1;
 }
 extern int ctrlDown;
+static int protect3BB() {
+	if (DIFFICULTY==2&&t3BBProtect.isOn) {
+		char keyname[256];
+		formatKey(keyname,t3BBProtect.key);
+		gameMessage("3BB protect (%s)",keyname);
+		return 1;
+	}
+	return 0;
+}
 int __fastcall shouldLeftClick(int *args) {
 	int src=args[1];
 	UnitAny *pUnit=(UnitAny *)args[2];
@@ -928,6 +986,7 @@ int __fastcall shouldLeftClick(int *args) {
 	if (tPacketHandler.isOn) {
 		LOG("left click arg=0x%x x=%d y=%d unit=%x\n",args[0],x,y,pUnit);
 	}
+	if (pUnit&&pUnit->dwTxtFileNo==546&&protect3BB()) return 0;
 	if (fPlayerInTown&&pUnit&&pUnit->dwUnitType==UNITNO_PLAYER&&isLocalPlayer(pUnit->dwUnitId)) {
 		D2Window *pwin=getLocalPlayer(pUnit->dwUnitId);
 		if (pwin) {
@@ -997,6 +1056,13 @@ int __fastcall shouldRightClick(int *args) {
 	int y=args[4];
 	if (tPacketHandler.isOn) {
 		LOG("right click arg=0x%x x=%d y=%d unit=%x\n",args[0],x,y,pUnit);
+	}
+	if (pUnit&&pUnit->dwTxtFileNo==546&&protect3BB()) {
+		if (dwRightSkill!=Skill_Teleport) return 0;
+		args[2]=0;
+	}
+	if (fWinActive&&fUserOperating&&shiftDown&&dwRightSkill==Skill_Hydra) {
+		hydraLock=1;hydraUid=pUnit?pUnit->dwUnitId:0;hydraX=x;hydraY=y;
 	}
 	if (fTransferClick&&canTranferClick()) {
 		transferClick(1,pUnit,x,y);

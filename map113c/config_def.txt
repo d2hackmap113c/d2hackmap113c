@@ -9,6 +9,7 @@
 // AutoSummonSection 自动召唤
 // DropProtectionSection 装备保护
 // Undo撤消
+// HardCoreSpecialProtect专家级特别保护
 
 Load Symbols File: "symbols\weapons.txt"
 Load Symbols File: "symbols\armors.txt"
@@ -20,7 +21,7 @@ Load Symbols File: "symbols\keycodes.txt"
 Load Symbols File: "symbols\skills.txt"
 Load Symbols File: "symbols\sets.txt" //这个符号文件需最后加载
 
-Visual Effect Mode: 0 //游戏特效 0:Original原特效 1:Infravision透视 2:LightOn透视+关闭灯光效果
+Visual Effect Mode: 2 //游戏特效 0:Original原特效 1:Infravision透视 2:LightOn透视+关闭灯光效果
 Visual Effect Key: VK_8 //切换游戏特效
 
 //0:No auto reveal不自动开图
@@ -46,17 +47,17 @@ Quick Exit Game Key:            VK_6        				//快速退出游戏,大键盘"6
 Quick Next Game Key: SHIFT+VK_OEM_PLUS         //快速退出游戏，游戏名自动+1,SHIFT+大键盘"+"
 Quick Next Game Key2:           -1                  //快速退出游戏，游戏名自动+2,未设置
 All Next Game Key: VK_OEM_PLUS         //所有本机号退出游戏,游戏名自动+1,大键盘"+"
-AutoJoinGameToggle: 1, VK_ //在后台时自动跟随本机号进入游戏
+AutoJoinGameToggle: 1, VK_ //在后台时自动跟随本机号进入游戏,仅在选择人物后或退出游戏后的界面时有效
+CancelAutoJoinIfForeground: 0, VK_ //如果退出游戏比较慢，窗口已经切换到前台是否停止加入游戏
 Quick Back To Town Key:         VK_5             //一键回城,大键盘"5"
 TakeWaypointToTownDis: 6 //如果在这个距离内有传送站，则使用传送站回城
 Use Custom Font Toggle:         2, -1               //中文输入
 Auto Invite Toggle:             1, -1 //             //自动邀请，最早进游戏的人物可以自动激活
 Auto Party Toggle:              1, -1 //             //自动接受组队邀请
 AutoPartyBugMFToggle: 0, VK_ //在地狱难度被标记为bugKM, bugKD,bugKB,bugKCountess的号在相应act时是否自动结盟,具体参见LoadTagFile命令,不结盟肯定不会被过关
-AutoPartyLevelRange[0]: 1,45 //在普通难度下只和1-45级的非本机号自动结盟，防止99级的跟着1级小号跑影响升级
-AutoPartyLevelRange[1]: 1,70 //在噩梦只和1-70级的非本机号自动结盟
-AutoPartyLevelRange[2]: 1,99 //在地狱和所有人结盟
-Auto Loot Permit :              1, -1 //       //HC自动开锁，小键盘4
+AutoPartyLevelRange[0]: 1,99 //普通难度非本机号自动结盟范围
+AutoPartyLevelRange[1]: 1,99 //噩梦非本机号自动结盟范围
+AutoPartyLevelRange[2]: 1,99 //地狱非本机号自动结盟范围
 Wisper Notice Toggle:           0, -1 //       //收到密语时以聊天方式提示，小键盘5
 View Equipment Key:             VK_K //                //查看其他玩家装备(鼠标点中其他玩家的情况下启用)
 View Player Stats Key:          -1  //            //查看其它玩家属性(很多属性不准)"/ ?"键
@@ -72,6 +73,18 @@ View Socket Base Items Toggle : 0 ,VK_OEM_6             //查看物品所镶物�
 Item Value Toggle:              1, VK_, 1000           //显示卖价35K物品卖出价值(金钱)
 Item Levels Toggle:             0, VK_              // iLvl显示
 Show Item Variable Prop Toggle: 1, -1               //显示装备变量范围(暗金，绿色，神符之语，防具基础防御，武器攻击范围等)
+// --------- HardCoreSpecialProtect专家级特别保护 -----------
+AutoLootPermit: 1, -1 //专家级允许非本机号抢装备
+AutoLocalLootPermit: 1, -1 //专家级允许本机号捡装备
+HardCoreEscapeProtect: 1,CTRL+ALT+VK_X //专家级死亡后需解锁才能按Escape退出,只有死前在游戏中的才能捡尸体,死后加入游戏的捡不了,而且只能捡身上的装备,不包括背包和箱子
+HardCoreResistProtectToggle: 0, CTRL+ALT+VK_O //是否启用专家级大号抗性保护(默认不启用)
+HardCoreLeaveTownResist[0]: 80,75,75,75,75 //80级以上普通难度抗性小于75不能出城(防止没穿装备的大号出城)
+HardCoreLeaveTownResist[1]: 80,115,115,115,115 //80级以上噩梦难度抗性小于75不能出城(防止没穿装备的大号出城)
+HardCoreLeaveTownResist[2]: 80,175,175,175,175 //80级以上地狱难度抗性小于75不能出城(防止没穿装备的大号出城)
+HardCoreSwapWeaponProtect: 1, CTRL+ALT+VK_U //在城外没有副武器时不能切换武器
+HardCoreBackTownIfAnyoneDie: 1, VK_ //如果有任何玩家死亡立刻回城(只有死前在游戏中的能捡装备)
+HardCoreAllBackTownIfProtect: 1, VK_ //如果血保向所有本机号发送回城命令
+// -----------------------------------------------------------
 
 //Bug 保护 ， 第3位  1 为进游戏校验  2 为触发任务时校验(巴尔转身，封印开完，老墨房间)
 BugKD Toggle:                   1, -1  , 2          //bugkd保护,通过后面设置仅提示不退出，所以不设置快捷键
@@ -141,13 +154,21 @@ Weather Toggle:                 0, VK_      //天气开关 0开启天气 1关闭
 Screen Shake Toggle:            1, VK_      //地震开关 0开启地震 1关闭地震
 
 //有关根据life和敌对状况自动退出的一些配置
-Chicken Life Action:            1                   //1:exit game 2:back to town
-Chicken Life Toggle:            1, VK_OEM_7         //血保开关，''"'
-Chicken Hostile Toggle:         0, -1               //敌对血保开关
-Chicken Hostile Nearby Toggle:  0, -1               //敌对在附近血保开关
+ChickenLifeAction:            1                   //1:exit game 2:back to town
+ChickenLifeToggle:            1, VK_OEM_7         //血保开关，''"'
+ChickenHostileToggle:         0, -1               //敌对血保开关
+ChickenHostileNearby Toggle:  0, -1               //敌对在附近血保开关
 // 一些关于如何保命的数字定义，HC玩家要充分利用^^
-Chicken Life:                   600                   //血保数值
-Chicken Life Percent:           30                  //血保百分比0~100
+//--------------- 增强的血保设置 ---------------
+ChickenLifeCondition: 1500 //最大血量大于此值时使用绝对值血保,小于此值使用百分比血保
+ChickenLife: 600 //血保数值
+ChickenLifeMinClevel: 15   //非专家级15级以下不使用血保
+ChickenLifePercent: 30  //血保百分比0~100
+HCChickenLifePercent: 60 //专家级血保百分比0~100
+ChickenLifeForcedClevel: 85  //超过85级强制血保
+NoQuitIfDeadClevel: 90  //专家级或超过90级如果被秒了不退出游戏
+//进入游戏时自动打开保护,换号无忧 0:无操作 1:打开ChickenLife,DropProtection,ResetProtection,SocketProtect,RunewordProtect如果设置过Bug Auto Quit Hell,Bug Auto Quit Hell Act5,AutoTeleportEvadeToggle也会打开
+AutoProtectionNewGame:    1   
 Chicken Hostile Life:           0                   //血保数值
 Chicken Hostile Life Percent:   60                  //百分比 0~100  
 Chicken Hostile Nearby Life:    600                   //血保数值
@@ -388,7 +409,7 @@ Automap Names Default:          1                   //小地图队友名字
 Hidden Corpses Toggle:          0, -1               //地面隐藏尸体开关 1 隐藏 0 不隐藏
 Automap Corpses Toggle: 0, -1               //小地图显示怪物尸体显示开关
 NecAutomapCorpsesToggle: 1, VK_ //Show corpose on map and minimap for nec
-DrawBossHpToggle: 1, VK_ //draw HP percent on boss
+DrawBossHpToggle: 0, VK_ //draw HP percent on boss
 DrawBossLineColor: 0x62
 Normal Corpse Colour:         0x08                //普通怪物尸体颜色
 //Boss Corpse Colour:           0x08                //boss尸体颜色
@@ -591,14 +612,6 @@ Bug All Hell Alert Toggle: 1, VK_ //地狱难度进入可完成任务的场景�
 //地狱难度完成第4小队后核对任务状态发送以下消息提示队友,设为空串取消此功能
 BugKBAlertMessage: "(d2hackmap提示)本游戏巴尔任务未完成,完成最后一队后BugKB号要及时退出哟"
 BugKBAlertMessage: ""
-//--------------- 增强的血保设置 ---------------
-Chicken Max Life:        1500 //最大血量大于此值时才使用绝对值血保,血量小于此值才使用百分比血保
-Chicken Life:            600 //血保数值
-Chicken Life Min Clevel: 15   //15级以下不使用血保
-ChickenLifeForcedClevel: 85  //超过85级强制血保
-NoQuitIfDeadClevel: 90  //超过90级如果被秒了不退出游戏
-//进入游戏时自动打开保护,换号无忧 0:无操作 1:打开ChickenLife,DropProtection,ResetProtection,SocketProtect,RunewordProtect如果设置过Bug Auto Quit Hell和Bug Auto Quit Hell Act5也会打开
-AutoProtectionNewGame:    1   
 //--------------- 根据人物级别显示物品 ---------------
 Item Show CLvl[2006]: 15,-1  //Stamina Mina Light Healing
 Item Show CLvl[2080-2081]: 15,1  //Stamina Mina Light Healing
@@ -612,7 +625,7 @@ ShowValuableItem: 30000 //显示卖价超过此值的物品
 GameMonitorX: -10  //显示状态监控的起始X坐标(相对于右下角)
 GameMonitorY: -110 //显示状态监控的起始Y坐标(相对于右下角)
 Monitor Quantity: 1 //屏幕右下角显示剩余数量(仅右键技能为投掷或闪电之怒时显示)
-Monitor Durability: 1 //屏幕右下角显示剩余耐久度
+Monitor Durability: 0 //屏幕右下角显示剩余耐久度
 CountDown: 1, VK_ //显示QH(强化),BO(Battle Order, HS(Holy Shield)的倒计时
 //QH级别根据火焰伤害推测,只有强化,暧气和支配火焰级别相同并且大于等于20级才能正确推测
 //BO级别根据法力变化推测
@@ -710,7 +723,7 @@ MultiClientTransferClickKey: VK_MENU //按下ALT键时将鼠标左右单次点�
 //按下Control键所有窗口同时执行
 //MultiClientTransferClickKey2: VK_XBUTTON2 //按下鼠标侧面键时将鼠标左右单次点击操作发到别的窗口执行
 AutoFollowDistance: 4 //跟随的距离, 单位yard
-AutoFollowMaxDistance: 45 //超过此距离后停止跟随,单位yard
+AutoFollowMaxDistance: 60 //超过此距离后停止跟随,单位yard
 AutoFollowMoveDistance: 10 //每次最多可移动距离, 单位yard
 AutoFollowCheckInterval: 200 //跟随时每隔200ms检查一次
 AutoFollowClickObjectDelayMs: 600 //跟随点击非蓝色传送门时的延迟时间，以防止同时进入场景时死锁(A屏上被B挡住,B屏上被A挡住)
@@ -747,12 +760,14 @@ AutoSkillDistance[SkillIceBlast]: 8,8
 AutoSkillDistance[SkillGlacialSpike]: 5,10
 AutoSkillDistance[SkillFrostNova,SkillNova]: 8,0
 AutoSkillDistance[SkillLightning,SkillChainLightning]: 8,24
-AutoSkillDistance[SkillFireBolt,SkillFireBall]: 5,10 //8,31
+AutoSkillDistance[SkillFireBolt,SkillFireBall]: 6,8 //8,31
+AutoSkillDistance[SkillHydra]: 32,32 //8,33
 AutoSkillDistance[SkillBlizzard]: 20,30 //8,33
 AutoSkillDistance[SkillChargedStrike]: 5,5
 AutoSkillDistance[SkillLightningFury]: 10,30
 AutoSkillDistance[SkillZeal,SkillSmite,SkillSacrifice]: 5,5
 AutoSkillMonsterType[DeathMauler1]: 1 //1:monster 2:dangerous 4:revive 8:mf 0x10:actboss 0x80:neutral
+AutoSkillMonsterType[DefiledWarrior]: 3 //1:monster 2:dangerous 4:revive 8:mf 0x10:actboss 0x80:neutral
 AutoStaticFieldHPPercent: 3 //静态力场在非资料片用到3%
 AutoThrowMinQuantity: 3 //剩余3个标枪后不再投掷，扔光了就不能修理了
 AutoReloadThrowing: 1 //标枪用到最少数量时自动更换
@@ -766,6 +781,7 @@ AutoDimVisionMonster[NightLord1]:1//崔凡克用陨石的法师
 AutoDimVisionMonster[VileArcher2]:1//冰冻高地弓箭手
 AutoDimVisionMonster[DemonGremlin,DemonTrickster1]:1//冰冻高地放火弹
 AutoDimVisionMonster[Slinger 3]: 1 //冰冻高地扔标枪
+AutoDimVisionMonster[Unraveler1]: 1 //古墓里复活怪物的
 RescueBarSafeDistance: 16 //救野蛮人时打开牢门而不完成任务的安全距离,大于此距离并且无遮挡技能为暴风雪陨石火墙九头海蛇按住AutoForegroundSkillKey会优先攻击牢门,手操作用冰封球效率最高
 //------------- AutoTeleportSection 自动传送设置-------------
 //当右键为传送时,按下AutoForegroundSkillKey时自动传送
@@ -785,7 +801,12 @@ LogTPToggle: 0,VK_ //将每次传送的数据记录到runtime/d2hackmap*.log中
 AutoTeleportMonsterDefaultDistance: 6 //未设置的用此距离
 AutoTeleportMonsterDistance[1-8]: 5,7 
 AutoTeleportMonsterDistance[9-33]: 6,8 
+AutoTeleportMonsterDistanceHC[0]: 6,8 //专家级普通难度设置
+AutoTeleportMonsterDistanceHC[1]: 6,8 //专家级噩梦难度设置
+AutoTeleportMonsterDistanceHC[2]: 7,9 //专家级地狱难度设置
 AutoTeleportArcaneSanctuaryYard: 3 //神秘庇难所的距离，太大了找不到路径
+AutoTeleportEvadeToggle: 0, CTRL+ALT+VK_T //手动传送时自动躲避
+AutoTeleportEvadeYard: 6,8 //自动躲避距离(普通怪物，危险怪物)
 //------------- AutoSummonSection 自动召唤设置，双开时可在后台自动执行 ---------------
 //当前右键设定召满后自动切换右键技能,召唤顺序:骷髅,骷髅法师,重生
 Auto Summon Toggle: 1, CTRL+ALT+VK_S //自动召唤
@@ -849,9 +870,15 @@ SwitchSkillLeft[SHIFT+VK_C][ClassAma]: SkillImpale,-1,-1,-1
 SwitchSkillRight[SHIFT+VK_D][ClassNec]: SkillLowerResist,-1,-1,-1
 SwitchSkillRight[SHIFT+VK_C][ClassNec]: SkillLifeTap,-1,-1,-1
 SwitchSkillRight[SHIFT+VK_S][ClassNec]: SkillBoneWall,-1,-1,-1
+SwitchSkillRight[SHIFT+VK_A][ClassNec]: SkillClayGolem,-1,-1,-1
 //--------------- CharacterTag 人物标签 ---------------
-//在人物选择界面显示标签, LoadTagFile加载标签文件,标签文件的格式可参考sample_tag.txt
-//LoadTagFile: "d:\git\diablo2\tag.txt"
+//在人物选择界面显示标签, 有两种方式，大量标签可放在文件中用LoadTagFile加载标签文件,
+//LoadTagFile: "d:\diablo2\tag.txt" //标签文件的格式可参考sample_tag.txt
+//或用SetCharacterTag命令,如
+//SetCharacterTag: "sor-km","bugKM"
+//SetCharacterTag: "sor-key","bugKCountess"
+//SetCharacterTag: "barA","3孔衣服"
+//SetCharacterTag: "barB","safe" //标记为safe的号在专家模式出城立刻退出游戏
 //--------------- Undo撤消 ---------------
 //If PlugY is installed, undo patches will be disabled to avoid conflict
 //本功能只支持单机或TCPIP或连接由..\d2server113c\d2server.exe创建的battle.net服务器才能生效
@@ -913,9 +940,10 @@ HostileNameColor:6,0x62,0x6f //敌对是红色
 //---switch skill from teleport/telekinesis/townPortal when switch to background
 //TpSwitchBackground[ClassSor]: SkillBlizzard
 //---switch skill to when enter door in background
-//EnterDoorInBackgroundSkill[ClassNec][The Worldstone Chamber]: SkillDimVision
+//BackgroundEnterDoorSkillSwitch[ClassNec][The Worldstone Chamber]: SkillDimVision
 //QuickToLevel[SHIFT+VK_G]: Black Marsh,Rogue Encampment 
-QuickToLevel[SHIFT+VK_G]: Durance of Hate Level 2,Kurast Docks
+//QuickToLevel[SHIFT+VK_G]: Durance of Hate Level 2,Kurast Docks
+QuickToLevel[SHIFT+VK_G]: Ancients Way,Harrogath
 QuickToLevel[SHIFT+VK_H]: Arcane Sanctuary,Rogue Encampment
 QuickToLevel[SHIFT+VK_V]: Harrogath,The Pandemonium Fortress
 QuickToLevel[SHIFT+VK_5]: Rogue Encampment,The Pandemonium Fortress
@@ -924,4 +952,7 @@ EnableGemAutoMerge: 1, VK_ //在打开盒子时按住自动技能键AutoForegrou
 AutoIdentifyCount: 10 //在打开背包并且辨识书剩余10个以上时按住自动技能键F自动辨识背包中未辨识物品
 EnableAutoSimpleItemStack: 1, VK_ //在打开箱子按住自动技能键F自动把背包中的宝石放到玉净瓶中
 HasCowKing: 0 //是否有牛王
-3BBProtect: 0, VK_ //异次元3BB保护，当窗口在后台时如果在地狱A5玩家级别小于98级游戏3BB未完成玩家可完成，当3BB激活时立刻退出
+3BBProtect: 0, CTRL+ALT+VK_3 //异次元3BB保护，当窗口在后台时如果在地狱A5玩家级别小于98级游戏3BB未完成玩家可完成，当3BB激活时立刻退出
+Hide3BB: 0, VK_ //异次元刷塔升级不显示3BB
+AnalyzeMonsterExp: 1,VK_ //显示最近几次经验获得
+LogMonsterExp: 0,VK_ //将死亡怪物的详细信息和经验获得记录在日志文件中

@@ -190,7 +190,7 @@ void getSnapshotPath1(char *buf,char *realm,char *account,char *name,
 }
 void getSnapshotPath(char *buf,char *realm,char *account,char *name,
 	char *subfolder,char *ext,char sep) {
-	if (fIsRealmClient&&bnetIp&&bnetIp[0]) realm=bnetIp;
+	if (bnetIp&&bnetIp[0]) realm=bnetIp;
 	getSnapshotPath1(buf,realm,account,name,subfolder,ext,sep);
 }
 FILE *openSnapshotFile(char *subfolder,char *ext,char *mode,char sep,char *action,int msg) {
@@ -238,9 +238,10 @@ static int getLvPercent(UnitAny *pUnit) {
 		return currentlvlgainedexp*10000/totalexpneedtoupgrade;
 }
 void countAllGemRunes();
+static SYSTEMTIME enterTime;
 static int enterGameGems=0,enterGameRunes=0,enterGameSoj;
 void SnapshotNewGame() {
-	startGameMs=GetTickCount();
+	startGameMs=GetTickCount();GetLocalTime(&enterTime);
 	startLv = d2common_GetUnitStat(PLAYER, STAT_LEVEL, 0);
 	startLvPercent=getLvPercent(PLAYER);
 	dwMercSeed=0;dwMercNameId=0;
@@ -255,8 +256,10 @@ void SnapshotNewGame() {
 	if (logfp&&*d2client_pGameInfo) {
 		char *game=(*d2client_pGameInfo)->szGameName;
 		char *name=(*d2client_pGameInfo)->szCharName;
+		int mode=(*d2client_pGameInfo)->nGameMode;
 		if (game) fprintf(logfp,"Game:%s",game);
 		if (name) fprintf(logfp," Character:%s",name);
+		fprintf(logfp," mode=0x%X",mode);
 		fprintf(logfp," %s Lv%d.%04d\n",clsNames[dwPlayerClass],startLv,startLvPercent);
 	}
 }
@@ -276,18 +279,27 @@ void SnapshotEndGame() {
 			char *realm=(*d2client_pGameInfo)->szRealmName;
 			DWORD lvl = d2common_GetUnitStat(PLAYER, STAT_LEVEL, 0);
 			int lvP=getLvPercent(PLAYER);
-			fprintf(fp,"%s/%s",realm,game);
+			int soj=d2common_GetUnitBaseStat(PLAYER,192,0);
+			fprintf(fp,"%04d%02d%02d %02d:%02d:%02d",
+				enterTime.wYear,enterTime.wMonth,enterTime.wDay,enterTime.wHour,enterTime.wMinute,enterTime.wSecond);
+			fprintf(fp," %s/%s",realm,game);
 			fprintf(fp," Lv%d.%04d",startLv,startLvPercent);
-			fprintf(fp,"->%d.%04d", lvl, lvP);
+			if (startLv!=lvl||startLvPercent!=lvP) fprintf(fp,"->%d.%04d", lvl, lvP);
 			int inc=(lvl-startLv)*10000+lvP-startLvPercent;
 			fprintf(fp," +%d.%04d", inc/10000,inc%10000);
 			int totalS=(GetTickCount()-startGameMs)/1000;
 			fprintf(fp," %d:%02d:%02d",totalS/3600,totalS/60%60,totalS%60);
-			fprintf(fp," gems:%.3f->%.3f %.3f",
-				enterGameGems/81.0f,runeInfo.totalGems/81.0f,(runeInfo.totalGems-enterGameGems)/81.0f);
-			fprintf(fp," runes:%d->%d %d",
-				enterGameRunes,runeInfo.totalRunes,runeInfo.totalRunes-enterGameRunes);
-			fprintf(fp," soj:%d->%d",enterGameSoj,d2common_GetUnitBaseStat(PLAYER,192,0));
+			fprintf(fp," gems:%.3f",enterGameGems/81.0f);
+			if (runeInfo.totalGems!=enterGameGems)
+				fprintf(fp,"->%.3f %.3f",runeInfo.totalGems/81.0f,(runeInfo.totalGems-enterGameGems)/81.0f);
+			fprintf(fp," runes:%d",enterGameRunes);
+			if (runeInfo.totalRunes!=enterGameRunes)
+				fprintf(fp,"->%d %+d",runeInfo.totalRunes,runeInfo.totalRunes-enterGameRunes);
+			if (enterGameSoj||soj) {
+				fprintf(fp," soj:%d",enterGameSoj);
+				if (enterGameSoj!=soj)
+					fprintf(fp,"->%d %+d",soj,soj-enterGameSoj);
+			}
 			fputc('\n',fp);
 			fclose(fp);
 		}
@@ -1023,7 +1035,7 @@ static void dumpSkill(FILE *fp,struct Skill *skill) {
 			(BYTE)skill->pSkillInfo->flags3,(BYTE)skill->pSkillInfo->flags4,skill->dwItemId);
 	}
 	fprintf(fp," %d:%s",id,skillNames[id]);
-	fprintf(fp,"(%d",skill->dwSkillLevel);
+	fprintf(fp,"(L%d",skill->dwSkillLevel);
 	if (skill->dwLevelBonus) fprintf(fp,"+%d",skill->dwLevelBonus);
 	fputc(')',fp);
 	if (skill->dwQuality) fprintf(fp,"(%d)",skill->dwQuality);
@@ -1171,20 +1183,46 @@ static void dumpUnit(FILE *fp,UnitAny *pUnit) {
 		}
 		fflush(fp);
 		if (debug) {
+static char *enchants[40]={
+	"","","","","",
+ "ExtraStrong",//5
+ "ExtraFast",//6
+ "Cursed",//7
+ "MagicResistant",//8
+ "FireEnchanted",//9
+ "","","","","","",
+ "Champion",//16
+ "LightningEnchanted",//17
+ "ColdEnchanted",//18
+ "","","","","",
+ "Thief",//24
+ "ManaBurn",//25
+ "Teleportation",//26
+ "SpectralHit",//27
+ "StoneSkin",//28
+ "MultipleShots",//29
+ "","","","","","",
+ "Ghostly",//36
+ "Fanatic",//37
+ "Possessed",//38
+ "Berserker",//39
+};
 			MonsterData *pMonsterData=pUnit->pMonsterData; 
+			fprintf(fp," type=%X",pMonsterData->bTypeFlags);
 			if (pMonsterData->fUnique) fprintf(fp," unique");
 			if (pMonsterData->fChamp) fprintf(fp," champ");
 			if (pMonsterData->fBoss) fprintf(fp," boss");
 			fprintf(fp," enchants:{");
 			for (int i=0;i<9;i++) {
-				if (pMonsterData->anEnchants[i]) fprintf(fp," %d:%d",i,pMonsterData->anEnchants[i]);
+				int t=pMonsterData->anEnchants[i];
+				if (t) fprintf(fp," %d:%d%s",i,t,enchants[t]);
 			}
 			fprintf(fp,"}");
 		}
 		if (debug&&fIsSinglePlayer) {
 			UnitAny *real=getSinglePlayerUnit(dwUnitId,unitType);
 			if (real) {
-				fprintf(fp,"  GameServer: %x",real);fflush(fp);
+				fprintf(fp,"\n  GameServer: %x",real);fflush(fp);
 				StatList *plist=real->pStatList;
 				if (plist&&!IsBadReadPtr(plist,sizeof(StatList)))
 					dumpStatList(fp,plist,1);
@@ -1253,8 +1291,11 @@ static void dumpInventory() {
 	countAllGemRunes();
 	PetUnit *pMerc = GetPetByType(PLAYER,7);
 	if (pMerc) {
-		for (UnitAny *pItem=d2common_GetFirstItemInInv(PLAYER->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem))
-			countGemRunes(pItem);
+		UnitAny *m=GetUnitFromIdSafe(pMerc->dwUnitId,UNITNO_MONSTER);
+		if (m) {
+			for (UnitAny *pItem=d2common_GetFirstItemInInv(m->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem))
+				countGemRunes(pItem);
+		}
 	}
 	if (0) {
 		fp=openSnapshotFile(NULL,"txt","w+",'_',"inventory",1);if (!fp) return;

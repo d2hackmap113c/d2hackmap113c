@@ -43,7 +43,7 @@ void __declspec(naked) ClientChatPatch_ASM() {
 	}
 }
 void setCharLv(World *world,UnitAny *pUnit,int lv) {
-	unsigned int nextexp = d2common_GetMinExpToLevel(pUnit->dwTxtFileNo, lv);
+	unsigned int nextexp = lv<=1?0:d2common_GetMinExpToLevel(pUnit->dwTxtFileNo, lv-1);
 	unsigned int curexp = d2common_GetUnitStat(pUnit, STAT_EXP, 0);
 	if (curexp<nextexp) 
 		d2common_AddPlayerStat(pUnit,STAT_EXP,nextexp-curexp,0 );

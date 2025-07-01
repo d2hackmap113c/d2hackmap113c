@@ -2,6 +2,7 @@
 #include "header.h"
 
 void usePotion(int mana);
+extern int dwCheckRelationMs,hasHostilePlayer;
 extern int fState100HP,fState106ManaMs;
 extern int dwHPotionCount,dwMPotionCount;
 extern int dwBackToTownTimeout;
@@ -11,49 +12,57 @@ static int manaMs=0,healingMs=0,golemMs=0,hireMs=0;
 static int *pMercHpPercent=NULL;
 static int *pGolemHpPercent=NULL;
 static int fIronGolemIsRuneword,fIronGolemTownProtection;
-static int ceHp,cowKingHp;
-static double ceDis,cowKingDis;
+static int ceHp,feHp,cowKingHp;
+static int ceDis,feDis,cowKingDis;
+static int lastChickenLifeThreshold=-1;
 
-int 		dwAutoPotionCheckMs=						1000;
-int 		dwIronGolemLifeAlertPercent=						0;
-int 		dwIronGolemLifeTownPercent=						0;
-int 		dwIronGolemLifeExitPercent=						0;
-int 		dwIronGolemTownLifePercent=			0;
-int 		dwHirePotionMinCLevel=						0;
-int 		dwHirePotionLifePercent=						0;
-int 		dwHirePotionColumn=						0;
-int 		dwHirePotionDelayMs=						3000;
-int 		dwHealingPotionLifePercent=						0;
-int 		dwHealingPotionDelayMs=						0;
-int 		dwManaPotionMax=						0;
-int 		dwManaPotionValue=						0;
-int 		dwManaPotionNTValue=						0;
-int 		dwManaPotionDelayMs=						3000;
-int 		dwChickenLife=						0;
-int 		dwChickenMaxLife=						0;
-int 		dwChickenHostileLife=				0;
-int 		dwChickenHostileNearbyLife=			0;
-int 		dwChickenLifePercent=				0;
-int 		dwChickenHostileLifePercent=		0;
-int 		dwChickenHostileNearbyLifePercent=	0;
-int 		nChickenLifeAction=					1;
-ToggleVar 	tHealingPotion={			TOGGLEVAR_ONOFF,	0,	-1,	1,	"Auto Healing Potion"};
-ToggleVar 	tManaPotion=	{		TOGGLEVAR_ONOFF,	0,	-1,	1,	"Auto Mana Potion"};
-ToggleVar 	tChickenLife=	{		TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken life"};
-ToggleVar 	tChickenHostile=	{	TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken hostile"};
-ToggleVar 	tChickenHostileNearby={	TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken hostile nearby"};
-ToggleVar 	tChickenDangerousMonster={		TOGGLEVAR_ONOFF,	0,	-1,	1, "Chicken Dangerous Monster"};
-ToggleVar 	tAutoPotion=			{TOGGLEVAR_ONOFF,	0,	-1,	1,	"Auto Potion"};
-int 		dwChickenLifeMinClevel=						0;
-int 		dwChickenLifeForcedClevel=						90;
+int dwAutoPotionCheckMs=						1000;
+int dwIronGolemLifeAlertPercent=						0;
+int dwIronGolemLifeTownPercent=						0;
+int dwIronGolemLifeExitPercent=						0;
+int dwIronGolemTownLifePercent=			0;
+int dwHirePotionMinCLevel=						0;
+int dwHirePotionLifePercent=						0;
+int dwHirePotionColumn=						0;
+int dwHirePotionDelayMs=						3000;
+int dwHealingPotionLifePercent=						0;
+int dwHealingPotionDelayMs=						0;
+int dwManaPotionMax=						0;
+int dwManaPotionValue=						0;
+int dwManaPotionNTValue=						0;
+int dwManaPotionDelayMs=						3000;
+int dwChickenLife=						0;
+int dwChickenLifeCondition=						0;
+int dwChickenHostileLife=				0;
+int dwChickenHostileNearbyLife=			0;
+int dwChickenLifePercent=0;
+int dwHCChickenLifePercent=0;
+int dwChickenHostileLifePercent=		0;
+int dwChickenHostileNearbyLifePercent=	0;
+int nChickenLifeAction=1;
+ToggleVar tHealingPotion={TOGGLEVAR_ONOFF,	0,	-1,	1,	"Auto Healing Potion"};
+ToggleVar tManaPotion={TOGGLEVAR_ONOFF,	0,	-1,	1,	"Auto Mana Potion"};
+ToggleVar tChickenLife={TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken life"};
+ToggleVar tChickenHostile={TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken hostile"};
+ToggleVar tChickenHostileNearby={TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken hostile nearby"};
+ToggleVar tChickenDangerousMonster={		TOGGLEVAR_ONOFF,	0,	-1,	1, "Chicken Dangerous Monster"};
+ToggleVar tAutoPotion={TOGGLEVAR_ONOFF,	0,	-1,	1,	"Auto Potion"};
+ToggleVar tHardCoreAllBackTownIfProtect={TOGGLEVAR_ONOFF,0,-1,1,"HardCoreAllBackTownIfProtect"};
+int dwChickenLifeMinClevel=						0;
+int dwChickenLifeForcedClevel=						90;
 int dwNoQuitIfDeadClevel=90;
-int 		dwChickenLifeEnterGame=						1;
+int dwChickenLifeEnterGame=						1;
 BOOL fLifeProtectOn=FALSE;
 BOOL fDangerousMonsterActive=FALSE;
 char anDangerousMonster[1000][2]={0};
 int nDangerousMonsterAction=2;
+static ToggleVar tHardCoreResistProtect={TOGGLEVAR_ONOFF,0,-1,1,"Hard Core Resist Protect"};
+static BYTE hardCoreLeaveTownResist[3][5]={0};
 static ConfigVar aConfigVars[]={
 //--- m_CheckDangerous.h ---
+  {CONFIG_VAR_TYPE_CHAR_ARRAY0, "HardCoreLeaveTownResist",&hardCoreLeaveTownResist,5,{3}},
+  {CONFIG_VAR_TYPE_KEY, "HardCoreAllBackTownIfProtect",&tHardCoreAllBackTownIfProtect,4},
+  {CONFIG_VAR_TYPE_KEY, "HardCoreResistProtectToggle",&tHardCoreResistProtect,4},
   {CONFIG_VAR_TYPE_INT, "IronGolemLifeAlertPercent",&dwIronGolemLifeAlertPercent,     4},
   {CONFIG_VAR_TYPE_INT, "IronGolemLifeTownPercent",&dwIronGolemLifeTownPercent,     4},
   {CONFIG_VAR_TYPE_INT, "IronGolemLifeExitPercent",&dwIronGolemLifeExitPercent,     4},
@@ -72,11 +81,12 @@ static ConfigVar aConfigVars[]={
   {CONFIG_VAR_TYPE_KEY, "ChickenLifeToggle",          &tChickenLife     },
   {CONFIG_VAR_TYPE_KEY, "ChickenHostileToggle",		&tChickenHostile    },
   {CONFIG_VAR_TYPE_KEY, "ChickenHostileNearbyToggle", &tChickenHostileNearby  },
-  {CONFIG_VAR_TYPE_INT, "ChickenMaxLife",				&dwChickenMaxLife,     4},
+  {CONFIG_VAR_TYPE_INT, "ChickenLifeCondition",				&dwChickenLifeCondition,     4},
   {CONFIG_VAR_TYPE_INT, "ChickenLife",				&dwChickenLife,     4},
   {CONFIG_VAR_TYPE_INT, "ChickenHostileLife",			&dwChickenHostileLife,  4},
   {CONFIG_VAR_TYPE_INT, "ChickenHostileNearbyLife",   &dwChickenHostileNearbyLife,4},
   {CONFIG_VAR_TYPE_INT, "ChickenLifePercent",			&dwChickenLifePercent,  4},
+  {CONFIG_VAR_TYPE_INT, "HCChickenLifePercent",&dwHCChickenLifePercent,4},
   {CONFIG_VAR_TYPE_INT, "ChickenHostileLifePercent",  &dwChickenHostileLifePercent,4},
   {CONFIG_VAR_TYPE_INT, "ChickenHostileNearbyLifePercent", &dwChickenHostileNearbyLifePercent,4},
   {CONFIG_VAR_TYPE_INT, "ChickenLifeAction",          &nChickenLifeAction,  4},
@@ -95,19 +105,26 @@ void dangerous_addConfigVars() {
 void dangerous_initConfigVars() {
 	memset(anDangerousMonster,    0,        sizeof(anDangerousMonster));
 }
+int leader_back_to_town();
 int ProtectAction(wchar_t* wszShowMsg, int action = 1 , BYTE nCol = 8) {
-	//  1 exit game  , 2 back to home , 3 show message  4 drink
+	//1 exit game, 2 back to home
 	wchar_t wszTemp[0x100];
 	wcscpy( wszTemp	,	wszShowMsg);
 	if ( fInGame ) {
 		if (action == 1 ) {
-			if (dwPlayerLevel>=dwNoQuitIfDeadClevel&&(PLAYER->dwMode==PlayerMode_Death||PLAYER->dwMode==PlayerMode_Dead)) {
-				wcscat(wszTemp,	L"Already dead, no action.");
-				d2client_ShowGameMessage(wszTemp, nCol);
-				return 0;
+			if (PLAYER->dwMode==PlayerMode_Death||PLAYER->dwMode==PlayerMode_Dead) {
+				if (fIsHardCoreGame||dwPlayerLevel>=dwNoQuitIfDeadClevel) {
+					if (dwGameLng) wcscat(wszTemp,L"已经死了不退出");
+					else wcscat(wszTemp,	L"Already dead, no action.");
+					d2client_ShowGameMessage(wszTemp, nCol);
+					return 0;
+				}
 			}
 			wcscat(wszTemp,	L"Exit game.");
 			d2client_ShowGameMessage(wszTemp, nCol);
+			if (fIsHardCoreGame&&tHardCoreAllBackTownIfProtect.isOn) {
+				leader_back_to_town();
+			}
 			ExitGame();
 		} else if ( action == 2) {
 			if (!dwBackToTownTimeout) {
@@ -155,12 +172,14 @@ static void rescanMercPointers() {
 	}
 }
 
-extern ToggleVar tBugAutoQuitHell,tBugAutoQuitHellAct4,tBugAutoQuitHellAct5,tChickenLife,tSocketProtect,tDropProtectionToggle,tResetProtectionToggle,tRunewordProtect;
+extern ToggleVar tBugAutoQuitHell,tBugAutoQuitHellAct4,tBugAutoQuitHellAct5,tChickenLife,tSocketProtect;
+extern ToggleVar tDropProtectionToggle,tResetProtectionToggle,tRunewordProtect,tAutoTeleportEvade;
 void ChickenLifeNewGame() {
-	static int bugHell=0,bugHellA4=0,bugHellA5=0;
+	static int bugHell=0,bugHellA4=0,bugHellA5=0,autoEvade=0;
 	if (tBugAutoQuitHell.isOn) bugHell=1;
 	if (tBugAutoQuitHellAct4.isOn) bugHellA4=1;
 	if (tBugAutoQuitHellAct5.isOn) bugHellA5=1;
+	if (tAutoTeleportEvade.isOn) autoEvade=1;
 	if (dwChickenLifeEnterGame) {
 		tChickenLife.isOn=1;
 		tSocketProtect.isOn=1;
@@ -170,15 +189,51 @@ void ChickenLifeNewGame() {
 		if (bugHell) tBugAutoQuitHell.isOn=1;
 		if (bugHellA4) tBugAutoQuitHellAct4.isOn=1;
 		if (bugHellA5) tBugAutoQuitHellAct5.isOn=1;
+		if (autoEvade) tAutoTeleportEvade.isOn=1;
 	}
+	lastChickenLifeThreshold=-1;
 	dwCheckMercMs=dwCurMs+3000;manaMs=0;healingMs=0;golemMs=0;hireMs=0;
 	pMercHpPercent=NULL;pGolemHpPercent=NULL;
 	fIronGolemIsRuneword=0;fIronGolemTownProtection=0;
+	dwCheckRelationMs=dwCurMs+100;
 	if (EXPANSION) rescanMercPointers();
 }
 
 void ChickenLifeLoop() {
-	if (PLAYER->dwMode==0x11) return ;
+	if (dwCheckRelationMs&&dwCurMs>dwCheckRelationMs) {
+		/*
+		LOG("checkRelation pid=%d\n",dwPlayerId);
+		for (RosterUnit *pUnit=PLAYERLIST;pUnit;pUnit=pUnit->pNext) {
+			LOG(" uid=%d:\n",pUnit->dwUnitId);
+			if (!pUnit->pPvPInfo) continue;
+			for (PvPInfo *pPvPInfo=*(pUnit->pPvPInfo);pPvPInfo;pPvPInfo=pPvPInfo->pNext) {
+				LOG("  %d:%X\n",pPvPInfo->dwUnitId,pPvPInfo->dwFlag);
+			}
+		}
+		*/
+		static int lastState=0;
+		hasHostilePlayer=0;
+		for (RosterUnit *pUnit = PLAYERLIST; pUnit; pUnit = pUnit->pNext ) {
+			int pvp=testPvpFlag(pUnit->dwUnitId);if (pvp==3) continue;
+			//LOG("%d %X %s\n",pvp,pUnit->dwPartyFlags,pUnit->szName);
+			if (pvp==0) hasHostilePlayer++;
+		}
+		if (hasHostilePlayer!=lastState) {
+			gameMessage("HostilePlayer: %d",hasHostilePlayer);
+			lastState=hasHostilePlayer;
+		}
+		dwCheckRelationMs=0;
+	}
+	if (PLAYER->dwMode==PlayerMode_Death) {
+		if (fIsHardCoreGame||dwPlayerLevel>=dwNoQuitIfDeadClevel) {
+			if (!fLifeProtectOn) {
+				fLifeProtectOn=1;
+				gameMessageW(dwGameLng?L"已经挂了不退出":L"Already dead, no action.");
+			}
+			return;
+		}
+	}
+	if (PLAYER->dwMode==PlayerMode_Dead) return;
 	if (tChickenLife.isOn || tChickenHostile.isOn){
 		if (fPlayerInTown ) {
 			fLifeProtectOn = FALSE ;
@@ -237,7 +292,7 @@ void ChickenLifeLoop() {
 			} else if (dwIronGolemLifeAlertPercent&&*pGolemHpPercent<dwIronGolemLifeAlertPercent) {
 				wchar_t wszbuf[256];
 				wsprintfW(wszbuf, L"IronGolem%02d%%",*pGolemHpPercent);
-				SetBottomAlertMsg1(wszbuf,100,1,1);
+				setBottomAlertMsg(0,wszbuf,100,1,1,2);
 				if (!golemMs||dwCurMs>=golemMs) {
 					golemMs=dwCurMs+2000;
 					d2client_PlaySound(PLAYER->dwUnitId, UNITNO_PLAYER,0x19);
@@ -245,23 +300,29 @@ void ChickenLifeLoop() {
 			}
 		}
 
-		if (dwPlayerLevel>=(int)dwChickenLifeMinClevel && tChickenLife.isOn
+		if ((fIsHardCoreGame||dwPlayerLevel>=(int)dwChickenLifeMinClevel) && tChickenLife.isOn
 			||dwPlayerLevel>=(int)dwChickenLifeForcedClevel){
-			if( dwChickenLife && (int)dwChickenMaxLife<=dwPlayerMaxHP && dwPlayerHP<=dwChickenLife) {
-				if(dwChickenLife && (int)dwChickenMaxLife<=dwPlayerMaxHP && dwPlayerHP<=dwChickenLife) {
-					ProtectAction(L"<Hackmap>: Life below chicken threshold,", nChickenLifeAction);
-					fLifeProtectOn = TRUE;
-					return;
+			int threshold;
+			if (dwPlayerMaxHP>=dwChickenLifeCondition) threshold=dwChickenLife;
+			else {
+				if (fIsHardCoreGame) {
+					threshold=dwPlayerMaxHP*dwHCChickenLifePercent/100;
+				} else {
+					threshold=dwPlayerMaxHP*dwChickenLifePercent/100;
 				}
 			}
-			if(dwPlayerHP<dwChickenMaxLife && dwChickenLifePercent 
-				&& dwPlayerHP*100 <= dwPlayerMaxHP*dwChickenLifePercent ){
+			if (threshold!=lastChickenLifeThreshold) {
+				if (dwGameLng) gameMessageW(L"血保数值%d",threshold);
+				else gameMessage("Life Protect Threshold %d",threshold);
+				lastChickenLifeThreshold=threshold;
+			}
+			if (dwPlayerHP<=threshold) {
 				ProtectAction(L"<Hackmap>: Life below chicken threshold,", nChickenLifeAction);
 				fLifeProtectOn = TRUE;
 				return;
 			}
 		}
-		if ( tChickenHostile.isOn ) {
+		if (tChickenHostile.isOn&&hasHostilePlayer) {
 			for (RosterUnit *pUnit = PLAYERLIST; pUnit; pUnit = pUnit->pNext ) {
 				if (testPvpFlag(pUnit->dwUnitId)==0) {
 					if ( (dwChickenHostileLife && dwPlayerHP<=dwChickenHostileLife) 
@@ -275,18 +336,25 @@ void ChickenLifeLoop() {
 		}
 	}
 	if (ceHp) {
+		//range 8 yard
 		wchar_t wszbuf[32];
-		int d100=(int)(ceDis*100+0.5);
-		wsprintfW(wszbuf, L"CE %d.%02d %d%%",d100/100,d100%100,ceHp);
-		SetBottomAlertMsg1(wszbuf,300,1,ceDis<=8);
+		wsprintfW(wszbuf, L"CE %d %d%%",ceDis,ceHp);
+		setBottomAlertMsg(0,wszbuf,300,1,3,6);
+		if (ceDis<=9) setBottomAlertBg(0,0x10,0x97);
+	}
+	if (feHp) {
+		//2.7 yard safe, 2.1 yard hit
+		wchar_t wszbuf[32];
+		wsprintfW(wszbuf, L"FE %d %d%%",feDis,feHp);
+		setBottomAlertMsg(1,wszbuf,300,1,1,0);
+		if (feDis<=3) setBottomAlertBg(1,0x10,0x62);
 	}
 	if (cowKingHp) {
 		wchar_t wszbuf[32];
-		int d100=(int)(cowKingDis*100+0.5);
-		wsprintfW(wszbuf, L"CowKing %d.%02d %d%%",d100/100,d100%100,cowKingHp);
-		SetBottomAlertMsg2(wszbuf,300,1,1);
+		wsprintfW(wszbuf, L"CowKing %d %d%%",cowKingDis,cowKingHp);
+		setBottomAlertMsg(1,wszbuf,300,1,1,1);
 	}
-	ceHp=0;cowKingHp=0;ceDis=12;cowKingDis=1000;
+	feHp=0;ceHp=0;cowKingHp=0;ceDis=12;feDis=6;cowKingDis=1000;
 }
 extern int HasCowKing;
 int isCowKing(MonsterData *pMonsterData) {
@@ -303,16 +371,26 @@ int isCowKing(MonsterData *pMonsterData) {
 }
 void checkBossMonster( UnitAny  *pUnit ) {
 	MonsterData *pMonsterData = pUnit->pMonsterData;
-	if (LEVELNO==39&&isCowKing(pMonsterData)) {//cow level 
+	if (HasCowKing&&LEVELNO==39&&isCowKing(pMonsterData)) {//cow level 
 		cowKingHp=d2common_GetMonsterHpPercent(pUnit);
-		cowKingDis=getPlayerDistanceYard(pUnit);
+		cowKingDis=(getPlayerDistanceM256(pUnit)*2/3)>>8;
 		return;
 	}
 	for (int i = 0; i < 9; i++) {
 		int enchno = pMonsterData->anEnchants[i];
-		if (enchno==18) { //CE
-			double dis=getPlayerDistanceYard(pUnit);
-			if (dis<ceDis) {ceDis=dis;ceHp=d2common_GetMonsterHpPercent(pUnit);}
+		if (enchno==9||enchno==18) { //FE CE
+			int dis=(getPlayerDistanceM256(pUnit)*2/3)>>8;
+			if (enchno==9) {
+				if (dis<feDis) {
+					feDis=dis;
+					feHp=d2common_GetMonsterHpPercent(pUnit);
+				}
+			} else {
+				if (dis<ceDis) {
+					ceDis=dis;
+					ceHp=d2common_GetMonsterHpPercent(pUnit);
+				}
+			}
 			break;
 		}
 	}
@@ -323,7 +401,7 @@ void CheckDangerousPlayer( UnitAny  *pUnit ) {
 		fLifeProtectOn = FALSE ;
 		return ;
 	}
-	if ( tChickenHostileNearby.isOn && pUnit->dwMode ){
+	if (hasHostilePlayer&&tChickenHostileNearby.isOn && pUnit->dwMode ){
 		if ( fLifeProtectOn==FALSE && testPvpFlag(pUnit->dwUnitId) ==0){
 			if ( (dwChickenHostileNearbyLife && dwPlayerHP<=dwChickenHostileNearbyLife) 
 				|| (dwChickenHostileNearbyLifePercent && dwPlayerHP*100 <= dwPlayerMaxHP*dwChickenHostileNearbyLifePercent) ){
@@ -359,4 +437,49 @@ void CheckDangerousMonster( UnitAny  *pUnit ) {
 		}
 	}
 }
-
+int canLeaveTown() {
+	if (!fIsHardCoreGame) return 0;
+	if (fIsHardCoreSafe) {
+		gameMessageW(dwGameLng?L"专家级标记为safe的人物不能出城":L"Hard Core Safe can't leave town");
+		return 0;
+	}
+	int lvl=hardCoreLeaveTownResist[DIFFICULTY][0];
+	int minFR=hardCoreLeaveTownResist[DIFFICULTY][1];
+	int minLR=hardCoreLeaveTownResist[DIFFICULTY][2];
+	int minCR=hardCoreLeaveTownResist[DIFFICULTY][3];
+	int minPR=hardCoreLeaveTownResist[DIFFICULTY][4];
+	//LOG("leaveTown %d %d %d %d\n",lvl,minFR,minLR,minCR,minPR);
+	if (tHardCoreResistProtect.isOn&&dwPlayerLevel>=lvl) {
+		char keyname[256];formatKey(keyname,tHardCoreResistProtect.key);
+		int fr=d2common_GetUnitStat(PLAYER,STAT_FIRE_RESIST,0);
+		if (fr<minFR) {
+			gameMessageW(dwGameLng?L"大号抗性保护:级别大于%d火抗小于%d的人物不能出城(%hs)"
+				:L"Resist Protect:CharLvl>=%d FR<%d can't leave town(%hs)",
+				lvl,minFR,keyname);
+			return 0;
+		}
+		int lr=d2common_GetUnitStat(PLAYER,STAT_LIGHTING_RESIST,0);
+		if (lr<minLR) {
+			gameMessageW(dwGameLng?L"大号抗性保护:级别大于%d闪抗小于%d的人物不能出城(%hs)"
+				:L"Resist Protect:CharLvl>=%d LR<%d can't leave town(%hs)",
+				lvl,minLR,keyname);
+			return 0;
+		}
+		int cr=d2common_GetUnitStat(PLAYER,STAT_COLD_RESIST,0);
+		if (cr<minCR) {
+			gameMessageW(dwGameLng?L"大号抗性保护:级别大于%d冰抗小于%d的人物不能出城(%hs)"
+				:L"Resist Protect:CharLvl>=%d CR<%d can't leave town(%hs)",
+				lvl,minCR,keyname);
+			return 0;
+		}
+		int pr=d2common_GetUnitStat(PLAYER,STAT_POSION_RESIST,0);
+		if (pr<minPR) {
+			gameMessageW(dwGameLng?L"大号抗性保护:级别大于%d毒抗小于%d的人物不能出城(%hs)"
+				:L"Resist Protect:CharLvl>=%d PR<%d can't leave town(%hs)",
+				lvl,minPR,keyname);
+			return 0;
+		}
+		//LOG("leaveTown %d %d %d %d\n",dwPlayerLevel,fr,lr,cr,pr);
+	}
+	return 1;
+}

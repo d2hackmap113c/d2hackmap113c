@@ -730,58 +730,48 @@ end:
 		ret
 	}
 }
-static wchar_t wszBAlertMsg1[512] = {L'\0'} ;
-static wchar_t wszBAlertMsg2[512] = {L'\0'} ;
-static wchar_t wszBAlertMsg3[512] = {L'\0'} ;
-static int dwBAlertMsgMs1,fBAlertBlink1;
-static int dwBAlertMsgColor1=0,dwBAlertMsgColorMs1=0;
-static int dwBAlertMsgMs2,fBAlertBlink2;
-static int dwBAlertMsgColor2=0,dwBAlertMsgColorMs2=0;
-static int dwBAlertMsgMs3,fBAlertBlink3;
-static int dwBAlertMsgColor3=0,dwBAlertMsgColorMs3=0;
-void SetBottomAlertMsg1(wchar_t *wszMsg, int ms, int color,int blink) {	
-	wcscpy(wszBAlertMsg1,wszMsg);dwBAlertMsgMs1=dwCurMs+ms;
-	if (!blink||!fBAlertBlink1) {dwBAlertMsgColor1=color;dwBAlertMsgColorMs1=(dwCurMs+256)&0xFFFFFF00;}
-	fBAlertBlink1=blink;
+struct AlertMsg {
+	int blink,color1,color2;
+	int ms,state,colorMs;
+	int bg,bgColor1,bgColor2;
+	wchar_t msg[512];
+};
+static AlertMsg alertMsgs[6]={0};
+void setBottomAlertMsg(int id,wchar_t *msg,int ms,int blink,int color1,int color2) {	
+	if (id<0||id>=6) return;
+	AlertMsg *p=alertMsgs+id;
+	wcscpy(p->msg,msg);p->ms=dwCurMs+ms;
+	p->blink=blink;p->color1=color1;p->color2=color2;
+	if (blink&&p->blink) {
+	} else {
+		p->state=0;p->colorMs=(dwCurMs+256)&0xFFFFFF00;
+	}
+	p->bg=0;
 }
-void SetBottomAlertMsg2(wchar_t *wszMsg, int ms, int color,int blink) {	
-	wcscpy(wszBAlertMsg2,wszMsg);dwBAlertMsgMs2=dwCurMs+ms;
-	if (!blink||!fBAlertBlink2) {dwBAlertMsgColor2=color;dwBAlertMsgColorMs2=(dwCurMs+256)&0xFFFFFF00;}
-	fBAlertBlink2=blink;
-}
-void SetBottomAlertMsg3(wchar_t *wszMsg, int ms, int color,int blink) {	
-	wcscpy(wszBAlertMsg3,wszMsg);dwBAlertMsgMs3=dwCurMs+ms;
-	if (!blink||!fBAlertBlink3) {dwBAlertMsgColor3=color;dwBAlertMsgColorMs3=(dwCurMs+256)&0xFFFFFF00;}
-	fBAlertBlink3=blink;
+void setBottomAlertBg(int id,int bgColor1,int bgColor2) {
+	if (id<0||id>=6) return;
+	AlertMsg *p=alertMsgs+id;
+	p->bg=1;p->bgColor1=bgColor1;p->bgColor2=bgColor2;
 }
 void DrawCenterAlertMsg(){
   //需要DrawClientPatch支持
-	if (dwBAlertMsgMs1) {
-		if (dwCurMs>dwBAlertMsgMs1) {dwBAlertMsgMs1=0;fBAlertBlink1=0;}
-		if (fBAlertBlink1&&dwCurMs>dwBAlertMsgColorMs1) {
-			dwBAlertMsgColor1=dwBAlertMsgColor1==1?2:1;
-			dwBAlertMsgColorMs1=(dwCurMs+256)&0xFFFFFF00;
+	AlertMsg *p=alertMsgs;
+	int y=SCREENHEIGHT/2+100;
+	for (int i=0;i<6;i++,p++,y+=25) {
+		if (!p->ms) continue;
+		if (dwCurMs>p->ms) {p->ms=0;continue;}
+		if (p->blink&&dwCurMs>p->colorMs) {
+			p->state=!p->state;
+			p->colorMs=(dwCurMs+256)&0xFFFFFF00;
 		}
-		DrawCenterText(3, wszBAlertMsg1 , SCREENSIZE.x/2, SCREENSIZE.y/2+120, dwBAlertMsgColor1, 1,0);
-	}
-	if (dwBAlertMsgMs2) {
-		if (dwCurMs>dwBAlertMsgMs2) {dwBAlertMsgMs2=0;fBAlertBlink2=0;}
-		if (fBAlertBlink2&&dwCurMs>dwBAlertMsgColorMs2) {
-			dwBAlertMsgColor2=dwBAlertMsgColor2==1?2:1;
-			dwBAlertMsgColorMs2=(dwCurMs+256)&0xFFFFFF00;
-		}
-		DrawCenterText(3, wszBAlertMsg2 , SCREENSIZE.x/2, SCREENSIZE.y/2+150, dwBAlertMsgColor2, 1,0);
-	}
-	if (dwBAlertMsgMs3) {
-		if (dwCurMs>dwBAlertMsgMs3) {dwBAlertMsgMs3=0;fBAlertBlink3=0;}
-		if (fBAlertBlink3&&dwCurMs>dwBAlertMsgColorMs3) {
-			dwBAlertMsgColor3=dwBAlertMsgColor3==1?2:1;
-			dwBAlertMsgColorMs3=(dwCurMs+256)&0xFFFFFF00;
-		}
-		DrawCenterText(3, wszBAlertMsg3 , SCREENSIZE.x/2, SCREENSIZE.y/2+180, dwBAlertMsgColor3, 1,0);
+		DWORD dwOldFone=d2win_SetTextFont(3);
+		int w,h;d2win_GetTextAreaSize(p->msg,&w,&h);
+		int x=(SCREENWIDTH>>1)-(w>>1);
+		if (p->bg) d2gfx_DrawRectangle(x,y-20,x+w,y,p->state?p->bgColor2:p->bgColor1,5);
+		d2win_DrawText(p->msg,x,y,p->state?p->color2:p->color1,0);
+		d2win_SetTextFont(dwOldFone);
 	}
 }
-
 int GetAreaLevel() {	
 	static int dwLastLevelNo = 0 ;
 	static int  wAreaLevel = 0 ;
@@ -1175,7 +1165,8 @@ AreaRectData *testPosition(AreaRectData *pData,int x,int y) {
 }
 extern int actlvls[6];//{1, 40, 75, 103, 109, 137};
 int portalToLevel(World* game, UnitAny* pUnit, int levelId) {
-	if (levelId<Level_RogueEncampment||levelId>Level_Tristram6boss) return 0;
+	LOG("levels=%d\n",*d2common_pnLevels);
+	if (levelId<Level_RogueEncampment||levelId>*d2common_pnLevels) return 0;
 	AreaRectData *pData=d2common_getRectData(pUnit);
 	int curArea=d2common_GetLevelIdFromRectData(pData);
 	if (levelId==Level_TheSecretCowLevel) {
@@ -1183,7 +1174,7 @@ int portalToLevel(World* game, UnitAny* pUnit, int levelId) {
 	} else if (levelId>=Level_FurnaceofPain) {
 		if (curArea!=Level_Harrogath) return 0;
 	} else {
-		if (levelId<actlvls[ACTNO]||levelId>=actlvls[ACTNO+1]) {
+		if (levelId<actlvls[ACTNO]||ACTNO<4&&levelId>=actlvls[ACTNO+1]) {
 			sendMessageToClient(pUnit->pPlayerData->client,4,0,"<hackmap>",
 				"Can't open portal to a different act");
 			return 0;

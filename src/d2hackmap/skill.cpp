@@ -166,7 +166,7 @@ static int isAutoSkill(Skill *pSkill) {
 		case Skill_Attack:case Skill_ExplodingArrow:return fUsingCrossBow||fUsingBow;
 		case Skill_Throw:return fUsingThrow;
 		case Skill_FrostNova:case Skill_IceBlast:case Skill_GlacialSpike:case Skill_Blizzard:
-		case Skill_FireBolt:case Skill_FireBall:case Skill_Meteor:
+		case Skill_FireBolt:case Skill_FireBall:case Skill_Meteor:case Skill_Hydra:
 		case Skill_StaticField:case Skill_Nova:case Skill_Lightning:case Skill_ChainLightning:
 		case Skill_LifeTap:case Skill_Decrepify:case Skill_DimVision:case Skill_LowerResist:
 		case Skill_WarCry:case Skill_Smite:
@@ -239,7 +239,7 @@ static void updateSkill(struct AutoSkillInfo *info,int id) {
 		case Skill_FrozenOrb:d=20;info->notImmune=43;break;//cold immune
 		case Skill_Blizzard:d=33;info->notImmune=43;break;//cold immune
 		case Skill_FireBolt:case Skill_FireBall:d=31;info->notImmune=39;break;//fire immune
-		case Skill_Meteor:d=33;info->notImmune=39;break;//fire immune
+		case Skill_Meteor:case Skill_Hydra:d=33;info->notImmune=39;break;//fire immune
 		case Skill_Attack:case Skill_ExplodingArrow:d=30;info->notImmune=39;break;//fire immune
 		case Skill_Nova:d=8;info->notImmune=41;break;//lightning immune
 		case Skill_ChargedBolt:d=20;info->notImmune=41;break;//lightning immune
@@ -354,6 +354,7 @@ void AutoSkillRunLoop() {
 	if (dwCurMs<dwAutoSkillCheckMs) return;
 	if (dwAutoSkillReloading) {processStacking();dwAutoSkillCheckMs=dwCurMs+100;return;}
 	if (fPlayerInTown||fAutoFollowMoving) return;
+	if (*d2client_pUiGameMenuOn) return;
 	if (PLAYER->pInventory->pCursorItem) return;
 	if (PLAYER->dwMode==PlayerMode_Attacking1||PLAYER->dwMode==PlayerMode_Attacking2||PLAYER->dwMode==PlayerMode_Cast) return;
 	curSkill=NULL;nextSkill=NULL;
@@ -371,7 +372,7 @@ void AutoSkillRunLoop() {
 	if (!curSkill) return;
 	curSkill->maxdis2=fAutoSkillNow?curSkill->vdis2:curSkill->umaxdis2;
 	//if (dwPlayerMana<curSkill->mana) {dwAutoSkillCheckMs=dwCurMs+dwAutoSkillCheckInterval;return;}
-	minD2=1000000;maxMs=0;pMinUnit=NULL;
+	minD2=0x7FFFFFFF;maxMs=0;pMinUnit=NULL;
 	minD2_2=1000000;pMinUnit_2=NULL;
 	fSelfRadiusSkill=0;stopAttack=0;
 	for (int i=0;i<128;i++) {
@@ -415,6 +416,7 @@ loopend:
 	}
 }
 int getUnitOwnerId(UnitAny *pUnit);
+int getTowerValue(int isFire,int type);
 static void checkUnit(UnitAny *pMon) {
 	if (pMon->dwUnitType!=UNITNO_MONSTER) return;
 	if (pMon->dwMode==MonsterMode_Death) return; //dying?
@@ -492,8 +494,30 @@ static void checkUnit(UnitAny *pMon) {
 	if (minD2<curSkill->umindis2) {
 		if (d2>=minD2) return;
 	} 
+	if (dwRightSkill==Skill_Hydra&&dwCurrentLevel==Level_ArreatSummit) {
+		if (pMon->dwTxtFileNo==371||pMon->dwTxtFileNo==372) {
+			int value=getTowerValue(pMon->dwTxtFileNo==372,pMon->pMonsterData->bTypeFlags); //128,192,256,320,384,426,640,853
+			value>>=4; //8-53
+			if (pMonsterData->fBoss||pMonsterData->fChamp) {
+				BYTE *enchants=pMonsterData->anEnchants;
+				for (int i=0;i<9;i++,enchants++) {
+					int enchno=*enchants ;if (!enchno) break;
+					switch (enchno) {
+						case 9: //FireEnchantedDesc
+						case 18: //ColdEnchantedDesc
+							value<<=1;
+							break;
+					}
+				}
+			}
+			value=127-value;
+			int fr=d2common_GetUnitStat(pMon,STAT_FIRE_RESIST,0);
+			if (fr<0) fr=0;if (fr>100) fr=100;
+			d2|=(fr<<23)|(value<<16);
+		}
+	}
 	if (curSkill->id==Skill_DimVision&&!aAutoDimVisionMonster[pMon->dwTxtFileNo]) {
-		d2+=3000;
+		d2|=0x10000;
 	}
 	POINT p1,p2;
 	p1.x=PLAYER->pMonPath->wUnitX;p1.y=PLAYER->pMonPath->wUnitY;
@@ -524,15 +548,17 @@ static void checkUnit(UnitAny *pMon) {
 				if (d2<minD2_2) {minD2_2=d2;pMinUnit_2=pMon;}
 			}
 			break;
-		default:
-			if (d2<curSkill->umindis2||curSkill->id==Skill_DimVision) { 
+		default: {
+			int dd2=d2&0xFFFF;
+			if (dd2<curSkill->umindis2||curSkill->id==Skill_DimVision) { 
 				if (d2<minD2) {minD2=d2;pMinUnit=pMon;}
-			} else if (d2<curSkill->maxdis2&&minD2>=curSkill->umindis2) {
+			} else if (dd2<curSkill->maxdis2&&minD2>=curSkill->umindis2) {
 				int ms=monsterSkillMs[pMon->dwUnitId&MONSTER_MASK];
 				if (!ms) ms=10000;else ms=dwCurMs-ms;
 				if (ms>maxMs) {maxMs=ms;minD2=d2;pMinUnit=pMon;}
 			}
 			break;
+		}
 	}
 }
 void __fastcall autoSkillDimVision(char *packet) {

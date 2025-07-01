@@ -29,13 +29,8 @@ enum MulticlientInfo {
 	MCI_StopFollow=0xB0,
 	MCI_AutoSkill=0xC0,
 	MCI_Reply=0xD0,
+	MCI_Skill=0xE0,
 	MCI_Quest=0xF0,
-};
-enum MulticlientQuest {
-	MCQ_10BB=1,
-	MCQ_5BB=2,
-	MCQ_0BB=3,
-	MCQ_BB_ERR=4,
 };
 enum MulticlientReply {
 	MCR_OK=1,
@@ -44,6 +39,15 @@ enum MulticlientReply {
 	MCR_GOT_RUNES=4,
 	MCR_FAILED=5,
 	MCR_PASSED=6,
+};
+enum MulticlientSkill {
+	MCS_HydraLock=1,
+};
+enum MulticlientQuest {
+	MCQ_10BB=1,
+	MCQ_5BB=2,
+	MCQ_0BB=3,
+	MCQ_BB_ERR=4,
 };
 struct D2Window {
 	HWND hwnd;

@@ -24,6 +24,7 @@ char fMonitorRecvCmd[256]={					0};
 ToggleVar tPacketHandler={TOGGLEVAR_ONOFF,0,-1,1,"NetworkPacket",&MonitorPacket,0,0,2};
 ToggleVar tDoTest={TOGGLEVAR_DOWN,0,-1,1,"DoTest",&DoTest,0,0,2};
 ToggleVar tNecTeleportAttract={TOGGLEVAR_ONOFF,0,-1,1,"NecTeleportAttract"};
+ToggleVar tHardCoreSwapWeaponProtect={TOGGLEVAR_ONOFF,0,-1,1,"HardCoreSwapWeaponProtect"};
 static ConfigVar aConfigVars[]={
 	{CONFIG_VAR_TYPE_INT, "AddStatMaxCount",&dwAddStatMaxCount,4},
 	{CONFIG_VAR_TYPE_INT, "SocketTimeOutValue",&dwSocketTimeOutSec,4},
@@ -32,6 +33,7 @@ static ConfigVar aConfigVars[]={
   {CONFIG_VAR_TYPE_CHAR_ARRAY0, "MonitorRecvCmd",&fMonitorRecvCmd,1, {256}},
 	{CONFIG_VAR_TYPE_KEY, "DoTestKey",&tDoTest},
 	{CONFIG_VAR_TYPE_KEY, "NecTeleportAttractToggle",&tNecTeleportAttract},
+	{CONFIG_VAR_TYPE_KEY, "HardCoreSwapWeaponProtect",&tHardCoreSwapWeaponProtect},
 };
 void packet_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
@@ -785,8 +787,6 @@ void __fastcall dumpSendPacket(int *esp) {
 	}
 }
 
-void onRightSkillMap(int x,int y);
-void onRightSkillUnit(int type,int id);
 void showResetProtectMsg() {
 	wchar_t wszbuf[256];char keyname[256];wszbuf[0]=0;
 	formatKey(keyname,tResetProtectionToggle.key);
@@ -832,15 +832,23 @@ int dwInteractEntityCount=0;
 void packetDebug() {
 }
 extern int autoNpcTxt;
+extern int isAutoTeleporting;
+extern int dwCheckRelationMs;
+void onRightSkillMap(int x,int y);
+void onRightSkillUnit(int type,int id);
+int autoTpEvade(char *packet);
+int canLeaveTown();
 int __fastcall blockSendPacket(int *esp) {
 	int ret=esp[0];
 	int len=esp[1];
 	int arg=esp[2];
 	BYTE *packet=(BYTE *)esp[3];
 	int cmd=packet[0]&0xFF;
+	if (dwRightSkill==Skill_Teleport&&(0xC<=cmd&&cmd<=0x10)&&!isAutoTeleporting) {
+		if (autoTpEvade((char *)packet)) return 1;
+	} 
 	switch (cmd) {
 		case 0x0c: //right skill map
-			packetDebug();
 			onRightSkillMap(*(WORD *)(packet+1),*(WORD *)(packet+3));
 			break;
 		case 0x0d: //right skill unit
@@ -861,6 +869,15 @@ int __fastcall blockSendPacket(int *esp) {
 		case 0x13: {//Interact (click) entity
 			int type=*(int *)&packet[1];
 			int id=*(int *)&packet[5];
+			if (fIsHardCoreGame&&type==UNITNO_OBJECT) {
+				UnitAny *pUnit=d2client_GetUnitFromId(id,type);
+				if (pUnit&&(pUnit->dwTxtFileNo==59||pUnit->dwTxtFileNo==60)) { //portal
+					int lvl=pUnit->pObjectData->nShrineNo;
+					if (fPlayerInTown&&lvl!=Level_Harrogath&&!canLeaveTown()) {
+						return 1;
+					}
+				}
+			}
 			dwInteractEntityCount++;
 			if (fWinActive&&dwTeamMemberCount&&(type==2||type==5)) {
 				leader_click_object(type,id);
@@ -993,13 +1010,50 @@ int __fastcall blockSendPacket(int *esp) {
 		}
 		case 0x49: {//Take WP/Close WP
 			int unitId=*(DWORD *)&packet[1];
-			int dest=packet[5];
-			if (fWinActive&&dwTeamMemberCount&&dest) {
-				leader_click_object(9,dest);
+			int areaId=packet[5];
+			if (fIsHardCoreGame) {
+				if (areaId!=1&&areaId!=40&&areaId!=75&&areaId!=103&&areaId!=109&&!canLeaveTown()) {
+					if (areaId<40) areaId=1;
+					else if (areaId<75) areaId=40;
+					else if (areaId<103) areaId=75;
+					else if (areaId<109) areaId=103;
+					else areaId=109;
+					packet[5]=areaId;
+					return 0;
+				}
+			}
+			if (fWinActive&&dwTeamMemberCount&&areaId) {
+				leader_click_object(9,areaId);
 				leader_click_object(8,unitId);
 			}
 			break;
 		}	
+		case 0x5d: //Squelch/Hostile
+			dwCheckRelationMs=dwCurMs+300;
+			break;
+		case 0x60: //swap weapon
+			if (fIsHardCoreGame&&!fPlayerInTown&&tHardCoreSwapWeaponProtect.isOn) {
+				int usingSecondaryWeapon=*d2client_pActiveWeapon;
+				int hasPrimaryWeapon=0,hasSecondaryWeapon=0;
+				for (UnitAny *pUnit = d2common_GetFirstItemInInv(PLAYER->pInventory);pUnit;
+					pUnit = d2common_GetNextItemInInv(pUnit)) {
+					if (pUnit->dwUnitType!=UNITNO_ITEM) continue;
+					//if (pUnit->pItemData->nLocation!=3) continue; //not on body
+					//if (pUnit->pItemData->nItemLocation==255) { //equipped
+					switch (pUnit->pItemData->nBodyLocation) {
+						case 4:case 5:hasPrimaryWeapon=1;break;
+						case 11:case 12:hasSecondaryWeapon=1;break;
+					}
+					//}
+				}
+				//LOG("swap %d %d %d\n",usingSecondaryWeapon,hasPrimaryWeapon,hasSecondaryWeapon);
+				if (!hasSecondaryWeapon) {
+					char keyname[256];formatKey(keyname,tHardCoreSwapWeaponProtect.key);
+					gameMessageW(dwGameLng?L"切换武器保护,按%hs解锁":L"Swap weapon protect, press %hs to unlock",keyname);
+					return 1;
+				}
+			}
+			break;
 		case 0x61: //change merc equipment
 			//TODO save merc
 			break;
@@ -1007,11 +1061,19 @@ int __fastcall blockSendPacket(int *esp) {
 			fStartingGame=1;
 			if (gameHeap) HeapDestroy(gameHeap);gameHeap=HeapCreate(0,0,0);
 			GameStructInfo *pinfo=*d2client_pGameInfo;
-			if (fWinActive&&pinfo) {
+			if (pinfo) {
 				char *game=pinfo->szGameName;
 				char *password=pinfo->szGamePassword;
-				LOG("Send Game Join Request: game=%s password=%s\n",game,password);
-				if (game&&game[0]) MultiClientJoinGame();
+				LOG("Game Join Request: game=%s password=%s mode=%X\n",game,password,pinfo->nGameMode);
+				if (fWinActive&&game&&game[0]) MultiClientJoinGame();
+				/*
+				fIsHardCoreGame=pinfo->nGameMode&4;
+				if (fHasHardCoreConfig&&prevHardCoreGame!=fIsHardCoreGame) {
+					gameMessage("JoinRequest: Hard Core state change, need to reload config");
+					needReloadConfig=1;
+				}
+				prevHardCoreGame=fIsHardCoreGame;
+				*/
 			}
 			break;
 		}
@@ -1038,6 +1100,8 @@ void initSendPacketCheckTable() {
 	sendPacketCheckTable[0x3B]=1; //add skill point
 	sendPacketCheckTable[0x3C]=1; //select skill
 	sendPacketCheckTable[0x49]=1; //Take WP/Close WP
+	sendPacketCheckTable[0x5d]=1; //Squelch/Hostile
+	sendPacketCheckTable[0x60]=1; //swap weapon
 	sendPacketCheckTable[0x61]=1; //change merc equipment
 	sendPacketCheckTable[0x68]=1; //Game Join Request
 }

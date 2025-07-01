@@ -47,21 +47,23 @@ Item Colours[2153]:         1,0x62 ,0x62,0x62       //Item Collector
 //--- armor盔甲 ---
 //Item Colours[1063,1064,1068][1,2,3][1][1,4]: 1,0x62 ,0x62,0x62       //max 3 sockets body armor >250
 //Item Colours[1068][1,2,3][1][1,4]: 1,0x62 ,0x62,0x62       //max 3 sockets body armor >250
-//Item Colours[1019][1,2,3][1][1,5]: 1,0x62 ,0x62,0x62 //Gothic-Plate哥德战甲STR70 4 sockets body armor for ama exploding arrow
-//Item Colours[1015][1,2,3][1][4]: 1,0x62 ,0x62,0x62 //Breast-Plate胸甲STR30 3 sockets body armor for ama exploding arrow
-//Item Hide Lvl[1019][1,2,3]: 40
+Item Colours[1019][1,2,3][1][1,5]: 1,0x62 ,0x62,0x62 //Gothic-Plate哥德战甲STR70 4 sockets body armor for gems 
+//Item Colours[1015][1,2,3][1][4]: 1,0x62 ,0x62,0x62 //Breast-Plate胸甲STR30 3 sockets body armor for gems
+Item Hide Lvl[1019][1,2,3]: 40
 Item Colours[1068][3][1][1,4]: 1,0x62 ,0x62,0x62 //mage plate 3 sockets body armor
 Item Colours[1068,1124-1127,1138][1,2,3][1][4,5]: 1,0x62 ,0x62,0x62 //3,4 sockets body armor
 Item Colours[1125][2,3][1][1,4,5]: 1,0x62 ,0x62,0x62       //Wyrmhide古龙皮(+2职业技能,刚毅)
 Item Colours[1138][2,3][1,2][1,5]: 1,0x62 ,0x62,0x62       //Archon Plate执政官铠甲4(刚毅)
 //--- cap头盔  ---
+//Item Colours[1001-1004,1047-1050][1,2,3][1][3]: 1,0x62,0x62,0x62 //2 sockets cap Lore(9+12)(L27 +1skill +30LR)
 //Item Colours[1005-1007,1053,1115,1116][1,2,3][1][4]: 1,-2,0x62,-2       //3 sockets cap STR63非资
-Item Colours[1007,1115,1116][1,2,3][1][1,4]: 1,0x62,0x62,0x62       //3 sockets cap STR63
+Item Colours[1005-1007,1115,1116][1,2,3][1][1,4]: 1,0x62,0x62,0x62       //3 sockets cap STR63
 //Item Colours[1007][1,2,3][1][1]: 1,0x62,-2,0x62       //max 3 sockets cap STR2 Mask面具
 //Item Colours[1007][1,2,3][1][4]: 1,0x62,0x62,0x62       //3 sockets cap STR23 Mask面具
 //--- shield---
 //Item Colours[1024,1091,1045,1046][1,2,3][1][3]: 1,0x62 ,0x62,0x62 //2 sockets shield
 //Item Colours[1025,1026,1028][1,2,3][1][4,5]: 1,-2,0x62,-2 //3 sockets shield非资
+Item Colours[1025,1026,1028][1,2,3][1][1,4]: 1,0x62,0x62,0x62 //3 sockets shield
 Item Colours[1142][1,2,3][1][1,5]: 1,0x62 ,0x62,0x62       //Monarch統治者大盾
 Item Colours[1193-1197][1,2,3][1,2][1,5]: 1,0x62 ,0x62,0x62       //pal盾
 //--- weapon ---
@@ -74,14 +76,15 @@ Item Hide Lvl[31-32][1,2,3]: 40
 //Item Colours[70][1,2,3][1][1,5]: 1,0x62,0x62,0x62 //Hunter's-Bow(镶嵌4个13号符文ama爆裂箭强化升级)
 //Item Colours[66,67,159,160][1,2,3][1][5]: 1,0x62 ,0x62,0x62       //max 4 sockets stave(Insight8+3+7+12)
 //--- merc weapon ---
+Item Colours[154,155][1,2,3][1,2][1,5]: 1,0x62,0x62,0x62//0,4孔开荒Insight
 //Item Colours[256][1,2,3][1][1,5,6]: 1,0x62,0x62,0x62//0,4,5孔Thresher锐利之斧
 Item Colours[255][1,2,3][2][1,5]: 1,0x62,0x62,0x62//0,4孔Colossus-Voulge巨神之斧,需帽子身服加力量
 Item Colours[256][1,2,3][2][1,5,6]: 1,0x62,0x62,0x62//0,4,5孔Thresher锐利之斧
 Item Colours[257][1,2,3][2][1,5,6]: 1,0x62,0x62,0x62//0,4,5孔Cryptic-Axe神秘之斧
 Item Colours[258,259][1,2,3][2][5,6]: 1,0x62,0x62,0x62//4,5孔Great-Poleaxe巨长斧GiantThresher鲛尾巨斧
-//--- merc weapon 无形的刷不出来，有形的做眼光便宜卖---
-//Item Colours[255][1,2,3][1][1,5]: 1,0x62,0x62,0x62//0,4孔Colossus-Voulge巨神之斧,需帽子身服加力量
-//Item Colours[256][1,2,3][1][5]: 1,0x62,0x62,0x62//4孔Thresher锐利之斧
+//--- merc weapon 无形的刷不出来，有形的临时用
+//Item Colours[255][1,2,3][1][1,5]: 1,0x62,0x62,0x62//0,4孔Colossus-Voulge巨神之斧,需帽子衣服加力量
+Item Colours[256][1,2,3][1][1,5,6]: 1,0x62,0x62,0x62//4孔Thresher锐利之斧
 //Item Colours[257][1,2,3][1][5]: 1,0x62,0x62,0x62//4孔Cryptic-Axe神秘之斧
 //Item Colours[258,259][1,2,3][1][5]: 1,0x62,0x62,0x62//4孔Great-Poleaxe巨长斧GiantThresher鲛尾巨斧
 //--- others ---

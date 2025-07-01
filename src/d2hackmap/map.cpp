@@ -284,10 +284,14 @@ void draw2map(POINT *minimap,int drawX,int drawY) {
 	minimap->y=drawY/(*d2client_pMinimapZoom)-(*d2client_pScreenMinimapY)-8;
 	if (MINIMAP_TYPE) {minimap->x--;minimap->y+=5;}
 }
-void tile2map(POINT* pos, int x, int y) {
-	pos->x = (5*(x-y))<<4;
-	pos->y = (5*(x+y))<<3;
-	draw2map(pos , pos->x , pos->y );
+void tile2draw(POINT* pos,int x,int y) {
+	pos->x=(5*(x-y))<<4;
+	pos->y=(5*(x+y))<<3;
+}
+void tile2map(POINT* pos,int x,int y) {
+	pos->x=(5*(x-y))<<4;
+	pos->y=(5*(x+y))<<3;
+	draw2map(pos,pos->x,pos->y);
 }
 void addMapTarget(int srcLvl,int dstLvl,int type,wchar_t *enName,wchar_t *chName) {
 	MinimapLevel *pLvl = &minimapLevels[srcLvl];
@@ -414,7 +418,7 @@ void AutoMapNewLevel() {
 	if (dwCurrentLevel!=Level_HallsofPain&&waypointExist(dwCurrentLevel)&&!hasWaypoint(dwCurrentLevel))
 		selectWaypointTarget();
 	else if (dwCurrentLevel==Level_ChaosSanctuary) {
-		if (DIFFICULTY==0||DIFFICULTY==1) {
+		if (!fIsHardCoreGame&&DIFFICULTY<=1) {
 			if (pCurMapLevel&&pCurMapLevel->cur==0) {
 				NextMapTarget();
 			}
@@ -475,6 +479,7 @@ static void modifyRescueBarTarget() {
 		}
 		pTarget->id=id++;
 	}
+	pMapLevel->cur=0;pMapLevel->curTarget=pMapLevel->targets;
 }
 static void modifySealTarget() {
 	MinimapLevel *pMapLevel=&minimapLevels[Level_ChaosSanctuary];
@@ -1342,21 +1347,38 @@ static void DrawMinimapPoint() {
 		d2gfx_DrawLine(ptPlayer.x,ptPlayer.y,ptLine.x,ptLine.y,color,-1);
 	}
 }
-static void drawAreaRect(AreaRectInfo *pAreaRectInfo, int dwColour) {
-	POINT ptTopLeft, ptTopRight, ptBottomLeft, ptBottomRight;
-	tile2map(&ptTopLeft,		 pAreaRectInfo->tileX,					pAreaRectInfo->tileY);
-	tile2map(&ptTopRight,		 pAreaRectInfo->tileX+pAreaRectInfo->tileW,	pAreaRectInfo->tileY);
-	tile2map(&ptBottomLeft,	 pAreaRectInfo->tileX,					pAreaRectInfo->tileY+pAreaRectInfo->tileH);
-	tile2map(&ptBottomRight,   pAreaRectInfo->tileX+pAreaRectInfo->tileW,	pAreaRectInfo->tileY+pAreaRectInfo->tileH);
-	d2gfx_DrawLine(ptTopLeft.x,		ptTopLeft.y,	ptTopRight.x,	 ptTopRight.y,		dwColour, -1);
-	d2gfx_DrawLine(ptBottomLeft.x,	ptBottomLeft.y, ptBottomRight.x, ptBottomRight.y,	dwColour, -1);
-	d2gfx_DrawLine(ptTopLeft.x,		ptTopLeft.y,	ptBottomLeft.x,  ptBottomLeft.y,	dwColour, -1);
-	d2gfx_DrawLine(ptTopRight.x,	ptTopRight.y,	ptBottomRight.x, ptBottomRight.y,	dwColour, -1);
+static void drawAreaRectOnMap(AreaRectInfo *pInfo, int dwColour) {
+	POINT tl, tr, bl, br;
+	tile2map(&tl,		 pInfo->tileX,					pInfo->tileY);
+	tile2map(&tr,		 pInfo->tileX+pInfo->tileW,	pInfo->tileY);
+	tile2map(&bl,	 pInfo->tileX,					pInfo->tileY+pInfo->tileH);
+	tile2map(&br,   pInfo->tileX+pInfo->tileW,	pInfo->tileY+pInfo->tileH);
+	d2gfx_DrawLine(tl.x,		tl.y,	tr.x,	 tr.y,		dwColour, -1);
+	d2gfx_DrawLine(bl.x,	bl.y, br.x, br.y,	dwColour, -1);
+	d2gfx_DrawLine(tl.x,		tl.y,	bl.x,  bl.y,	dwColour, -1);
+	d2gfx_DrawLine(tr.x,	tr.y,	br.x, br.y,	dwColour, -1);
+}
+static void drawAreaRectOnScreen(AreaRectInfo *pInfo, int dwColour) {
+	POINT tl, tr, bl, br;
+	tile2draw(&tl,		 pInfo->tileX,					pInfo->tileY);
+	tile2draw(&tr,		 pInfo->tileX+pInfo->tileW,	pInfo->tileY);
+	tile2draw(&bl,	 pInfo->tileX,					pInfo->tileY+pInfo->tileH);
+	tile2draw(&br,   pInfo->tileX+pInfo->tileW,	pInfo->tileY+pInfo->tileH);
+	d2gfx_DrawLine(tl.x-screenDrawX,tl.y-screenDrawY,tr.x-screenDrawX,tr.y-screenDrawY,dwColour,-1);
+	d2gfx_DrawLine(bl.x-screenDrawX,bl.y-screenDrawY,br.x-screenDrawX,br.y-screenDrawY,dwColour,-1);
+	d2gfx_DrawLine(tl.x-screenDrawX,tl.y-screenDrawY,bl.x-screenDrawX,bl.y-screenDrawY,dwColour,-1);
+	d2gfx_DrawLine(tr.x-screenDrawX,tr.y-screenDrawY,br.x-screenDrawX,br.y-screenDrawY,dwColour,-1);
 }
 void drawActiveRectAreaOnMinimap() {
 	AreaRectData *pAreaRectData = PLAYER->pMonPath->pAreaRectData;
 	for (int i=0;i<pAreaRectData->nearbyRectCount;i++) {
-		drawAreaRect(pAreaRectData->paDataNear[i]->pAreaRectInfo,nAutomapActiveRectColors);
+		drawAreaRectOnMap(pAreaRectData->paDataNear[i]->pAreaRectInfo,nAutomapActiveRectColors);
+	}
+}
+void drawActiveRectAreaOnScreen() {
+	AreaRectData *pAreaRectData = PLAYER->pMonPath->pAreaRectData;
+	for (int i=0;i<pAreaRectData->nearbyRectCount;i++) {
+		drawAreaRectOnScreen(pAreaRectData->paDataNear[i]->pAreaRectInfo,dwDrawUnitCount&8?nAutomapActiveRectColors:0x10);
 	}
 }
 void drawScreenAreaOnMinimap() {
@@ -1385,7 +1407,7 @@ void MinimapPatch() {
 	if (tAutomapReadyRect.isOn) {
 		AreaRectData *pAreaRectData = ACT->pAreaRectData;
 		while (pAreaRectData && pAreaRectData->pAreaRectInfo) {
-			drawAreaRect(pAreaRectData->pAreaRectInfo, nAutomapReadyRectColors);
+			drawAreaRectOnMap(pAreaRectData->pAreaRectInfo, nAutomapReadyRectColors);
 			pAreaRectData = pAreaRectData->pNext;	
 		}
 	}

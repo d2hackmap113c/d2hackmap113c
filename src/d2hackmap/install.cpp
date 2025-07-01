@@ -21,7 +21,7 @@ int dwGameLng=-1;
 extern int dwDumpMpqPath;
 extern ToggleVar tHighResolution;
 static int ReloadDll();
-static int ReloadConfig();
+int ReloadConfig();
 static int installPatchToggle();
 static void InstallPatchAfterLoad();
 void resolution_init();
@@ -29,6 +29,7 @@ void resolution_uninit();
 static int patchCount=0;
 int load_dll_error=0;
 int fLocalizationSupport=0;
+extern ToggleVar tShowPlayerCastPath;
 
 HMODULE addr_storm=(HMODULE)0,addr_d2client=(HMODULE)0;
 HMODULE addr_d2common=(HMODULE)0,addr_d2gfx=(HMODULE)0;
@@ -401,7 +402,7 @@ PatchCall(d2client,0x1BA6B,OutTownSelectPatch_ASM2,6,"0F 84 9F 00 00 00");
 PatchCall(d2client,0xAD740,RecvCommand_2C_Patch_ASM,5,"8A 51 01 33 C0");
 //d2client_A6505: 8B 86 C4 00 00 00  mov eax, [esi+0xC4]
 PatchCall(d2client,0xA6505,AddUnitPatch_ASM,6,"8B 86 C4 00 00 00");
-//--- m_AutoSummon.h ---
+//--- summon.cpp ---
 //d2client_A6F25: 8B 81 E4 00 00 00  mov eax, [ecx+0xE4]
 PatchCall(d2client,0xA6F25,RemoveUnitPatch1_ASM,6,"8B 81 E4 00 00 00");
 //d2client_A6F30: 8B 91 E4 00 00 00  mov edx, [ecx+0xE4]
@@ -415,6 +416,8 @@ PatchCall(d2client,0xAC720,RecvCommand_7A_Patch_ASM,5,"8A 41 01 84 C0");
 //d2client_AC911: 8B F1              mov esi, ecx
 //d2client_AC913: 0F B6 56 01        movzx edx, byte ptr [esi+0x1]
 PatchCall(d2client,0xAC911,RecvCommand_21_Patch_ASM,6,"8B F1 0F B6 56 01");
+//d2client_AEDF2: 8B 2D FC BB BC 6F  mov ebp, [d2client_11BBFC UnitAny *d2client_PlayerUnit]
+//PatchCall(d2client,0xAEDF2,RecvCommand_19_to_1F_Patch_ASM,6,"8B 2D FC BB BC 6F");
 //--- m_ScreenHook.h ---
 //d2client_C3B96: E8 B5 56 F6 FF     call d2client_29250
 PatchCall(d2client,0xC3B96,DrawClientPatch_ASM,5,"E8 B5 56 F6 FF");//无视系统菜单显示
@@ -510,6 +513,14 @@ PatchCall(d2client,0xAE880,RecvCommand_9D_Patch_ASM,5,"B9 40 00 00 00");
 //d2client_AC801: 8B F1              mov esi, ecx
 //d2client_AC803: 8A 46 0B           mov al, [esi+0xB]
 PatchCall(d2client,0xAC801,RecvCommand_22_Patch_ASM,5,"8B F1 8A 46 0B");
+if (tShowPlayerCastPath.isOn) {
+//d2client_AF205: 8B 50 0A           mov edx, [eax+0xA]
+//d2client_AF208: 0F B6 40 08        movzx eax, byte ptr [eax+0x8]
+PatchCall(d2client,0xAF205,RecvCommand_4C_Patch_ASM,7,"8B 50 0A 0F B6 40 08");
+//d2client_AF194: 0F B7 50 0D        movzx edx, word ptr [eax+0xD]
+//d2client_AF198: 0F B6 40 0A        movzx eax, byte ptr [eax+0xA]
+//PatchCall(d2client,0xAF194,RecvCommand_4D_Patch_ASM,8,"0F B7 50 0D 0F B6 40 0A");
+}
 //--- m_ShowOrbs.h ---
 //d2client_276B5: B9 45 10 00 00     mov ecx, 0x1045 (4165)
 PatchCall(d2client,0x276B5,ShowLifePatch_ASM,5,"B9 45 10 00 00");
@@ -725,6 +736,10 @@ PatchCall(d2client,0xAF8B3,RecvCommand_63_Patch_ASM,5,"8B 01 8B 51 04");
 //d2client_AEBA3: 8B 41 0C           mov eax, [ecx+0xC]
 //d2client_AEBA6: 8B 51 10           mov edx, [ecx+0x10]
 PatchCall(d2client,0xAEBA3,RecvCommand_81_Patch_ASM,6,"8B 41 0C 8B 51 10");
+//--- dangerous.h ---
+//d2client_AD7BA: 8B 79 01           mov edi, [ecx+0x1]
+//d2client_AD7BD: 8B D7              mov edx, edi
+PatchCall(d2client,0xAD7BA,RecvCommand_8C_Patch_ASM,5,"8B 79 01 8B D7");
   /*if (0&&!fFullWindows) {
 //d2gfx_8530: 6A 06                 push 6
 patchFill("SW_MINIMIZE->SW_SHOWNOACTIVATE",PATCH_ADDR(d2gfx,0x8531),4,1,"-1 6A 06");
@@ -857,7 +872,7 @@ void MonitorPacket() {
 			installDebugPatches();
 		}
 		ResetPacketHandlerTimer();
-		if (fInGame) SetBottomAlertMsg3(L"Network Packet Patch Installed",3000,1,1);
+		if (fInGame) setBottomAlertMsg(3,L"Network Packet Patch Installed",3000,1,1,2);
 	} else {
 		if (networkPatch) removePatches(&networkPatch);
 	}
@@ -1010,7 +1025,10 @@ int ReloadConfig() {
 	DeleteCellFiles();
 	if (LoadConfigFile("config.txt",0)) {
 		InitCellFiles();
-		gameMessage("Config Reload Successful");
+		if (dwGameLng)
+			gameMessageW(fUsingHardCoreConfig?L"专家级配置重新加载完成":L"配置重新加载完成");
+		else
+			gameMessageW(fUsingHardCoreConfig?L"HC Config Reload Successful":L"Config Reload Successful");
 		ShowWarningMessage();
 	}
 	//panel_reset();

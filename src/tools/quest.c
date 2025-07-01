@@ -162,7 +162,7 @@ static void loadTagFile(char *path) {
 static int compareNames(const void *a,const void *b) {return strcmp(*(char **)a,*(char **)b);}
 typedef struct {
 	int accountId;
-	int lv;char *acc,*name,*line;
+	int lv,hc;char *acc,*name,*line;
 } Char;
 Char chars[128];int nchar=0;
 int total_soj=0;
@@ -198,6 +198,7 @@ void check(int accountId,char *realm,char *account,char *name) {
 	free(dat);
 	int dL=0,act=0;
 	int exp=header.charStatus&0x20;
+	int hc=header.charStatus&4;
 	PRT("F%d ",accountId);
 	sprintf(path,"%s\\%s\\dat\\%s_%s.soj.txt",snapshotPath,realm,account,name);
 	FILE *fp2=fopen(path,"rb");
@@ -227,7 +228,7 @@ void check(int accountId,char *realm,char *account,char *name) {
 			if (quest[36]&1) PRT("  ");
 			else PRT("r%d",d);
 		}
-		if (header.charLevel>RR_LV) {
+		if (hc||header.charLevel>RR_LV) {
 			PRT(" ");if (!exp||quest[1]&1) PRT("  ");else PRT("A%d",d,quest[1]);//Den of Evil
 			PRT(" ");if (!exp||quest[9]&0x8001) PRT("  ");else PRT("B%d",d,quest[9]);//Radament's Lair
 			PRT(" ");if (quest[20]&1) PRT("  ");else PRT("G%d",d);//The Golden Bird
@@ -256,12 +257,14 @@ void check(int accountId,char *realm,char *account,char *name) {
 	p->accountId=accountId;
 	p->lv=header.charLevel;
 	p->acc=account;
+	p->hc=hc;
 	p->name=name;
 	p->line=strdup(buf);
 }
 int compareChar(const void *a,const void *b) {
 	Char *c1=(Char *)a;
 	Char *c2=(Char *)b;
+	if (c1->hc!=c2->hc) return c2->hc-c1->hc;
 	if (c1->lv<=RR_LV&&c2->lv<=RR_LV) {
 		int t=c1->accountId-c2->accountId;if (t) return t;
 		return strcmp(c1->name,c2->name);

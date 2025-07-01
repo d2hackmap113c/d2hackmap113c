@@ -37,6 +37,10 @@ int MiniMapScroll(int id);
 void addQuickMessage(int key,wchar_t *msg,int len);
 void addQuickToLevel(int key,int area1,int area2);
 void multiclient_load_config();
+void clearCharacterTag();
+void addCharacterTag(char *name,char *tag);
+void doneCharacterTag();
+static int parseStringConfig(ConfigVar *config , char *arrays , char *right);
 
 static ConfigVar **configVars=NULL;int configVarCap=0,configVarCount=0;
 static ConfigVar aConfigVars[] = {
@@ -45,6 +49,14 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT, "LoadItemColours",        &fLoadItemColours,  4},
 	{CONFIG_VAR_TYPE_KEY, "ShowTestInfoToggle",          &tShowTestInfo         },
 	{CONFIG_VAR_TYPE_INT, "DumpMpqPath",          &dwDumpMpqPath,4         },
+  {CONFIG_VAR_TYPE_ACCOUNT, "Account",},
+  {CONFIG_VAR_TYPE_SET_TAG, "SetCharacterTag",},
+  {CONFIG_VAR_TYPE_STRING_VALUE, "LoadSymbolsFile",},
+  {CONFIG_VAR_TYPE_STRING_VALUE, "LoadConfigFile",},
+  {CONFIG_VAR_TYPE_STRING_VALUE, "LoadHardCoreConfigFile",},
+  {CONFIG_VAR_TYPE_STRING_VALUE, "LoadEasyCoreConfigFile",},
+  {CONFIG_VAR_TYPE_STRING_VALUE, "LogPath",},
+  {CONFIG_VAR_TYPE_STRING_VALUE, "LoadTagFile",},
 };
 int compareConfigVar(const void *a,const void *b) {
 	return _stricmp((*(struct ConfigVar **)a)->szCmdName,(*(struct ConfigVar **)b)->szCmdName);
@@ -77,11 +89,12 @@ void panel_addConfigVars();void server_addConfigVars();void uber_addConfigVars()
 void gameFilter_addConfigVars();void common_addConfigVars();
 
 void login_initConfigVars();
+void PartyHelp_initConfigVars();
 void automap_initConfigVars();void lifebar_initConfigVars();void env_initConfigVars();
 void autoskill_initConfigVars();void waypoint_initConfigVars();void winmsg_initConfigVars();
 void item_initConfigVars();void dangerous_initConfigVars();void DropProtection_initConfigVars();
 void multiclient_initConfigVars();void packet_initConfigVars();void gamemonitor_initConfigVars();
-void autoteleport_initConfigVars();void chat_initConfigVars();
+void autoteleport_initConfigVars();void chat_initConfigVars();void quest_initConfigVars();
 static void InitValues(){
 	static char *base0arrays[]={
 		"DropProtectionRuneword","DropProtectionUnique", 
@@ -123,6 +136,8 @@ static void InitValues(){
 	DropProtection_initConfigVars();packet_initConfigVars();gamemonitor_initConfigVars();
 	autoteleport_initConfigVars();multiclient_initConfigVars();autoskill_initConfigVars();
 	waypoint_initConfigVars();chat_initConfigVars();
+	quest_initConfigVars();PartyHelp_initConfigVars();
+	fHasHardCoreConfig=0;
 }
 
 void WinMessageFixValues();void quest_FixValues();void packet_FixValues();
@@ -169,6 +184,7 @@ static const char *vk_names[256]={
 "EXSEL"/*F8*/, "EREOF"/*F9*/, "PLAY"/*FA*/, "ZOOM"/*FB*/, "NONAME"/*FC*/, "PA1"/*FD*/, "OEM_CLEAR"/*FE*/,0,
 };
 void formatKey(char *buf,int vk) {
+	if (vk<=0) {buf[0]=0;return;}
 	if (vk&0x400) buf+=sprintf(buf,"SHIFT+");
 	if (vk&0x200) buf+=sprintf(buf,"CTRL+");
 	if (vk&0x100) buf+=sprintf(buf,"ALT+");
@@ -480,22 +496,22 @@ static void parseValues32(int *buf,char *values,int n) {
 	}
 	if (*values) LOG("%s:%d Can't parse %s\n",cfgFileName,lineId,values);
 }
-void StoreConfig(ConfigVar *config , char *arrays , char *right) {
-	if (!fLoadItemColours&&_memicmp(config->szCmdName,"ItemColours",11)==0) return; //for fast debugging
+static int StoreConfig(ConfigVar *config,char *arrays,char *right) {
+	if (!fLoadItemColours&&_memicmp(config->szCmdName,"ItemColours",11)==0) return 1; //for fast debugging
 	if (!*right&&config->type!=CONFIG_VAR_TYPE_STR
 		&&config->type!=CONFIG_VAR_TYPE_D2STR
 		&&config->type!=CONFIG_VAR_TYPE_WSTR
 		&&config->type!=CONFIG_VAR_TYPE_STR_ARRAY0
 		&&config->type!=CONFIG_VAR_TYPE_STR_ARRAY1) {
 		AddWarningMessage(config->szCmdName,0);
-		return;
+		return 0;
 	}
 	switch(config->type){
 		case CONFIG_VAR_TYPE_CHAR_ARRAY0: 
 		case CONFIG_VAR_TYPE_CHAR_ARRAY1: {
 			char buf[32];
 			config->base=config->type==CONFIG_VAR_TYPE_CHAR_ARRAY1?1:0;
-			if (config->size32>=32) {LOG("FATAL: config size %d\n",config->size32);return;}
+			if (config->size32>=32) {LOG("FATAL: config size %d\n",config->size32);return 0;}
 			parseValues8(buf,right,config->size32);
 			//dbg_array=_stricmp(config->szCmdName,"DropProtectRuneword")==0;
 			if (!StoreArrayConfig(config , 0 , 0 , arrays , buf,config->size32,0))
@@ -506,7 +522,7 @@ void StoreConfig(ConfigVar *config , char *arrays , char *right) {
 		case CONFIG_VAR_TYPE_INT_ARRAY1: {
 			int ibuf[32];
 			config->base=config->type==CONFIG_VAR_TYPE_INT_ARRAY1?1:0;
-			if (config->size32>=32) {LOG("FATAL: config size %d\n",config->size32);return;}
+			if (config->size32>=32) {LOG("FATAL: config size %d\n",config->size32);return 0;}
 			parseValues32(ibuf,right,config->size32);
 			if (!StoreArrayConfig(config , 0 , 0 , arrays , (char *)ibuf,config->size32<<2,0))
 				AddWarningMessage(arrays,0);
@@ -516,7 +532,7 @@ void StoreConfig(ConfigVar *config , char *arrays , char *right) {
 		case CONFIG_VAR_TYPE_KEY_ARRAY1: {
 			int ibuf[32];
 			config->base=config->type==CONFIG_VAR_TYPE_KEY_ARRAY1?1:0;
-			if (config->size32>=32) {LOG("FATAL: config size %d\n",config->size32);return;}
+			if (config->size32>=32) {LOG("FATAL: config size %d\n",config->size32);return 0;}
 			parseValues32(ibuf,right,config->size32);
 			if (!StoreArrayConfig(config , 0 , 0 , arrays , (char *)ibuf,config->size32,1))
 				AddWarningMessage(arrays,0);
@@ -649,7 +665,7 @@ addTargetEnd:
 				int id=-1;
 				for (int i=0;i<dwMinimapScrollCount;i++) {if (tMiniMapScrollKeys[i].key==key) {id=i;break;}}
 				if (id<0) {
-					if (dwMinimapScrollCount>=16) {LOG("ERROR: too many screen scroll keys\n");return;}
+					if (dwMinimapScrollCount>=16) {LOG("ERROR: too many screen scroll keys\n");return 0;}
 					id=dwMinimapScrollCount++;
 					ToggleVar *pv = (ToggleVar *)&tMiniMapScrollKeys[id];
 					pv->type=TOGGLEVAR_DOWNPARAM;
@@ -672,7 +688,7 @@ addTargetEnd:
 				int id=-1;
 				for (int i=0;i<dwScreenScrollCount;i++) {if (tScreenScrollKeys[i].key==key) {id=i;break;}}
 				if (id<0) {
-					if (dwScreenScrollCount>=16) {LOG("ERROR: too many screen scroll keys\n");return;}
+					if (dwScreenScrollCount>=16) {LOG("ERROR: too many screen scroll keys\n");return 0;}
 					id=dwScreenScrollCount++;
 					ToggleVar *pv = (ToggleVar *)&tScreenScrollKeys[id];
 					pv->type=TOGGLEVAR_DOWNUPPARAM;
@@ -695,12 +711,12 @@ addTargetEnd:
 				int id=-1;
 				for (int i=0;i<dwSwitchSkillKeyCount;i++) {if (dwSwitchSkillKeys[i]==key) {id=i;break;}}
 				if (id<0) {
-					if (dwSwitchSkillKeyCount>=32) {LOG("ERROR: too many switch skill keys\n");return;}
+					if (dwSwitchSkillKeyCount>=32) {LOG("ERROR: too many switch skill keys\n");return 0;}
 					id=dwSwitchSkillKeyCount++;
 					dwSwitchSkillKeys[id]=key;
 				}
 				while (*p==']') p++;
-				int ibuf[4];if (config->size32>4) {LOG("FATAL: config size %d\n",config->size32);return;}
+				int ibuf[4];if (config->size32>4) {LOG("FATAL: config size %d\n",config->size32);return 0;}
 				parseValues32(ibuf,right,config->size32);
 				if (!StoreArrayConfig(config , id , 1 , p , (char *)ibuf,config->size32<<2,0))
 					AddWarningMessage(p,0);
@@ -726,9 +742,38 @@ addTargetEnd:
 				addQuickToLevel(key,ibuf[0],ibuf[1]);
 			}
 			break;
-		default:
+		case CONFIG_VAR_TYPE_SET_TAG: {
+			char *name,*tags="";
+			name=right;
+			while (*right&&*right!='\"') right++;
+			if (*right) {
+				*right=0;right++;
+				while (*right&&*right!='\"') right++;
+				if (*right) {right++;tags=right;}
+			}
+			if (name&&name[0]&&tags&&tags[0]) {
+				if (is_utf8_config) {
+					int len=strlen(tags);
+					wchar_t *ws=(wchar_t *)HeapAlloc(confHeap,0,(len+16)*sizeof(wchar_t));
+					int nws=MultiByteToWideChar(CP_UTF8,0,tags,len,ws,len);
+					char *acp=(char *)HeapAlloc(confHeap,0,(len+16)*sizeof(char));
+					int n=WideCharToMultiByte(CP_ACP,0,ws,nws,acp,len,NULL,NULL);acp[n]=0;
+					addCharacterTag(name,acp);
+					HeapFree(confHeap,0,acp);
+					HeapFree(confHeap,0,ws);
+				} else {
+					addCharacterTag(name,tags);
+				}
+			}
 			break;
+		}
+		case CONFIG_VAR_TYPE_STRING_VALUE:
+			return parseStringConfig(config,arrays,right);
+		default:
+			LOG("ERROR: unknown config type\n");
+			return 0;
 	}
+	return 1;
 }
 
 static int isNumber(char *s) {
@@ -749,9 +794,6 @@ static int isNumber(char *s) {
 	}
 	return number;
 }
-void clearCharacterTag();
-void addCharacterTag(char *name,char *tag);
-void doneCharacterTag();
 static void loadTagFile(char *path) {
 	char *charname,*tag;
 	FILE *fp=openFile(path,"rb");
@@ -834,6 +876,28 @@ static int changeLogPath(char *path) {
 	return id;
 }
 struct LoadingConfig {char *path;struct LoadingConfig *next;} *loadingConfigs=NULL;
+static void loadConfig(char *path);
+static int parseStringConfig(ConfigVar *config,char *arrays,char *value) {
+	char *name=config->szCmdName;
+	if (_stricmp(name,"LoadSymbolsFile")==0&&value[0]) {loadSymbolFile(value);return 1;}
+	if (_stricmp(name,"LoadConfigFile")==0&&value[0]) {
+		loadConfig(value);
+		return 1;
+	} 
+	if (_stricmp(name,"LoadHardCoreConfigFile")==0&&value[0]) {
+		fHasHardCoreConfig=1;
+		if (fUsingHardCoreConfig) loadConfig(value);
+		return 1;
+	}
+	if (_stricmp(name,"LoadEasyCoreConfigFile")==0&&value[0]) {
+		fHasHardCoreConfig=1;
+		if (!fUsingHardCoreConfig) loadConfig(value);
+		return 1;
+	}
+	if (_stricmp(name,"LogPath")==0&&value[0]) {dwGameWindowId=changeLogPath(value);return 1;}
+	if (_stricmp(name,"LoadTagFile")==0&&value[0]) {loadTagFile(value);return 1;}
+	return 0;
+}
 static void loadConfig(char *path) {
 	for (LoadingConfig *lc=loadingConfigs;lc;lc=lc->next) {
 		if (_stricmp(path,lc->path)==0) {LOG("ERROR: looping loading config %s\n",path);return;}
@@ -883,20 +947,12 @@ static void loadConfig(char *path) {
 			while(*arr && ( isalnum(*arr) || isspace(*arr) || *arr=='_'  ) ) arr++;
 			char arrStart=*arr;*arr='\0';
 			if (name[0]){
-				if (_stricmp(name,"LoadSymbolsFile")==0&&value[0]) {loadSymbolFile(value);continue;}
-				if (_stricmp(name,"LoadConfigFile")==0&&value[0]) {
-					loadConfig(value);
-					cfgFileName=path;is_utf8_config=utf8_config;
-					continue;
-				}
-				if (_stricmp(name,"LogPath")==0&&value[0]) {dwGameWindowId=changeLogPath(value);continue;}
-				if (_stricmp(name,"LoadTagFile")==0&&value[0]) {loadTagFile(value);continue;}
 				ConfigVar *pcv=findConfigVar(name);
 				if (pcv) {
 					pcv->useCount++;
 					*arr=arrStart;
-					StoreConfig(pcv,arr,value);
-					hascmd = 1;
+					if (StoreConfig(pcv,arr,value)) hascmd=1;
+					cfgFileName=path;is_utf8_config=utf8_config;
 				}
 			}
 			if (!hascmd){
@@ -934,6 +990,7 @@ int LoadConfigFile(char *path,int isServer) {
 	}
 	InitValues();
 	loadingConfigs=NULL;
+	fUsingHardCoreConfig=fIsHardCoreGame;
 	loadConfig(cfgName);
 	if (!fLoadItemColours) {
 		AddWarningMessage("Load Item Colours disabled",1);
@@ -973,8 +1030,6 @@ int LoadConfigFile(char *path,int isServer) {
 		}
 	}
 	multiclient_load_config();
-	//LOG("DoTest function: %x\n", &DoTest);
-	//LOG("Packet debug function: %x\n", &packetDebug);
-	//LOG("Weapons=%d Armors=%d\n",*d2common_pWeaponsTxts,*d2common_pArmorTxts);//Weapons=306 Armors=202
+	doneCharacterTag();
 	return TRUE;
 }

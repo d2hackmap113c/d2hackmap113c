@@ -15,6 +15,7 @@ AreaRectData *TPtargetRect,*TPfailedRect;
 int dwTpMs,dwTpDoneMs;
 static int fTpAvoiding,fTpAutoTarget,dwLastTpMs;
 static char aMonYard[32][2];
+static char aMonYardHC[3][2];
 static int dwArcaneSanctuaryYard=4;
 static int defMonYard,maxTpYard,tpDelayMs,tpMinStep,stepInvalidMs,avoidEdge=0,dwAutoTeleportSafeDistance;
 static int reachDis=6;
@@ -25,6 +26,8 @@ static int dwAutoTeleportRescueBarAvoid=10;
 int maxTpDisRaw;
 static int forceEnterCharLevelNormal=60;
 static int forceEnterCharLevelNightmare=80;
+ToggleVar tAutoTeleportEvade={TOGGLEVAR_ONOFF,0,-1,1,"Auto Teleport Evade Toggle"};
+static int autoTPEvadeYard[2];
 static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT,"ForceEnterCharLevelNormal",&forceEnterCharLevelNormal,4},
   {CONFIG_VAR_TYPE_INT,"ForceEnterCharLevelNightmare",&forceEnterCharLevelNightmare,4},
@@ -41,13 +44,17 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportTelekinesisSafeDistance",&dwAutoTeleportTelekinesisSafeDistance,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportRescueBarAvoid",&dwAutoTeleportRescueBarAvoid,4 },
 	{CONFIG_VAR_TYPE_CHAR_ARRAY0,"AutoTeleportMonsterDistance",&aMonYard,2,{32}},
-	{CONFIG_VAR_TYPE_KEY, "LogTPToggle",  &tLogTP		},
+	{CONFIG_VAR_TYPE_CHAR_ARRAY0,"AutoTeleportMonsterDistanceHC",&aMonYardHC,2,{3}},
+	{CONFIG_VAR_TYPE_KEY,"LogTPToggle",&tLogTP},
+	{CONFIG_VAR_TYPE_KEY,"AutoTeleportEvadeToggle",&tAutoTeleportEvade},
+  {CONFIG_VAR_TYPE_INT_ARRAY1,"AutoTeleportEvadeYard",&autoTPEvadeYard,2,{0}},
 };
 void autoteleport_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
 }
 void autoteleport_initConfigVars() {
 	memset(aMonYard,0,sizeof(aMonYard));
+	memset(aMonYardHC,0,sizeof(aMonYardHC));
 }
 void autoteleport_fixValues() {
 	maxTpDisRaw=(maxTpYard*3)>>1;
@@ -68,6 +75,7 @@ static POINT bestP;
 static AreaRectData *bestRect;
 static int rectCountFromTarget=0;
 static RECT curActiveBox,searchBox;
+int isAutoTeleporting=0;
 
 static int comparePos(const void *a,const void *b) {return ((TPPos *)a)->disM256-((TPPos *)b)->disM256;}
 static int dis(POINT *p1,POINT *p2) {return getDistanceM256(p1->x-p2->x,p1->y-p2->y)>>8;}
@@ -103,30 +111,41 @@ static void resetMonsters() {
 }
 int getUnitOwnerId(UnitAny *pUnit);
 extern int dwBarbrianLeft;
-static void findMonsters() {
+static int isMonster(UnitAny *pMon) {
+	if (pMon->dwUnitType!=UNITNO_MONSTER) return 0;
+	if (pMon->dwMode==MonsterMode_Death) return 0; //dying?
+	if (pMon->dwMode==MonsterMode_Dead) return 0; //already dead
+	int owner=getUnitOwnerId(pMon);if (owner!=-1) return 0; 
+	int mtype=aAutoSkillMonsterType[pMon->dwTxtFileNo];
+	if (mtype&MONSTER_TYPE_NEUTRAL) return 0;
+	if (!mtype) return MONSTER_TYPE_NORMAL;
+	return mtype;
+}
+static void findMonsters(int evade) {
 	resetMonsters();
+	char *yard;
+	if (fIsHardCoreGame) yard=aMonYardHC[DIFFICULTY];
+	else yard=aMonYard[dwPlayerFcrFrame];
 	for (int i=0;i<128;i++) {
 		for (UnitAny *pMon=d2client_pUnitTable[UNITNO_MONSTER*128+i];pMon;pMon=pMon->pHashNext) {
 			if (pMon->dwUnitType!=UNITNO_MONSTER) break;
-			if (pMon->dwMode==MonsterMode_Death) continue; //dying?
-			if (pMon->dwMode==MonsterMode_Dead) continue; //already dead
-			int owner=getUnitOwnerId(pMon);if (owner!=-1) continue; 
-			int mtype=aAutoSkillMonsterType[pMon->dwTxtFileNo];
-			if (mtype&MONSTER_TYPE_NEUTRAL) continue;
+			int mtype=isMonster(pMon);if (!mtype) continue;
 			if (nMons>=monCap) {monCap*=2;mons=(Mon *)HeapReAlloc(dllHeap,0,mons,sizeof(Mon)*monCap);}
 			Mon *pmon=&mons[nMons++];
 			int x=pMon->pMonPath->wUnitX;int y=pMon->pMonPath->wUnitY;pmon->p.x=x;pmon->p.y=y;
-			if (dwCurrentLevel==Level_ArcaneSanctuary) {
+			if (evade) {
+				pmon->dis=autoTPEvadeYard[(mtype&MONSTER_TYPE_DANGROUS)?1:0];
+			} else if (dwCurrentLevel==Level_ArcaneSanctuary) {
 				pmon->dis=dwArcaneSanctuaryYard;
 			} else {
-				pmon->dis=aMonYard[dwPlayerFcrFrame][(mtype&MONSTER_TYPE_DANGROUS)?1:0];
-				if (!pmon->dis) pmon->dis=defMonYard;
-				if (pMon->dwTxtFileNo==Mon_PrisonDoor&&LEVELNO==Level_FrigidHighlands) { //rescue mission: prison door
-					int done=QUESTDATA->quests[36]&3;
-					if (done||dwBarbrianLeft==5)
-						pmon->dis=dwAutoTeleportRescueBarAvoid;
+				pmon->dis=yard[(mtype&MONSTER_TYPE_DANGROUS)?1:0];
+				if (dwBarbrianLeft==5&&pMon->dwTxtFileNo==Mon_PrisonDoor&&LEVELNO==Level_FrigidHighlands) { 
+					//rescue mission: prison door
+					//int done=QUESTDATA->quests[36]&3;
+					pmon->dis=dwAutoTeleportRescueBarAvoid;
 				}
 			}
+			if (!pmon->dis) pmon->dis=defMonYard;
 			pmon->dis=(pmon->dis*3)>>1;
 			addMonMap(x-2,y-2);addMonMap(x-2,y+2);addMonMap(x+2,y-2);addMonMap(x+2,y+2);
 		}
@@ -262,6 +281,68 @@ nextPosition:
 	}
 	return -1;
 }
+int autoTpEvade(char *packet) {
+	if (!tAutoTeleportEvade.isOn) return 0;
+	if (isAutoTeleporting||!packet) return 0;
+	if (!tposs) {posCap=4096;tposs=(TPPos *)HeapAlloc(dllHeap,0,sizeof(TPPos)*posCap);}
+	int x,y;
+	switch (packet[0]) {
+		case 0x0c: //right skill map
+		case 0x0f: //Right skill (hold)      0f [WORD x] [WORD y] 
+			x=*(short *)(packet+1);y=*(short *)(packet+3);
+			break;
+		case 0x0d: //right skill unit
+		case 0x10: {//Right skill unit (hold)      10 [DWORD entity kind] [DWORD id] 
+			int type=*(int *)(packet+1),id=*(int *)(packet+5);
+			UnitAny *pUnit=d2client_GetUnitFromId(id,type);
+			if (!pUnit||!isMonster(pUnit)) return 0;
+			x=pUnit->pMonPath->wUnitX;y=pUnit->pMonPath->wUnitY;
+			break;
+		}
+		default:return 0;
+	}
+	dst.x=x;dst.y=y;
+	maxTpDisM256=maxTpYard*256*3/2;
+	src.x=dwPlayerX;src.y=dwPlayerY;
+	calBoundingBox();
+	findMonsters(1);
+	AreaRectData *pData = PLAYER->pMonPath->pAreaRectData;
+	maxDisM256=0x7FFFFFFF;nPos=0;
+	addPossiblePostions(pData,pData,NULL,5);
+	for (int i=0;i<pData->nearbyRectCount;i++) {
+		AreaRectData *pNData=pData->paDataNear[i];if (pNData==pData) continue;
+		addPossiblePostions(pData,pNData,NULL,5);
+	}
+	int monDis=findValidPosition();
+	//LOG("AutoTpEvade mons=%d pos=%d dis=%d\n",nMons,nPos,monDis);
+	if (monDis<0) return 0;
+	nPos=0;addPossiblePostions(pData,bestRect,&bestP,5);
+	monDis=findValidPosition();
+	if (bestP.x!=x||bestP.y!=y) {
+		char keyname[256];keyname[0]=0;
+		formatKey(keyname,tAutoTeleportEvade.key);
+		wchar_t wszbuf[256];
+		if (dwGameLng) wsprintfW(wszbuf,L"自动躲避 (%d,%d) (%hs)",bestP.x-x,bestP.y-y,keyname);
+		else wsprintfW(wszbuf,L"AutoEvade (%d,%d) (%hs)",bestP.x-x,bestP.y-y,keyname);
+		setBottomAlertMsg(3,wszbuf,3000,1,0,6);
+		*(short *)(packet+1)=(short)bestP.x;*(short *)(packet+3)=(short)bestP.y;
+		switch (packet[0]) {
+			case 0x0c: //right skill map
+			case 0x0f: //Right skill (hold)      0f [WORD x] [WORD y] 
+				break;
+			case 0x0d: //right skill unit
+				packet[0]=0xc;
+				break;
+			case 0x10: //Right skill unit (hold)      10 [DWORD entity kind] [DWORD id] 
+				packet[0]=0xf;
+				break;
+			default:return 0;
+		}
+		SendPacket((BYTE *)packet,5);
+		return 1;
+	}
+	return 0;
+}
 int BackToTown();
 static void interactObj(UnitAny *pUnit) {
 	if (isWaypointTxt(pUnit->dwTxtFileNo)) {
@@ -386,10 +467,12 @@ static int teleportForward() {
 	}
 	tpMonCount=dwTotalMonsterCount;
 	dwTpMs=dwCurMs;TPtarget=bestP;TPtargetRect=bestRect;dwTpDoneMs=0;TPfailedRect=NULL;
+	isAutoTeleporting=1;
 	RightSkillPos(bestP.x,bestP.y);
+	isAutoTeleporting=0;
 	wsprintfW(buf,dwGameLng?L"距离%d 时间%d秒":L"distance %d time %d",rectCountFromTarget,
 		(dwCurMs-autoTeleportStartMs)/1000);
-	SetBottomAlertMsg3(buf,dwPlayerFcrMs+50, 2,0);
+	setBottomAlertMsg(2,buf,dwPlayerFcrMs+50,0,2,0);
 	return 1;
 }
 static int findTelekinesisPosition() {
@@ -435,10 +518,12 @@ static int teleportToSafety() {
 		LOG("TP find safe (%d,%d) curdis=%d monDis=%d\n",bestP.x,bestP.y,curdis,monDis);
 	tpMonCount=dwTotalMonsterCount;
 	dwTpMs=dwCurMs;TPtarget=bestP;TPtargetRect=bestRect;dwTpDoneMs=0;TPfailedRect=NULL;
+	isAutoTeleporting=1;
 	RightSkillPos(bestP.x,bestP.y);
+	isAutoTeleporting=0;
 	wsprintfW(buf,dwGameLng?L"躲避%d 时间%d秒":L"evade %d time %d",rectCountFromTarget,
 		(dwCurMs-autoTeleportStartMs)/1000);
-	SetBottomAlertMsg3(buf,dwPlayerFcrMs+50, 2,1);
+	setBottomAlertMsg(2,buf,dwPlayerFcrMs+50,1,1,2);
 	return 1;
 }
 static int tpToBoss() {
@@ -447,7 +532,9 @@ static int tpToBoss() {
 	if (curdisM256<5*256) return 1;
 	if (curdisM256<maxTpDisM256) {
 		dwTpMs=dwCurMs;TPtarget=dst;TPtargetRect=NULL;dwTpDoneMs=0;TPfailedRect=NULL;
+		isAutoTeleporting=1;
 		RightSkillPos(dst.x,dst.y);
+		isAutoTeleporting=0;
 		return 1;
 	}
 	resetMonsters();
@@ -457,7 +544,9 @@ static int tpToBoss() {
 	nPos=0;addPossiblePostions(pData,bestRect,&bestP,5);
 	findValidPosition();
 	dwTpMs=dwCurMs;TPtarget=bestP;TPtargetRect=bestRect;dwTpDoneMs=0;TPfailedRect=NULL;
+	isAutoTeleporting=1;
 	RightSkillPos(bestP.x,bestP.y);
+	isAutoTeleporting=0;
 	return 1;
 }
 static int telekinesisTarget(UnitAny *pObject) {
@@ -489,7 +578,7 @@ static int telekinesisTarget(UnitAny *pObject) {
 	RightSkillPos(bestP.x,bestP.y);
 	wsprintfW(buf,dwGameLng?L"法师之手%d 时间%d秒":L"evade %d time %d",rectCountFromTarget,
 		(dwCurMs-autoTeleportStartMs)/1000);
-	SetBottomAlertMsg3(buf,dwPlayerFcrMs+50, 2,1);
+	setBottomAlertMsg(2,buf,dwPlayerFcrMs+50,1,1,2);
 	return 1;
 }
 extern int dwDuranceOfHateLevel3TeleportShift[2];
@@ -504,7 +593,7 @@ static int autoDuranceofHateLevel3() {
 }
 //return 1 if auto skill can be used
 static int autoTarget() {
-	int kbMode=dwLeftSkill==Skill_ChargedStrike||dwLeftSkill==Skill_Smite;
+	int kbMode=!fIsHardCoreGame&&(dwLeftSkill==Skill_ChargedStrike||dwLeftSkill==Skill_Smite);
 	switch (dwCurrentLevel) {
 		case Level_ArcaneSanctuary:
 		case Level_HallsofVaught:
@@ -568,17 +657,19 @@ int AutoTeleport() {
 	if (PLAYER->pInventory->pCursorItem) return 0;
 	if (PLAYER->dwMode==PlayerMode_Attacking1||PLAYER->dwMode==PlayerMode_Attacking2||PLAYER->dwMode==PlayerMode_Cast)
 		return 0;
-	switch (dwCurrentLevel) {
-		case Level_TheWorldstoneChamber:
-			if (findBoss(Mon_BaalCrab,0)) hasTarget=1;
-			break;
-		case Level_ChaosSanctuary:
-			if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal
-				||DIFFICULTY==1&&dwPlayerLevel>=forceEnterCharLevelNightmare) {
-				if (nBoss>0&&bossHps[0]>0) {dst.x=bossX;dst.y=bossY;hasTarget=1;}
-			}
-			break;
-		//case Level_TowerCellarLevel5:if (findBoss(Mon_DarkStalker,1)) hasTarget=1;break;
+	if (!fIsHardCoreGame) {
+		switch (dwCurrentLevel) {
+			case Level_TheWorldstoneChamber:
+				if (findBoss(Mon_BaalCrab,0)) hasTarget=1;
+				break;
+			case Level_ChaosSanctuary:
+				if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal
+					||DIFFICULTY==1&&dwPlayerLevel>=forceEnterCharLevelNightmare) {
+					if (nBoss>0&&bossHps[0]>0) {dst.x=bossX;dst.y=bossY;hasTarget=1;}
+				}
+				break;
+			//case Level_TowerCellarLevel5:if (findBoss(Mon_DarkStalker,1)) hasTarget=1;break;
+		}
 	}
 	maxTpDisM256=maxTpYard*256*3/2;
 	src.x=dwPlayerX;src.y=dwPlayerY;
@@ -587,7 +678,7 @@ int AutoTeleport() {
 	for (int retries=0;retries<6;retries++) {
 		dstType=AutoTeleportGetTarget(&dst,&targetType,&targetTxt,&rectCountFromTarget);
 		//0:noTarget 1:continue 2:end 3:interact 4:forceEnter 5:auto >=6:keep safe distance
-		if (dstType>=6) {
+		if (dstType>=6&&!fIsHardCoreGame) {
 			if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal
 				||DIFFICULTY==1&&dwPlayerLevel>=forceEnterCharLevelNightmare) {
 				switch (dwCurrentLevel) {
@@ -597,8 +688,9 @@ int AutoTeleport() {
 				}
 			}
 		}
+		if (!dstType) {dstType=60;fTpAvoiding=1;} //route failed
 		if (!dstType) {startProcessMs=dwCurMs+200;return 1;}
-		if (dstType!=4) findMonsters();
+		if (dstType!=4) findMonsters(0);
 		else resetMonsters();
 		curdis=getDistanceM256(dst.x-src.x,dst.y-src.y)>>8;
 		if (dstType==5) {

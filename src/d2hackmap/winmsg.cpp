@@ -50,6 +50,7 @@ int dwQuickSwapItemDelayMs= 500;
 int dwAutoCallToArm= 500;
 int fNoBackgroundImage= 0;
 ToggleVar tLockMouseToggle={TOGGLEVAR_ONOFF, 0, 0, 0, "Lock Mouse Toggle",&LockMouse};
+ToggleVar tHardCoreEscapeProtect={TOGGLEVAR_ONOFF, 0, 0, 0, "HardCoreEscapeProtect"};
 ToggleVar tAutoHideMinimapToggle={TOGGLEVAR_ONOFF, 0, 0, 0, "Auto Hide MiniMap"};
 ToggleVar tAutoMinimapTeleportToggle={TOGGLEVAR_ONOFF, 0, 0, 0, "Auto Teleport MiniMap"};
 int dwAutoHideMinimapKey= 0;
@@ -75,7 +76,7 @@ ToggleVar tNoHide={TOGGLEVAR_ONOFF,	1,	-1,		1,	"No Hide"};
 int  fFullWindows=0;
 ToggleVar tSaveGame={TOGGLEVAR_DOWN,0,-1,	1,"SaveGame",&SaveGame};
 int dwTpSwitchBackground[8]={0};
-int dwEnterDoorInBackgroundSkill[7][140]={0};
+int dwEnterDoorInBackgroundSkill[7][200]={0};
 static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_KEY, "SaveGameKey",&tSaveGame},
 	{CONFIG_VAR_TYPE_INT, "MinFrameMs",&dwMinFrameMs,4},
@@ -84,6 +85,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "NoBackgroundImage",				&fNoBackgroundImage,     4},
   {CONFIG_VAR_TYPE_INT, "AutoCallToArm",				&dwAutoCallToArm,     4},
   {CONFIG_VAR_TYPE_KEY, "LockMouseToggle",       &tLockMouseToggle        },
+  {CONFIG_VAR_TYPE_KEY, "HardCoreEscapeProtect",       &tHardCoreEscapeProtect        },
   {CONFIG_VAR_TYPE_KEY, "AutoHideMinimapToggle",       &tAutoHideMinimapToggle        },
   {CONFIG_VAR_TYPE_KEY, "AutoTeleportMinimapToggle",       &tAutoMinimapTeleportToggle        },
   {CONFIG_VAR_TYPE_INT, "AutoHideMinimapKey",				&dwAutoHideMinimapKey,     4},
@@ -97,7 +99,6 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT_ARRAY1, "GameControlKeys",    &dwGameControlKeys,  4, {64} },
   {CONFIG_VAR_TYPE_INT_ARRAY1, "GameSoundKeys",    &dwGameSoundKeys,  1, {128} },
   {CONFIG_VAR_TYPE_KEY_ARRAY1,"SwitchWindowKeys", tSwitchWindowKeys,2,{16},2,"SwitchWindowKeys[%d]", SwitchWindow  },
-  {CONFIG_VAR_TYPE_ACCOUNT, "Account",},
   {CONFIG_VAR_TYPE_SWITCH_SKILL, "SwitchSkillKeys",    &dwSwitchSkillKeys,  1, {32} },
   {CONFIG_VAR_TYPE_SWITCH_SKILL, "SwitchSkillLeft",    &dwSwitchSkillLeft,  4, {32,8} },
   {CONFIG_VAR_TYPE_SWITCH_SKILL, "SwitchSkillRight",    &dwSwitchSkillRight,  4, {32,8} },
@@ -105,7 +106,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_SWITCH_SKILL, "SwitchSkillRightUp",    &dwSwitchSkillRightUp,  1, {32,8} },
   {CONFIG_VAR_TYPE_SWITCH_SKILL, "SwitchSkillStandStill",    &dwSwitchSkillStandStill,  1, {32} },
   {CONFIG_VAR_TYPE_INT_ARRAY1,"TpSwitchBackground",&dwTpSwitchBackground,1,{8}},
-  {CONFIG_VAR_TYPE_INT_ARRAY1,"EnterDoorInBackgroundSkill",&dwEnterDoorInBackgroundSkill,1,{7,140}},
+  {CONFIG_VAR_TYPE_INT_ARRAY0,"BackgroundEnterDoorSkillSwitch",&dwEnterDoorInBackgroundSkill,1,{7,200}},
 };
 void winmsg_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
@@ -367,7 +368,7 @@ void WinMessageNewGame() {
 	refreshMenuScreenSaver();
 	dwDrawCount=0;
 	forceStandStill=0;
-	dwBtnReleaseMs=0;fUserOperating=0;
+	dwBtnReleaseMs=0;fUserOperating=0;hydraLock=0;
 	dwQuickSwapItemMs=0;dwCheckCTAMs=0;dwSwapWeaponKey=0;
 	LockMouse();
 	HWND hwnd=d2gfx_GetHwnd();
@@ -509,12 +510,36 @@ static int shouldProcessKey(int vk,int winMsg) {
 		return 1;
 	}
 }
+int canExitGame() {
+	if (fIsHardCoreGame&&fInGame
+		&&PLAYER&&(PLAYER->dwMode==PlayerMode_Death||PLAYER->dwMode==PlayerMode_Dead)) {
+		if (tHardCoreEscapeProtect.isOn) {
+			wchar_t wbuf[256];
+			char keyname[256];formatKey(keyname,tHardCoreEscapeProtect.key);
+			gameMessageW(dwGameLng?L"专家级退出保护，按%hs解锁":L"Hard Core exit protect, press %hs to unlock",keyname);
+			if (*d2client_pGameInfo) {
+				char *game=(*d2client_pGameInfo)->szGameName;
+				char *password=(*d2client_pGameInfo)->szGamePassword;
+				wsprintfW(wbuf,dwGameLng?L"游戏名:%hs":L"Game:%hs",game);
+				setBottomAlertMsg(0,wbuf,3000,1,2,1);
+				wsprintfW(wbuf,dwGameLng?L"密码:%hs":L"Password:%hs",password);
+				setBottomAlertMsg(1,wbuf,3000,1,2,1);
+			}
+			return 0;
+		}
+	}
+	return 1;
+}
 static int __fastcall keyDown(int vk,int winMsg) {
 	if (vk<1||vk>=256) return 0;
 	switch (vk) {
 		case VK_SHIFT:shiftDown=1;break;
 		case VK_CONTROL:ctrlDown=1;break;
 		case VK_MENU:altDown=1;break;
+	}
+	if (vk==VK_ESCAPE&&fIsHardCoreGame&&fInGame
+		&&PLAYER&&(PLAYER->dwMode==PlayerMode_Death||PLAYER->dwMode==PlayerMode_Dead)) {
+		if (!canExitGame()) return 1;
 	}
 	if (!shouldProcessKey(vk,winMsg)) return 0;
 	if (isKeyDown[vk]) return 0;
@@ -668,7 +693,7 @@ int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 						}
 					}
 
-					fLeftBtnDown=1;fUserOperating=1;mouseW=w;mouseL=l;
+					fLeftBtnDown=1;fUserOperating=1;mouseW=w;mouseL=l;hydraLock=0;
 					checkAutoSkillStatus();
 				}
 			}
@@ -688,7 +713,7 @@ int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 			if (!fLeftBtnDown&&!fRightBtnDown) dwBtnReleaseMs=dwCurMs;
 			break;
 		case WM_RBUTTONDOWN:
-			fRightBtnDown=1;fUserOperating=1;mouseW=w;mouseL=l;
+			fRightBtnDown=1;fUserOperating=1;mouseW=w;mouseL=l;hydraLock=0;
 			checkAutoSkillStatus();
 			break;
 		case WM_RBUTTONUP:
@@ -939,13 +964,16 @@ start:
 		jmp d2client_DrawAllUnits
 	}
 }
-extern ToggleVar tScreenRouteGuide;
+extern ToggleVar tScreenRouteGuide,tAutomapActiveRect;
 void AutoRouteDrawScreenPath();
 void drawUnitsInfo();
+void drawActiveRectAreaOnScreen();
 static void beforeDrawControl() {
 	drawUnitsInfo();
-	if (*d2client_pAutomapOn) return;
-	if (tScreenRouteGuide.isOn) AutoRouteDrawScreenPath();
+	if (!(*d2client_pAutomapOn)) {
+		if (tScreenRouteGuide.isOn) AutoRouteDrawScreenPath();
+		if (tAutomapActiveRect.isOn&&dwCurrentLevel==Level_ArreatSummit) drawActiveRectAreaOnScreen();
+	}
 }
 static void debugMsDrawControlStart() {LOG("	drawControlStart=%d ms\n",GetTickCount()-dwCurMs);}
 static void debugMsDrawControlEnd() {LOG("	drawControlEnd=%d ms\n",GetTickCount()-dwCurMs);}
@@ -1004,6 +1032,7 @@ static int shouldSkipAllDrawing() {
 	lastDrawMs=dwCurMs;
 	return 0;
 }
+int dwDrawUnitCount=0;
 static int shouldSkipDrawUnitAndControl() {
 	if (fSkipPainting) {
 		DrawCenterText(3, L"Screen Saver" , SCREENSIZE.x/2, SCREENSIZE.y/2,0,1,0);
@@ -1011,6 +1040,7 @@ static int shouldSkipDrawUnitAndControl() {
 		need_paint=0;
 		return 1;
 	}
+	dwDrawUnitCount++;
 	return 0;
 }
 /*
@@ -1060,15 +1090,22 @@ extern int dwAutoLoginMs,dwAutoSelectCharMs,autoJoinGameMs;
 void autoLogin();
 void autoSelectChar();
 void autoJoinGame();
+int mainMenuLoopCount; 
 static int mainMenuSkip() {
-	static int calFpsMs=0,dwLoopCount=0,ln=0;
-	dwLoopCount++;dwCurMs=GetTickCount();
+	static int calFpsMs=0,ln=0,nextDrawMs=0;
+	mainMenuLoopCount++;dwCurMs=GetTickCount();
 	fInMainMenu=1;
 	if (dwAutoLoginMs&&dwCurMs>dwAutoLoginMs&&(*d2win_pFocusedControl)) {dwAutoLoginMs=0;autoLogin();}
 	if (dwAutoSelectCharMs&&dwCurMs>dwAutoSelectCharMs) {dwAutoSelectCharMs=0;autoSelectChar();}
 	if (autoJoinGameMs&&dwCurMs>autoJoinGameMs) {autoJoinGameMs=0;autoJoinGame();}
 	if (fSkipPaintingMenu) {
-		if (need_paint) return 0;
+		if (need_paint) {
+			return 0;
+		}
+		if (dwCurMs>nextDrawMs) {
+			need_paint=2;
+			nextDrawMs=dwCurMs+6000; //repaint screen every 6 seconds
+		}
 		return 1;
 	}
 	return 0;

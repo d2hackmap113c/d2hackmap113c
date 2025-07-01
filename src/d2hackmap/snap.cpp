@@ -95,6 +95,80 @@ static int isAllResist(StatEx *se) {
 		&&value==se[2].dwStatValue
 		&&value==se[3].dwStatValue;
 }
+static int isSocketable(int nType) {
+	char *type;int s=0;
+	switch (nType) {
+		case 2:type="Shield盾";s=1;break;
+		case 3:type="Armor盔甲";s=1;break;
+		case 4:type="Gold";break;
+		case 5:type="Arrow箭矢";break;
+		case 6:type="Bolts十字弓弹";break;
+		case 7:type="Ear";break;
+		case 8:type="Herb";break;
+		case 10:type="Ring戒指";break;
+		case 11:type="Elixir";break;
+		case 12:type="Amulet项链";break;
+		case 15:type="Boot靴";break;
+		case 16:type="Glove手套";break;
+		case 18:type="Book";break;
+		case 19:type="Belt腰带";break;
+		case 21:type="Torch";break;
+		case 22:type="Scroll卷轴";break;
+		case 24:type="Sceptre权杖";s=1;break;
+		case 25:type="Wand法杖";s=1;break;
+		case 26:type="Staff棍";s=1;break;
+		case 27:type="Bow弓";s=1;break;
+		case 28:type="Axe斧";s=1;break;
+		case 29:type="Club棒";s=1;break;
+		case 30:type="Sword剑";s=1;break;
+		case 31:type="Maul/Hammer";s=1;break;
+		case 32:type="Dagger";s=1;break;
+		case 33:type="Spear";s=1;break;
+		case 34:type="Polearm";s=1;break;
+		case 35:type="CrossBow十字弓";break;
+		case 36:type="Maces钉头锤";s=1;break;
+		case 37:type="Helm头盔";s=1;break;
+		case 38:type="ThrowingPotion";break;
+		case 39:type="Quest";break;
+		//case 39:type="BodyPart";break;
+		case 41:type="Skeleton Key 钥匙";break;
+		case 42:type="ThrowingKnife飞刀";break;
+		case 43:type="ThrowingAxe飞斧";break;
+		case 44:type="Javelins标枪";break;
+		case 58:type="Jewel珠宝";break;
+		case 67:type="Claws爪";s=1;break;
+		case 68:type="Orb水晶";s=1;break;
+		case 69:type="NecHeads男巫盾牌";s=1;break;
+		case 70:type="PalShield游侠盾牌";s=1;break;
+		case 71:type="Helm头盔";s=1;break;
+		case 72:type="DruHelm";s=1;break;
+		case 74:type="Rune符文";break;
+		case 75:type="Circlet头环";s=1;break;
+		case 76:type="healing potions";break;
+		case 77:type="mana potions";break;
+		case 78:type="Rejuvenation Potion回复活力药剂";break;
+		case 79:type="Stamina Potion体力药剂";break;
+		case 80:type="Antidote Potion 解毒剂";break;
+		case 81:type="Thawing Potion 解冻剂";break;
+		case 82:type="Charm Small小护身符";break;
+		case 83:type="Charm Large大型护身符";break;
+		case 84:type="Charm Grand超大型护身符";break;
+		case 85:type="AmaBow";s=1;break;
+		case 86:type="AmaSpear";s=1;break;
+		case 87:type="AmaJavelin";s=1;break;
+		case 88:type="Claw";s=1;break;
+		case 96:type="Amethyst紫宝石";break;
+		case 97:type="Diamond钻石";break;
+		case 98:type="Emerald绿宝石";break;
+		case 99:type="Ruby红宝石";break;
+		case 100:type="Sapphire蓝宝石";break;
+		case 101:type="Topaz黄宝石";break;
+		case 102:type="Skull骷髅";break;
+		case 103:type="Collector";break;
+		default:type="?";break;
+	}
+	return s;
+}
 static int snapCurPage;
 extern int showStatNum;
 int cpLocaleName(wchar_t *dst,wchar_t *s,int max);
@@ -119,7 +193,9 @@ static void formatItem(FILE *fpin,FILE *fpout,int isSocket,int isMerc) {
 	}
 	ItemTxt *pItemTxt=d2common_GetItemTxt(txt);
 	int ethereal=item.dwItemFlags&ITEMFLAG_ETHEREAL;
+	int canSocket=isSocketable(pItemTxt->nType);
 	//char code[8];memcpy(code,pItemTxt->szCode,4);code[4]=0;
+	int showItemName=0,showSpeed=0;
 	if (isMerc) {
 		fputs("@merc",fpout);
 	} else {
@@ -150,6 +226,7 @@ static void formatItem(FILE *fpin,FILE *fpout,int isSocket,int isMerc) {
 			}
 			switch (fileindex) {
 				case 210: //蛇魔法师之皮 Skin of the Vipermagi
+					show[nShow++]=STAT_Defense;
 				case 357: //奇拉的守护 Kira's Guardian
 				case 101: //囚房 The Ward
 					needSocket=1;
@@ -233,6 +310,7 @@ static void formatItem(FILE *fpin,FILE *fpout,int isSocket,int isMerc) {
 			break;
 		}
 		default:
+			showItemName=1;
 			if (item.dwItemFlags&ITEMFLAG_RUNEWORD) {
 				int fileindex=d2common_GetRuneWordTxtIndex(item.wMagicPrefix[0]);
 				fprintf(fpout," W%d",fileindex);
@@ -246,12 +324,12 @@ static void formatItem(FILE *fpin,FILE *fpout,int isSocket,int isMerc) {
 						show[nShow++]=STAT_FIRE_RESIST;
 						break;
 					case 49: //精神 Spirit
-						show[nShow++]=STAT_FCR;
+						show[nShow++]=STAT_FCR;showItemName=1;
 						break;
 					case 103: //W103 洞察 Insight
-						show[nShow++]=STAT_MinDamage;
-						show[nShow++]=STAT_MaxDamage;
+						show[nShow++]=STAT_MinDamage;show[nShow++]=STAT_MaxDamage;
 						show[nShow++]=STAT_AURA;
+						showSpeed=1;
 						break;
 				}
 			} else {
@@ -265,8 +343,13 @@ static void formatItem(FILE *fpin,FILE *fpout,int isSocket,int isMerc) {
 			}
 			break;
 	}
-	acpLocaleName(name,d2lang_GetLocaleText(pItemTxt->wLocaleTxtNo),128);
-	fprintf(fpout," %s",name);
+	if (showItemName) {
+		acpLocaleName(name,d2lang_GetLocaleText(pItemTxt->wLocaleTxtNo),128);
+		fprintf(fpout," %s",name);
+	}
+	if (showSpeed) {
+		fprintf(fpout," speed%d",pItemTxt->dwSpeed);
+	}
 	int hasSocket=0;
 	StatEx *ps=stats;
 	int showPos=0;
@@ -284,9 +367,11 @@ static void formatItem(FILE *fpin,FILE *fpout,int isSocket,int isMerc) {
 		showStatNum=nShow==0;
 		fputc(' ',fpout);
 		if (ps->wStatId==STAT_STRENGTH&&n-i>=4&&isAllAttr(ps)) {
-			fprintf(fpout," 所有属性AllAttr%+d",ps->dwStatValue);i+=3;ps+=3;
+			fprintf(fpout," 所有属性attr%d",ps->dwStatValue);i+=3;ps+=3;
 		} else if (ps->wStatId==STAT_FIRE_RESIST&&n-i>=4&&isAllResist(ps)) {
-			fprintf(fpout," 所有抗性AllResist%+d",ps->dwStatValue);i+=3;ps+=3;
+			fprintf(fpout," 所有抗性res%d",ps->dwStatValue);i+=3;ps+=3;
+		} else if (ps->wStatId==STAT_MinDamage&&n-i>=2&&ps[1].wStatId==STAT_MaxDamage) {
+			fprintf(fpout," 伤害%d-%d",ps->dwStatValue,ps[1].dwStatValue);i++;ps++;
 		} else {
 			dumpStat(fpout,ps->wStatId,ps->wParam,(int *)&ps->dwStatValue);
 		}
@@ -297,7 +382,10 @@ static void formatItem(FILE *fpin,FILE *fpout,int isSocket,int isMerc) {
 			}
 		}
 	}
-	if (needSocket&&!hasSocket) fprintf(fpout," needSocket");
+	if (!hasSocket) {
+		if (canSocket) fprintf(fpout," canSocket");
+		if (needSocket) fprintf(fpout," needSocket");
+	}
 	fputc('\n',fpout);
 	showStatNum=1;
 	//LOG("txt=%d n=%d\n",txt,n);

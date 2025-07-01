@@ -201,7 +201,7 @@ void __fastcall DrawPartyHeadPatch(int xpos , RosterUnit *pRosterUnit){
 			}
 			if (pwinC->quantity) {
 				wsprintfW(wszTemp,L"%d",pwinC->quantity);
-				x+=drawBgText(wszTemp,x,y,0,0x68)+3;
+				x+=drawBgText(wszTemp,x,y,6,0x68)+3;
 			}
 			y=106;
 			if (pwinC->minionsHp) {

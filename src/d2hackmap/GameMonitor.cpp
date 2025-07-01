@@ -7,6 +7,7 @@
 extern ToggleVar tDrawInvItemInfo;
 extern int dwCpuUser,dwCpuKernel,dwLoopFPS,dwDrawFPS;
 extern ToggleVar tMinimapDebugToggle;
+extern BYTE nMonsterMinionColor,nMonsterChampColor,nSuperUniqueColor;
 int dwRecheckSelfItemMs=0;
 UnitAny *leftWeapon=0,*rightWeapon=0;
 int dwTownPortalCount=0,dwIdentifyPortalCount=0,fUsingBow=0,fUsingCrossBow=0,fUsingThrow=0;
@@ -27,6 +28,12 @@ static int dwPartyNameColor[3]={6,0x20,0x5b};
 static int dwNeutralNameColor[3]={0,0x5b,0x10};
 static int dwHostileNameColor[3]={6,0x62,0x6f};
 int bossX=0,bossY=0,bossHps[3],bossId=0,nBoss=0;
+#define LAST_EXP_N 8
+static int lastExpChange[LAST_EXP_N],expTail=0,expN=0,expId=1;
+void playerAddExp(int exp) {
+	if (expTail<0||expTail>=LAST_EXP_N) expTail=0;if (expN<0||expN>LAST_EXP_N) expN=0;
+	lastExpChange[expTail++]=exp;if (expN<LAST_EXP_N) expN++;expId++;
+}
 
 void ShowGameCount();
 ToggleVar tCountDown={TOGGLEVAR_ONOFF,0,-1,1,"Count Down"};
@@ -50,9 +57,13 @@ ToggleVar tNecAutomapCorpsesToggle={TOGGLEVAR_ONOFF,0,-1,1,"NecAutomapCorpsesTog
 ToggleVar tDrawBossHpToggle={TOGGLEVAR_ONOFF,0,-1,1,"DrawBossHpToggle"};
 int bossLineColor=0x62;
 ToggleVar tDrawPlayerNameToggle={TOGGLEVAR_ONOFF,0,-1,1,"DrawPlayerName",0,0,0,2};
+ToggleVar tAnalyzeMonsterExp={TOGGLEVAR_ONOFF,0,-1,1,"AnalyzeMonsterExp",0,0,0,2};
+ToggleVar tLogMonsterExp={TOGGLEVAR_ONOFF,0,-1,1,"LogMonsterExp",0,0,0,2};
 int dwDrawPlayerNameDy=66;
 int HasCowKing=1;
+ToggleVar tShowPlayerCastPath={TOGGLEVAR_ONOFF,0,-1,1,"Player Cast Path"};
 static ConfigVar aConfigVars[] = {
+	{CONFIG_VAR_TYPE_KEY,"ShowPlayerCastPath",&tShowPlayerCastPath},
 	{CONFIG_VAR_TYPE_INT,"HasCowKing",&HasCowKing,4},
 	{CONFIG_VAR_TYPE_INT,"TargetNameColor",&targetNameColor,1},
 	{CONFIG_VAR_TYPE_INT,"MonitorQuantity",&fMonitorQuantity,  4},
@@ -66,6 +77,8 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_KEY,"KillCountToggle",&tKillCount},
 	{CONFIG_VAR_TYPE_KEY,"GetHitCountToggle",&tGetHitCount},
 	{CONFIG_VAR_TYPE_KEY,"DrawMultiPageStashCount",&tDrawMultiPageStashCount},
+	{CONFIG_VAR_TYPE_KEY,"AnalyzeMonsterExp",&tAnalyzeMonsterExp},
+	{CONFIG_VAR_TYPE_KEY,"LogMonsterExp",&tLogMonsterExp},
   {CONFIG_VAR_TYPE_INT_ARRAY1,"DrawMultiPageStashXY",&dwDrawMultiPageStashXY,2,{0}},
 	{CONFIG_VAR_TYPE_INT,"SimpleItemStackTxt",&simpleItemStackTxt,4},
 	{CONFIG_VAR_TYPE_INT,"SimpleItemStackIdx",&simpleItemStackIdx,4},
@@ -218,7 +231,7 @@ void updateCurStashPage() {
 		p=(StashPage *)HeapAlloc(dllHeap,0,sizeof(StashPage));
 		stashPages[curStashPage]=p;
 	}
-	LOG("updateStashPage1 %d/%d 0x%X\n",curStashPage,nStashPages,p);
+	//LOG("updateStashPage1 %d/%d 0x%X\n",curStashPage,nStashPages,p);
 	p->n=0;
 	for (UnitAny *pUnit = d2common_GetFirstItemInInv(PLAYER->pInventory);pUnit;pUnit = d2common_GetNextItemInInv(pUnit)) {
 		if (pUnit->dwUnitType!=UNITNO_ITEM) continue ;
@@ -233,7 +246,7 @@ void updateCurStashPage() {
 			case 3:break;//body
 		}
 	}
-	LOG("updateStashPage %d/%d: n=%d\n",curStashPage,nStashPages,p->n);
+	//LOG("updateStashPage %d/%d: n=%d\n",curStashPage,nStashPages,p->n);
 }
 void recheckSelfItems() {
 	static int n=0;
@@ -288,7 +301,12 @@ void setKDCountDown(int en) {
 	cd_KD.active=en;
 	cd_KD.endMs=dwCurMs+15000;
 }
+extern int dwKBSkillSwitch[7][6];
 void setKBCountDown(int team,int en) {
+	if (!fWinActive&&team&&dwKBSkillSwitch[dwPlayerClass][team-1]) {
+		int skillId=dwKBSkillSwitch[dwPlayerClass][team-1];
+		if (dwRightSkill!=0&&hasSkill(skillId)&&dwRightSkill!=skillId) selectSkill(1,skillId);
+	}
 	cd_KB.active=en;
 	cd_KB.lv=team;
 	cd_KB.endMs=dwCurMs+11750;
@@ -342,6 +360,7 @@ void GameMonitorNewGame() {
 	fBC=0;fWerewolf=0;fWerebear=0;
 	leftWeapon=NULL;rightWeapon=NULL;
 	for (int i=0;i<_ARRAYSIZE(countDowns);i++) countDowns[i]->active=0;
+	expTail=0;expN=0;expId=1;
 }
 void GameMonitorEndGame() {
 	GameMonitorNewGame();
@@ -566,6 +585,7 @@ void DrawMonitorInfo(){
 				//if (d2common_IsUnitBlocked(PLAYER,pSelectedUnit,2)) pos+=wsprintfW(wszTemp+pos, L" notvisible");
 				if (d2common_IsUnitBlocked(PLAYER,pSelectedUnit,4)) {color=1;pos+=wsprintfW(wszTemp+pos, L" unattackable");}
 				MonsterTxt *pMonTxt= pSelectedUnit->pMonsterData->pMonsterTxt;
+				pos+=wsprintfW(wszTemp+pos, L" type%X",pSelectedUnit->pMonsterData->bTypeFlags);
 				if (pMonTxt->fBoss)
 					pos+=wsprintfW(wszTemp+pos, L" TB");
 				if (pSelectedUnit->pMonsterData->fBoss) 
@@ -650,6 +670,17 @@ void DrawMonitorInfo(){
 					ypos = ypos -15;
 				}
 			}
+		}
+	}
+	if (expN&&tAnalyzeMonsterExp.isOn) {
+		int pos=expTail-expN;if (pos<0) pos+=LAST_EXP_N;
+		int id=expId-expN;
+		for (int i=0;i<expN;i++,id++) {
+			int add=lastExpChange[pos++];if (pos>=LAST_EXP_N) pos=0;
+			if (add>=3000000) {wsprintfW(wszTemp,L"%d:exp+%dM",id,add/1000000);}
+			else if (add>=3000) {wsprintfW(wszTemp,L"%d:exp+%dK",id,add/1000);}
+			else {wsprintfW(wszTemp,L"%d:exp+%d",id,add);}
+			drawBgTextLeft(wszTemp,xpos,ypos,0,0x10);ypos-=15;
 		}
 	}
 	if (tCountDown.isOn) {
@@ -934,7 +965,7 @@ void itemAction(struct bitstream *bs,char *buf) {
 void changeStashPage(int id) {
 	if (nStashPages>1000) {LOG("ERROR nStashPages=%d\n",nStashPages);nStashPages=0;}
 	if (id==curStashPage) return;
-	LOG("changeStashPage %d->%d/%d\n",curStashPage,id,nStashPages);
+	//LOG("changeStashPage %d->%d/%d\n",curStashPage,id,nStashPages);
 	updateCurStashPage();
 	curStashPage=id;
 	if (id>=nStashPages) {
@@ -1085,32 +1116,188 @@ static void drawPlayerName(UnitAny *pUnit) {
 		}
 	}
 }
-static void drawBossHp(UnitAny *pUnit,int boss) {
-	wchar_t wbuf[32];
+static int cos_sin[16][2]={
+	{256,0},{237,98},{181,181},{98,237},
+	{0,256},{-98,237},{-181,181},{-237,98},
+	{-256,0},{-237,-98},{-181,-181},{-98,-237},
+	{0,-256},{98,-237},{181,-181},{237,-98},
+};
+static void drawEmit(UnitAny *pUnit,int r,int color) {
+	r=(r<<1)+r;
+	int drawX0=pUnit->pMonPath->drawX,drawY0=pUnit->pMonPath->drawY-70;
+	int x=pUnit->pMonPath->wUnitX,y=pUnit->pMonPath->wUnitY;
+	int *p=cos_sin[0];
+	for (int i=0;i<16;i++,p+=2) {
+		int dx=(r*p[0])>>9;
+		int dy=(r*p[1])>>9;
+		int ux=x+dx,uy=y+dy;
+		int drawX=(ux-uy)*16;
+		int drawY=(ux+uy)*8;
+		d2gfx_DrawLine(drawX0-screenDrawX,drawY0-screenDrawY,drawX-screenDrawX,drawY-screenDrawY,color,-1);
+	}
+}
+static void drawCircle(UnitAny *pUnit,int r,int color) {
+	r=(r<<1)+r;
+	int x=pUnit->pMonPath->wUnitX;int y=pUnit->pMonPath->wUnitY;
+	int *p=cos_sin[0];
+	int lx,ly,x0,y0;
+	for (int i=0;i<16;i++,p+=2) {
+		int dx=(r*p[0])>>9;
+		int dy=(r*p[1])>>9;
+		int ux=x+dx,uy=y+dy;
+		int drawX=(ux-uy)*16;
+		int drawY=(ux+uy)*8;
+		if (i==0) {x0=drawX;y0=drawY;}
+		else {
+			d2gfx_DrawLine(lx-screenDrawX,ly-screenDrawY,drawX-screenDrawX,drawY-screenDrawY,color,-1);
+			if (i==15)
+				d2gfx_DrawLine(x0-screenDrawX,y0-screenDrawY,drawX-screenDrawX,drawY-screenDrawY,color,-1);
+		}
+		lx=drawX;ly=drawY;
+	}
+}
+extern ToggleVar tShowTestInfo;
+static void drawBossHp(UnitAny *pUnit,int boss,int lineColor,int value) {
+	wchar_t wbuf[128];
 	if (pUnit->dwMode==0||pUnit->dwMode==12) return;
 	int maxhp=d2common_GetUnitStat(pUnit, STAT_MAXHP, 0);
-	int hp=maxhp<=0?0:d2common_GetUnitStat(pUnit, STAT_HP, 0)*100/maxhp;
+	int hp=d2common_GetUnitStat(pUnit, STAT_HP, 0);
+	int hpPercent;
+	if (maxhp<=0) hpPercent=0;
+	else if (maxhp==0x8000) hpPercent=(hp*100)>>15;
+	else hpPercent=hp*100/maxhp;
 	if (boss) {
 		bossX=pUnit->pMonPath->wUnitX;
 		bossY=pUnit->pMonPath->wUnitY;
-		if (bossId<3) bossHps[bossId++]=hp;
+		if (bossId<3) bossHps[bossId++]=hpPercent;
 	}
-	wsprintfW(wbuf,L"%d%%",hp);
 	int drawX = pUnit->pMonPath->drawX;
 	int drawY = pUnit->pMonPath->drawY;
-	drawBgTextMiddle(wbuf,drawX-screenDrawX,drawY-screenDrawY-FontHalfH,0,0x10);
+	if (dwCurrentLevel==Level_ArreatSummit) {
+		int W=16;
+		if (pUnit->dwTxtFileNo==372) W<<=1; //*2
+		if (pUnit->pMonsterData->bTypeFlags&8) W<<=1; //*2
+		else if (pUnit->pMonsterData->bTypeFlags&0x10) W=((W<<1)+W)>>1; //*1.5
+		int rw;
+		if (maxhp==0x8000) rw=(W*hp)>>15;
+		else rw=W*hp/maxhp;
+		if (rw>W) rw=W;
+		int xpos=drawX-screenDrawX-(W>>1);
+		int ypos=drawY-screenDrawY-FontHalfH-12;
+		d2gfx_DrawRectangle(xpos,ypos,xpos+rw,ypos+5,0x62,5);
+		d2gfx_DrawRectangle(xpos+rw,ypos,xpos+W,ypos+5,0,5);
+		if (tShowTestInfo.isOn) {
+			if (pUnit->dwTxtFileNo==371) {
+				drawCircle(pUnit,24,dwDrawUnitCount&8?0x10:0x20);
+			} else if (pUnit->dwTxtFileNo==372) {
+				drawEmit(pUnit,23,dwDrawUnitCount&8?0x62:0x20);
+			}
+		}
+		int pos=0;
+		//if (value) pos+=wsprintfW(wbuf+pos,L"%d",value*100/256);
+		//pos+=wsprintfW(wbuf+pos,L"%X",maxhp);
+		if (pUnit->pMonsterData->fUnique) wbuf[pos++]='U';
+		if (pUnit->pMonsterData->fChamp) wbuf[pos++]='C';
+		if (pUnit->pMonsterData->fBoss) wbuf[pos++]='B';
+		if (pUnit->pMonsterData->fMinion) wbuf[pos++]='m';
+		int ce=0,fe=0;
+		if (pUnit->pMonsterData->fBoss||pUnit->pMonsterData->fChamp) {
+			for (int i = 0; i < 9; i++) {
+				int enchno = pUnit->pMonsterData->anEnchants[i];if (!enchno) break;
+				switch (enchno) {
+					case 9:fe=1;wbuf[pos++]='F';wbuf[pos++]='e';break; //FireEnchantedDesc
+					//case 17:wbuf[pos++]='L';wbuf[pos++]='e';break; //LightningEnchantedDesc
+					case 18:ce=1;wbuf[pos++]='C';wbuf[pos++]='e';break; //ColdEnchantedDesc
+					case 25:wbuf[pos++]='M';wbuf[pos++]='b';break; //ManaBurnDesc
+					case 26://Teleport
+						wbuf[pos++]='T';wbuf[pos++]='p';
+						setBottomAlertMsg(5,dwGameLng?L"传送塔":L"Teleport",300,1,0,6);
+						break; 
+					case 27:wbuf[pos++]='S';wbuf[pos++]='h';break; //SpectralHit
+				}
+			}
+			if (ce) {
+				drawCircle(pUnit,8,dwDrawUnitCount&8?0x97:0x9E);
+				int dis256=getPlayerDistanceM256(pUnit);
+				if (dis256<=9*256) {
+					drawCircle(pUnit,7,dwDrawUnitCount&8?0x97:0x62);
+					drawCircle(pUnit,6,dwDrawUnitCount&8?0x97:0x62);
+				}
+			}
+			if (fe) {
+				drawCircle(pUnit,3,dwDrawUnitCount&8?0x62:0x68);
+				int dis256=getPlayerDistanceM256(pUnit);
+				if (dis256<=3*256) {
+					drawCircle(pUnit,3,dwDrawUnitCount&8?0x62:0x84);
+				}
+			}
+		}
+		int fr=d2common_GetUnitStat(pUnit,STAT_FIRE_RESIST,0);
+		wbuf[pos++]=0xFF;wbuf[pos++]='c';wbuf[pos++]=dwDrawUnitCount&8?'0':'1';
+		wsprintfW(wbuf+pos,L"%d",fr);
+		if (pos) {
+			if (fr>=80) {
+				static int blinkMs=0,color=0,bg=0x97;
+				if (dwCurMs>blinkMs) {
+					blinkMs=dwCurMs+500;if (color) {color=0;bg=0x10;} else {color=2;bg=0x62;}
+				}
+				drawBgTextMiddle(wbuf,drawX-screenDrawX,drawY-screenDrawY-FontHalfH-12,color,bg);
+			} else if (ce||fe) {
+				static int blinkMs=0,color=0,bg=0x10;
+				if (dwCurMs>blinkMs) {
+					blinkMs=dwCurMs+300;if (color) {color=0;bg=ce?0x97:0x62;} else {color=ce?3:1;bg=0x10;}
+				}
+				drawBgTextMiddle(wbuf,drawX-screenDrawX,drawY-screenDrawY-FontHalfH-12,color,bg);
+			} else {
+				int w,h;d2win_GetTextAreaSize(wbuf,&w,&h);
+				d2win_DrawText(wbuf,drawX-screenDrawX-(w>>1),drawY-screenDrawY-FontHalfH-12,dwDrawUnitCount&8?0:6,0);
+			}
+		}
+	} else {
+		wsprintfW(wbuf,L"%d%%",hpPercent);
+		int w,h;d2win_GetTextAreaSize(wbuf,&w,&h);
+		drawBgTextMiddle(wbuf,drawX-screenDrawX,drawY-screenDrawY-FontHalfH,0,0x10);
+	}
+	if (!lineColor) return;
 	if (*d2client_pAutomapOn) {
 		POINT ptMon,ptPlayer; 
 		draw2map(&ptPlayer,PLAYER->pMonPath->drawX,PLAYER->pMonPath->drawY);
 		draw2map(&ptMon,pUnit->pMonPath->drawX,pUnit->pMonPath->drawY);
-		d2gfx_DrawLine(ptPlayer.x,ptPlayer.y,ptMon.x,ptMon.y,bossLineColor,-1);
+		d2gfx_DrawLine(ptPlayer.x,ptPlayer.y,ptMon.x,ptMon.y,lineColor,-1);
 	} else {
 		d2gfx_DrawLine(
 			PLAYER->pMonPath->drawX-screenDrawX,
 			PLAYER->pMonPath->drawY-screenDrawY,
 			pUnit->pMonPath->drawX-screenDrawX,
-			pUnit->pMonPath->drawY-screenDrawY, bossLineColor,-1);
+			pUnit->pMonPath->drawY-screenDrawY, lineColor,-1);
 	}
+}
+//return 128,192,256,320,384,426,640,853
+int getTowerValue(int isFire,int type) {
+/*
+火焰塔生命是闪电塔的2倍
+08生命是00的2倍
+10生命是00的1.5倍
+0C经验是00的3倍
+08经验是00的5倍
+10经验是00的5倍
+升级速度
+00红色火焰塔 0.5 
+0C黄色头目火焰塔 0.75
+00红色闪电塔 1
+08粉色头目火焰塔 1.25
+0C黄色头目闪电塔 1.5
+10粉色随从火焰塔 1.6
+08粉色头目闪电塔 2.5
+10粉色随从闪电塔 3.3
+*/
+	int hp=256,exp=256;
+	if (isFire) hp<<=1; //*2
+	if (type&8) hp<<=1; //*2
+	else if (type&0x10) hp=((hp<<1)+hp)>>1; //*1.5
+	if ((type&0xC)==0xC) exp=(exp<<1)+exp; //*3
+	else if (type&0x18) exp=(exp<<2)+exp; //85
+	return (exp<<8)/hp;
 }
 static void drawUnitsInfoInRect(AreaRectData *pData) {
 	for (UnitAny* pUnit = pData->pUnit; pUnit; pUnit = pUnit->pRectNext) {
@@ -1131,13 +1318,13 @@ static void drawUnitsInfoInRect(AreaRectData *pData) {
 						case Mon_Talic:case Mon_Madawc:case Mon_Korlic:
 						case Mon_UberMephisto:case Mon_UberDiablo:case Mon_UberIzual:
 						case Mon_UberAndariel:case Mon_UberDuriel:case Mon_UberBaal:
-							drawBossHp(pUnit,1);
+							drawBossHp(pUnit,1,bossLineColor,0);
 							break;
 						case Mon_CouncilMember1:
 						case Mon_CouncilMember2:
 						case Mon_CouncilMember3:
 							if (dwCurrentLevel==Level_Travincal&&pUnit->pMonsterData->fBoss&&pUnit->pMonsterData->fUnique) {
-								drawBossHp(pUnit,1);
+								drawBossHp(pUnit,1,bossLineColor,0);
 							}
 							break;
 						case Mon_OblivionKnight1: 
@@ -1145,13 +1332,26 @@ static void drawUnitsInfoInRect(AreaRectData *pData) {
 						case Mon_VenomLord:
 						case Mon_DarkStalker:
 							if (pUnit->pMonsterData->fBoss&&pUnit->pMonsterData->fUnique) {
-								drawBossHp(pUnit,1);
+								drawBossHp(pUnit,1,bossLineColor,0);
 							}
 							break;
 						default:
 							switch (dwCurrentLevel) {
 								case Level_ArreatSummit:
-									if (pUnit->pMonsterData->fBoss||pUnit->pMonsterData->fUnique) drawBossHp(pUnit,0);
+									if (pUnit->dwTxtFileNo==371||pUnit->dwTxtFileNo==372) {
+										int fr=d2common_GetUnitStat(pUnit,STAT_FIRE_RESIST,0);
+										int value=getTowerValue(pUnit->dwTxtFileNo==372,pUnit->pMonsterData->bTypeFlags);
+										//return 128,192,256,320,384,426,640,853
+										if (value<=200) {
+											if (fr>=100||tShowTestInfo.isOn) drawBossHp(pUnit,0,0,value);
+										} else if (value<=300) {
+											//drawBossHp(pUnit,0,fr>=100?0:0x84,value); //green line
+										} else if (value<=500) {
+											drawBossHp(pUnit,0,fr>=100?0:0x62,value); //red line
+										} else {
+											drawBossHp(pUnit,0,fr>=100?0:0x6B,value); //pink line
+										}
+									}
 									break;
 							}
 							break;
@@ -1179,6 +1379,12 @@ static void drawUnitsInfoInRect(AreaRectData *pData) {
 		}
 	}
 }
+struct PlayerCast {
+	int x1,y1,x2,y2;
+	int color,ms;
+};
+static PlayerCast playerCasts[16];
+int nPlayerCast=0;
 void drawUnitsInfo() {
 	if (!tDrawPlayerNameToggle.isOn&&!tNecAutomapCorpsesToggle.isOn
 		&&!tDrawBossHpToggle.isOn&&!tMinimapDebugToggle.isOn) return;
@@ -1187,4 +1393,93 @@ void drawUnitsInfo() {
 	for (int i=0;i<pData->nearbyRectCount;i++) {
 		drawUnitsInfoInRect(pData->paDataNear[i]);
 	}
+	if (nPlayerCast) {
+		static int colors[16]={0x20,0xAB,0xA4,0x87,0x9E,0x9F,0x7F,0x79,0x75,0x74,0x73,0x72,0x71,0x13,0x12,0x10};
+		PlayerCast *pc=playerCasts;
+		for (int i=0;i<nPlayerCast;) {
+			if (pc->color>=16) {
+				if (nPlayerCast-i>1) memcpy(pc,pc+1,(nPlayerCast-i-1)*sizeof(PlayerCast));
+				nPlayerCast--;
+			} else {
+				int lineColor=colors[pc->color];
+				if (dwCurMs>=pc->ms) {pc->ms=dwCurMs+40;pc->color++;}
+				/*if (*d2client_pAutomapOn) {
+					POINT ptMon,ptPlayer; 
+					draw2map(&ptPlayer,pc->x1,pc->y1);
+					draw2map(&ptMon,pc->x2,pc->y2);
+					d2gfx_DrawLine(ptPlayer.x,ptPlayer.y,ptMon.x,ptMon.y,lineColor,-1);
+				} else {
+				*/
+					d2gfx_DrawLine(pc->x1-screenDrawX,pc->y1-screenDrawY,
+						pc->x2-screenDrawX,pc->y2-screenDrawY, lineColor,-1);
+				//}
+				i++;pc++;
+			}
+		}
+	}
 }
+static void __fastcall playerSkillOnTarget(char *packet) {
+	if (!fWinActive||nPlayerCast>=16) return;
+	int pid=*(int *)(packet+2);
+	int mid=*(int *)(packet+0xA);
+	UnitAny *player=d2client_GetUnitFromId(pid,UNITNO_PLAYER);if (!player) return;
+	UnitAny *mon=d2client_GetUnitFromId(mid,UNITNO_MONSTER);if (!mon) return;
+	PlayerCast *pc=&playerCasts[nPlayerCast++];
+	pc->x1=player->pMonPath->drawX;pc->y1=player->pMonPath->drawY;
+	pc->x2=mon->pMonPath->drawX;pc->y2=mon->pMonPath->drawY;
+	pc->color=0;pc->ms=dwCurMs+40;
+}
+void __fastcall playerSkillOnMap(char *packet) {
+	if (!fWinActive||nPlayerCast>=16) return;
+	int pid=*(int *)(packet+2);
+	int x=*(short *)(packet+0xB);
+	int y=*(short *)(packet+0xD);
+	UnitAny *player=d2client_GetUnitFromId(pid,UNITNO_PLAYER);if (!player) return;
+	PlayerCast *pc=&playerCasts[nPlayerCast++];
+	pc->x1=player->pMonPath->drawX;pc->y1=player->pMonPath->drawY;
+	pc->x2=x;pc->y2=y;pc->color=0;
+}
+/*
+Unit Skill on Target   4c 1:[BYTE Unit Type] 2:[DWORD Unit Id] 6:[WORD  Skill] [BYTE Unknown] [BYTE Unknown] a:[DWORD Target Id] 00 00 
+4C:d2client_AF1D0 
+	d2client_AF205: 8B 50 0A           mov edx, [eax+0xA]
+	d2client_AF208: 0F B6 40 08        movzx eax, byte ptr [eax+0x8]
+*/
+void __declspec(naked) RecvCommand_4C_Patch_ASM() {
+	__asm {
+		movzx edx,byte ptr [eax+1]
+		cmp edx,0
+		jne original
+		pushad
+		mov ecx,eax
+		call playerSkillOnTarget
+		popad
+original:
+		mov edx,[eax+0xA]
+		movzx eax,byte ptr [eax+8]
+		ret
+	}
+}
+/*
+Unit Cast Skill      4d 1:[BYTE Unit Type] 2:[DWORD Unit Id] 6:[DWORD  Skill] a:[BYTE Unknown] b:[WORD X] d:[WORD Y] 00 00 
+4D:d2client_AF160 
+	d2client_AF194: 0F B7 50 0D        movzx edx, word ptr [eax+0xD]
+	d2client_AF198: 0F B6 40 0A        movzx eax, byte ptr [eax+0xA]
+*/
+/*
+void __declspec(naked) RecvCommand_4D_Patch_ASM() {
+	__asm {
+		movzx edx,byte ptr [eax+1]
+		cmp edx,0
+		jne original
+		pushad
+		mov ecx,eax
+		call playerSkillOnMap
+		popad
+original:
+		movzx edx, word ptr [eax+0xD]
+		movzx eax, byte ptr [eax+0xA]
+		ret
+	}
+}
+*/

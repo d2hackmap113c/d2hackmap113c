@@ -66,6 +66,9 @@ $(SYMS): ./Release/dumpmap.exe $(MAP)
 	./Release/dumpmap.exe $(MAP) $@ d2hackmap
 	
 ./Release/install.obj: d2ptrs.h
+./Release/multi.obj: multi.h
+./Release/info.obj: multi.h
+./Release/GameMonitor.obj: multi.h
 ./Release/%.obj: %.cpp
 	@echo $< $@
 	@cl.exe $(CFLAGS) /Yu"stdafx.h" /Fo"$@" $< /nologo /errorReport:prompt
