@@ -411,6 +411,7 @@ void winActiveMsg(int active) {
 			&&(dwRightSkill==Skill_Teleport
 				||dwRightSkill==Skill_Telekinesis
 				||dwRightSkill==219||dwRightSkill==220
+				||dwRightSkill==Skill_StaticField&&dwCurrentLevel==Level_ArreatSummit
 			)) {
 			int skillId=dwTpSwitchBackground[dwPlayerClass];
 			if (hasSkill(skillId)&&dwRightSkill!=skillId) selectSkill(1,skillId);
@@ -547,6 +548,15 @@ static int __fastcall keyDown(int vk,int winMsg) {
 	if (vk!=VK_MENU&&altDown) vk|=0x100;
 	if (vk!=VK_CONTROL&&ctrlDown) vk|=0x200;
 	if (vk!=VK_SHIFT&&shiftDown) vk|=0x400;
+	if (vk=='N'&&!fInGame) {
+		HMODULE loadhackmap = GetModuleHandle("loadhackmap.dll");
+		if (loadhackmap) {
+			void (__stdcall *ClearMainMenuMessage)()=(void (__stdcall *)())GetProcAddress(loadhackmap,"ClearMainMenuMessage");
+			if (ClearMainMenuMessage) {
+				ClearMainMenuMessage();
+			}
+		}
+	}
 	isCombKeyDown[vk]=1;
 	int handled=0;
 	int inGame=fInGame&&!d2client_CheckUiStatus(UIVAR_CHATINPUT);
@@ -650,9 +660,8 @@ int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 							) {
 							if (DropProtection(PLAYER->pInventory->pCursorItem)) {
 								char keyname[256];formatKey(keyname,tDropProtectionToggle.key);
-								wchar_t wszbuf[256];
-								wsprintfW(wszbuf, L"Drop Protection on, press %hs to disable protection",keyname);
-								d2client_ShowGameMessage(wszbuf, 0);
+								gameMessageWColor(0,dwGameLng?L"装备保护,按%hs取消保护"
+									:L"Drop Protection on, press %hs to disable protection",keyname);
 								return 0;
 							}
 						}
@@ -750,6 +759,9 @@ int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 					return 0;
 				case VK_MULTICLIENT_RIGHT_UNIT:
 					follower_right_client_unit((l>>28)&0xF,l&0xFFFFFFF);
+					return 0;
+				case VK_MULTICLIENT_TP:
+					follower_tp(l&0xFFFF,(l>>16)&0xFFFF);
 					return 0;
 				default:
 					keyUp(w,1);

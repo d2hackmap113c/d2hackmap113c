@@ -24,9 +24,12 @@ DWORD WriteFile(HANDLE hFile, void *buf, DWORD len) {
 	return numdone;
 }
 
-void __fastcall LogMessage(wchar_t* wstr) {
+void mainMenuMsg(wchar_t *s,int color);
+static void __fastcall LogMessage(wchar_t* wstr) {
 	char asc_buf[0x400];
 	wchar_t buf[0x400];
+	mainMenuMsg(wstr,0);
+	if (!tLogMessage.isOn) return;
 	wchar_t *p = buf;
 	// strip the D2 color code
 	for (wchar_t *pw = wstr;*pw; ++pw) {
@@ -78,31 +81,29 @@ void __fastcall LogMessage(wchar_t* wstr) {
 	}
  }
 
-void __declspec(naked) MessageLogPatch1_ASM()
-{
+void __declspec(naked) MessageLogPatch1_ASM() {
 	__asm {
-		cmp [tLogMessage.isOn],0
-		je oldcode
+//		cmp [tLogMessage.isOn],0
+//		je oldcode
 		mov     ecx, [esp+0x2C]
 		pushad
 		call LogMessage
 		popad
-oldcode:
+//oldcode:
 		mov	edx,[d2client_pScreenWidth]
 		mov edx, [edx]
 		ret
 	}
 }
 
-void __declspec(naked) MessageLogPatch2_ASM()
-{
+void __declspec(naked) MessageLogPatch2_ASM() {
 	__asm {
-		cmp [tLogMessage.isOn],0
-		je oldcode
+//		cmp [tLogMessage.isOn],0
+//		je oldcode
 		pushad
 		call LogMessage
 		popad
-oldcode:
+//oldcode:
 		add eax, 0x2710
 		ret
 	}

@@ -47,7 +47,7 @@ Item Colours[2153]:         1,0x62 ,0x62,0x62       //Item Collector
 //--- armor盔甲 ---
 //Item Colours[1063,1064,1068][1,2,3][1][1,4]: 1,0x62 ,0x62,0x62       //max 3 sockets body armor >250
 //Item Colours[1068][1,2,3][1][1,4]: 1,0x62 ,0x62,0x62       //max 3 sockets body armor >250
-Item Colours[1019][1,2,3][1][1,5]: 1,0x62 ,0x62,0x62 //Gothic-Plate哥德战甲STR70 4 sockets body armor for gems 
+//Item Colours[1019][1,2,3][1][1,5]: 1,0x62 ,0x62,0x62 //Gothic-Plate哥德战甲STR70 4 sockets body armor for gems 
 //Item Colours[1015][1,2,3][1][4]: 1,0x62 ,0x62,0x62 //Breast-Plate胸甲STR30 3 sockets body armor for gems
 Item Hide Lvl[1019][1,2,3]: 40
 Item Colours[1068][3][1][1,4]: 1,0x62 ,0x62,0x62 //mage plate 3 sockets body armor
@@ -57,19 +57,19 @@ Item Colours[1138][2,3][1,2][1,5]: 1,0x62 ,0x62,0x62       //Archon Plate执政�
 //--- cap头盔  ---
 //Item Colours[1001-1004,1047-1050][1,2,3][1][3]: 1,0x62,0x62,0x62 //2 sockets cap Lore(9+12)(L27 +1skill +30LR)
 //Item Colours[1005-1007,1053,1115,1116][1,2,3][1][4]: 1,-2,0x62,-2       //3 sockets cap STR63非资
-Item Colours[1005-1007,1115,1116][1,2,3][1][1,4]: 1,0x62,0x62,0x62       //3 sockets cap STR63
+//Item Colours[1005-1007,1115,1116][1,2,3][1][1,4]: 1,0x62,0x62,0x62       //3 sockets cap STR63
 //Item Colours[1007][1,2,3][1][1]: 1,0x62,-2,0x62       //max 3 sockets cap STR2 Mask面具
 //Item Colours[1007][1,2,3][1][4]: 1,0x62,0x62,0x62       //3 sockets cap STR23 Mask面具
 //--- shield---
 //Item Colours[1024,1091,1045,1046][1,2,3][1][3]: 1,0x62 ,0x62,0x62 //2 sockets shield
 //Item Colours[1025,1026,1028][1,2,3][1][4,5]: 1,-2,0x62,-2 //3 sockets shield非资
-Item Colours[1025,1026,1028][1,2,3][1][1,4]: 1,0x62,0x62,0x62 //3 sockets shield
+//Item Colours[1025,1026,1028][1,2,3][1][1,4]: 1,0x62,0x62,0x62 //3 sockets shield
 Item Colours[1142][1,2,3][1][1,5]: 1,0x62 ,0x62,0x62       //Monarch統治者大盾
 Item Colours[1193-1197][1,2,3][1,2][1,5]: 1,0x62 ,0x62,0x62       //pal盾
 //--- weapon ---
 //Item Colours[22][1,2,3][1][5]: 1,0x62 ,0x62,0x62       //4 sockets Flail 连枷(橡树之心)
 Item Colours[30][1,2,3][1][6]: 1,0x62 ,0x62,0x62       //5 sockets Crystal Sword 水晶剑(战争召唤)
-//Item Colours[31][1,2,3][1][1,5]: 1,0x62 ,0x62,0x62       //max 4 Broad Sword 阔剑(精神)
+Item Colours[31][1,2,3][1][1,5]: 1,0x62 ,0x62,0x62       //max 4 Broad Sword 阔剑(精神)
 //Item Colours[31][1,2,3][1][5]: 1,0x62 ,0x62,0x62       //4 socket Broad Sword 阔剑(精神)
 //Item Colours[32][1,2,3][1][1,5]: 1,0x62 ,0x62,0x62       //max 4 Long Sword 长剑speed-10
 Item Hide Lvl[31-32][1,2,3]: 40 

@@ -325,14 +325,41 @@ LONG __stdcall MyRegQueryValueExA(HKEY hKey,LPCSTR lpValueName,LPDWORD lpReserve
 	}
 	return ret;
 }
-static wchar_t lastMsg[256];
-static int lastMsgColor=0,lastMsgTimeoutMs=0;
+struct Msg {
+	int color,expireMs;
+	wchar_t msg[128];
+};
+#define MSGS 8
+static Msg lastMsg[MSGS];
+static int msgTail=0,msgN=0,msgTimeoutMs=0;
+extern "C" void __stdcall ClearMainMenuMessage() {
+	msgTail=0;msgN=0;msgTimeoutMs=0;
+}
+extern "C" void __stdcall MainMenuMessage3(wchar_t *msg,int color,int ms) {
+	Msg *p=&lastMsg[msgTail++];if (msgTail>=MSGS) msgTail=0;
+	if (msgN<MSGS) msgN++;
+	p->color=color;
+	p->expireMs=GetTickCount()+ms;
+	int len=0;for (wchar_t *s=msg;*s;s++) len++;
+	if (len>127) len=127;
+	memcpy(p->msg,msg,len*2);p->msg[len]=0;
+	msgTimeoutMs=p->expireMs;
+}
 void drawMainMenuMessages() {
-	if (lastMsgTimeoutMs) {
-		DWORD dwOldFone = d2win_SetTextFont(1);
-		d2win_DrawText(lastMsg,10,30,lastMsgColor,-1);
+	if (msgTimeoutMs) {
+		int dwCurMs=(int)GetTickCount();
+		int head=msgTail-msgN;if (head<0) head+=msgN;
+		DWORD dwOldFone=d2win_SetTextFont(1);
+		int x=10,y=30;
+		for (int i=0;i<msgN;i++) {
+			Msg *p=&lastMsg[head++];if (head>=MSGS) head=0;
+			if (dwCurMs>p->expireMs) continue;
+			d2win_DrawText(p->msg,x,y,p->color,-1);y+=12;
+		}
 		d2win_SetTextFont(dwOldFone);
-		if ((int)GetTickCount()>lastMsgTimeoutMs) lastMsgTimeoutMs=0;
+		if (dwCurMs>msgTimeoutMs) {
+			msgTail=0;msgN=0;msgTimeoutMs=0;
+		}
 	}
 }
 static void mainmenuFlushFramebuf() {
@@ -449,9 +476,4 @@ extern "C" PVOID __stdcall QueryInterface() {
 	LoadLibrary(filename);
 	//MessageBox(NULL,filename,"loadhackmap QueryInterface",MB_OK);
 	return NULL;
-}
-extern "C" void __stdcall MainMenuMessage(wchar_t *s,int color) {
-	lastMsgColor=color;
-	lastMsgTimeoutMs=GetTickCount()+10000;
-	wcscpy(lastMsg,s);
 }

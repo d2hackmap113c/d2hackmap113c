@@ -1,4 +1,5 @@
 LIBRARY	"loadhackmap"
 EXPORTS
    QueryInterface	@1
-	 MainMenuMessage @2
+	 MainMenuMessage3 @2
+	 ClearMainMenuMessage @3

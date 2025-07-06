@@ -80,9 +80,11 @@ static void setLootPermit(int uid,char *name) {
 	}
 	if (permit!=old) {
 		LOG("LootPermit %s local=%d permit=%d->%d\n",name,isLocal,old,permit);
+		/*
 		if (dwGameLng) gameMessageWColor(2,L"%s%s%hs搜括尸体",permit?L"允许":L"禁止",
 			isLocal?L"本机号":L"陌生人",name);
 		else gameMessageWColor(2,L"%hs %hs %hs to loot",permit?"Allow":"Forbid",isLocal?"local":"alien",name);
+		*/
 		BYTE packet[7];packet[0]=0x5D;packet[1]=1;packet[2]=permit?1:0;*(int *)(packet+3)=uid;
 		SendPacket(packet,sizeof(packet));
 	}
@@ -308,10 +310,33 @@ void __declspec(naked) RecvCommand_59_Patch_ASM() {
 	}
 }
 static void __fastcall recv8C(char *packet) {
-	int id1=*(int *)(packet+1); //operator
-	int id2=*(int *)(packet+5); //target
+	int srcId=*(int *)(packet+1); //operator
+	int dstId=*(int *)(packet+5); //target
 	int flag=*(short *)(packet+9); //1:Allow Loot 2:Can't hear 4:block message 8:hostile
-	if (tShowTestInfo.isOn) gameMessage("Relation operator=%d target=%d flag=%X",id1,id2,flag);
+	if (PLAYER&&srcId==PLAYER->dwUnitId) {
+		int loot=flag&1;
+		int lastLoot=0;
+		char *name="";
+		for (RosterUnit *pUnit=PLAYERLIST;pUnit;pUnit=pUnit->pNext) {
+			if (pUnit->dwUnitId==srcId&&pUnit->pPvPInfo) {
+				for (PvPInfo *pPvPInfo=*(pUnit->pPvPInfo);pPvPInfo;pPvPInfo=pPvPInfo->pNext) {
+					if (pPvPInfo->dwUnitId==dstId) {
+						lastLoot=(pPvPInfo->dwFlag&1)?1:0;
+						break;
+					}
+				}
+			} else if (pUnit->dwUnitId==dstId) {
+				name=pUnit->szName;
+			}
+		}
+		if (lastLoot!=loot) {
+			int isLocal=isLocalPlayerName(name);
+			if (dwGameLng) gameMessageWColor(2,L"已%s%s%hs搜括尸体",loot?L"允许":L"禁止",
+				isLocal?L"本机号":L"陌生人",name);
+			else gameMessageWColor(2,L"%hs %hs %hs to loot",loot?"Allowed":"Forbidden",isLocal?"local":"alien",name);
+		}
+	}
+	if (tShowTestInfo.isOn) gameMessage("Relation operator=%d target=%d flag=%X",srcId,dstId,flag);
 }
 //d2client_AD7BA: 8B 79 01           mov edi, [ecx+0x1]
 //d2client_AD7BD: 8B D7              mov edx, edi
@@ -321,9 +346,9 @@ void __declspec(naked) RecvCommand_8C_Patch_ASM() {
 		add edi, 300
 		mov dwCheckRelationMs, edi
 		mov fPartyListValid,0
-		//pushad
-		//call recv8C
-		//popad
+		pushad
+		call recv8C
+		popad
 		mov edi, [ecx+1]
 		mov edx,edi
 		ret

@@ -555,16 +555,6 @@ void DrawMonitorInfo(){
 		if (dwCurMs<dwTargetDistanceMs) pos+=wsprintfW(wszTemp+pos, L": %d", dwTargetDistance*2/3);
 		drawBgTextLeft(wszTemp,xpos,ypos,targetNameColor,0x10);ypos-=15;
 	}
-	for (int i=1;i<=d2winLastId;i++) {
-		if (i==dwGameWindowId) continue;
-		D2Window *pwin=&d2wins[i];
-		if (pwin->autoSkillId) {
-			wsprintfW(wszTemp, L"%d: %c->%d",i,pwin->autoLeft?'L':'R',pwin->autoSkillId); 
-			int x=xpos-GetTextWidth(wszTemp);if (x<0) x=0;
-			d2win_DrawText(wszTemp, x , ypos, 0, 0);
-			ypos = ypos -15;
-		}
-	}
 	if (tShowTestInfo.isOn) {
 		UnitAny *pSelectedUnit = d2client_GetSelectedUnit();
 		if (pSelectedUnit) {
@@ -659,9 +649,9 @@ void DrawMonitorInfo(){
 		for (int i=0;i<2;i++) {
 			UnitAny *pUnit=i==0?rightWeapon:leftWeapon;
 			if (!pUnit) continue;
-			int max_durability=d2common_GetUnitStat(pUnit, 73, 0); 
+			int max_durability=d2common_GetUnitStat(pUnit, STAT_MAXDURABILITY, 0); 
 			if (max_durability) {
-				int durability=d2common_GetUnitStat(pUnit, 72, 0); 
+				int durability=d2common_GetUnitStat(pUnit, STAT_DURABILITY, 0); 
 				if (durability<max_durability) {
 					wsprintfW(wszTemp, L"%s %d/%d",i==0?L"DurR":L"DurL",durability,max_durability);
 					d2win_GetTextAreaSize(wszTemp, &sw, &sh);
@@ -735,6 +725,16 @@ void DrawMonitorInfo(){
 					drawX-screenDrawX,
 					drawY-screenDrawY, bossLineColor,-1);
 			}
+		}
+	}
+	for (int i=1;i<=d2winLastId;i++) {
+		if (i==dwGameWindowId) continue;
+		D2Window *pwin=&d2wins[i];
+		if (pwin->autoSkillId) {
+			wsprintfW(wszTemp, L"%d: %c->%d",i,pwin->autoLeft?'L':'R',pwin->autoSkillId); 
+			int x=xpos-GetTextWidth(wszTemp);if (x<0) x=0;
+			d2win_DrawText(wszTemp, x , ypos, 0, 0);
+			ypos = ypos -15;
 		}
 	}
 	if (nStashPages&&*d2client_pUiStashOn&&tDrawMultiPageStashCount.isOn) {
@@ -1136,17 +1136,17 @@ static void drawEmit(UnitAny *pUnit,int r,int color) {
 		d2gfx_DrawLine(drawX0-screenDrawX,drawY0-screenDrawY,drawX-screenDrawX,drawY-screenDrawY,color,-1);
 	}
 }
-static void drawCircle(UnitAny *pUnit,int r,int color) {
-	r=(r<<1)+r;
+static void drawCircle(UnitAny *pUnit,int r2,int color) {
+	r2=(r2<<1)+r2;
 	int x=pUnit->pMonPath->wUnitX;int y=pUnit->pMonPath->wUnitY;
 	int *p=cos_sin[0];
 	int lx,ly,x0,y0;
 	for (int i=0;i<16;i++,p+=2) {
-		int dx=(r*p[0])>>9;
-		int dy=(r*p[1])>>9;
-		int ux=x+dx,uy=y+dy;
-		int drawX=(ux-uy)*16;
-		int drawY=(ux+uy)*8;
+		int dx=r2*p[0];
+		int dy=r2*p[1];
+		int ux=(x<<10)+dx,uy=(y<<10)+dy;
+		int drawX=(ux-uy)>>6;
+		int drawY=(ux+uy)>>7;
 		if (i==0) {x0=drawX;y0=drawY;}
 		else {
 			d2gfx_DrawLine(lx-screenDrawX,ly-screenDrawY,drawX-screenDrawX,drawY-screenDrawY,color,-1);
@@ -1173,9 +1173,10 @@ static void drawBossHp(UnitAny *pUnit,int boss,int lineColor,int value) {
 	}
 	int drawX = pUnit->pMonPath->drawX;
 	int drawY = pUnit->pMonPath->drawY;
-	if (dwCurrentLevel==Level_ArreatSummit) {
+	if (dwCurrentLevel==Level_ArreatSummit
+		&&(pUnit->dwTxtFileNo==Mon_LightningSpire||pUnit->dwTxtFileNo==Mon_FireTower)) {
 		int W=16;
-		if (pUnit->dwTxtFileNo==372) W<<=1; //*2
+		if (pUnit->dwTxtFileNo==Mon_FireTower) W<<=1; //*2
 		if (pUnit->pMonsterData->bTypeFlags&8) W<<=1; //*2
 		else if (pUnit->pMonsterData->bTypeFlags&0x10) W=((W<<1)+W)>>1; //*1.5
 		int rw;
@@ -1187,9 +1188,9 @@ static void drawBossHp(UnitAny *pUnit,int boss,int lineColor,int value) {
 		d2gfx_DrawRectangle(xpos,ypos,xpos+rw,ypos+5,0x62,5);
 		d2gfx_DrawRectangle(xpos+rw,ypos,xpos+W,ypos+5,0,5);
 		if (tShowTestInfo.isOn) {
-			if (pUnit->dwTxtFileNo==371) {
-				drawCircle(pUnit,24,dwDrawUnitCount&8?0x10:0x20);
-			} else if (pUnit->dwTxtFileNo==372) {
+			if (pUnit->dwTxtFileNo==Mon_LightningSpire) {
+				drawCircle(pUnit,33<<1,dwDrawUnitCount&8?0x10:0x20);
+			} else if (pUnit->dwTxtFileNo==Mon_FireTower) {
 				drawEmit(pUnit,23,dwDrawUnitCount&8?0x62:0x20);
 			}
 		}
@@ -1200,7 +1201,7 @@ static void drawBossHp(UnitAny *pUnit,int boss,int lineColor,int value) {
 		if (pUnit->pMonsterData->fChamp) wbuf[pos++]='C';
 		if (pUnit->pMonsterData->fBoss) wbuf[pos++]='B';
 		if (pUnit->pMonsterData->fMinion) wbuf[pos++]='m';
-		int ce=0,fe=0;
+		int ce=0,fe=0,tp=0;
 		if (pUnit->pMonsterData->fBoss||pUnit->pMonsterData->fChamp) {
 			for (int i = 0; i < 9; i++) {
 				int enchno = pUnit->pMonsterData->anEnchants[i];if (!enchno) break;
@@ -1209,27 +1210,35 @@ static void drawBossHp(UnitAny *pUnit,int boss,int lineColor,int value) {
 					//case 17:wbuf[pos++]='L';wbuf[pos++]='e';break; //LightningEnchantedDesc
 					case 18:ce=1;wbuf[pos++]='C';wbuf[pos++]='e';break; //ColdEnchantedDesc
 					case 25:wbuf[pos++]='M';wbuf[pos++]='b';break; //ManaBurnDesc
-					case 26://Teleport
-						wbuf[pos++]='T';wbuf[pos++]='p';
-						setBottomAlertMsg(5,dwGameLng?L"传送塔":L"Teleport",300,1,0,6);
-						break; 
+					case 26:tp=1;wbuf[pos++]='T';wbuf[pos++]='p';break;//Teleport
 					case 27:wbuf[pos++]='S';wbuf[pos++]='h';break; //SpectralHit
 				}
 			}
 			if (ce) {
-				drawCircle(pUnit,8,dwDrawUnitCount&8?0x97:0x9E);
+				drawCircle(pUnit,8<<1,dwDrawUnitCount&8?0x97:0x9E);
 				int dis256=getPlayerDistanceM256(pUnit);
-				if (dis256<=9*256) {
-					drawCircle(pUnit,7,dwDrawUnitCount&8?0x97:0x62);
-					drawCircle(pUnit,6,dwDrawUnitCount&8?0x97:0x62);
+				if (dis256<=9*256*3/2) {
+					drawCircle(pUnit,15,dwDrawUnitCount&8?0x97:0x62);
+					drawCircle(pUnit,14,dwDrawUnitCount&8?0x97:0x62);
+					drawCircle(pUnit,13,dwDrawUnitCount&8?0x97:0x62);
+					drawCircle(pUnit,12,dwDrawUnitCount&8?0x97:0x62);
+					drawCircle(pUnit,11,dwDrawUnitCount&8?0x97:0x62);
 				}
 			}
 			if (fe) {
-				drawCircle(pUnit,3,dwDrawUnitCount&8?0x62:0x68);
+				drawCircle(pUnit,3<<1,dwDrawUnitCount&8?0x62:0x68);
 				int dis256=getPlayerDistanceM256(pUnit);
-				if (dis256<=3*256) {
+				if (dis256<=3*256*3/2) {
+					drawCircle(pUnit,5,dwDrawUnitCount&8?0x62:0x84);
+					drawCircle(pUnit,4,dwDrawUnitCount&8?0x62:0x84);
 					drawCircle(pUnit,3,dwDrawUnitCount&8?0x62:0x84);
 				}
+			}
+			if (tp) {
+				if (fe) setBottomAlertMsg(5,dwGameLng?L"有FE传送塔":L"FE Teleport",300,1,0,6);
+				else if (ce) setBottomAlertMsg(5,dwGameLng?L"有CE传送塔":L"CE Teleport",300,1,0,6);
+				else setBottomAlertMsg(5,dwGameLng?L"有传送塔":L"Teleport",300,1,0,6);
+				if (fe) setBottomAlertBg(5,0x10,0x62);
 			}
 		}
 		int fr=d2common_GetUnitStat(pUnit,STAT_FIRE_RESIST,0);
@@ -1338,14 +1347,16 @@ static void drawUnitsInfoInRect(AreaRectData *pData) {
 						default:
 							switch (dwCurrentLevel) {
 								case Level_ArreatSummit:
-									if (pUnit->dwTxtFileNo==371||pUnit->dwTxtFileNo==372) {
+									if (pUnit->dwTxtFileNo==Mon_LightningSpire||pUnit->dwTxtFileNo==Mon_FireTower) {
 										int fr=d2common_GetUnitStat(pUnit,STAT_FIRE_RESIST,0);
-										int value=getTowerValue(pUnit->dwTxtFileNo==372,pUnit->pMonsterData->bTypeFlags);
+										int value=getTowerValue(pUnit->dwTxtFileNo==Mon_FireTower,pUnit->pMonsterData->bTypeFlags);
 										//return 128,192,256,320,384,426,640,853
 										if (value<=200) {
-											if (fr>=100||tShowTestInfo.isOn) drawBossHp(pUnit,0,0,value);
+											//if (fr>=100||tShowTestInfo.isOn) 
+											drawBossHp(pUnit,0,0,value);
 										} else if (value<=300) {
 											//drawBossHp(pUnit,0,fr>=100?0:0x84,value); //green line
+											drawBossHp(pUnit,0,0,value);
 										} else if (value<=500) {
 											drawBossHp(pUnit,0,fr>=100?0:0x62,value); //red line
 										} else {

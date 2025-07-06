@@ -280,7 +280,7 @@ int LoadExtInfo(){
 						}else{
 							wsprintfW(errtemp,L"Load ItemInfo Error!Too Many Lines!Skipped! LineNo: %d", lineno);
 						}
-						d2client_ShowGameMessage(errtemp , 1);						
+						gameMessageWColor(1,errtemp );						
 					}
 				}
 

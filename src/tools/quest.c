@@ -198,7 +198,7 @@ void check(int accountId,char *realm,char *account,char *name) {
 	free(dat);
 	int dL=0,act=0;
 	int exp=header.charStatus&0x20;
-	int hc=header.charStatus&4;
+	int hc=header.charStatus&4?1:0;
 	PRT("F%d ",accountId);
 	sprintf(path,"%s\\%s\\dat\\%s_%s.soj.txt",snapshotPath,realm,account,name);
 	FILE *fp2=fopen(path,"rb");
@@ -319,7 +319,12 @@ void scan_realm(char *realm) {
 	FILE *reportFp=fopen(path,"w+");assert(reportFp);
 	printf("output %s\n",path);
 	qsort(chars,nchar,sizeof(Char),compareChar);
+	int hc=1;
 	for (int i=0;i<nchar;i++) {
+		if (chars[i].hc!=hc) {
+			fputs("--------------------------\n",reportFp);
+			hc=chars[i].hc;
+		}
 		fputs(chars[i].line,reportFp);fputc('\n',reportFp);
 	}
 	fprintf(reportFp,"total soj: %d\n",total_soj);

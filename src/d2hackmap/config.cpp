@@ -41,9 +41,11 @@ void clearCharacterTag();
 void addCharacterTag(char *name,char *tag);
 void doneCharacterTag();
 static int parseStringConfig(ConfigVar *config , char *arrays , char *right);
+int mainMenuMsgTimeout=10000;
 
 static ConfigVar **configVars=NULL;int configVarCap=0,configVarCount=0;
 static ConfigVar aConfigVars[] = {
+	{CONFIG_VAR_TYPE_INT, "MainMenuMsgTimeout",			&mainMenuMsgTimeout  ,   4 },
 	{CONFIG_VAR_TYPE_INT, "ShowCFGCheckInfo",			&fShowCheckInfo  ,   4 },
 	{CONFIG_VAR_TYPE_STR, "RuntimePath",			szRuntimePath, 1,  {255 }},
 	{CONFIG_VAR_TYPE_INT, "LoadItemColours",        &fLoadItemColours,  4},

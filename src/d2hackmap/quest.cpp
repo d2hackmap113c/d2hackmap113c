@@ -86,18 +86,18 @@ static void checkQuest(int id,int bitmask1,int bitmask2,char *name) {
 	if ( fPlayer== 0 ) {//玩家还没完成指定任务
 		if ( fGame==0 ){ //当前游戏可完成
 			wsprintfW(wszbuf, L"Warning: Not a BugK%hs Game game=%04X player=%04X",name,game[id],player[id]);
-			d2client_ShowGameMessage(wszbuf, 1); //red
+			gameMessageWColor(1,wszbuf); //red
 		} else {
 			wsprintfW(wszbuf, L"BugK%hs game=%04X player=%04X",name,game[id],player[id]);
-			d2client_ShowGameMessage(wszbuf, 2); //green
+			gameMessageWColor(2,wszbuf); //green
 		}
 	} else {
 		if ( fGame==0 ){ //当前游戏可完成
 			wsprintfW(wszbuf, L"K%hs game=%04X player=%04X",name,game[id],player[id]);
-			d2client_ShowGameMessage(wszbuf, 2); //green
+			gameMessageWColor(2,wszbuf); //green
 		} else {
 			wsprintfW(wszbuf, L"Already completed %hs game=%04X player=%04X",name,game[id],player[id]);
-			d2client_ShowGameMessage(wszbuf, 0); //white
+			gameMessageWColor(0,wszbuf); //white
 		}
 	}
 }
@@ -120,11 +120,11 @@ void QuestNewLevel() {
 			//
 			//Q23 A000 Q24 A000 Q25 8000
 			if (QUESTDATA->quests[14]&0x18) { //player not reset
-				d2client_ShowGameMessage(
+				gameMessageWColor(1,
 					dwGameLng?L"需先找杰海因和马席夫完成任务,否则需小号自己能进去才能过关。"
-					:L"Last quest not done,talk to Jerhyn and Meshif first", 1); //red
+					:L"Last quest not done,talk to Jerhyn and Meshif first"); //red
 			} else {
-				d2client_ShowGameMessage(dwGameLng?L"都瑞尔任务已重置":L"Quest reseted", 2); //green
+				gameMessageWColor(2,dwGameLng?L"都瑞尔任务已重置":L"Quest reseted"); //green
 			}
 		}
 	} else if (dwCurrentLevel==101||dwCurrentLevel==102) {
@@ -260,7 +260,7 @@ static void questAlert() {
 	} else {
 		if (dwGameLng) wsprintfW(wszTemp, L"<Hackmap>: 警告!!!!非%hs游戏!!!!(%d)", aBugInfo[ACTNO].szMsg, alertCount);
 		else wsprintfW(wszTemp, L"<Hackmap>: Warning!!!!Not A %hs Game!!!!(%d)" , aBugInfo[ACTNO].szMsg, alertCount);
-		d2client_ShowGameMessage(wszTemp, 8);
+		gameMessageWColor(8,wszTemp);
 		setBottomAlertMsg(0,wszTemp,1000,1,1,2);
 	}
 	dwQuestAlertMs=dwCurMs+1000;alertCount--;
@@ -276,15 +276,15 @@ void QuestRunLoop() {
 void __fastcall BugKDProtect(DWORD param2 ) {
 	wchar_t wszbuf[64];
 	switch (param2) {
-		case 0:d2client_ShowGameMessage(L"Dens of Evil cleared", 2);return;
-		case 1:d2client_ShowGameMessage(L"Portal to Tristram is opened", 2);return;
-		case 3:d2client_ShowGameMessage(L"Tal Rasha's Chamber is opened", 2);return;
-		case 6:d2client_ShowGameMessage(L"Got the amulet of viper", 2);return;
-		case 7:d2client_ShowGameMessage(L"Q25 Summoner is dead", 2);return;
-		case 8:d2client_ShowGameMessage(L"Q26 Duriel is dead", 2);return;
-		case 9:d2client_ShowGameMessage(L"Q33 enter Kurast sewer level 2", 2);return;
-		case 0xA:d2client_ShowGameMessage(L"Q35 Orb destroyed", 2);return;
-		case 0xB:d2client_ShowGameMessage(L"Mephisto is dead", 2);return;
+		case 0:gameMessageWColor(2,L"Dens of Evil cleared");return;
+		case 1:gameMessageWColor(2,L"Portal to Tristram is opened");return;
+		case 3:gameMessageWColor(2,L"Tal Rasha's Chamber is opened");return;
+		case 6:gameMessageWColor(2,L"Got the amulet of viper");return;
+		case 7:gameMessageWColor(2,L"Q25 Summoner is dead");return;
+		case 8:gameMessageWColor(2,L"Q26 Duriel is dead");return;
+		case 9:gameMessageWColor(2,L"Q33 enter Kurast sewer level 2");return;
+		case 0xA:gameMessageWColor(2,L"Q35 Orb destroyed");return;
+		case 0xB:gameMessageWColor(2,L"Mephisto is dead");return;
 		case 0xC:
 			//KD打开最后的封印： 89 0C
 			if (ACTNO==3 && aBugInfo[3].nStatus==1 && aBugInfo[3].nType==2 ){
@@ -292,20 +292,20 @@ void __fastcall BugKDProtect(DWORD param2 ) {
 				alertCount=dwBugAlertTimes;dwQuestAlertMs=dwCurMs;
 			}
 			setKDCountDown(1);
-			d2client_ShowGameMessage(L"Q43: All seals are open", 2);
+			gameMessageWColor(2,L"Q43: All seals are open");
 			return;
-		case 0x0D:d2client_ShowGameMessage(L"Q43 Diablo is dead", 2);return;
-		case 0x0E:d2client_ShowGameMessage(L"Q42 (89 0E) Mephisto's stone is destoried", 2);
+		case 0x0D:gameMessageWColor(2,L"Q43 Diablo is dead");return;
+		case 0x0E:gameMessageWColor(2,L"Q42 (89 0E) Mephisto's stone is destoried");
 			dwUpdateQuestMs=dwCurMs+500;return;
-		case 0x0F:d2client_ShowGameMessage(L"Q51 Overseer is dead", 2);return;
-		case 0x10:d2client_ShowGameMessage(L"Q53 Anya is saved", 2);return;
-		case 0x11:d2client_ShowGameMessage(L"Q54 Nihlathak is dead", 2);return;
-		case 0x12:d2client_ShowGameMessage(L"Q55 1BB is dead", 2);return;
-		case 0x13:d2client_ShowGameMessage(L"Q56 Baal is dead", 2);
+		case 0x0F:gameMessageWColor(2,L"Q51 Overseer is dead");return;
+		case 0x10:gameMessageWColor(2,L"Q53 Anya is saved");return;
+		case 0x11:gameMessageWColor(2,L"Q54 Nihlathak is dead");return;
+		case 0x12:gameMessageWColor(2,L"Q55 1BB is dead");return;
+		case 0x13:gameMessageWColor(2,L"Q56 Baal is dead");
 			dwUpdateQuestMs=dwCurMs+500;return;
 		default:
 			wsprintfW(wszbuf, L"Recv quest packet 89: %x",param2);
-			d2client_ShowGameMessage(wszbuf, 0);
+			gameMessageWColor(0,wszbuf);
 	}
 }
 
@@ -316,7 +316,7 @@ void __fastcall BugKBProtect(BYTE *aPacket) {
 		pos+=wsprintfW(wszbuf+pos, L"Recv quest packet:");
 		for (int i=0;i<6;i++) 
 			pos+=wsprintfW(wszbuf+pos, L" %02X",aPacket[i]);
-		d2client_ShowGameMessage(wszbuf, 0);
+		gameMessageWColor(0,wszbuf);
 		if (logfp) {
 			fprintf(logfp,"Recv quest packet 5D:");
 			for (int i=0;i<6;i++) fprintf(logfp," %02X",aPacket[i]);
@@ -369,15 +369,15 @@ void __fastcall BugKBProtect(BYTE *aPacket) {
 			if (aPacket[2] == 0x00) {
 				if (aPacket[3]==0x03||aPacket[3]==0x02) {
 					if (aPacket[3]==0x03)
-						d2client_ShowGameMessage(L"Someone enter forgotten tower", 2);
+						gameMessageWColor(2,L"Someone enter forgotten tower");
 					else if (aPacket[3]==0x02)
-						d2client_ShowGameMessage(L"Someone enter forgotten tower Level 5", 2);
+						gameMessageWColor(2,L"Someone enter forgotten tower Level 5");
 					if ( ACTNO==0&&aBugInfo[0].nStatus==1&&*(aBugInfo[0].fEnable)&&aBugInfo[0].nType==2 ) {
 							aBugInfo[0].nStatus = 2 ;
 							alertCount=dwBugAlertTimes;dwQuestAlertMs=dwCurMs;
 					}
 				} else if (aPacket[3]==0x0D)
-					d2client_ShowGameMessage(L"Countess is dead", 2);
+					gameMessageWColor(2,L"Countess is dead");
 			}
 			break;
 /*
@@ -389,10 +389,10 @@ Q16
 		case 0x06:
 			if (aPacket[2] == 0x00) {
 				if (aPacket[3]==0x03) {
-					d2client_ShowGameMessage(L"Andariel is dead", 2);
+					gameMessageWColor(2,L"Andariel is dead");
 					if (!fWinActive) send_multi_reply(MCR_PASSED);
 				} else if (aPacket[3]==0x0C) {
-					d2client_ShowGameMessage(L"Someone else has killed Andariel", 1);
+					gameMessageWColor(1,L"Someone else has killed Andariel");
 					if (!fWinActive) send_multi_reply(MCR_FAILED);
 				}
 			}
@@ -445,7 +445,7 @@ Q16
 				case 0:case 5:dwUpdateQuestMs=dwCurMs+500;break;
 				case 0xC:gameMessageWColor(2,L"Duriel is dead");break;
 				case 6:
-					d2client_ShowGameMessage(L"Finish conversition with Jerhyn", 2);
+					gameMessageWColor(2,L"Finish conversition with Jerhyn");
 					if (autoNpcTxt&&!fWinActive) send_multi_reply(MCR_DONE);
 					break;
 			}
@@ -476,7 +476,7 @@ Q35
 */
 		case 0x14:
 			if (aPacket[2] == 0x00&&aPacket[3]==0x04) {
-				d2client_ShowGameMessage(L"Someone enter Durance of Hate Level 3", 2);
+				gameMessageWColor(2,L"Someone enter Durance of Hate Level 3");
 				if ( ACTNO==2 && aBugInfo[2].nStatus == 1 && *(aBugInfo[2].fEnable) && aBugInfo[2].nType==2 ) {
 						aBugInfo[2].nStatus = 2 ;
 						alertCount=dwBugAlertTimes;dwQuestAlertMs=dwCurMs;
@@ -505,7 +505,7 @@ Q35
 */
 		case 0x18:
 			if (aPacket[2] == 0x00&&aPacket[3]==0x0D) {
-				d2client_ShowGameMessage(L"Q42 (5D 18) Mephisto's stone is destoried", 2);
+				gameMessageWColor(2,L"Q42 (5D 18) Mephisto's stone is destoried");
 				dwUpdateQuestMs=dwCurMs+500;return;
 			}
 /*
@@ -524,7 +524,7 @@ Q52
 					if (aPacket[3]==0x02) {
 						dwBarbrianLeft=aPacket[4];
 						wsprintfW(wszbuf, L"Q52: %d barbrian to rescue",aPacket[4]);
-						d2client_ShowPartyMessage(wszbuf, 2);
+						partyMessageWColor(2,wszbuf);
 						if (fWinActive) {
 							switch (aPacket[4]) {
 							case 10:incMapTargetIf(0);break;
@@ -539,7 +539,7 @@ Q52
 				case 0:
 					if (aPacket[3]==0x03) {
 						dwBarbrianLeft=0;
-						d2client_ShowPartyMessage(L"Q52: All barbrian rescued",2);
+						partyMessageWColor(2,L"Q52: All barbrian rescued");
 						if (!fWinActive) {
 							send_multi_quest_info(MCQ_0BB);
 							send_multi_reply(MCR_DONE);
@@ -550,7 +550,7 @@ Q52
 					}
 					break;
 				case 2:
-					d2client_ShowPartyMessage(L"got runes",2);
+					partyMessageWColor(2,L"got runes");
 					hasRune789=3;
 					if (autoNpcTxt&&!fWinActive) {
 						pressESC();
@@ -563,14 +563,12 @@ Q52
 		case 0x23:
 			if (aPacket[2]==0) {
 				if (aPacket[3]==3) {
-					d2client_ShowPartyMessage(L"3BB activated",2);
-					if (!fWinActive&&DIFFICULTY==2&&ACTNO==4&&t3BBProtect.isOn&&dwPlayerLevel<98) {
-						if ((GAMEQUESTDATA->quests[39]&0x8000)==0) { //游戏可完成
-							if ((QUESTDATA->quests[39]&1)==0) {//玩家未完成
-								d2client_ShowPartyMessage(L"3BB protect, exit game",0);
-								QuickNextGame(1);
-							}
-						}
+					partyMessageWColor(2,L"3BB activated");
+					if (DIFFICULTY>=1&&ACTNO==4&&t3BBProtect.isOn) {
+						gameMessageW(L"3BB protect, exit game");
+						QuickNextGame(1);
+						//if ((GAMEQUESTDATA->quests[39]&0x8000)==0) { //游戏可完成
+						//	if ((QUESTDATA->quests[39]&1)==0) {//玩家未完成
 					}
 				}
 			}
@@ -752,20 +750,20 @@ void __fastcall PacketA4(char *buf) {
 		case 62:break;
 		case 23: //62(3e)->23(17) Baal hall cleared
 			setKBCountDown(1,1);
-			//d2client_ShowGameMessage(L"hall clear", 0); 
+			//gameMessageWColor(0,L"hall clear"); 
 			break;
 		case 105:break;
 		case 381: //105(69)->381(17d) team 1 cleared
 			setKBCountDown(2,1);
-			//d2client_ShowGameMessage(L"team 1 clear", 0); 
+			//gameMessageWColor(0,L"team 1 clear"); 
 			break;
 		case 557:
 			setKBCountDown(3,1);
-			//d2client_ShowGameMessage(L"team 2 clear", 0); 
+			//gameMessageWColor(0,L"team 2 clear"); 
 			break;
 		case 558:
 			setKBCountDown(4,1);
-			//d2client_ShowGameMessage(L"team 3 clear", 0); 
+			//gameMessageWColor(0,L"team 3 clear"); 
 			break;
 		case 571: {
 			setKBCountDown(5,1);
@@ -780,7 +778,7 @@ void __fastcall PacketA4(char *buf) {
 		default:
 			wchar_t wszbuf[256];
 			wsprintfW(wszbuf, L"packet A4: %d",id);
-			d2client_ShowGameMessage(wszbuf, 0); 
+			gameMessageWColor(0,wszbuf); 
 	}
 }
 /*

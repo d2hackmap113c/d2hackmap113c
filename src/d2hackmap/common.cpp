@@ -105,7 +105,7 @@ FILE *openFile(char *path,char *mode) {
 		if (fInGame) {
 			wchar_t temp[256];
 			wsprintfW(temp,  L"can't open %hs", abspath);
-			d2client_ShowGameMessage(temp, 0);
+			gameMessageWColor(0,temp);
 		}
 		LOG("open %s %s failed\n",abspath,mode);
 		return NULL;
@@ -132,34 +132,36 @@ char *loadFile(HANDLE heap,FILE *fp,int *psize) {
 		if (fInGame) {
 			wchar_t temp[256];
 			wsprintfW(temp,  L"incomplete read %d/%d", pos,size);
-			d2client_ShowGameMessage(temp, 0);
+			gameMessageWColor(0,temp);
 		}
 		if (psize) *psize=pos;
 		return p;
 	} 
 	return p;
 }
-static void (__stdcall *loadhackmap_msg)(wchar_t *s,int color)=NULL;
-extern int fStartingGame;
+static void (__stdcall *loadhackmap_msg)(wchar_t *s,int color,int ms)=NULL;
+extern int fStartingGame,mainMenuMsgTimeout;
+void mainMenuMsg(wchar_t *s,int color) {
+	if (!loadhackmap_msg) {
+		HMODULE loadhackmap = GetModuleHandle("loadhackmap.dll");
+		if (!loadhackmap) {
+			LOG("Can't find loadhackmap\n");
+			return;
+		}
+		loadhackmap_msg=(void (__stdcall *)(wchar_t *,int,int))GetProcAddress(loadhackmap,"MainMenuMessage3");
+		if (!loadhackmap_msg) {
+			LOG("Can't find MainMenuMessage\n");
+			return;
+		}
+	}
+	loadhackmap_msg(s,color,mainMenuMsgTimeout);
+}
 static void d2msg(int party,wchar_t *s,int color) {
 	if (fInGame||fStartingGame) {
 		if (!party) d2client_ShowGameMessage(s, color);
 		else d2client_ShowPartyMessage(s, color);
 	} else {
-		if (!loadhackmap_msg) {
-			HMODULE loadhackmap = GetModuleHandle("loadhackmap.dll");
-			if (!loadhackmap) {
-				LOG("Can't find loadhackmap\n");
-				return;
-			}
-			loadhackmap_msg=(void (__stdcall *)(wchar_t *,int))GetProcAddress(loadhackmap,"MainMenuMessage");
-			if (!loadhackmap_msg) {
-				LOG("Can't find MainMenuMessage\n");
-				return;
-			}
-		}
-		//LOG("MainMenuMessage=%X\n",loadhackmap_msg);
-		if (loadhackmap_msg) loadhackmap_msg(s,color);
+		mainMenuMsg(s,color);
 	}
 }
 void __cdecl gameMessage(char *fmt, ...) {
@@ -216,7 +218,7 @@ void __cdecl partyMessageW(wchar_t *fmt, ...) {
 	wvsprintfW(wszbuf, fmt,va);
 	d2msg(1,wszbuf,0);
 }
-void __cdecl partyMessageWcolor(int color,wchar_t *fmt, ...) {
+void __cdecl partyMessageWColor(int color,wchar_t *fmt, ...) {
 	va_list va;
 	wchar_t wszbuf[256];
 	va_start(va, fmt);

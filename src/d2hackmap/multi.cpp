@@ -15,6 +15,8 @@ extern int autoTerminateNpcInteractMs,hasRune789;
 static char tradingName[20]={0};
 static int tradingId=0;
 int hydraLock=0,hydraUid=0,hydraX,hydraY;
+int tpMs=0;
+static int tpState,tpX,tpY,tpSwitchSkillBack;
 extern ToggleVar t3BBProtect;
 
 int QuickNextGame(int addnum);
@@ -29,32 +31,28 @@ extern int dwNecInfoExpireMs;
 extern int dwInteractEntityCount;
 extern int dwAutoSkillReloading;
 extern int dwEnchantSkeletonCount;
-ToggleVar 	tMultiClient={				TOGGLEVAR_ONOFF,	0,	-1,	1,  "Auto Follow" };
-ToggleVar 	tMultiClientToggleFollow={	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientToggleFollow",&MultiClientToggleFollow};
-ToggleVar 	tMultiClientStartFollow1={	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStartFollow1",&MultiClientStartFollow1};
-ToggleVar 	tMultiClientStartFollow2={	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStartFollow2",&MultiClientStartFollow2};
-ToggleVar 	tMultiClientStopFollow={	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStopFollow",&MultiClientStopFollow};
-ToggleVar 	tMultiClientEnterDoor={	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientEnterDoor",&MultiClientEnterDoor};
-ToggleVar 	tMultiClientRetreat={	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientRetreat",&leader_back_to_town};
-ToggleVar 	tMultiClientClick={	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientClick",&MultiClientStartClick};
-ToggleVar 	tMultiClientClick2={	TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientClick2",&MultiClientStartClick};
+ToggleVar tMultiClient={TOGGLEVAR_ONOFF,0,-1,1,"Auto Follow"};
+ToggleVar tMultiClientToggleFollow={TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientToggleFollow",&MultiClientToggleFollow};
+ToggleVar tMultiClientStartFollow1={TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStartFollow1",&MultiClientStartFollow1};
+ToggleVar tMultiClientStartFollow2={TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStartFollow2",&MultiClientStartFollow2};
+ToggleVar tMultiClientStopFollow={TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientStopFollow",&MultiClientStopFollow};
+ToggleVar tMultiClientEnterDoor={TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientEnterDoor",&MultiClientEnterDoor};
+ToggleVar tMultiClientRetreat={TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientRetreat",&leader_back_to_town};
+ToggleVar tMultiClientClick={TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientClick",&MultiClientStartClick};
+ToggleVar tMultiClientClick2={TOGGLEVAR_DOWN,	0,	-1,	1,  "MultiClientClick2",&MultiClientStartClick};
 ToggleVar tMultiClientTalkToNpc={TOGGLEVAR_DOWN,0,-1,1,"MultiClientTalkToNpc",&MultiClientTalkToNpc};
-ToggleVar tMCFormationKeys[32]={			 0};
-signed char aMCFormation[32][16]={					0};
-int 			dwMultiClientGroupSize1=					8;
-int 			dwMultiClientGroupSize2=					8;
-int 			fTransferClick=0;
-int 			dwAutoFollowDistance=					4;
-int 			dwAutoFollowMaxDistance=					33;
-int 			dwAutoFollowMoveDistance=					10;
-int 			dwAutoFollowCheckInterval=					200;
-int 			dwAutoFollowClickObjectDelayMs=					300;
-int 			dwWaitTeamEnterPortalMaxDelayMs=					300;
-char 	    aAutoFollowClickObject[1024]	={0};
-int 			dwTeamMemberCount=					0;
-int 			dwLeaderId=					0;
-ToggleVar 	tNecNoAttackInHell={				TOGGLEVAR_ONOFF,	0,	-1,	1,  "NecNoAttackInHell"};
+ToggleVar tMultiClientTp={TOGGLEVAR_ONOFF,0,-1,1,"MultiClientTP"};
+ToggleVar tMCFormationKeys[32]={0};
+signed char aMCFormation[32][16]={0};
+int dwMultiClientGroupSize1=8,dwMultiClientGroupSize2=8;
+int fTransferClick=0;
+int dwAutoFollowDistance=4,dwAutoFollowMaxDistance=33,dwAutoFollowMoveDistance=10;
+int dwAutoFollowCheckInterval=200,dwAutoFollowClickObjectDelayMs=300,dwWaitTeamEnterPortalMaxDelayMs=300;
+char aAutoFollowClickObject[1024]={0};
+int dwTeamMemberCount=0,dwLeaderId=0;
+ToggleVar tNecNoAttackInHell={				TOGGLEVAR_ONOFF,	0,	-1,	1,  "NecNoAttackInHell"};
 static ConfigVar aConfigVars[] = {
+	{CONFIG_VAR_TYPE_KEY,"MultiClientTpToggle",&tMultiClientTp},
 	{CONFIG_VAR_TYPE_KEY, "MultiClientToggle",          &tMultiClient         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientToggleFollowKey",          &tMultiClientToggleFollow         },
 	{CONFIG_VAR_TYPE_KEY, "MultiClientStartFollowKey1",          &tMultiClientStartFollow1         },
@@ -123,6 +121,7 @@ void MultiClientNewGame() {
 	fTransferClick=0;wszTransferClick[0]=0;transferClickType=0;
 	followerInteractType=0;followerInteractId=0;fAutoFollowMoving=0;followerClickCount=0;d2winLastId=0;
 	autoNpcTxt=0;acceptTradeFromUid=0;acceptTradeMs=0;tradingId=0;clickAcceptTradeMs=0;hasRune789=0;
+	tpMs=0;tpState=0;tpSwitchSkillBack=0;
 	saveRuntimeInfo(d2gfx_GetHwnd());
 	refresh_clients();
 }
@@ -521,6 +520,31 @@ void autoHydra() {
 	setBottomAlertMsg(3,wbuf,1000,0,0,6);
 }
 void MultiClientLoop() {
+	if (tpMs) {
+		if (fWinActive) {tpMs=0;return;}
+		if (dwCurMs<tpMs) return;
+		if (tpState<10) {
+			if (dwRightSkill!=Skill_Teleport) {
+				if (!hasSkill(Skill_Teleport)) {tpMs=0;return;}
+				if (fCanUseRightSkill) selectSkill(1,Skill_Teleport);
+				tpState++;
+				tpMs=dwCurMs+60;
+				return;
+			} else tpState=10;
+		}
+		tpMs=0;
+		switch (tpState) {
+			case 10:
+				if (dwRightSkill!=Skill_Teleport) {LOG("tp switch skill failed\n");}
+				else {RightSkillPos(tpX,tpY);tpMs=dwCurMs+60;tpState=11;}
+				break;
+			case 11:
+				if (tpSwitchSkillBack&&dwRightSkill!=tpSwitchSkillBack&&hasSkill(tpSwitchSkillBack)) 
+					selectSkill(1,tpSwitchSkillBack);
+				tpState=0;
+				break;
+		}
+	}
 	if (hydraLock) autoHydra();
 	if (!fWinActive&&dwCurMs>infoMs) {
 		int n=0;
@@ -922,6 +946,28 @@ int MultiClientInitClick() {
 	}
 	return 1;
 }
+int leader_tp(int x,int y) {
+	if (!tMultiClient.isOn||!fInGame) return 0;
+	int d2raw=dwAutoFollowMaxDistance*dwAutoFollowMaxDistance*9/4;
+	int l=(x&0xFFFF)|((y&0xFFFF)<<16);
+	for (int i=1;i<=d2winLastId;i++) {
+		D2Window *pwin=&d2wins[i];
+		if (i==dwGameWindowId||!pwin->hwnd||!pwin->sameGame) continue;
+		UnitAny *pUnit=d2client_GetUnitFromId(pwin->uid, UNITNO_PLAYER);if (!pUnit) continue;
+		int d2=getUnitRawDistance2(PLAYER,pUnit);if (d2>d2raw) continue;
+		//LOG("send tp to %d\n",i);
+		PostMessageA(pwin->hwnd,WM_KEYUP,VK_MULTICLIENT_TP,l);
+	}
+	return 1;
+}
+void follower_tp(int x,int y) {
+	if (fWinActive) return;
+	if (dwRightSkill!=Skill_Teleport) {
+		if (!hasSkill(Skill_Teleport)) return;
+		tpSwitchSkillBack=dwRightSkill;
+	}
+	tpX=x;tpY=y;tpMs=dwCurMs;tpState=0;
+}
 static int doTransferClick(int right,UnitAny *pUnit,int x,int y) {
 	for (int runId=0;runId<2;runId++) {
 		if (!dwTeamMemberCount) {
@@ -986,7 +1032,7 @@ int __fastcall shouldLeftClick(int *args) {
 	if (tPacketHandler.isOn) {
 		LOG("left click arg=0x%x x=%d y=%d unit=%x\n",args[0],x,y,pUnit);
 	}
-	if (pUnit&&pUnit->dwTxtFileNo==546&&protect3BB()) return 0;
+	if (pUnit&&pUnit->dwUnitType==UNITNO_OBJECT&&pUnit->dwTxtFileNo==546&&protect3BB()) return 0;
 	if (fPlayerInTown&&pUnit&&pUnit->dwUnitType==UNITNO_PLAYER&&isLocalPlayer(pUnit->dwUnitId)) {
 		D2Window *pwin=getLocalPlayer(pUnit->dwUnitId);
 		if (pwin) {
@@ -1064,6 +1110,7 @@ int __fastcall shouldRightClick(int *args) {
 	if (fWinActive&&fUserOperating&&shiftDown&&dwRightSkill==Skill_Hydra) {
 		hydraLock=1;hydraUid=pUnit?pUnit->dwUnitId:0;hydraX=x;hydraY=y;
 	}
+	if (dwRightSkill==Skill_Teleport&&tMultiClientTp.isOn&&dwTeamMemberCount&&fWinActive) leader_tp(x,y);
 	if (fTransferClick&&canTranferClick()) {
 		transferClick(1,pUnit,x,y);
 		if (fTransferClick) return 0;

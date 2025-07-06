@@ -1024,7 +1024,7 @@ void ShowSocketProtectInfo(){
 	char buf[256];formatKey(buf,tSocketProtect.key);
 	wchar_t wszbuf[256];
 	wsprintfW(wszbuf, L"<Hackmap>: Socket Protect On, press %hs to disable",buf);
-	d2client_ShowPartyMessage(wszbuf, 8);
+	partyMessageWColor(8,wszbuf);
 }
 void __declspec(naked) SocketProtectPatch_ASM() {
 	__asm {
@@ -1175,7 +1175,7 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 		}
 	}
 	int showClassSkill=0,showResist=0,showAttr=0,showFcr=0,showMF=0;
-	int showLL=0,showSTR=0,showDEX=0,showQuautity=0,checkStat=0,showLv=0;
+	int showLL=0,showSTR=0,showDEX=0,showQuautity=0,checkStat=0,showDiff=0;
 	switch (dwQuality) {
 		case ITEM_QUALITY_UNIQUE: {
 			color=7;
@@ -1191,7 +1191,7 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 				case 124: //U124國王之杖
 				case 125: //U125赫拉迪克法杖
 				case 127: //U127克林姆的連枷
-					showLv=1;
+					showDiff=1;
 					break;
 				case 101: //囚房 The Ward
 				case 210: //蛇魔法师之皮 Skin of the Vipermagi
@@ -1275,7 +1275,7 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 					case 2046: //Khalim's Eye
 					case 2047: //Khalim's Heart
 					case 2048: //Khalim's Brain
-						showLv=1;
+						showDiff=1;
 						break;
 					case 48:showQuautity=1;break;
 					case 2140:name=L"A1";break;
@@ -1425,9 +1425,18 @@ void drawInvItemInfo(UnitAny *pItem,int px,int py) {
 		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
 		pos+=wsprintfW(wbuf+pos,L"%d",value);
 	}
-	if (showLv) {
+	if (showDiff) {
 		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}
-		pos+=wsprintfW(wbuf+pos,L"L%d",pItem->pItemData->dwItemLevel);
+		int diff=d2common_GetUnitStat(pItem,STAT_ITEMDIFFICULTY,0);
+		if (dwGameLng) {
+			switch (diff) {
+				case 0:wbuf[pos++]=L'普';wbuf[pos++]=L'通';break;
+				case 1:wbuf[pos++]=L'噩';wbuf[pos++]=L'梦';break;
+				case 2:wbuf[pos++]=L'地';wbuf[pos++]=L'狱';break;
+			}
+		} else {
+			pos+=wsprintfW(wbuf+pos,L"D%d",diff);
+		}
 	}
 	if (0) {
 		if (pos) {wbuf[pos++]=0;lines[ln++]=pos;}

@@ -50,7 +50,7 @@ void loop_addConfigVars() {
 extern int dwDrawCount,dwBackToTownTimeout,dwPartyResponseMs,dwOrgMode,dwNpcTradeCheckMs,dwQuestAlertMs;
 extern int dwPartyInvideMs;
 extern World *singlePlayerWorld;
-extern ToggleVar tBugAllHellAlert,tAutoMap;
+extern ToggleVar tBugAllHellAlert,tAutoMap,t3BBProtect,tHide3BB;
 extern int nDrawInvItems;
 extern int dwUpdateQuestMs;
 extern int dwSendPacketCount;
@@ -287,6 +287,16 @@ void GameLoopPatch() {
 			if (PLAYER&&PLAYER->dwMode!=PlayerMode_Death&&PLAYER->dwMode!=PlayerMode_Dead) {
 				gameMessage("Hardcore leave town protect. Exit game");
 				ExitGame();
+			}
+		}
+		if (DIFFICULTY>=1&&dwCurrentLevel==Level_ArreatSummit) {
+			if (t3BBProtect.isOn) {
+				char keyname[256];formatKey(keyname,t3BBProtect.key);
+				gameMessageWColor(2,dwGameLng?L"3BB保护已开启,按%hs取消保护":L"3BB protect on, press %hs to disable",keyname);
+			}
+			if (tHide3BB.isOn) {
+				char keyname[256];formatKey(keyname,tHide3BB.key);
+				gameMessageWColor(2,dwGameLng?L"已隐藏3BB,按%hs显示":L"3BB is hidden, press %hs to show",keyname);
 			}
 		}
 	}

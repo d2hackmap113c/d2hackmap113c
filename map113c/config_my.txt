@@ -84,6 +84,7 @@ KBSkillSwitch[ClassNec][2]:SkillLowerResist
 ShowTestInfoToggle: 0,SHIFT+CTRL+ALT+VK_T //显示调试信息
 Automap Screen Area Toggle:     1,VK_        //地图上显示屏幕区域,配合Scroll复位使用
 3BBProtect: 1, CTRL+ALT+VK_3 //异次元3BB保护，当窗口在后台时如果在地狱A5玩家级别小于98级游戏3BB未完成玩家可完成，当3BB激活时立刻退出
+Hide3BB: 1, CTRL+ALT+VK_3 //异次元刷塔升级不显示3BB
 Chicken Life Min Clevel: 25   //25级以下不使用血保
 AutoTeleportEvadeToggle: 1, CTRL+ALT+VK_T //手动传送时自动躲避
 AutoTeleportEvadeYard: 6,8 //自动躲避距离(普通怪物，危险怪物)
@@ -91,7 +92,7 @@ Item Colours[2042,2044,174]:  0, -1,-1,-1 //Cube,Stone, Khalim's Flail
 AutoLootPermit: 0, -1 //专家级允许非本机号抢装备
 ShowPlayerCastPath: 1,VK_ //显示玩家使用技能的目标
 HardCoreResistProtectToggle: 1, CTRL+ALT+VK_O //是否启用专家级大号抗性保护
-Hide3BB: 1, VK_ //异次元刷塔升级不显示3BB
+TownportalNumsAlert: 30                   //回城卷轴数量提示
 //----------------------------
 //LoadEasyCoreConfigFile: "D:\d2hackmap\map113c\itemconf_hide.txt"
 LoadConfigFile: "D:\d2hackmap\map113c\itemconf_hide.txt"

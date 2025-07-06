@@ -110,10 +110,18 @@ char *getLastUser() {
 }
 int inputUserPassword(LoginInfo *pai) {
 	if (IsBadReadPtr(pai,sizeof(LoginInfo))) {
-		LOG("ERROR: inputUserPassword bad ptr\n");
+		LOG("ERROR: inputUserPassword bad ptr %X\n",pai);
 		return 0;
 	}
 	char *name=pai->name;char *password=pai->pass;
+	if (IsBadReadPtr(name,4)) {
+		LOG("ERROR: inputUserPassword bad name ptr %X\n",name);
+		return 0;
+	}
+	if (IsBadReadPtr(password,4)) {
+		LOG("ERROR: inputUserPassword bad password ptr %X\n",password);
+		return 0;
+	}
 	if (!name) return -1;if (!password) password="";
 	wchar_t wb[64]={0};
 	D2EditBox *focus=(*d2win_pFocusedControl);

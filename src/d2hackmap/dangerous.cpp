@@ -13,7 +13,7 @@ static int *pMercHpPercent=NULL;
 static int *pGolemHpPercent=NULL;
 static int fIronGolemIsRuneword,fIronGolemTownProtection;
 static int ceHp,feHp,cowKingHp;
-static int ceDis,feDis,cowKingDis;
+static int ceDisRaw256,feDisRaw256,cowKingDis;
 static int lastChickenLifeThreshold=-1;
 
 int dwAutoPotionCheckMs=						1000;
@@ -48,18 +48,24 @@ ToggleVar tChickenHostileNearby={TOGGLEVAR_ONOFF,	0,	-1,	1,	"Chicken hostile nea
 ToggleVar tChickenDangerousMonster={		TOGGLEVAR_ONOFF,	0,	-1,	1, "Chicken Dangerous Monster"};
 ToggleVar tAutoPotion={TOGGLEVAR_ONOFF,	0,	-1,	1,	"Auto Potion"};
 ToggleVar tHardCoreAllBackTownIfProtect={TOGGLEVAR_ONOFF,0,-1,1,"HardCoreAllBackTownIfProtect"};
-int dwChickenLifeMinClevel=						0;
-int dwChickenLifeForcedClevel=						90;
+ToggleVar tHardCoreLeaveTownDurability={TOGGLEVAR_ONOFF,0,-1,1,"HardCoreLeaveTownDurability"};
+int dwHardCoreLeaveTownDurabilityPercent=10;
+int dwChickenLifeMinClevel=0;
+int dwChickenLifeForcedClevel=90;
 int dwNoQuitIfDeadClevel=90;
-int dwChickenLifeEnterGame=						1;
+int dwChickenLifeEnterGame=1;
 BOOL fLifeProtectOn=FALSE;
 BOOL fDangerousMonsterActive=FALSE;
 char anDangerousMonster[1000][2]={0};
 int nDangerousMonsterAction=2;
+int dwHardCoreFEHpProtect=0;
 static ToggleVar tHardCoreResistProtect={TOGGLEVAR_ONOFF,0,-1,1,"Hard Core Resist Protect"};
 static BYTE hardCoreLeaveTownResist[3][5]={0};
 static ConfigVar aConfigVars[]={
 //--- m_CheckDangerous.h ---
+  {CONFIG_VAR_TYPE_KEY, "HardCoreLeaveTownDurabilityToggle",&tHardCoreLeaveTownDurability,4},
+  {CONFIG_VAR_TYPE_INT, "HardCoreLeaveTownDurabilityPercent",&dwHardCoreLeaveTownDurabilityPercent,4},
+  {CONFIG_VAR_TYPE_INT, "HardCoreFEHpProtect",&dwHardCoreFEHpProtect,4},
   {CONFIG_VAR_TYPE_CHAR_ARRAY0, "HardCoreLeaveTownResist",&hardCoreLeaveTownResist,5,{3}},
   {CONFIG_VAR_TYPE_KEY, "HardCoreAllBackTownIfProtect",&tHardCoreAllBackTownIfProtect,4},
   {CONFIG_VAR_TYPE_KEY, "HardCoreResistProtectToggle",&tHardCoreResistProtect,4},
@@ -106,6 +112,13 @@ void dangerous_initConfigVars() {
 	memset(anDangerousMonster,    0,        sizeof(anDangerousMonster));
 }
 int leader_back_to_town();
+int protectExitGame() {
+	if (fIsHardCoreGame&&tHardCoreAllBackTownIfProtect.isOn) {
+		leader_back_to_town();
+	}
+	ExitGame();
+	return 0;
+}
 int ProtectAction(wchar_t* wszShowMsg, int action = 1 , BYTE nCol = 8) {
 	//1 exit game, 2 back to home
 	wchar_t wszTemp[0x100];
@@ -116,20 +129,17 @@ int ProtectAction(wchar_t* wszShowMsg, int action = 1 , BYTE nCol = 8) {
 				if (fIsHardCoreGame||dwPlayerLevel>=dwNoQuitIfDeadClevel) {
 					if (dwGameLng) wcscat(wszTemp,L"已经死了不退出");
 					else wcscat(wszTemp,	L"Already dead, no action.");
-					d2client_ShowGameMessage(wszTemp, nCol);
+					gameMessageWColor(nCol,wszTemp);
 					return 0;
 				}
 			}
 			wcscat(wszTemp,	L"Exit game.");
-			d2client_ShowGameMessage(wszTemp, nCol);
-			if (fIsHardCoreGame&&tHardCoreAllBackTownIfProtect.isOn) {
-				leader_back_to_town();
-			}
-			ExitGame();
+			gameMessageWColor(nCol,wszTemp);
+			protectExitGame();
 		} else if ( action == 2) {
 			if (!dwBackToTownTimeout) {
 				wcscat(wszTemp	,	L"Back to town.");
-				d2client_ShowGameMessage( wszTemp, nCol );
+				gameMessageWColor(nCol,wszTemp);
 				BackToTown();
 			}
 		}
@@ -157,13 +167,13 @@ static void rescanMercPointers() {
 						if (item&&d2common_CheckItemFlag(item, ITEMFLAG_RUNEWORD, 0, "?"))
 							fIronGolemIsRuneword=1;
 					}
-					if (lastG) d2client_ShowGameMessage(L"Iron Golem HP pointer changed", 0);
+					if (lastG) gameMessageWColor(0,L"Iron Golem HP pointer changed");
 				}
 				pGolemHpPercent=(int *)&pPetUnit->dwHpPercent;
 				if ((n++) >=2) break;
 			} else if (pPetUnit->dwPetType==7) {
 				if (lastM&&lastM!=(int *)&pPetUnit->dwHpPercent) {
-					d2client_ShowGameMessage(L"Merc HP pointer changed", 0);
+					gameMessageWColor(0,L"Merc HP pointer changed");
 				}
 				pMercHpPercent=(int *)&pPetUnit->dwHpPercent;
 				if ((n++) >=2) break;
@@ -252,7 +262,7 @@ void ChickenLifeLoop() {
 					if (LEVELNO!=121&&dwPlayerMana<=dwManaPotionValue
 						||LEVELNO==121&&dwPlayerMana<=dwManaPotionNTValue) {
 							if (dwMPotionCount>0) {
-								d2client_ShowPartyMessage(L"Auto mana potion", 0);
+								partyMessageWColor(0,L"Auto mana potion");
 								manaMs=dwCurMs+dwManaPotionDelayMs;
 								usePotion(1);
 							}
@@ -262,7 +272,7 @@ void ChickenLifeLoop() {
 			if (tHealingPotion.isOn&&dwHealingPotionLifePercent&&(!healingMs||dwCurMs>=healingMs)&&!fState100HP) {
 				if(dwPlayerHP*100 <= dwPlayerMaxHP*dwHealingPotionLifePercent ){
 					if (dwHPotionCount>0) {
-						d2client_ShowPartyMessage(L"Auto healing potion", 0);
+						partyMessageWColor(0,L"Auto healing potion");
 						healingMs=dwCurMs+dwHealingPotionDelayMs;
 						usePotion(0);
 					}
@@ -276,7 +286,7 @@ void ChickenLifeLoop() {
 				if (!pet||pet->dwMode==12) {
 					pMercHpPercent=NULL;
 				} else if (dwPlayerLevel>=dwHirePotionMinCLevel) {
-					d2client_ShowPartyMessage(L"Auto merc potion", 0);
+					partyMessageWColor(0,L"Auto merc potion");
 					useBelt(dwHirePotionColumn-1,1);
 				} else d2client_PlaySound(PLAYER->dwUnitId, UNITNO_PLAYER,0x19);
 			}
@@ -338,23 +348,32 @@ void ChickenLifeLoop() {
 	if (ceHp) {
 		//range 8 yard
 		wchar_t wszbuf[32];
-		wsprintfW(wszbuf, L"CE %d %d%%",ceDis,ceHp);
-		setBottomAlertMsg(0,wszbuf,300,1,3,6);
-		if (ceDis<=9) setBottomAlertBg(0,0x10,0x97);
+		wsprintfW(wszbuf, L"CE %d %d%%",(ceDisRaw256*2/3)>>8,ceHp);
+		setBottomAlertMsg(0,wszbuf,300,1,3,0);
+		if (ceDisRaw256<=9*3/2*256) setBottomAlertBg(0,0x10,0x62);
 	}
 	if (feHp) {
 		//2.7 yard safe, 2.1 yard hit
 		wchar_t wszbuf[32];
-		wsprintfW(wszbuf, L"FE %d %d%%",feDis,feHp);
+		wsprintfW(wszbuf, L"FE %d %d%%",(feDisRaw256*2/3)>>8,feHp);
 		setBottomAlertMsg(1,wszbuf,300,1,1,0);
-		if (feDis<=3) setBottomAlertBg(1,0x10,0x62);
+		if (feDisRaw256<=3*3/2*256) {
+			setBottomAlertBg(1,0x10,0x62);
+			if (fIsHardCoreGame&&dwHardCoreFEHpProtect&&feHp<=dwHardCoreFEHpProtect) {
+				gameMessageW(dwGameLng?L"FE保护,血量%d%%距离%d":L"FE Protect,HP%d%% %d yard",feHp,(feDisRaw256*2/3)>>8);
+				protectExitGame();
+			}
+		}
 	}
 	if (cowKingHp) {
 		wchar_t wszbuf[32];
 		wsprintfW(wszbuf, L"CowKing %d %d%%",cowKingDis,cowKingHp);
 		setBottomAlertMsg(1,wszbuf,300,1,1,1);
 	}
-	feHp=0;ceHp=0;cowKingHp=0;ceDis=12;feDis=6;cowKingDis=1000;
+	cowKingHp=0;cowKingDis=1000;
+	feHp=0;ceHp=0;
+	ceDisRaw256=12*3/2*256;
+	feDisRaw256=6*3/2*256;
 }
 extern int HasCowKing;
 int isCowKing(MonsterData *pMonsterData) {
@@ -369,7 +388,7 @@ int isCowKing(MonsterData *pMonsterData) {
 	}
 	return m&&le&&m<le;
 }
-void checkBossMonster( UnitAny  *pUnit ) {
+void checkBossMonster(UnitAny *pUnit) {
 	MonsterData *pMonsterData = pUnit->pMonsterData;
 	if (HasCowKing&&LEVELNO==39&&isCowKing(pMonsterData)) {//cow level 
 		cowKingHp=d2common_GetMonsterHpPercent(pUnit);
@@ -379,15 +398,15 @@ void checkBossMonster( UnitAny  *pUnit ) {
 	for (int i = 0; i < 9; i++) {
 		int enchno = pMonsterData->anEnchants[i];
 		if (enchno==9||enchno==18) { //FE CE
-			int dis=(getPlayerDistanceM256(pUnit)*2/3)>>8;
+			int dis=getPlayerDistanceM256(pUnit);
 			if (enchno==9) {
-				if (dis<feDis) {
-					feDis=dis;
+				if (dis<feDisRaw256) {
+					feDisRaw256=dis;
 					feHp=d2common_GetMonsterHpPercent(pUnit);
 				}
 			} else {
-				if (dis<ceDis) {
-					ceDis=dis;
+				if (dis<ceDisRaw256) {
+					ceDisRaw256=dis;
 					ceHp=d2common_GetMonsterHpPercent(pUnit);
 				}
 			}
@@ -450,36 +469,42 @@ int canLeaveTown() {
 	int minPR=hardCoreLeaveTownResist[DIFFICULTY][4];
 	//LOG("leaveTown %d %d %d %d\n",lvl,minFR,minLR,minCR,minPR);
 	if (tHardCoreResistProtect.isOn&&dwPlayerLevel>=lvl) {
-		char keyname[256];formatKey(keyname,tHardCoreResistProtect.key);
 		int fr=d2common_GetUnitStat(PLAYER,STAT_FIRE_RESIST,0);
-		if (fr<minFR) {
-			gameMessageW(dwGameLng?L"大号抗性保护:级别大于%d火抗小于%d的人物不能出城(%hs)"
-				:L"Resist Protect:CharLvl>=%d FR<%d can't leave town(%hs)",
-				lvl,minFR,keyname);
-			return 0;
-		}
 		int lr=d2common_GetUnitStat(PLAYER,STAT_LIGHTING_RESIST,0);
-		if (lr<minLR) {
-			gameMessageW(dwGameLng?L"大号抗性保护:级别大于%d闪抗小于%d的人物不能出城(%hs)"
-				:L"Resist Protect:CharLvl>=%d LR<%d can't leave town(%hs)",
-				lvl,minLR,keyname);
-			return 0;
-		}
 		int cr=d2common_GetUnitStat(PLAYER,STAT_COLD_RESIST,0);
-		if (cr<minCR) {
-			gameMessageW(dwGameLng?L"大号抗性保护:级别大于%d冰抗小于%d的人物不能出城(%hs)"
-				:L"Resist Protect:CharLvl>=%d CR<%d can't leave town(%hs)",
-				lvl,minCR,keyname);
-			return 0;
-		}
 		int pr=d2common_GetUnitStat(PLAYER,STAT_POSION_RESIST,0);
-		if (pr<minPR) {
-			gameMessageW(dwGameLng?L"大号抗性保护:级别大于%d毒抗小于%d的人物不能出城(%hs)"
-				:L"Resist Protect:CharLvl>=%d PR<%d can't leave town(%hs)",
-				lvl,minPR,keyname);
+		if (fr<minFR||lr<minLR||cr<minCR||pr<minPR) {
+			char keyname[256];formatKey(keyname,tHardCoreResistProtect.key);
+			wchar_t wbuf[128];int pos=0;
+			pos+=wsprintfW(wbuf+pos,dwGameLng?L"大号抗性保护:级别%d>=%d":L"Resist Protect:Lv%d>=%d",dwPlayerLevel,lvl);
+			if (fr<minFR) pos+=wsprintfW(wbuf+pos,dwGameLng?L"火抗%d<%d":L" FR%d<%d",fr,minFR);
+			if (lr<minLR) pos+=wsprintfW(wbuf+pos,dwGameLng?L"闪抗%d<%d":L" LR%d<%d",lr,minLR);
+			if (cr<minCR) pos+=wsprintfW(wbuf+pos,dwGameLng?L"冰抗%d<%d":L" CR%d<%d",cr,minCR);
+			if (pr<minPR) pos+=wsprintfW(wbuf+pos,dwGameLng?L"毒抗%d<%d":L" PR%d<%d",pr,minPR);
+			pos+=wsprintfW(wbuf+pos,L"(%hs)",keyname);
+			gameMessageW(wbuf);
 			return 0;
 		}
 		//LOG("leaveTown %d %d %d %d\n",dwPlayerLevel,fr,lr,cr,pr);
+	}
+	if (tHardCoreLeaveTownDurability.isOn) {
+		for (UnitAny *pUnit = d2common_GetFirstItemInInv(PLAYER->pInventory);pUnit;
+			pUnit = d2common_GetNextItemInInv(pUnit)) {
+			if (pUnit->dwUnitType!=UNITNO_ITEM) continue;
+			if (pUnit->pItemData->nLocation!=3) continue; //not on body
+			if (pUnit->pItemData->nItemLocation!=255) continue; //equipped
+			int max_durability=d2common_GetUnitStat(pUnit, STAT_MAXDURABILITY, 0); 
+			if (!max_durability) continue;
+			int minDur=dwHardCoreLeaveTownDurabilityPercent*max_durability/100;
+			if (minDur<2) minDur=2;
+			int durability=d2common_GetUnitStat(pUnit, STAT_DURABILITY, 0); 
+			if (durability<minDur) {
+				char keyname[256];formatKey(keyname,tHardCoreLeaveTownDurability.key);
+				gameMessageW(dwGameLng?L"出城耐久度保护,耐久度只有%d(%hs)"
+					:L"Out town durability protect, only %d(%hs)",durability,keyname);
+				return 0;
+			}
+		}
 	}
 	return 1;
 }

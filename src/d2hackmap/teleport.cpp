@@ -134,6 +134,8 @@ static void findMonsters(int evade) {
 			Mon *pmon=&mons[nMons++];
 			int x=pMon->pMonPath->wUnitX;int y=pMon->pMonPath->wUnitY;pmon->p.x=x;pmon->p.y=y;
 			if (evade) {
+				if ((pMon->dwTxtFileNo==Mon_FireTower||pMon->dwTxtFileNo==Mon_LightningSpire)
+					&&dwCurrentLevel==Level_ArreatSummit) {nMons--;continue;}
 				pmon->dis=autoTPEvadeYard[(mtype&MONSTER_TYPE_DANGROUS)?1:0];
 			} else if (dwCurrentLevel==Level_ArcaneSanctuary) {
 				pmon->dis=dwArcaneSanctuaryYard;
@@ -386,7 +388,7 @@ static void interact(POINT *src,int type,int txt) {
 			if (pUnit->dwUnitType!=type) break;
 			if (pUnit->dwTxtFileNo!=txt) continue;
 			p.x=pUnit->pItemPath->unitX;p.y=pUnit->pItemPath->unitY;
-			if (dis(src,&p)<7) {
+			if (dis(src,&p)<=reachDis+3) {
 				if (type==2) interactObj(pUnit); 
 				else LeftClickUnit(pUnit);
 				return;

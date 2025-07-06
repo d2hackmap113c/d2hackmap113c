@@ -353,7 +353,7 @@ void AutoSkillRunLoop() {
 	if (dwBackToTownTimeout) return;
 	if (dwCurMs<dwAutoSkillCheckMs) return;
 	if (dwAutoSkillReloading) {processStacking();dwAutoSkillCheckMs=dwCurMs+100;return;}
-	if (fPlayerInTown||fAutoFollowMoving) return;
+	if (fPlayerInTown||fAutoFollowMoving||tpMs) return;
 	if (*d2client_pUiGameMenuOn) return;
 	if (PLAYER->pInventory->pCursorItem) return;
 	if (PLAYER->dwMode==PlayerMode_Attacking1||PLAYER->dwMode==PlayerMode_Attacking2||PLAYER->dwMode==PlayerMode_Cast) return;

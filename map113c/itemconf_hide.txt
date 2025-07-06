@@ -1,9 +1,11 @@
 
 //以下有很多就不显示了
 Item Colours[2148]:-1,-2,-2,-2 //A3 essence
+Item Colours[70][7]:-1,-2,-2,-2 //U60凋謝之戒 Witherstring
+Item Colours[72][7]:-1,-2,-2,-2 //U62蘿格之弓 Rogue's Bow
 Item Colours[1030][5]:-1,-2,-2,-2 //S125山德的禁忌 Sander's Taboo (L28 +20IAS +40HP)
-Item Colours[1036][5]:-1,-2,-2,-2 //S3哈斯拉柏的鐵後跟 Hsarus' Iron Heel(L3 +20FRW +25FR)
-Item Colours[1043][5]:-1,-2,-2,-2 //S39西剛的披肩 Sigon's Wrap(L6 20HP 20FR)
+//Item Colours[1036][5]:-1,-2,-2,-2 //S3哈斯拉柏的鐵後跟 Hsarus' Iron Heel(L3 +20FRW +25FR)
+//Item Colours[1043][5]:-1,-2,-2,-2 //S39西剛的披肩 Sigon's Wrap(L6 20HP 20FR)
 Item Colours[1086][5]:-1,-2,-2,-2 //S93馬維娜的教義 M'avina's Tenet(L45 +20FRW)
 //Item Colours[147][7]:-1,-2,-2,-2 //U173水魔陷阱 Kelpie Snare(slow75)
 

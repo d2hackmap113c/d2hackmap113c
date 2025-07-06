@@ -21,6 +21,7 @@ ToggleVar     tHiddenCorpse={        TOGGLEVAR_ONOFF,  0,  -1,  1,	"HiddenCorpse
 char skipMonsters[1024];
 ToggleVar tSkipDrawToggle={TOGGLEVAR_ONOFF,0,-1,1,"SkipDrawToggle",0,0,0,2};
 ToggleVar tHide3BB={TOGGLEVAR_ONOFF,0,-1,1,"Hide 3BB",0,0,0,2};
+extern ToggleVar t3BBProtect;
 
 static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT, "VisualEffectMode",              &dwVisualEffectMode      , 4 },
@@ -104,13 +105,21 @@ DWORD __fastcall InfravisionPatch(UnitAny *pUnit){
 					prisonDistance=(getPlayerDistanceM256(pUnit)>>8)*2/3;
 				}
 			}
-			if (dwCurrentLevel==Level_ArreatSummit&&tHide3BB.isOn) {
+			if (dwCurrentLevel==Level_ArreatSummit&&tHide3BB.isOn&&DIFFICULTY>=1) {
 				switch (pUnit->dwTxtFileNo) {
 					case 474:case 475:case 476:case 546:case 564:return 1;
 				}
 			}
 			break;
 		case UNITNO_MONSTER: {
+			switch (pUnit->dwTxtFileNo) {
+				case Mon_Talic:case Mon_Madawc:case Mon_Korlic:
+					if (DIFFICULTY>=1&&dwCurrentLevel==Level_ArreatSummit&&t3BBProtect.isOn) {
+						gameMessageW(L"3BB protect, exit game");
+						QuickNextGame(1);
+					}
+					break;
+			}
 			if (tChickenDangerousMonster.isOn) CheckDangerousMonster(pUnit);
 			if (tHiddenCorpse.isOn && pUnit->dwMode == 0x0C && afMonsterCorpses[pUnit->dwTxtFileNo] == 0) return 1;
 			if (!fPlayerInTown) {

@@ -127,7 +127,7 @@ int DropProtectionPacketSendCheck(int id) {
 	if (!tDropProtectionToggle.isOn) return 0;
 	int protect=DropProtection(pItem);
 	if (protect) {
-		d2client_ShowGameMessage(L"ERROR: Drop Protection intercept drop command", 1);
+		gameMessageWColor(1,L"ERROR: Drop Protection intercept drop command");
 	}
 	return protect;
 }
@@ -145,7 +145,7 @@ int canHireMerc() {
 		formatKey(keyname,tDropProtectionToggle.key);
 		wsprintfW(wszbuf, L"Drop Protection, merc has %d equipment, (use %hs to unlock)",n,keyname);
 	}
-	d2client_ShowGameMessage(wszbuf, 0);
+	gameMessageWColor(0,wszbuf);
 	return 0;
 }
 int DropProtectionPacketBlock(BYTE *buf,int len) {
@@ -173,7 +173,7 @@ int DropProtectionPacketBlock(BYTE *buf,int len) {
 		if (!pItem) return 0;
 		if (DropProtection(pItem)) {
 			wsprintfW(wszbuf, L"Drop Protection intercept command 0x%02X %hs %d",cmd,cmdname,id);
-			d2client_ShowGameMessage(wszbuf, 0);
+			gameMessageWColor(0,wszbuf);
 			return 1;
 		}
 	}
@@ -185,7 +185,7 @@ int __fastcall DropProtectionPacketCheck17(int id) {
 	if (!tDropProtectionToggle.isOn) return 0;
 	int protect=DropProtection(pItem);
 	if (protect) {
-		d2client_ShowGameMessage(L"ERROR: Drop Protection intercept drop command", 1);
+		gameMessageWColor(1,L"ERROR: Drop Protection intercept drop command");
 	}
 	return protect;
 }
@@ -445,7 +445,7 @@ int __fastcall isValidRuneword(UnitAny *equipment) {
 	formatKey(keyname,tRunewordProtect.key);
 	if (equipment->pItemData->dwQuality>=4) {
 		d2client_ItemProtect(PLAYER,0x13);
-		partyMessageWcolor(1,dwGameLng?
+		partyMessageWColor(1,dwGameLng?
 			L"<Hackmap>: 不是神符之语材料，按%hs取消保护"
 			:L"<Hackmap>: Not runeword material, press %hs to disable protection",keyname);
 		return 0;
@@ -507,17 +507,17 @@ int __fastcall isValidRuneword(UnitAny *equipment) {
 			fflush(logfp);
 		}
 	}
-	if (totalMatch) partyMessageWcolor(2,dwGameLng?
+	if (totalMatch) partyMessageWColor(2,dwGameLng?
 		L"有%d符合条件的神符之语:%s"
 		:L"Find %d matching runeword:%s",totalMatch,matched);
 	if (validMatch) return 1;
 	d2client_ItemProtect(PLAYER,0x13);
 	if (totalMatch)
-		partyMessageWcolor(1,dwGameLng?
+		partyMessageWColor(1,dwGameLng?
 			L"<Hackmap>: 有%d符合条件的神符之语，但没有相应符文，按%hs取消保护"
 			:L"<Hackmap>: Find %d runewords, but don't have required runes, press %hs to disable protection",totalMatch,keyname);
 	else 
-		partyMessageWcolor(1,dwGameLng?
+		partyMessageWColor(1,dwGameLng?
 			L"<Hackmap>: 没有符合条件的神符之语，按%hs取消保护"
 			:L"<Hackmap>: Can't find valid runeword, press %hs to disable protection",keyname);
 	return 0;

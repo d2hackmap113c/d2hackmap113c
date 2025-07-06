@@ -54,7 +54,7 @@ OBJ=\
 
 CFLAGS=/Oi /Ot /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D D2HACKMAP_EXPORTS /D _WINDLL /D _MBCS /FD /EHsc /MT /Gy /Fp"Release\d2hackmap.pch" /Fd"Release\vc90.pdb" /W3 /WX /c /Zi /TP
 LDFLAGS_EXE= /INCREMENTAL:NO /MANIFEST:NO /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /DYNAMICBASE /NXCOMPAT /MACHINE:X86 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
-LDFLAGS_DLL= /INCREMENTAL:NO /DLL /MANIFEST:NO /DEF:d2hackmap.def /MAP:d:/d2hackmap/map113c/dll/d2hackmap.map /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /BASE:0x66000000 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib psapi.lib
+LDFLAGS_DLL= /INCREMENTAL:NO /DLL /MANIFEST:NO /DEF:d2hackmap.def /MAP:../../map113c/dll/d2hackmap.map /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /BASE:0x66000000 /DYNAMICBASE /NXCOMPAT /MACHINE:X86 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib psapi.lib
 
 all: $(OUT) $(SYMS)
 clean:

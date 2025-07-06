@@ -138,9 +138,8 @@ void __fastcall AutoBackToTown(BYTE *aPacket) {
 		if( nTownportalAlertNums!= (DWORD)-1 ){
 			int srollcount = skillCount(220);
 			if ( srollcount<= nTownportalAlertNums ){
-				wchar_t temp[512];
-				wsprintfW(temp,  L"<Hackmap>: Warning !! Only %d Townportals Left ", srollcount);
-				d2client_ShowGameMessage(temp, 8);
+				gameMessageWColor(8,
+					dwGameLng?L"只有%d个回城卷轴了":L"<Hackmap>: Warning !! Only %d Townportals Left ", srollcount);
 			}
 		}
 	}

@@ -419,13 +419,15 @@ static int initTileRoute(MinimapLevelTarget *pTarget) {
 	return 0;
 }
 int RerouteRectPath() {
+	char keyname[256];
 	MinimapLevel *pMapLevel=&minimapLevels[dwCurrentLevel];
 	MinimapLevelTarget *pTarget=pMapLevel->curTarget;
 	if (!pTarget||!pTarget->ready) return 0;
 	if (!pTarget->rectRoute) initRectRoute(pTarget);
 	int ms=GetTickCount();
 	performRectRoute(pTarget);
-	gameMessage("reroute in %d ms",GetTickCount()-ms);
+	formatKey(keyname,tReroute.key);
+	gameMessage("reroute in %d ms (%s)",GetTickCount()-ms,keyname);
 	return 0;
 }
 void AutoMapRoute() {

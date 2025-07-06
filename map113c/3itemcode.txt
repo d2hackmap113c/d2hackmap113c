@@ -477,6 +477,8 @@ Lvl	STR	DEX
 80	177	142
 90	195	157
 98	209	169
+ACTIII merc:
+80  127 101
 socket lv1-25,26-40,41-99
 Bardiche----------大砍刀-------bar---58 L0 socket3 speed10 STR40 (2hand)1-27
 Lochaber-Axe------罗佳伯斧-----9b7---151 L21 socket3 speed10 STR80 (2hand)6-58

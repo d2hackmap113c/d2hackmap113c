@@ -26,7 +26,7 @@ void __cdecl gameMessageColor(int color,char *fmt, ...);
 void __cdecl gameMessageW(wchar_t *fmt, ...);
 void __cdecl gameMessageWColor(int color,wchar_t *fmt, ...);
 void __cdecl partyMessageW(wchar_t *fmt, ...);
-void __cdecl partyMessageWcolor(int color,wchar_t *fmt, ...);
+void __cdecl partyMessageWColor(int color,wchar_t *fmt, ...);
 int get_cpu_usage(int *ucpu,int *kcpu);
 
 BOOL IsFullWindow();

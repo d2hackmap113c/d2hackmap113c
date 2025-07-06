@@ -791,7 +791,7 @@ void showResetProtectMsg() {
 	wchar_t wszbuf[256];char keyname[256];wszbuf[0]=0;
 	formatKey(keyname,tResetProtectionToggle.key);
 	wsprintfW(wszbuf, L"Reset Protection, (use %hs to unlock)",keyname);
-	d2client_ShowGameMessage(wszbuf, 0);
+	gameMessageWColor(0,wszbuf);
 }
 int activeBufferItem(int unitId,int x,int y) {
 	UnitAny *pUnit=d2client_GetUnitFromId(unitId,UNITNO_ITEM);if (!pUnit) return 0;

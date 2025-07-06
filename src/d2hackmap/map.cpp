@@ -377,7 +377,7 @@ int NextMapTarget() {
 	updateTargetName();
 	//if (dwGameLng) wsprintfW(wszbuf, L"切换到目标 %s",wcsLevelTargetName);
 	//else wsprintfW(wszbuf, L"Switch to target %s",wcsLevelTargetName);
-	//d2client_ShowPartyMessage(wszbuf, 0);
+	//partyMessageWColor(0,wszbuf);
 	AutoMapRoute();
 	return 1;
 }

@@ -74,16 +74,20 @@ Item Value Toggle:              1, VK_, 1000           //显示卖价35K物品�
 Item Levels Toggle:             0, VK_              // iLvl显示
 Show Item Variable Prop Toggle: 1, -1               //显示装备变量范围(暗金，绿色，神符之语，防具基础防御，武器攻击范围等)
 // --------- HardCoreSpecialProtect专家级特别保护 -----------
+//以下设置仅专家级有效
 AutoLootPermit: 1, -1 //专家级允许非本机号抢装备
 AutoLocalLootPermit: 1, -1 //专家级允许本机号捡装备
-HardCoreEscapeProtect: 1,CTRL+ALT+VK_X //专家级死亡后需解锁才能按Escape退出,只有死前在游戏中的才能捡尸体,死后加入游戏的捡不了,而且只能捡身上的装备,不包括背包和箱子
+HardCoreEscapeProtect: 1,CTRL+ALT+VK_X //专家级死亡后需解锁才能按Escape退出,只有死前在游戏中的才能捡尸体,死后加入游戏的捡不了,而且只能捡身上的装备,不包括背包和箱子。（按+和6不解锁也可立即退出)
 HardCoreResistProtectToggle: 0, CTRL+ALT+VK_O //是否启用专家级大号抗性保护(默认不启用)
 HardCoreLeaveTownResist[0]: 80,75,75,75,75 //80级以上普通难度抗性小于75不能出城(防止没穿装备的大号出城)
 HardCoreLeaveTownResist[1]: 80,115,115,115,115 //80级以上噩梦难度抗性小于75不能出城(防止没穿装备的大号出城)
 HardCoreLeaveTownResist[2]: 80,175,175,175,175 //80级以上地狱难度抗性小于75不能出城(防止没穿装备的大号出城)
+HardCoreLeaveTownDurabilityToggle: 1, CTRL+ALT+VK_Y //是否启用出城装备耐久度检查
+HardCoreLeaveTownDurabilityPercent: 10 //装备耐久度小于10%或2不能出城
 HardCoreSwapWeaponProtect: 1, CTRL+ALT+VK_U //在城外没有副武器时不能切换武器
 HardCoreBackTownIfAnyoneDie: 1, VK_ //如果有任何玩家死亡立刻回城(只有死前在游戏中的能捡装备)
 HardCoreAllBackTownIfProtect: 1, VK_ //如果血保向所有本机号发送回城命令
+HardCoreFEHpProtect: 10 //当3码内有血量低于10%的怪物时立刻退出游戏
 // -----------------------------------------------------------
 
 //Bug 保护 ， 第3位  1 为进游戏校验  2 为触发任务时校验(巴尔转身，封印开完，老墨房间)
@@ -118,7 +122,7 @@ Default Game Description:       ""                  //设置默认游戏描述
 ULC Mask Toggle:                1, -1               //屏蔽ULC动画, 1屏蔽 0不屏蔽
 Bug Auto Quit Toggle:           0, -1               //bug保护提示后是否自动退出游戏 0 不退出 1退出
 Bug Alert Times:                3                   //bug提示次数 
-Townportal Nums Alert :         10                   //回城卷轴数量提示
+TownportalNumsAlert :         10                   //回城卷轴数量提示
 Skip Quest Message:             6                   //跳过NPC任务提示 0 不跳过 非0跳过速度
 
 //物品额外信息显示
@@ -193,6 +197,7 @@ Quick Drop Toggle :             1 ,-1               //快速移动时可以扔�
 
 Message Log Toggle:             1                   //记录游戏日志 0不记录日志, 1记录日志  2 不记录聊天信息
 Message Log File Size :         1000                //日志文件大小上限,单位K
+MainMenuMsgTimeout: 10000 //主菜单消息显示10秒
 
 Game Time Toggle:               1, -1               //游戏时间显示 开
 Clock Toggle:                   1, -1               //实际时间显示 开
@@ -720,10 +725,11 @@ MultiClientToggleFollowKey: VK_ //切换跟随和停止
 MultiClientEnterDoorKey: SHIFT+VK_E //进门
 MultiClientRetreatKey: SHIFT+VK_R //回城
 MultiClientTransferClickKey: VK_MENU //按下ALT键时将鼠标左右单次点击操作发到别的窗口执行
+MultiClientTpToggle: 1,VK_ //当传送时如果跟随的人物也有传送技能则跟随传送(仅单次点击有效)
 //按下Control键所有窗口同时执行
 //MultiClientTransferClickKey2: VK_XBUTTON2 //按下鼠标侧面键时将鼠标左右单次点击操作发到别的窗口执行
 AutoFollowDistance: 4 //跟随的距离, 单位yard
-AutoFollowMaxDistance: 60 //超过此距离后停止跟随,单位yard
+AutoFollowMaxDistance: 80 //超过此距离后停止跟随,单位yard
 AutoFollowMoveDistance: 10 //每次最多可移动距离, 单位yard
 AutoFollowCheckInterval: 200 //跟随时每隔200ms检查一次
 AutoFollowClickObjectDelayMs: 600 //跟随点击非蓝色传送门时的延迟时间，以防止同时进入场景时死锁(A屏上被B挡住,B屏上被A挡住)
@@ -787,7 +793,7 @@ RescueBarSafeDistance: 16 //救野蛮人时打开牢门而不完成任务的安�
 //当右键为传送时,按下AutoForegroundSkillKey时自动传送
 AutoTeleportDelayMs: 60 //当位置改变后过60毫秒再传送,网络有延迟,如果开始传送后怪物才出现就危险了
 AutoTeleportAvoidEdge: 3 //只有9个区域块120*120范围内的怪物会显示,传送到边缘不一定安全
-AutoTeleportMaxDistance: 30 //每次最多传送30yard
+AutoTeleportMaxDistance: 28 //每次最多传送28yard
 AutoTeleportMinStep: 5 //每次至少前进5最小单位,否则更换路径
 AutoTeleportStepInvalidMs: 3000 //如果无法前进,此路径3秒内不再使用
 AutoTeleportRescueBarAvoid: 10 //如果已经完成了任务救野蛮人时离牢门最小距离，防止佣兵打开牢门
@@ -952,7 +958,7 @@ EnableGemAutoMerge: 1, VK_ //在打开盒子时按住自动技能键AutoForegrou
 AutoIdentifyCount: 10 //在打开背包并且辨识书剩余10个以上时按住自动技能键F自动辨识背包中未辨识物品
 EnableAutoSimpleItemStack: 1, VK_ //在打开箱子按住自动技能键F自动把背包中的宝石放到玉净瓶中
 HasCowKing: 0 //是否有牛王
-3BBProtect: 0, CTRL+ALT+VK_3 //异次元3BB保护，当窗口在后台时如果在地狱A5玩家级别小于98级游戏3BB未完成玩家可完成，当3BB激活时立刻退出
-Hide3BB: 0, VK_ //异次元刷塔升级不显示3BB
+3BBProtect: 0, CTRL+ALT+VK_3 //异次元刷塔3BB保护，如果在噩梦地狱A5当3BB激活时立刻退出
+Hide3BB: 0, CTRL+ALT+VK_3 //噩梦地狱不显示3BB
 AnalyzeMonsterExp: 1,VK_ //显示最近几次经验获得
 LogMonsterExp: 0,VK_ //将死亡怪物的详细信息和经验获得记录在日志文件中

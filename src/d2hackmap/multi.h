@@ -5,6 +5,7 @@
 #define VK_MULTICLIENT_LEFT_UNIT 0x81
 #define VK_MULTICLIENT_RIGHT_XY 0x80
 #define VK_MULTICLIENT_RIGHT_UNIT 0x7F
+#define VK_MULTICLIENT_TP 0x7E
 //VK_F12: 0x7B
 enum MulticlientCmd {
 	MCC_StartFollow=1,
@@ -15,6 +16,7 @@ enum MulticlientCmd {
 	MCC_Trade=6,
 	MCC_NextGame=7,
 	MCC_JoinGame=8,
+	MCC_TP=9,
 };
 enum MulticlientInfo {
 	MCI_CpuUsage=0x10,
@@ -86,6 +88,7 @@ void follower_left_click_xy(int x,int y);
 void follower_right_click_xy(int x,int y);
 void follower_left_click_unit(int type,int id);
 void follower_right_client_unit(int type,int id);
+void follower_tp(int x,int y);
 void follower_click_object(int type,int id);
 void multiclient_send_info(int info);
 void multiclient_recv_info(int info);
@@ -95,4 +98,4 @@ void send_multi_quest_info(int info);
 extern int dwMultiClientMaxWindowId;
 extern int d2winLastId;
 extern wchar_t wszTransferClick[64];
-extern int fAutoFollowMoving;
+extern int fAutoFollowMoving,tpMs;

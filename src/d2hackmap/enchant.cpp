@@ -131,6 +131,7 @@ void AutoEnchantPlayerNeedHelp(int id) {
 	if (!sameParty(id)) return;
 	needHelpId=id;fAutoEnchantCheckUnit=1;checkMs=dwCurMs;
 }
+extern ToggleVar t3BBProtect;
 void check3bb() {
 	static int ms=0;if (dwCurMs<ms) return;ms=dwCurMs+1000;
 	wchar_t wszbuf[256];int pos=0;
@@ -140,6 +141,10 @@ void check3bb() {
 			if (pUnit->dwUnitType!=UNITNO_MONSTER) break;
 			switch (pUnit->dwTxtFileNo) {
 				case 540:case 541:case 542: {
+					if (DIFFICULTY>=1&&dwCurrentLevel==Level_ArreatSummit&&t3BBProtect.isOn) {
+						gameMessageW(L"3BB protect, exit game");
+						QuickNextGame(1);
+					}
 					int dr = d2common_GetUnitStat(pUnit, STAT_DAMAGE_REDUCED,	0);
 					//int mr = d2common_GetUnitStat(pUnit, STAT_MAGIC_RESIST,	0);
 					int fr = d2common_GetUnitStat(pUnit, STAT_FIRE_RESIST,		0);
@@ -160,7 +165,7 @@ void check3bb() {
 			}
 		}
 	}
-	if (pos>4) d2client_ShowPartyMessage(wszbuf, 2);
+	if (pos>4) partyMessageWColor(2,wszbuf);
 }
 void __fastcall GamePacketPlaySound(BYTE* buf) {
 	int unitType=buf[1];
