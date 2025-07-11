@@ -44,6 +44,7 @@ X: set undentified (for debugging)
 ,stat{39=70,41=70,43=70,45=70},i2096   +70所有抗性(需15级) 
 ,stat{39,40},i2096 //+FR
 ,stat{43,44},i2096 //+CR
+,stat{35,36,37,38},i2096 //MDR,DR
 
   
 Bow猎弓: 

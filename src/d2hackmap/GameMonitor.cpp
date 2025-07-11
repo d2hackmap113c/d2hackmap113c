@@ -567,6 +567,16 @@ void DrawMonitorInfo(){
 				pos+=wsprintfW(wszTemp+pos, L" subclass=%d map=%d",pObjTxt->nSubClass,pObjTxt->nAutoMap);
 			}
 			pos+=wsprintfW(wszTemp+pos, L" mode=%d", pSelectedUnit->dwMode);
+			{
+				int x,y;
+				switch (pSelectedUnit->dwUnitType) {
+					case UNITNO_PLAYER:case UNITNO_MONSTER:case UNITNO_MISSILE:
+						x=pSelectedUnit->pMonPath->wUnitX;y=pSelectedUnit->pMonPath->wUnitY;break;
+					case UNITNO_OBJECT:case UNITNO_ITEM:case UNITNO_AREA_ENTRANCE:
+						x=pSelectedUnit->pItemPath->unitX;y=pSelectedUnit->pItemPath->unitY;break;
+				}
+				pos+=wsprintfW(wszTemp+pos, L" (%d,%d)",x-dwPlayerX,y-dwPlayerY);
+			}
 			float dis=getPlayerDistanceYard(pSelectedUnit);
 			int dis10=(int)(dis*10+0.5);
 			pos+=wsprintfW(wszTemp+pos, L" %d.%d yard", dis10/10,dis10%10);
@@ -731,7 +741,10 @@ void DrawMonitorInfo(){
 		if (i==dwGameWindowId) continue;
 		D2Window *pwin=&d2wins[i];
 		if (pwin->autoSkillId) {
-			wsprintfW(wszTemp, L"%d: %c->%d",i,pwin->autoLeft?'L':'R',pwin->autoSkillId); 
+			if (dwCurMs>pwin->autoSkillMs+6000) pwin->autoSkillId=0;
+			int pos=wsprintfW(wszTemp, L"%d: %c->%d",i,pwin->autoLeft?'L':'R',pwin->autoSkillId); 
+			if (pwin->netDelay)
+				pos+=wsprintfW(wszTemp+pos,L" net=%dms",pwin->netDelay);
 			int x=xpos-GetTextWidth(wszTemp);if (x<0) x=0;
 			d2win_DrawText(wszTemp, x , ypos, 0, 0);
 			ypos = ypos -15;
@@ -1042,6 +1055,16 @@ void __declspec(naked) RecvCommand_22_Patch_ASM() {
 }
 #define FontHalfH 6
 extern BYTE nNeutralPlayerColor,nHostilePlayerColor;
+struct LocalNamePos {int x,y,w,h,gid;};
+static LocalNamePos localNamePos[16];
+static int nLocalNames=0;
+int getOverheadNameGid(int mx,int my) {
+	LocalNamePos *p=localNamePos;
+	for (int i=0;i<nLocalNames;i++,p++) {
+		if (p->x<=mx&&mx<p->x+p->w&&p->y<=my&&my<p->y+p->h) return p->gid;
+	}
+	return 0;
+}
 static void drawPlayerName(UnitAny *pUnit) {
 	int pvp=testPvpFlag(pUnit->dwUnitId);
 	int *colors=dwNeutralNameColor;
@@ -1088,6 +1111,10 @@ static void drawPlayerName(UnitAny *pUnit) {
 		d2gfx_DrawRectangle(x,y-12-5,x+mrw,y-12,0x91,5);
 		d2gfx_DrawRectangle(x+mrw,y-12-5,x+w,y-12,0,5);
 	}
+	if (pWin&&nLocalNames<16) {
+		LocalNamePos *p=&localNamePos[nLocalNames++];
+		p->x=x;p->y=y-12;p->w=w;p->h=12;p->gid=pWin->index;
+	}
 	d2gfx_DrawRectangle(x,y-12,x+rw,y,bg,5);
 	d2gfx_DrawRectangle(x+rw,y-12,x+w,y,bg2,5);
 	d2win_DrawText(wname,x,y,fg,0);
@@ -1114,6 +1141,8 @@ static void drawPlayerName(UnitAny *pUnit) {
 			if (q&8) drawBgText(L"找杰海因",x,y,6,0x68);
 			else if (q&0x10) drawBgText(L"找马席夫",x,y,6,0x68);
 		}
+	} else if (pWin) {
+		if (pWin->isTeam) drawBgText(L"T",x,y,0,0x76);
 	}
 }
 static int cos_sin[16][2]={
@@ -1138,7 +1167,14 @@ static void drawEmit(UnitAny *pUnit,int r,int color) {
 }
 static void drawCircle(UnitAny *pUnit,int r2,int color) {
 	r2=(r2<<1)+r2;
-	int x=pUnit->pMonPath->wUnitX;int y=pUnit->pMonPath->wUnitY;
+	int x,y;
+	switch (pUnit->dwUnitType) {
+		case UNITNO_PLAYER:case UNITNO_MONSTER:case UNITNO_MISSILE:
+			x=pUnit->pMonPath->wUnitX;y=pUnit->pMonPath->wUnitY;break;
+		case UNITNO_OBJECT:case UNITNO_ITEM:case UNITNO_AREA_ENTRANCE:
+			x=pUnit->pItemPath->unitX;y=pUnit->pItemPath->unitY;break;
+		default:return;
+	}
 	int *p=cos_sin[0];
 	int lx,ly,x0,y0;
 	for (int i=0;i<16;i++,p+=2) {
@@ -1311,6 +1347,20 @@ int getTowerValue(int isFire,int type) {
 static void drawUnitsInfoInRect(AreaRectData *pData) {
 	for (UnitAny* pUnit = pData->pUnit; pUnit; pUnit = pUnit->pRectNext) {
 		switch (pUnit->dwUnitType) {
+			case UNITNO_OBJECT:
+				switch (pUnit->dwTxtFileNo) {
+					case 473:
+						if (LEVELNO==Level_FrigidHighlands) {//&&dwBarbrianLeft==5) {
+							drawCircle(pUnit,13<<1,dwDrawUnitCount&8?0x97:0x9E);
+							int dis256=getPlayerDistanceM256(pUnit);
+							if (dis256<=13*256*3/2) {
+								for (int d=12;d>=8;d--)
+									drawCircle(pUnit,d<<1,dwDrawUnitCount&8?0x97:0x62);
+							}
+						}
+						break;
+				}
+				break;
 			case UNITNO_PLAYER:
 				if (!(*d2client_pAutomapOn)&&tDrawPlayerNameToggle.isOn) drawPlayerName(pUnit);
 				break;	
@@ -1399,6 +1449,7 @@ int nPlayerCast=0;
 void drawUnitsInfo() {
 	if (!tDrawPlayerNameToggle.isOn&&!tNecAutomapCorpsesToggle.isOn
 		&&!tDrawBossHpToggle.isOn&&!tMinimapDebugToggle.isOn) return;
+	nLocalNames=0;
 	AreaRectData *pData = PLAYER->pMonPath->pAreaRectData;
 	drawUnitsInfoInRect(pData);
 	for (int i=0;i<pData->nearbyRectCount;i++) {
@@ -1439,6 +1490,15 @@ static void __fastcall playerSkillOnTarget(char *packet) {
 	pc->x1=player->pMonPath->drawX;pc->y1=player->pMonPath->drawY;
 	pc->x2=mon->pMonPath->drawX;pc->y2=mon->pMonPath->drawY;
 	pc->color=0;pc->ms=dwCurMs+40;
+	D2Window *pwin=&d2wins[1];
+	for (int i=1;i<=d2winLastId;i++,pwin++) {
+		if (pwin->uid==pid) {
+			pwin->netDelay=GetTickCount()-pwin->autoSkillMs;
+			//if (tShowTestInfo.isOn)
+			//LOG("[%d] PlayerSkillOnTarget %d->%d delay=%d\n",GetTickCount(),pid,mid,GetTickCount()-pwin->autoSkillMs);
+			break;
+		}
+	}
 }
 void __fastcall playerSkillOnMap(char *packet) {
 	if (!fWinActive||nPlayerCast>=16) return;
@@ -1448,7 +1508,9 @@ void __fastcall playerSkillOnMap(char *packet) {
 	UnitAny *player=d2client_GetUnitFromId(pid,UNITNO_PLAYER);if (!player) return;
 	PlayerCast *pc=&playerCasts[nPlayerCast++];
 	pc->x1=player->pMonPath->drawX;pc->y1=player->pMonPath->drawY;
-	pc->x2=x;pc->y2=y;pc->color=0;
+	int drawX=(x-y)<<4;int drawY=(x+y)<<3;
+	pc->x2=drawX;pc->y2=drawY;
+	pc->color=0;pc->ms=dwCurMs+40;
 }
 /*
 Unit Skill on Target   4c 1:[BYTE Unit Type] 2:[DWORD Unit Id] 6:[WORD  Skill] [BYTE Unknown] [BYTE Unknown] a:[DWORD Target Id] 00 00 

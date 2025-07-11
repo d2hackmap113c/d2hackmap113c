@@ -219,7 +219,7 @@ DLL_VAR(d2client,0x11C390,Difficulty,BYTE) //当前难度 0 1 2
 DLL_VAR(d2client,0x11C3A0,InGame,BOOL ) //是否在游戏中?
 DLL_VAR(d2client,0x11C3A0,MButton,BOOL )
 DLL_VAR(d2client,0x11C3A4,notAcceptKeys,int ) //not accept input?
-DLL_VAR(d2client,0x11C3B8,DrlgAct,DrlgAct *)
+DLL_VAR(d2client,0x11C3B8,DrlgAct,DrlgAct *) //current act
 DLL_VAR(d2client,0x11C3C4,NpcConvData,void *)
 DLL_VAR(d2client,0x11C3F0,StandStill,BOOL ) //是否站立不动
 DLL_VAR(d2client,0x11C414,ScreenBlocked,int) //bit0 right half blocked, bit 1 left half blocked
@@ -300,8 +300,9 @@ DLL_ORD(d2common,0x2CF40,10579,copyQuestData,QuestInfo *,__stdcall,(QuestInfo *i
 DLL_ORD(d2common,0x2D070,10593,clearQuestFlag,void,__stdcall,(QuestInfo *questData,int questId,int pos))
 DLL_ORD(d2common,0x2D0B0,10003,setQuestFlag,void,__stdcall,(QuestInfo *questData,int questId,int pos))
 DLL_ORD(d2common,0x2D0F0,10174,CheckQuestFlag,BOOL,__stdcall,(QuestInfo *pQuestData,int qid,int bit))
-DLL_ORD(d2common,0x2D9B0,10207,GetDrlgLevel,DrlgLevel *,__fastcall, (DrlgMisc *drlgmisc, int levelno))//分配一个新的DrlgLevel结构,存于服务端
+DLL_ORD(d2common,0x2D9B0,10207,GetDrlgLevel,DrlgLevel *,__fastcall, (DrlgMisc *drlgmisc, int levelno))//Allcate a new DrlgLevel server side
 DLL_ORD(d2common,0x2E360,10322,InitDrlgLevel,void,__stdcall, (DrlgLevel *drlglevel))
+DLL_FUN(d2common,0x2E5C0,revealRect2E5C0,int,__stdcall,(int tileX,int tileY,DrlgMisc *pDrlgMisc,DrlgLevel *drlglevel)) //eax:AreaRectInfo *playerRectInfo
 DLL_ORD(d2common,0x2EA30,10111,setObjectFlags,int,__stdcall,(UnitAny* pUnit, int flags))
 DLL_ORD(d2common,0x2EA70,10258,getObjectFlags,int,__stdcall,(UnitAny* pUnit))
 DLL_ORD(d2common,0x2EB70,10920,GetPlayerData,PlayerData *,__stdcall,(UnitAny *pUnit))
@@ -342,6 +343,7 @@ DLL_ORD(d2common,0x3AE60,10196,Ord10196,int,__stdcall,(UnitAny *pUnit))
 DLL_ORD(d2common,0x3BC10,10346,Common11084,int,__stdcall,(AreaRectData* pData, int zero))
 DLL_ORD(d2common,0x3C000,10826,GetLevelIdFromRectData,int,__stdcall, (AreaRectData *pData))
 DLL_ORD(d2common,0x3C390,10057,isInTown,int,__stdcall, (AreaRectData *pAreaRectData))
+DLL_ORD(d2common,0x3CCA0,10401,revealRect,int,__stdcall,(DrlgAct *act,int levelNo,int tileX,int tileY,AreaRectData *playerRect))
 DLL_ORD(d2common,0x3E980,10688,GetObjectTxt,ObjectTxt *,__stdcall, (int objno))
 DLL_ORD(d2common,0x46A40,10890,setItemEthereal,int,__stdcall,(UnitAny *pItem))
 DLL_ORD(d2common,0x4AD20,11076,IsLineBlocked,int,__stdcall, (AreaRectData *pData,POINT *p1,POINT *p2,int bitmask))
@@ -375,6 +377,7 @@ DLL_ORD(d2common,0x6E0C0,10894,getAreaLevel,int,__stdcall,(int areaId,int diffic
 DLL_ORD(d2common,0x719A0,10695,GetItemTxt,ItemTxt *,__stdcall, (int itemno)) //6fdc19a0
 DLL_FUN(d2common,0x72510,compileItemTypeTxt,void *,__stdcall,(int arg))
 DLL_FUN(d2common,0x73330,compileItemStatCostTxt,void *,__stdcall,(int arg))
+DLL_FUN(d2common,0x7C300,revealRect7C300,int,__fastcall,(int levelNo,DrlgAct *act,int tileX,int tileY)) //eax:AreaRectInfo *playerRectInfo,esi:DrlgMisc *pDrlgMisc
 DLL_ORD(d2common,0x81F20,10701,getEquipmentPos,void,__stdcall,(int invId,int resId,EquipmentLayout20 *dst,int equipId)) //copy equipId*0x14+0x28
 DLL_ORD(d2common,0x81FB0,10760,getInventoryLayout,void,__stdcall,(int invId,int resId,InvLayout *dst)) 
 DLL_ORD(d2common,0x82030,11012,getInventoryPos16,void,__stdcall,(int invId,int resId,EquipmentLayout16 *dst))

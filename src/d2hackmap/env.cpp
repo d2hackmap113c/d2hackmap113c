@@ -101,7 +101,7 @@ DWORD __fastcall InfravisionPatch(UnitAny *pUnit){
 		}
 		case UNITNO_OBJECT:
 			if (!fPlayerInTown) {
-				if (pUnit->dwTxtFileNo==473&&LEVELNO==111&&dwBarbrianLeft==5) {
+				if (pUnit->dwTxtFileNo==473&&LEVELNO==Level_FrigidHighlands&&dwBarbrianLeft==5) {
 					prisonDistance=(getPlayerDistanceM256(pUnit)>>8)*2/3;
 				}
 			}

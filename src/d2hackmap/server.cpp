@@ -22,7 +22,9 @@ static int fServerInfiniteDurability=1;
 static int fServerNoMonsterDrop=0;
 char adminCmdPrefix[32]=",";
 static char undoPrefix[32]=",,,undo";
+static int maxPlayerResist=127;
 static ConfigVar aConfigVars[] = {
+	{CONFIG_VAR_TYPE_INT,"MaxPlayerResist",&maxPlayerResist,4},
 	{CONFIG_VAR_TYPE_STR,"AdminCmdPrefix",adminCmdPrefix,1,{31}},
 	{CONFIG_VAR_TYPE_STR,"UndoPrefix",undoPrefix,1,{31}},
 	{CONFIG_VAR_TYPE_INT,"ServerEnableSlainCowKing",  &fServerEnableSlainCowKing,4},
@@ -611,5 +613,16 @@ PatchCall(d2game,0x2AC77,GameStartPatch_ASM,5,"E8 64 F7 05 00");
 //d2game_9D4E7: 8B CD              mov ecx, ebp
 //d2game_9D4E9: FF 50 04           call dword ptr [eax+0x4]
 PatchCall(d2game,0x9D4E7,MonsterSleepPatch_ASM,5,"8B CD FF 50 04");
+/*
+	d2game_DB466: 83 F8 5F           cmp eax, 0x5F (95) ('_')
+	d2game_DB469: 7C 05              jl d2game_DB470 ->+5 BDB470
+	d2game_DB46B: B8 5F 00 00 00     mov eax, 0x5F (95) ('_')
+*/
+	if (maxPlayerResist>=100) {
+		patchFill("max player resist",PATCH_ADDR(d2game,0xDB46B),INST_NOP,5,"B8 5F 00 00 00");
+	} else if (maxPlayerResist>95) {
+		patchValue("max player resist",PATCH_ADDR(d2game,0xDB468),maxPlayerResist,1,"5F");
+		patchValue("max player resist",PATCH_ADDR(d2game,0xDB46C),maxPlayerResist,1,"5F");
+	}
 	return 1;
 }

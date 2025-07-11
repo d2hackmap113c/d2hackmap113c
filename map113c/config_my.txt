@@ -79,6 +79,7 @@ TpSwitchBackground[ClassSor]: SkillBlizzard
 //---switch skill to when enter door in background
 BackgroundEnterDoorSkillSwitch[ClassNec][1-136]: SkillDimVision
 BackgroundEnterDoorSkillSwitch[ClassNec][120]: 0
+BackgroundEnterDoorSkillSwitch[ClassSor][120]: SkillHydra
 KBSkillSwitch[ClassNec][1]:SkillAmplifyDamage
 KBSkillSwitch[ClassNec][2]:SkillLowerResist
 ShowTestInfoToggle: 0,SHIFT+CTRL+ALT+VK_T //显示调试信息
@@ -98,3 +99,4 @@ TownportalNumsAlert: 30                   //回城卷轴数量提示
 LoadConfigFile: "D:\d2hackmap\map113c\itemconf_hide.txt"
 LoadHardCoreConfigFile: "D:\d2hackmap\map113c\config_hc.txt"
 DrawBossHpToggle: 1, VK_ //draw HP percent on boss
+ChickenLifePercent: 40  //血保百分比0~100

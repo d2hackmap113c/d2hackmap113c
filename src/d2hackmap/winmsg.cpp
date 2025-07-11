@@ -106,7 +106,7 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_SWITCH_SKILL, "SwitchSkillRightUp",    &dwSwitchSkillRightUp,  1, {32,8} },
   {CONFIG_VAR_TYPE_SWITCH_SKILL, "SwitchSkillStandStill",    &dwSwitchSkillStandStill,  1, {32} },
   {CONFIG_VAR_TYPE_INT_ARRAY1,"TpSwitchBackground",&dwTpSwitchBackground,1,{8}},
-  {CONFIG_VAR_TYPE_INT_ARRAY0,"BackgroundEnterDoorSkillSwitch",&dwEnterDoorInBackgroundSkill,1,{7,200}},
+  {CONFIG_VAR_TYPE_INT_ARRAY1,"BackgroundEnterDoorSkillSwitch",&dwEnterDoorInBackgroundSkill,1,{7,200}},
 };
 void winmsg_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
@@ -613,6 +613,7 @@ static int __fastcall keyUp(int vk,int winMsg) {
 	return handled;
 }
 int getGameWinId(int mouseX);
+int getOverheadNameGid(int mx,int my);
 void toggle_follower(int gameId);
 int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 	static int savedRuntime=0;
@@ -677,12 +678,20 @@ int WinMessage(int retAddr,int retAddr2,HWND hwnd,int msg,int w,int l) {
 						if (!(d2client_pScreenBlocked[0]&2)&&*d2client_pMouseX<=SCREENSIZE.x/2)
 							dwQuickSwapItemMs=0;
 					}
-					if (18<=*d2client_pMouseY&&*d2client_pMouseY<60) {
-						if (GetKeyState(VK_MENU)&0x8000) { //ALT switch window
+					if (GetKeyState(VK_MENU)&0x8000) { //ALT switch window
+						if (18<=*d2client_pMouseY&&*d2client_pMouseY<60) {
 							int gid=getGameWinId(*d2client_pMouseX);
 							if (gid) {SwitchWindow(gid-1);return 0;}
-						} else if (GetKeyState(VK_CONTROL)&0x8000) { //CTRL add/remove follower
+						} else {
+							int gid=getOverheadNameGid(*d2client_pMouseX,*d2client_pMouseY);
+							if (gid) {SwitchWindow(gid-1);return 0;}
+						}
+					} else if (GetKeyState(VK_CONTROL)&0x8000) { //CTRL add/remove follower
+						if (18<=*d2client_pMouseY&&*d2client_pMouseY<60) {
 							int gid=getGameWinId(*d2client_pMouseX);
+							if (gid) {toggle_follower(gid);return 0;}
+						} else {
+							int gid=getOverheadNameGid(*d2client_pMouseX,*d2client_pMouseY);
 							if (gid) {toggle_follower(gid);return 0;}
 						}
 					}

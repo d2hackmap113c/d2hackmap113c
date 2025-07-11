@@ -9,6 +9,7 @@ ServerInfinitePortal: 1 //无限回城书
 ServerInfiniteArrow: 1 //无限箭标枪投掷物
 ServerInfiniteMana: 0 //无限法力
 ServerInfiniteDurability: 1 //无限耐久度
+MaxPlayerResist: 127 //95-127
 //--------------- Undo撤消 ---------------
 //Press Ctrl+Alt or Ctrl+Alt+Shift(Batch) when clicking to undo stats and skills
 //Press Shift+Ctrl+Alt and click a quest to undo that quest

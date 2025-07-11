@@ -187,6 +187,7 @@ Item Colours[154][7]:-1,-2,-2,-2 //U180皮爾-通把-考恩特 Pierre Tombale Co
 Item Colours[155][7]:-1,-2,-2,-2 //U181胡索丹-依弗 Husoldal Evo
 Item Colours[156][7]:-1,-2,-2,-2 //U182驚怖焰亡靈 Grim's Burning Dead
 Item Colours[157][7]:-1,-2,-2,-2 //U183擺動剃刀 Razorswitch
+Item Colours[158][7]:-1,-2,-2,-2 //U184肋骨粉碎者 Ribcracker(50IAS 50FHR 50CB 15DEX)
 Item Colours[159][7]:-1,-2,-2,-2 //U185五彩的怒氣 Chromatic Ire
 Item Colours[160][7]:-1,-2,-2,-2 //U186扭曲之矛 Warpspear
 Item Colours[161][7]:-1,-2,-2,-2 //U187骷髏收集者 Skull Collector

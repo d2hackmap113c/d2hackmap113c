@@ -935,9 +935,8 @@ SlowSkipMs: 1000 //skip drawing selected monsters for the next 1000ms
 // 2: don't skip
 SkipDrawMonsters[563]:1
 SkipDrawMonsters[146,148,150,154,155,176-178,198,201,210,244-246,254,255,265,338,367,405,257,511-513,515,520,]:2 //NPC
-//在玩家头上显示名称和血量，本机号也显示法力，仅关闭小地图时显示
-DrawPlayerNameToggle: 1, VK_
-DrawPlayerNameDy: 66
+DrawPlayerNameToggle: 1, VK_ //在玩家头上显示名称和血量，本机号也显示法力，仅关闭小地图时显示, 如果开启按住Ctrl键点击名称可以切换跟随状态,按住Alt键点击名称可以切换到该窗口
+DrawPlayerNameDy: 64 //在玩家头上显示名称的坐标
 SelfNameColor:6,0x84,0x79  //自己是绿色
 LocalNameColor:6,0x84,0x79 //本机号是绿色
 PartyNameColor:6,0x20,0x5b //陌生人是白色
@@ -948,8 +947,8 @@ HostileNameColor:6,0x62,0x6f //敌对是红色
 //---switch skill to when enter door in background
 //BackgroundEnterDoorSkillSwitch[ClassNec][The Worldstone Chamber]: SkillDimVision
 //QuickToLevel[SHIFT+VK_G]: Black Marsh,Rogue Encampment 
-//QuickToLevel[SHIFT+VK_G]: Durance of Hate Level 2,Kurast Docks
-QuickToLevel[SHIFT+VK_G]: Ancients Way,Harrogath
+//QuickToLevel[SHIFT+VK_G]: Ancients Way,Harrogath
+QuickToLevel[SHIFT+VK_G]: Durance of Hate Level 2,Kurast Docks
 QuickToLevel[SHIFT+VK_H]: Arcane Sanctuary,Rogue Encampment
 QuickToLevel[SHIFT+VK_V]: Harrogath,The Pandemonium Fortress
 QuickToLevel[SHIFT+VK_5]: Rogue Encampment,The Pandemonium Fortress

@@ -659,19 +659,17 @@ int AutoTeleport() {
 	if (PLAYER->pInventory->pCursorItem) return 0;
 	if (PLAYER->dwMode==PlayerMode_Attacking1||PLAYER->dwMode==PlayerMode_Attacking2||PLAYER->dwMode==PlayerMode_Cast)
 		return 0;
-	if (!fIsHardCoreGame) {
-		switch (dwCurrentLevel) {
-			case Level_TheWorldstoneChamber:
-				if (findBoss(Mon_BaalCrab,0)) hasTarget=1;
-				break;
-			case Level_ChaosSanctuary:
-				if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal
-					||DIFFICULTY==1&&dwPlayerLevel>=forceEnterCharLevelNightmare) {
-					if (nBoss>0&&bossHps[0]>0) {dst.x=bossX;dst.y=bossY;hasTarget=1;}
-				}
-				break;
-			//case Level_TowerCellarLevel5:if (findBoss(Mon_DarkStalker,1)) hasTarget=1;break;
-		}
+	switch (dwCurrentLevel) {
+		case Level_TheWorldstoneChamber:
+			if (!fIsHardCoreGame&&findBoss(Mon_BaalCrab,0)) hasTarget=1;
+			break;
+		case Level_ChaosSanctuary:
+			if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal
+				||!fIsHardCoreGame&&DIFFICULTY==1&&dwPlayerLevel>=forceEnterCharLevelNightmare) {
+				if (nBoss>0&&bossHps[0]>0) {dst.x=bossX;dst.y=bossY;hasTarget=1;}
+			}
+			break;
+		//case Level_TowerCellarLevel5:if (findBoss(Mon_DarkStalker,1)) hasTarget=1;break;
 	}
 	maxTpDisM256=maxTpYard*256*3/2;
 	src.x=dwPlayerX;src.y=dwPlayerY;

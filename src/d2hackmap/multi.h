@@ -57,14 +57,9 @@ struct D2Window {
 	int sameGame,isTeam,isLeader,isTransferClick;
 	int hp,hpMax,mana,manaMax,hPotion,mPotion,rPotion,quantity,minions,enMinions,minionsHp,infoMs;
 	int cpu,cpuMs;
-	int autoSkillId,autoLeft;
-	char ip[32];
-	char game[32];
-	char name[32];
-	char switchkey[32];
-	//int questData,questDataMs; //not cleared
+	int autoSkillId,autoLeft,autoSkillMs,netDelay;
+	char ip[32],game[32],name[32],password[32],switchkey[32];
 	int reply,replyMs; //not cleared
-	char password[32];
 };
 HWND getGameWindowHwnd(int id);
 extern D2Window d2wins[32];

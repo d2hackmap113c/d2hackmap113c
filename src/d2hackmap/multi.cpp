@@ -410,7 +410,13 @@ void multiclient_recv_info(int info) {
 			pwin->enMinions=info&0xFF;break;
 		case MCI_StartFollow:pwin->isTeam=1;break;break;
 		case MCI_StopFollow:pwin->isTeam=0;break;break;
-		case MCI_AutoSkill:pwin->autoSkillId=info&0x7FFFFF;pwin->autoLeft=info&0x800000;break;
+		case MCI_AutoSkill:pwin->autoSkillId=info&0x7FFFFF;pwin->autoLeft=info&0x800000;
+			if (pwin->autoSkillId) {
+				pwin->autoSkillMs=GetTickCount();pwin->netDelay=0;
+				//if (tShowTestInfo.isOn)
+				//LOG("[%d] AutoSkill %d:%c->%d\n",GetTickCount(),pwin->uid,pwin->autoLeft?'L':'R',pwin->autoSkillId);
+			}
+			break;
 		case MCI_Quest:recv_multi_quest_info(pwin,info&0xFFFFFF);break;
 		case MCI_Skill:recv_multi_skill_info(pwin,info&0xFFFFFF);break;
 		case MCI_Reply:recv_multi_quest_reply(pwin,info&0xFFFFFF);break;
@@ -521,12 +527,12 @@ void autoHydra() {
 }
 void MultiClientLoop() {
 	if (tpMs) {
-		if (fWinActive) {tpMs=0;return;}
+		if (fWinActive) {tpState=100;tpMs=dwCurMs;}
 		if (dwCurMs<tpMs) return;
 		if (tpState<10) {
 			if (dwRightSkill!=Skill_Teleport) {
 				if (!hasSkill(Skill_Teleport)) {tpMs=0;return;}
-				if (fCanUseRightSkill) selectSkill(1,Skill_Teleport);
+				selectSkill(1,Skill_Teleport);
 				tpState++;
 				tpMs=dwCurMs+60;
 				return;
@@ -536,9 +542,10 @@ void MultiClientLoop() {
 		switch (tpState) {
 			case 10:
 				if (dwRightSkill!=Skill_Teleport) {LOG("tp switch skill failed\n");}
-				else {RightSkillPos(tpX,tpY);tpMs=dwCurMs+60;tpState=11;}
+				else if (fCanUseRightSkill)  {RightSkillPos(tpX,tpY);tpMs=dwCurMs+60;tpState=100;}
+				else {tpState++;if (tpState>25) {LOG("tp failed\n");tpState=100;}}
 				break;
-			case 11:
+			case 100:
 				if (tpSwitchSkillBack&&dwRightSkill!=tpSwitchSkillBack&&hasSkill(tpSwitchSkillBack)) 
 					selectSkill(1,tpSwitchSkillBack);
 				tpState=0;
@@ -809,8 +816,9 @@ void follower_cmd(int lParam) {
 			int area=LEVELNO==leaderArea?remoteArea:leaderArea;
 			UnitAny *portal=getPortalToArea(area,name);
 			if (!portal) {gameMessage("Auto Follow: can't find portal to %d name %s",area,name);return;}
-			if (dwEnterDoorInBackgroundSkill[dwPlayerClass][dwCurrentLevel]) {
-				int skillId=dwEnterDoorInBackgroundSkill[dwPlayerClass][dwCurrentLevel];
+			int skillId=dwEnterDoorInBackgroundSkill[dwPlayerClass][area-1];
+			LOG("enter door skill switch %d %d %d\n",dwPlayerClass,area,skillId);
+			if (skillId) {
 				if (dwRightSkill!=0&&hasSkill(skillId)&&dwRightSkill!=skillId) selectSkill(1,skillId);
 			}
 			transferClickType=3;transferClickUnitType=portal->dwUnitType;
@@ -953,6 +961,7 @@ int leader_tp(int x,int y) {
 	for (int i=1;i<=d2winLastId;i++) {
 		D2Window *pwin=&d2wins[i];
 		if (i==dwGameWindowId||!pwin->hwnd||!pwin->sameGame) continue;
+		if (!pwin->isTeam) continue;
 		UnitAny *pUnit=d2client_GetUnitFromId(pwin->uid, UNITNO_PLAYER);if (!pUnit) continue;
 		int d2=getUnitRawDistance2(PLAYER,pUnit);if (d2>d2raw) continue;
 		//LOG("send tp to %d\n",i);
@@ -1110,11 +1119,11 @@ int __fastcall shouldRightClick(int *args) {
 	if (fWinActive&&fUserOperating&&shiftDown&&dwRightSkill==Skill_Hydra) {
 		hydraLock=1;hydraUid=pUnit?pUnit->dwUnitId:0;hydraX=x;hydraY=y;
 	}
-	if (dwRightSkill==Skill_Teleport&&tMultiClientTp.isOn&&dwTeamMemberCount&&fWinActive) leader_tp(x,y);
 	if (fTransferClick&&canTranferClick()) {
 		transferClick(1,pUnit,x,y);
 		if (fTransferClick) return 0;
 	}
+	if (dwRightSkill==Skill_Teleport&&tMultiClientTp.isOn&&dwTeamMemberCount&&fWinActive) leader_tp(x,y);
 	if (dwRightSkill==2) {
 		if (d2common_GetUnitStat(PLAYER, 70, 0)<=dwAutoThrowMinQuantity
 			&&((!(d2client_pScreenBlocked[0]&1)&&*d2client_pMouseX>SCREENSIZE.x/2) //x,y is inverted

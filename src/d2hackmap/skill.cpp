@@ -410,7 +410,7 @@ loopend:
 	} else {
 		if (usingAutoSkill) {
 			usingAutoSkill=0;
-			multiclient_send_info((MCI_AutoSkill|dwGameWindowId)<<24);
+			//multiclient_send_info((MCI_AutoSkill|dwGameWindowId)<<24);
 		}
 		dwAutoSkillCheckMs=dwCurMs+dwAutoSkillCheckInterval;
 	}

@@ -418,7 +418,7 @@ void AutoMapNewLevel() {
 	if (dwCurrentLevel!=Level_HallsofPain&&waypointExist(dwCurrentLevel)&&!hasWaypoint(dwCurrentLevel))
 		selectWaypointTarget();
 	else if (dwCurrentLevel==Level_ChaosSanctuary) {
-		if (!fIsHardCoreGame&&DIFFICULTY<=1) {
+		if (DIFFICULTY==0||DIFFICULTY==1&&!fIsHardCoreGame) {
 			if (pCurMapLevel&&pCurMapLevel->cur==0) {
 				NextMapTarget();
 			}
