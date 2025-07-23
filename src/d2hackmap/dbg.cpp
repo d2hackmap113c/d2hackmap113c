@@ -86,9 +86,7 @@ struct Dll *getEnclosingDll(int addr) {
 	}
 	return NULL;
 }
-void __stdcall dumpStack(int n) {
-	if (!logfp) return;
-	int *stack=&n;stack--;
+void __stdcall dumpStackFrom(int *stack,int n) {
 	int *last=stack,*end=stack+n;
 	for (;stack<end;stack++) {
 		int imm=*stack;if (imm<0x400000) {continue;}
@@ -104,6 +102,11 @@ void __stdcall dumpStack(int n) {
 		last=stack+1;
 	}
 	fflush(logfp);
+}
+void __stdcall dumpStack(int n) {
+	if (!logfp) return;
+	int *stack=&n;stack--;
+	dumpStackFrom(stack,n);
 }
 
 static void __fastcall loadUiImage(char *path,int ret) {
@@ -372,6 +375,36 @@ static void __declspec(naked) drawCellFilePatch_ASM() {
 		ret
 	}
 }
+static void __fastcall changeStat(int *esp) {
+	int ret=esp[0];
+	if (ret==DLL_ADDR(d2common,0x3A75F)) {
+		esp+=8;
+		ret=esp[0];
+		LOG("changeUnitStat ret=%X unit=%X stat=%d value=%d\n",ret,esp[1],esp[2],esp[3]);
+		if (ret==DLL_ADDR(d2game,0xAFF79)) {
+			//dumpStackFrom(esp,256);
+		}
+	} else {
+		LOG("changeStatList ret=%X stat=%d value=%d\n",ret,esp[2],esp[3]);
+	}
+}
+/*
+function int __stdcall d2common_changeStatList(StatList *pStatList,int statId,int value,int param) {
+	d2common_3A280: 53                 push ebx
+	d2common_3A281: 8B 5C 24 08        mov ebx, [esp+0x8] <--
+	d2common_3A285: 85 DB              test ebx, ebx
+*/
+static void __declspec(naked) changeStatPatch_ASM() {
+	__asm {
+		pushad
+		lea ecx, [esp+0x28]
+		call changeStat
+		popad
+		mov ebx,[esp+0xC]
+		test ebx,ebx
+		ret
+	}
+}
 int installAlwaysDebugPatches() {
 	return 1;
 }
@@ -409,5 +442,8 @@ int installDebugPatches() {
 	drawCellLoopId=0;cellId=0;
 	//d2gfx_B09C: A1 68 12 A9 6F     mov eax, [d2gfx_11268 void *d2gfx_callbackTable](->0x6F87B908(d2gdi_B908)
 	//PatchCall(d2gfx,0xB09C,drawCellFilePatch_ASM,5,"A1 $(+11268)");
+	//d2common_3A281: 8B 5C 24 08        mov ebx, [esp+0x8] <--
+	//d2common_3A285: 85 DB              test ebx, ebx
+	//PatchCall(d2common,0x3A281,changeStatPatch_ASM,6,"8B 5C 24 08 85 DB");
 	return 1;
 }

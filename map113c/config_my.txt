@@ -48,7 +48,7 @@ AutoEnchantMana: 150 //法力低于150不强化
 
 
 Item Value Toggle:              1,VK_,35000           //显示卖价35K物品卖出价值(金钱)
-Item Levels Toggle:             0, VK_              // iLvl显示
+Item Levels Toggle:             1, VK_              // iLvl显示
 Hidden Items Toggle:            0,ALT+VK_G       // 地面垃圾物品隐藏开关，CTRL键
 ShowValuableItem: 30000 //显示卖价超过此值的物品
 Default Game Name:     "pt1"               //设置默认游戏名,注意引号必须有
@@ -99,4 +99,5 @@ TownportalNumsAlert: 30                   //回城卷轴数量提示
 LoadConfigFile: "D:\d2hackmap\map113c\itemconf_hide.txt"
 LoadHardCoreConfigFile: "D:\d2hackmap\map113c\config_hc.txt"
 DrawBossHpToggle: 1, VK_ //draw HP percent on boss
-ChickenLifePercent: 40  //血保百分比0~100
+ChickenLifePercent: 50  //血保百分比0~100
+NoQuitIfDeadClevel: 94  //专家级或超过90级如果被秒了不退出游戏

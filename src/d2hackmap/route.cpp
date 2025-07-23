@@ -324,12 +324,23 @@ static int initRectRoute(MinimapLevelTarget *pTarget) {
 			}
 		}
 	}
-	if (dwCurrentLevel==Level_FrigidHighlands&&pTarget->dstLvl==3002) { //rescue mission
-		if (pTarget->dstRect&&pTarget->dstRect->dir[AAR_RIGHT]) {
-			int done=QUESTDATA->quests[36]&3;
-			if (done)
-				pTarget->dstRect->dir[AAR_RIGHT]->valid=0;
-		}
+	switch (dwCurrentLevel) {
+		case Level_FrigidHighlands:
+			if (pTarget->dstLvl==3002) { //rescue mission
+				if (pTarget->dstRect&&pTarget->dstRect->dir[AAR_RIGHT]) {
+					int done=QUESTDATA->quests[36]&3;
+					if (done)
+						pTarget->dstRect->dir[AAR_RIGHT]->valid=0;
+				}
+			}
+			break;
+		case Level_Travincal:
+			if (pTarget->dstLvl==Level_DuranceofHateLevel1) {
+				if (pTarget->dstRect&&pTarget->dstRect->dir[AAR_BOTTOM]) {
+					pTarget->dstRect->dir[AAR_BOTTOM]->valid=0;
+				}
+			}
+			break;
 	}
 	LOG("time %d ms memory=%dKB\n",GetTickCount()-startMs,autoRouteMemUsed/1024);
 	return 0;

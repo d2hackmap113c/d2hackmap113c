@@ -132,7 +132,10 @@ static void updateCubeInvMap() {
 			if (count) {
 				int index=GetItemIndex(txt)+1;
 				if (2103<=index&&index<=2135) {//runes
-					pRuneStack[index-2103]=pItem;
+					if (pRuneStack[index-2103]) {
+						if (pItem->pItemData->nItemLocation>pRuneStack[index-2103]->pItemData->nItemLocation)
+							pRuneStack[index-2103]=pItem;
+					} else pRuneStack[index-2103]=pItem;
 				} else if (2050<=index&&index<=2079) {//gems
 					pGemStack[index-2050]=pItem;
 				} else if (2090<=index&&index<=2094) { //skeleton
@@ -555,34 +558,13 @@ void activeItemStack(int id) {
 	*(DWORD*)&packet[5]=x;*(DWORD*)&packet[9]=y;
 	SendPacket(packet,13);
 }
-int autoIdentify() {
-	if (!*d2client_pUiInventoryOn) return 0;
-	if (autoIdMs&&dwCurMs<autoIdMs&&useStackItemCount1==useStackItemCount) return 1;
-	updateCubeInvMap();
-	if (!unidentifiedItem||!idBook) return 0;
-	if (((useStackItemArg>>8)&0xff)==0) { //0:ready to use, 0xFF:used
-		identifyingId=unidentifiedItem->dwUnitId;
-		useStackItemCount1=useStackItemCount;
-		BYTE packet[9];packet[0]=0x27;
-		*(DWORD*)&packet[1]=unidentifiedItem->dwUnitId;
-		*(DWORD*)&packet[5]=idBook->dwUnitId;
-		SendPacket(packet,9);
-		autoIdMs=dwCurMs+300;
-		return 1;
-	}
-	identifyingId=0;
-	useStackItemCount1=useStackItemCount;
-	activeItemStack(idBook->dwUnitId);
-	autoIdMs=dwCurMs+300;
-	return 1;
-}
 int autoSimpleItemStack() {
 	static int dwSkillChangeCount1=0; 
 	if (!tEnableAutoSimpleItemStack.isOn) return 0;
 	if (startProcessMs&&dwCurMs<startProcessMs) {
 		if (dwSkillChangeCount1==dwSkillChangeCount) return 0;
 	}
-	if (!*d2client_pUiStashOn) return 0;
+	if (!*d2client_pUiStashOn&&!d2client_pUiInventoryOn&&!d2client_pUiCubeOn) return 0;
 	dwSkillChangeCount1=dwSkillChangeCount;
 	UnitAny *pCursorItem=PLAYER->pInventory->pCursorItem;
 	if (pCursorItem) {
@@ -606,6 +588,30 @@ int autoSimpleItemStack() {
 	}
 	startProcessMs=dwCurMs+300;
 	return 0;
+}
+int autoIdentify() {
+	if (!*d2client_pUiInventoryOn) return 0;
+	if (autoIdMs&&dwCurMs<autoIdMs&&useStackItemCount1==useStackItemCount) return 1;
+	updateCubeInvMap();
+	if (!unidentifiedItem||!idBook) {
+		autoSimpleItemStack();
+		return 0;
+	}
+	if (((useStackItemArg>>8)&0xff)==0) { //0:ready to use, 0xFF:used
+		identifyingId=unidentifiedItem->dwUnitId;
+		useStackItemCount1=useStackItemCount;
+		BYTE packet[9];packet[0]=0x27;
+		*(DWORD*)&packet[1]=unidentifiedItem->dwUnitId;
+		*(DWORD*)&packet[5]=idBook->dwUnitId;
+		SendPacket(packet,9);
+		autoIdMs=dwCurMs+300;
+		return 1;
+	}
+	identifyingId=0;
+	useStackItemCount1=useStackItemCount;
+	activeItemStack(idBook->dwUnitId);
+	autoIdMs=dwCurMs+300;
+	return 1;
 }
 void dropRune789() {
 	if (!hasRune789) return;

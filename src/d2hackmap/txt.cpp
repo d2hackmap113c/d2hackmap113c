@@ -15,10 +15,21 @@ static void dumpItemTxt() {
 		int idx=GetItemIndex(id)+1;
 		memcpy(code,ptxt->szCode,4);code[4]=0;
 		fprintf(fp,"%d: txt%d %s",idx,id,code);
-		fprintf(fp," type=%d",ptxt->nType);
+		fprintf(fp," type=%d socket=%d",ptxt->nType,ptxt->nSocket);
 		wchar_t *wName=d2lang_GetLocaleText(ptxt->wLocaleTxtNo);
 		acpLocaleName(buf,wName,128);
 		fprintf(fp," %s\n",buf);//itemNames[idx]?itemNames[idx]:"");
+	}
+	fclose(fp);
+}
+static void dumpItemTypeTxt() {
+	FILE *fp=openDbgFile("_txtItemType.txt");if (!fp) return;
+	int nTxt=*d2common_pnItemTypes;
+	ItemTypeTxt *ptxt=*d2common_ppItemTypesTxt;
+	for (int id=0;id<nTxt;ptxt++,id++) {
+		fprintf(fp,"%d: %s throw=%d socket=%d,%d,%d\n",id,ptxt->szCode,ptxt->isThrowingWeapon,
+			ptxt->nMaxSock1,ptxt->nMaxSock25,ptxt->nMaxSock40);
+		hex(fp,0,ptxt,0xE4);
 	}
 	fclose(fp);
 }
@@ -125,9 +136,40 @@ void dumpRunewordTxt() {
 	}
 	fclose(fp);
 }
+static void dumpLevels() {
+	FILE *fp=openDbgFile("_txtLevels.txt");if (!fp) return;
+	int n=*d2common_pnLevels;
+	LevelTxt *txt=*d2common_ppLevelTxt;
+	fprintf(fp,"nLevels=%d\n",n);
+	for (int i=0;i<n;i++,txt++) {
+		fprintf(fp,"level=%d %d ",i,txt->wLevelNo);
+		fprintf(fp," name=%s ",txt->szName);
+		fprintf(fp," entrance=%s ",txt->szEntranceText);
+		fprintf(fp," desc=%s ",txt->szLvlDesc);
+		fputs(" wname=",fp);acp_fputs(txt->wszName,fp);
+		fputs(" wentrance=",fp);acp_fputs(txt->wszEntranceText,fp);
+		fputc('\n',fp);
+		fflush(fp);
+	}
+	fclose(fp);
+}
+static void dumpTreasureClassTxt() {
+	FILE *fp=openDbgFile("_txtTreasureClass.txt");if (!fp) return;
+	int nTxt=*d2common_pnTreasureClassEx;
+	TreasureClass *ptxt=*d2common_ppTreasureClassExTxt;
+	for (int id=0;id<nTxt;ptxt++,id++) {
+		fprintf(fp,"id=%d group=%d level=%d n=%d\n",id,ptxt->wGroup,ptxt->wLevel,ptxt->dwItemNums);
+		hex(fp,0,ptxt,0x2C);
+	}
+	fclose(fp);
+}
 void dumpTxt() {
 	dumpItemTxt();
+	return;
+	dumpItemTypeTxt();
+	dumpTreasureClassTxt();
 	dumpUniqueTxt();
 	dumpSetTxt();
 	dumpRunewordTxt();
+	dumpLevels();
 }

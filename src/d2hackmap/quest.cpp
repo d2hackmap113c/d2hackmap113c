@@ -537,7 +537,7 @@ Q52
 					}
 					break;
 				case 0:
-					if (aPacket[3]==0x03) {
+					if (aPacket[3]==3&&aPacket[4]==0&&dwCurrentAct==4) {
 						dwBarbrianLeft=0;
 						partyMessageWColor(2,L"Q52: All barbrian rescued");
 						if (!fWinActive) {

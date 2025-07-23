@@ -84,7 +84,7 @@ void infoNewGame();
 void GameMonitorNewGame();void GameMonitorEndGame();
 void MessageLogExitGame();
 void ItemExtInfoNewGame();
-void AutoMapNewGame();void AutoMapNewLevel();
+void AutoMapNewGame();void AutoMapNewLevel();void AutoTeleportNewLevel();
 void AutoRouteNewGame();
 void WaypointNewGame();
 void panelNewGame();void panelEndGame();
@@ -281,7 +281,7 @@ void GameLoopPatch() {
 		dwAutoSummonStartMs=dwCurMs;
 		if (tBugAllHellAlert.isOn&&DIFFICULTY==2
 			||dwCurrentLevel==46||66<=dwCurrentLevel&&dwCurrentLevel<=72) QuestNewLevel();
-		AutoMapNewLevel();
+		AutoMapNewLevel();AutoTeleportNewLevel();
 		bossX=0;bossY=0;
 		if (fIsHardCoreGame&&!fPlayerInTown&&!canLeaveTown()) {
 			if (PLAYER&&PLAYER->dwMode!=PlayerMode_Death&&PLAYER->dwMode!=PlayerMode_Dead) {

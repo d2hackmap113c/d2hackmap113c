@@ -52,8 +52,11 @@ CancelAutoJoinIfForeground: 0, VK_ //如果退出游戏比较慢，窗口已经�
 Quick Back To Town Key:         VK_5             //一键回城,大键盘"5"
 TakeWaypointToTownDis: 6 //如果在这个距离内有传送站，则使用传送站回城
 Use Custom Font Toggle:         2, -1               //中文输入
-Auto Invite Toggle:             1, -1 //             //自动邀请，最早进游戏的人物可以自动激活
-Auto Party Toggle:              1, -1 //             //自动接受组队邀请
+AutoInviteLocal: 1, -1 //自动邀请本机号
+AutoInviteRogue: 1, -1 //自动邀请陌生人
+AutoInviteRogueMF: 0, -1 //mf开头的游戏不自动邀请陌生人
+AutoInviteRogueHC: 0, -1 //专家级不自动邀请陌生人
+AutoPartyToggle:              1, -1 //             //自动接受组队邀请
 AutoPartyBugMFToggle: 0, VK_ //在地狱难度被标记为bugKM, bugKD,bugKB,bugKCountess的号在相应act时是否自动结盟,具体参见LoadTagFile命令,不结盟肯定不会被过关
 AutoPartyLevelRange[0]: 1,99 //普通难度非本机号自动结盟范围
 AutoPartyLevelRange[1]: 1,99 //噩梦非本机号自动结盟范围
@@ -249,7 +252,7 @@ Minimap Size:                   6                 //指示线大小
 MinimapDirectLineToggle: 0,VK_ //直线指示开关
 AutoTeleportSafeDistance: 20 //在这个距离内没有怪物就停止传送
 AutoTeleportTelekinesisEnterChamber: 0 //服务器是否支持用法师之手进都瑞尔的房间
-AutoTeleportTelekinesisDistance: 40 //在这个距离内可以使用法师之手
+AutoTeleportTelekinesisDistance: 24 //在这个距离内可以使用法师之手
 AutoTeleportTelekinesisSafeDistance: 5 //使用法师之手的距离加5
 WayPointRandom: 5 //Shift the waypoint target randomly. It doesn't look too realistic to teleport exactly to the center on battle.net.
 //MapTargets[src level][dest level]: type,EnglishName,中文名称
@@ -333,6 +336,7 @@ MapTargets[Tal Rasha's Tomb 4][300]:3,"Izual","祭台"
 MapTargets[Tal Rasha's Tomb 5][300]:3,"Izual","祭台"
 MapTargets[Tal Rasha's Tomb 6][300]:3,"Izual","祭台"
 MapTargets[Tal Rasha's Tomb 7][300]:3,"Izual","祭台"
+MapTargets[Tal Rasha's Chamber][300]:1,"Tyrael","泰瑞尔"
 //Act3
 MapTargets[Spider Forest][Spider Cavern]:1
 MapTargets[Spider Forest][Flayer Jungle]:0
@@ -368,11 +372,12 @@ MapTargets[City of the Damned][River of Flame]:0
 MapTargets[River of Flame][Chaos Sanctuary]:0
 MapTargets[River of Flame][Hellforg on Minimap]:3,"Hellforg","Hellforg"
 MapTargets[Chaos Sanctuary][255]:30,"Center","中心点"
-MapTargets[Chaos Sanctuary][3000]:60,"TopSeal","封印上"
-MapTargets[Chaos Sanctuary][3001]:60,"LeftTopSeal","封印左上"
-MapTargets[Chaos Sanctuary][3002]:60,"LeftBottomSeal","封印左下"
-MapTargets[Chaos Sanctuary][3003]:60,"RightTopSeal","封印右上"
-MapTargets[Chaos Sanctuary][3004]:60,"RightBottomSeal","封印右下"
+MapTargets[Chaos Sanctuary][3000]:3,"RightBottomSeal","封印右下"
+MapTargets[Chaos Sanctuary][3001]:3,"RightTopSeal","封印右上"
+MapTargets[Chaos Sanctuary][3002]:3,"TopSeal","封印上"
+MapTargets[Chaos Sanctuary][3003]:3,"LeftTopSeal","封印左上"
+MapTargets[Chaos Sanctuary][3004]:3,"LeftBottomSeal","封印左下"
+MapTargets[Chaos Sanctuary][3005]:0,"SafePoint","安全点"
 //Act5
 MapTargets[Bloody Foothills][Frigid Highlands]:0
 MapTargets[Frigid Highlands][3000]:2,"5 Barb","5个野蛮人"
@@ -802,16 +807,20 @@ RerouteKey: ALT+VK_H //重新路由
 LogTPToggle: 0,VK_ //将每次传送的数据记录到runtime/d2hackmap*.log中
 //自动传送时怪物距离的设定,传送时会选择满足条件的点,怪物距离设置越小可选择空间越大传送越快
 //FcrFrame是施法帧数,sor和bar的FCR=105时是8帧0.32秒,ama的FCR=48时是14帧0.56秒
-//AutoTeleportMonsterDistance[FcrFrame]: 普通怪物距离,危险怪物距离
+//AutoTeleportMonsterDistance[DIFFICULTY]: 普通怪物距离,危险怪物距离
 //以下配置是用14帧的亚马逊测试的,跑图基本上不会被打到,但偶尔也会被电鬼打到,施法实在太慢了,别的职业应该很轻松。
 AutoTeleportMonsterDefaultDistance: 6 //未设置的用此距离
-AutoTeleportMonsterDistance[1-8]: 5,7 
-AutoTeleportMonsterDistance[9-33]: 6,8 
+//AutoTeleportMonsterDistance[1-8]: 5,7 
+//AutoTeleportMonsterDistance[9-33]: 6,8 
+AutoTeleportMonsterDistance[0]: 4,6 //普通难度设置
+AutoTeleportMonsterDistance[1]: 5,7 //噩梦难度设置
+AutoTeleportMonsterDistance[2]: 6,8 //地狱难度设置
 AutoTeleportMonsterDistanceHC[0]: 6,8 //专家级普通难度设置
 AutoTeleportMonsterDistanceHC[1]: 6,8 //专家级噩梦难度设置
 AutoTeleportMonsterDistanceHC[2]: 7,9 //专家级地狱难度设置
 AutoTeleportArcaneSanctuaryYard: 3 //神秘庇难所的距离，太大了找不到路径
 AutoTeleportEvadeToggle: 0, CTRL+ALT+VK_T //手动传送时自动躲避
+AutoTeleportEvadeDifficulty: 0,1,1 //普通难度不躲避
 AutoTeleportEvadeYard: 6,8 //自动躲避距离(普通怪物，危险怪物)
 //------------- AutoSummonSection 自动召唤设置，双开时可在后台自动执行 ---------------
 //当前右键设定召满后自动切换右键技能,召唤顺序:骷髅,骷髅法师,重生
@@ -845,6 +854,7 @@ Drop Protection Unique[281]: 1 //泰坦的复仇 Titan's Revenge
 Drop Protection Unique[285]: 1 //撒卡兰姆使者 Herald of Zakarum
 Drop Protection Unique[336]: 1 //格利风之眼 Griffon's Eye
 Drop Protection Unique[345]: 1 //安达利尔的面貌 Andariel's Visage
+Drop Protection Unique[359]: 1 //U359基得的運氣
 Drop Protection Unique[364]: 1 //卓古拉之握 Dracul's Grasp
 Drop Protection Unique[371]: 1 //天堂之光 Heaven's Light
 Drop Protection Unique[373]: 1 //蜘蛛之网 Arachnid Mesh

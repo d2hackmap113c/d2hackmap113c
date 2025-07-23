@@ -6,7 +6,7 @@ Item Colours[72][7]:-1,-2,-2,-2 //U62蘿格之弓 Rogue's Bow
 Item Colours[1030][5]:-1,-2,-2,-2 //S125山德的禁忌 Sander's Taboo (L28 +20IAS +40HP)
 //Item Colours[1036][5]:-1,-2,-2,-2 //S3哈斯拉柏的鐵後跟 Hsarus' Iron Heel(L3 +20FRW +25FR)
 //Item Colours[1043][5]:-1,-2,-2,-2 //S39西剛的披肩 Sigon's Wrap(L6 20HP 20FR)
-Item Colours[1086][5]:-1,-2,-2,-2 //S93馬維娜的教義 M'avina's Tenet(L45 +20FRW)
+//Item Colours[1086][5]:-1,-2,-2,-2 //S93馬維娜的教義 M'avina's Tenet(L45 +20FRW)
 //Item Colours[147][7]:-1,-2,-2,-2 //U173水魔陷阱 Kelpie Snare(slow75)
 
 //Crossbows-弩 (太慢了)
@@ -39,6 +39,7 @@ Item Colours[1004][5]:-1,-2,-2,-2 //S16依森哈德的號角 Isenhart's Horns
 Item Colours[1005][5]:-1,-2,-2,-2 //S36西剛之面甲 Sigon's Visor(+30Mana)
 Item Colours[1006][5]:-1,-2,-2,-2 //S11依雷撒的線圈 Iratha's Coil(LR30,FR30)S23米拉伯佳的王冠 Milabrega's Diadem(+15HP+15Mana)
 Item Colours[1007][5]:-1,-2,-2,-2 //S27卡珊的容貌Cathan's Visage
+Item Colours[1008][5]:-1,-2,-2,-2 //S55北極毛皮 Arctic Furs(RES+10)
 Item Colours[1009][5]:-1,-2,-2,-2 //S19維達拉的突襲 Vidala's Ambush(+11DEX)
 Item Colours[1011][5]:-1,-2,-2,-2 //S118牛魔王之皮 Cow King's Hide
 Item Colours[1012][5]:-1,-2,-2,-2 //S51天使的披風 Angelic Mantle
@@ -66,6 +67,7 @@ Item Colours[1041][5]:-1,-2,-2,-2 //S5哈斯拉柏的鐵胸衣 Hsarus' Iron Stay
 Item Colours[1042][5]:-1,-2,-2,-2 //S12依雷撒之繩 Iratha's Cord S43地獄符號 Infernal Sign(+20HP)
 Item Colours[1039][5]:-1,-2,-2,-2 //S48死亡的守護 Death's Guard
 Item Colours[1044][5]:-1,-2,-2,-2 //S34坦克雷之骷髏 Tancred's Skull
+Item Colours[1047][5]:-1,-2,-2,-2 //S117牛魔王之角 Cow King's Horns
 Item Colours[1052][5]:-1,-2,-2,-2 //S108華寧的光輝Hwanin's Splendor(20REP 37CR)
 Item Colours[1059][5]:-1,-2,-2,-2 //S109華寧的保護 Hwanin's Refuge
 Item Colours[1061][5]:-1,-2,-2,-2 //S102黑摩蘇的堅決 Haemosu's Adamant

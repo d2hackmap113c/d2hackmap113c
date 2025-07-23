@@ -56,6 +56,7 @@ DLL_FUN(d2client,0x216A0,GetMonsterOwner,int,__fastcall, (int dwUnitId))
 DLL_FUN(d2client,0x23200,ItemProtect,void,__stdcall, (UnitAny *pUnit, DWORD dwType))
 DLL_FUN(d2client,0x23F20,PlaySound,int,__fastcall, (int unitId,int unitType,int sndId))
 DLL_FUN(d2client,0x27590,drawHpManaText,int,__stdcall,())
+DLL_FUN(d2client,0x27BD0,fillLeftOrb,int,__stdcall,())
 DLL_FUN(d2client,0x28BC0,DrawSkillButton,void,__stdcall, (Skill *pSkill,int x,int y,int isLeft))
 DLL_FUN(d2client,0x29250,DrawClient,void,__fastcall, ())
 DLL_FUN(d2client,0x29990,UseBelt,void,__fastcall,(UnitInventory *pInventory,UnitAny *player,int id)) //edx:PLAYER ecx:PLAYER->pInventory eax:0x8000(shift)or0
@@ -262,6 +263,7 @@ DLL_ORD(d2common,0x22590,10572,getItemData1C_20,void,__stdcall,(UnitAny * pItem,
 DLL_ORD(d2common,0x225F0,10536,setItemFileIndex,int,__stdcall,(UnitAny *pItem,int index))
 DLL_ORD(d2common,0x22640,10620,GetItemFileIndex,int,__stdcall, (UnitAny *pItem)) //pItem->pItemData->dwFileIndex
 DLL_ORD(d2common,0x22BC0,10176,isQuestItem,int,__stdcall,(UnitAny *pItem)) //*(char *)(ItemTxt+12A)
+DLL_ORD(d2common,0x22F80,10108,getItemTypeTxt10,char,__stdcall,(int typeId))
 DLL_ORD(d2common,0x22FF0,10059,getItemCode1,char *,__stdcall, (UnitAny * pItem))//txt+84
 DLL_ORD(d2common,0x230A0,10082,getItemTypeByTxt,int,__stdcall,(int txt)) //*(short *)(ItemTxt+11E)
 DLL_ORD(d2common,0x230F0,11088,getItemType,int,__stdcall,(UnitAny *pItem)) //*(short *)(ItemTxt+11E)
@@ -325,6 +327,7 @@ DLL_ORD(d2common,0x37EC0,10930,GetStatListWithFlag,StatList * ,__stdcall, (UnitA
 DLL_FUN(d2common,0x381A0,removeStat,int,__stdcall,(int)) //esi=(Stat *)pStat,edx=(StatEx *)remove
 DLL_FUN(d2common,0x382B0,bsearchStat,int,__stdcall,()) //esi=(Stat *)pStat,edi=(statId<<16)|param,ret=index
 DLL_ORD(d2common,0x38710,11110,GetStatFromStatList,BOOL,__stdcall, (StatList *pStatList, DWORD dwStatNo, StatEx *pStatVal ,DWORD dwMask)) 
+DLL_ORD(d2common,0x38850,10984,sendStat10984,int,__stdcall,(UnitAny *pUnit1,UnitAny *pUnit2,void *func))
 DLL_FUN(d2common,0x38A80,getStatValueWithMinChecked,int,__stdcall,(ItemStatCostTxt *txt))//ebx:StatList *pStatList,edi:(statId<<16)|param,return txt->fmin&&v<txt->minaccr?txt->minacr<<txt->valshift:v;
 DLL_FUN(d2common,0x38B00,getUnitStatValueB00,int,__stdcall,(ItemStatCostTxt *pTxt)) //ebx:StatList *list,edi:(statId<<16)|param,str&dex&hpmax>=1
 DLL_ORD(d2common,0x38B70,10973,GetUnitStat,int,__stdcall, (UnitAny *pUnit, int dwStatNo, WORD dwLayerNo))
@@ -340,6 +343,7 @@ DLL_ORD(d2common,0x3A710,10551,AddPlayerStat,void,__stdcall,(UnitAny *pUnit,int 
 DLL_ORD(d2common,0x3A740,10887,changeUnitStat,int,__stdcall,(UnitAny *pUnit,int statId,int value,int param))
 DLL_ORD(d2common,0x3A7D0,10807,stat_10807,int,__stdcall,(UnitAny *pUnit,StatList *pStatList,int arg2))
 DLL_ORD(d2common,0x3AE60,10196,Ord10196,int,__stdcall,(UnitAny *pUnit))
+DLL_ORD(d2common,0x3AF00,11166,createStatListEx,int,__stdcall,(UnitAny *pUnit,int listFlag,void *fCallback,int arg2,void *pGame))
 DLL_ORD(d2common,0x3BC10,10346,Common11084,int,__stdcall,(AreaRectData* pData, int zero))
 DLL_ORD(d2common,0x3C000,10826,GetLevelIdFromRectData,int,__stdcall, (AreaRectData *pData))
 DLL_ORD(d2common,0x3C390,10057,isInTown,int,__stdcall, (AreaRectData *pAreaRectData))
@@ -374,6 +378,7 @@ DLL_ORD(d2common,0x6CC60,10884,GetLevelTxt07,char ,__stdcall, (int levelno))
 DLL_ORD(d2common,0x6CC90,10215,GetLevelWeather,char ,__stdcall, (int levelno)) //txt05
 DLL_ORD(d2common,0x6CCC0,10014,GetLevelTxt,LevelTxt *,__stdcall, (int levelno))
 DLL_ORD(d2common,0x6E0C0,10894,getAreaLevel,int,__stdcall,(int areaId,int difficulty,int expansion))
+DLL_ORD(d2common,0x71940,10814,getTxtNoByCode,int,__stdcall,(int code)) //return -1 if not find
 DLL_ORD(d2common,0x719A0,10695,GetItemTxt,ItemTxt *,__stdcall, (int itemno)) //6fdc19a0
 DLL_FUN(d2common,0x72510,compileItemTypeTxt,void *,__stdcall,(int arg))
 DLL_FUN(d2common,0x73330,compileItemStatCostTxt,void *,__stdcall,(int arg))
@@ -428,7 +433,7 @@ DLL_VAR(d2common,0x9FF5C,nCompCodes ,int)
 DLL_VAR(d2common,0x9FF60,pMonAiTxt ,void *)
 DLL_VAR(d2common,0x9FF64,pMonAiLink ,void *)
 DLL_VAR(d2common,0x9FF68,nMonAi ,int)
-DLL_VAR(d2common,0x9FF6C,pItemLink,void *)
+DLL_VAR(d2common,0x9FF6C,pItemLink,ItemCodeTxtNo *)
 DLL_VAR(d2common,0x9FF70,pItemCalcCache ,void *)
 DLL_VAR(d2common,0x9FF74,nItemCalcCache ,int)
 DLL_VAR(d2common,0x9FF78,nItemCalcCacheDelta ,int)
@@ -465,8 +470,8 @@ DLL_VAR(d2common,0xA0884,nNpcs ,int)
 DLL_VAR(d2common,0xA0888,pColorsTxt ,void *)
 DLL_VAR(d2common,0xA088C,pColorsLink ,void *)
 DLL_VAR(d2common,0xA0890,pTreasureClassExLink ,void *)
-DLL_VAR(d2common,0xA0894,pTreasureClassExTxt ,void *)
-DLL_VAR(d2common,0xA0898,nTreasureClassEx ,int)
+DLL_VAR(d2common,0xA0894,pTreasureClassExTxt,TreasureClass *)
+DLL_VAR(d2common,0xA0898,nTreasureClassEx,int) //=0x3F5 1013
 DLL_VAR(d2common,0xA089C,pChestTreasureClassList,void *)
 DLL_VAR(d2common,0xA0950,pMonStatsTxt ,void *)
 DLL_VAR(d2common,0xA0954,pMonStatsLink ,void *)
@@ -524,9 +529,9 @@ DLL_VAR(d2common,0xA0AC0,pPetTypesTxt ,void *)
 DLL_VAR(d2common,0xA0AC4,pPetTypesLink ,void *)
 DLL_VAR(d2common,0xA0AC8,nPetTypes ,int)
 DLL_VAR(d2common,0xA0ACC,pItemTypesLink ,void *)
-DLL_VAR(d2common,0xA0AD0,pItemTypesTxt ,void *)
-DLL_VAR(d2common,0xA0AD4,nItemTypes ,int)
-DLL_VAR(d2common,0xA0AD8,nItemTypeNesting ,int)
+DLL_VAR(d2common,0xA0AD0,pItemTypesTxt,ItemTypeTxt *)
+DLL_VAR(d2common,0xA0AD4,nItemTypes,int) //=0x67
+DLL_VAR(d2common,0xA0AD8,nItemTypeNesting ,int) //=4
 DLL_VAR(d2common,0xA0ADC,pItemTypeNesting,void *)
 DLL_VAR(d2common,0xA0AE0,pSetsLink ,void *)
 DLL_VAR(d2common,0xA0AE4,pSetsTxt ,void *)
@@ -548,7 +553,7 @@ DLL_VAR(d2common,0xA0B20,nMonTypeNesting ,int)
 DLL_VAR(d2common,0xA0B24,pMonUModLink ,void *)
 DLL_VAR(d2common,0xA0B28,pMonUModTxt ,void *)
 DLL_VAR(d2common,0xA0B2C,nMonUMod ,int)
-DLL_VAR(d2common,0xA0B30,pLevelsTxt ,void *)
+DLL_VAR(d2common,0xA0B30,pLevelTxt,LevelTxt *)
 DLL_VAR(d2common,0xA0B34,nLevels ,int)
 DLL_VAR(d2common,0xA0B38,pLvlDefsBin ,void *)
 DLL_VAR(d2common,0xA0B3C,pLvlPrestTxt ,void *)
@@ -587,7 +592,7 @@ DLL_FUN(d2game,0x2A3C,exit,int,__stdcall,(int exitcode))
 DLL_FUN(d2game,0xE250,hasDroppedUnique,int,__fastcall,(int txt)) //eax:World *world
 DLL_FUN(d2game,0xE5D0,GetUnitLevel,int,__stdcall,(int zero)) //eax=pUnit
 DLL_FUN(d2game,0xE930,GetFreeXY,AreaRectData *,__stdcall,(AreaRectData *pData,POINT *out,int size)) //esi:POINT *in
-DLL_FUN(d2game,0x11490,DropItem1490,UnitAny *,__stdcall,(World *world,void *param,int))
+DLL_FUN(d2game,0x11490,DropItem1490,UnitAny *,__stdcall,(World *world,DropParam *param,int))
 DLL_FUN(d2game,0x11880,DropItem1880,void,__stdcall,(World *world,int txt,int quality,int,int))
 DLL_FUN(d2game,0x200E0,Game235C0,void,__stdcall,(World* game,AreaRectData *pData))
 DLL_FUN(d2game,0x24950,SpawnSuperUnique,int,__fastcall,(World* game,AreaRectData *pData,int zero1,int x,int y,int minusOne,int txt,int zero2)) //wrong param
@@ -608,33 +613,44 @@ DLL_ORD(d2game,0x2E460,10040,processGame,int,__stdcall,())
 DLL_FUN(d2game,0x34C00,sendQuestToClient,int,__stdcall,(World *world)) //eax:UnitAny *pUnit
 DLL_FUN(d2game,0x35640,processClientQuestReq,int,__stdcall,(World *world,UnitAny *pUnit))
 DLL_FUN(d2game,0x49FE0,getNetClient,NetClient *,__fastcall,(int clientId)) //eax:World *context
+DLL_FUN(d2game,0x4AB70,sendHandshake,int,__stdcall,(NetClient* client)) //eax:UnitAny *player
 DLL_FUN(d2game,0x4E2A0,fun_4E2A0,void,__fastcall,(World *game,UnitAny *pMon,int skillId)) //eax=pUnit ecx=0
 DLL_FUN(d2game,0x58BE0,passExpansion58BE0,void,__fastcall,(UnitAny *player)) //eax:QuestInfo *pQuest,ebx:World *world
 DLL_FUN(d2game,0x599E0,passExpansion599E0,void,__fastcall,(World *game,UnitAny *player,int arg)) //player must be in worldstone chamber
+DLL_FUN(d2game,0x637E0,completeImbueQuest,void,__stdcall,()) //eax:UnitAny *player,edi:World *game
 DLL_FUN(d2game,0x70170,OpenPandFinalPortal,void,__fastcall,(World *game,UnitAny *pUnit))
 DLL_FUN(d2game,0x70180,OpenPandPortal,void,__fastcall,(World *game,UnitAny *pUnit))
 DLL_FUN(d2game,0x769A0,fun_769A0,int,__stdcall,(World *world,int arg2,int arg3))//edi:UnitAny *pUnit,esi:mode?
 DLL_FUN(d2game,0x7B4E0,UberMephAI,void,__fastcall,(World* game,UnitAny *pMon,void *param))
 DLL_FUN(d2game,0x85B60,MephAI,void,__fastcall,(World* game,UnitAny *pMon,void *param))
 DLL_FUN(d2game,0x8A3E0,sendPacket,int,__stdcall,(char *packet,int size)) //eax:NetClient* client
+DLL_FUN(d2game,0x8BD00,sendBaseAttr,int,__fastcall,(int statId,int value)) //eax:NetClient* client, statId<255
+DLL_FUN(d2game,0x8D3D0,sendItemToClient8D3D0,void,__stdcall,(int packet1,int itemFlags,int classOnly))//ebx:NetClient *client,esi:UnitAny *pItem
 DLL_FUN(d2game,0x8D5F0,SetSkillBaseLevelOnClient,void,__fastcall,(void *ptClient,UnitAny *pUnit,int skillId,int skillLvl,int bRemove))//by EAX,ESI,EBX
+DLL_FUN(d2game,0x8DF70,sendItemToClient,void,__stdcall,(int itemFlags))//eax:UnitAny *player,ecx:NetClient *client,esi:UnitAny *pItem
 DLL_FUN(d2game,0x8EBC0,fun_8EBC0,int,__stdcall,(World *world,void *arg2))
 DLL_FUN(d2game,0xA22E0,LinkPortal,UnitAny *,__stdcall,(World* game,UnitAny *pUnit,int dstArea,int srcArea))
 DLL_FUN(d2game,0xA3610,NecSummon,UnitAny *,__fastcall,()) //eax=param
 DLL_FUN(d2game,0xA39D0,UberDiabloAI,void,__fastcall,(World* game,UnitAny *pMon,void *param))
 DLL_FUN(d2game,0xA9610,DiabloAI,void,__fastcall,(World* game,UnitAny *pMon,void *param))
+DLL_FUN(d2game,0xAFDB0,setupMonsterStat,void,__stdcall,(World* game,int arg1,int arg2)) //ebx:UnitAny *pMon
+DLL_FUN(d2game,0xB0320,setupMonster,void,__fastcall,(World* game,AreaRectData * pData,UnitAny *pMon,int id))
 DLL_FUN(d2game,0xB6C80,UberBaalAI,void,__fastcall,(World* game,UnitAny *pMon,void *param))
 DLL_FUN(d2game,0xB8610,BaalAI,void,__fastcall,(World* game,UnitAny *pMon,void *param))
 DLL_FUN(d2game,0xB9A30,passClassicB9A30,int,__fastcall,()) //eax:QuestInfo *questData,ecx:UnitAny *player,ebx:World* world
 DLL_FUN(d2game,0xB9F20,passClassicB9F20,int,__fastcall,(World* game,UnitAny *player,int arg))
+DLL_FUN(d2game,0xC00C0,imbueItem,int,__stdcall,(World* game,int arg1,int arg2,int arg3)) //ecx:UnitAny *player
+DLL_FUN(d2game,0xCBBB0,send0D_unitXyHp,int,__stdcall,()) //eax:UnitAny *pUnit
 DLL_FUN(d2game,0xCBD30,recv40_quest,int,__fastcall,(World *world,UnitAny *pUnit,char *packet,int len))
 DLL_FUN(d2game,0xCC550,processPacket,int,__stdcall,(World *world,int len))//esi:UnitAny *pUnit,ebx:char *packet
 DLL_FUN(d2game,0xCCF00,itemNotInInv,int,__fastcall,(int itemId,int notUsed,UnitAny *pUnit)) //eax:World *world
 DLL_FUN(d2game,0xCEBD0,recv28_socket,int,__fastcall,(World *world,UnitAny *pUnit,char *packet,int len))
 DLL_FUN(d2game,0xCEE60,recv1A_handToBody,int,__fastcall,(World *world,UnitAny *pUnit,char *packet,int len))
 DLL_FUN(d2game,0xCF510,recv60_swapWeapon,int,__fastcall,(World *world,UnitAny *pUnit,char *packet,int len))
+DLL_FUN(d2game,0xCF730,recv20_activeBufferItem,int,__fastcall,(World *world,UnitAny *pUnit,char *packet,int len))
 DLL_FUN(d2game,0xD01D0,pickup,int,__fastcall,(World *world,int toHand,UnitAny *player,int id)) //eax:int type
 DLL_FUN(d2game,0xD08B0,recv16_pickup,int,__fastcall,(World *world,UnitAny *pUnit,char *packet,int len))
+DLL_FUN(d2game,0xD1010,recv1F_swapItem,int,__fastcall,(World *world,UnitAny *pUnit,char *packet,int len))
 DLL_FUN(d2game,0xD1370,recv19_invToHand,int,__fastcall,(World *world,UnitAny *pUnit,char *packet,int len))
 DLL_FUN(d2game,0xD4A70,putItemInSocketD4A70,int,__stdcall,(World *world,UnitAny *pUnit,int equipmentItemId,int *result,int one4,int one5,int one6,int one7)) //eax:inSocketItemId
 DLL_FUN(d2game,0xD7160,pickupItem,int,__stdcall,(int itemId,int *result))//eax:UnitAny *player,ebx:World *world
@@ -783,6 +799,7 @@ DLL_ORD(fog,0x10810,10021,setLogFilePrefix,int,__fastcall,(char *prefix))
 DLL_ORD(fog,0x11100,10024,reportError,void,__cdecl,(void *ptr,int addr,int errNo))
 DLL_ORD(fog,0x11690,10251,FogValidateCriticalSection,int,__fastcall,(CriticalSection *lpCriticalSection,int arg))
 DLL_ORD(fog,0x11860,10019,Ord10019,int,__fastcall,(char *serverName,void *func,char *libVersion,int one))
+DLL_ORD(fog,0x11F00,10213,binarySearchTxtNo,int,__stdcall,(ItemCodeTxtNo *pItemLink,int itemCode,int zero))
 DLL_ORD(fog,0x13CA0,10131,alignBitStreamToByte,int,__stdcall,(FogBits *bits))
 DLL_ORD(fog,0x13D80,10127,getBitStreamBytes,int,__stdcall,(FogBits *bits))
 DLL_ORD(fog,0x14040,10120,clearBit,void,__stdcall,(void *bitmap,int pos))

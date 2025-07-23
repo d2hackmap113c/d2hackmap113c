@@ -852,3 +852,21 @@ void __declspec(naked) ViewPetStatPatch_ASM()
 	}
 }
 
+//d2client_27BF7: 8D 04 B6           lea eax, [esi+esi*4]
+//d2client_27BFA: C1 E0 04           shl eax, 4
+//esi:hp ecx:maxhp
+void __declspec(naked) HpOrbPatch_ASM() {
+	__asm {
+		cmp ecx, 0x200000
+		jb done
+		mov eax, dwPlayerMaxHP
+		test eax, eax
+		jz done
+		mov esi, dwPlayerHP
+		mov ecx, dwPlayerMaxHP
+done:
+		lea eax,[esi+esi*4]
+		shl eax,4
+		ret
+	}
+}

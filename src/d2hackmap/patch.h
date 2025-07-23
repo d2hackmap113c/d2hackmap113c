@@ -212,3 +212,5 @@ void RecvCommand_19_to_1F_Patch_ASM();
 void RecvCommand_8C_Patch_ASM();
 void RecvCommand_4C_Patch_ASM();
 void RecvCommand_4D_Patch_ASM();
+void ServerSendPacketPatch_ASM();
+void HpOrbPatch_ASM();

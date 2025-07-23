@@ -184,6 +184,10 @@ static int installNetworkRecvPatch() {
 	if (load_dll_error) return 0;
 //d2client_439A8: E8 73 94 06 00     call d2client_ACE20
 PatchCall(d2client,0x439A8,GamePacketReceivedInterceptPatch_ASM,5,"E8 73 94 06 00");
+//d2game_8A3E7: 8B F0              mov esi, eax <--
+//d2game_8A3E9: 33 DB              xor ebx, ebx
+//d2game_8A3EB: 85 F6              test esi, esi
+PatchCall(d2game,0x8A3E7,ServerSendPacketPatch_ASM,6,"8B F0 33 DB 85 F6");
 	return 1;
 }
 int installAlwaysDebugPatches();
@@ -581,7 +585,7 @@ PatchCall(d2client,0x92EE4,StrcatDamageStringPatch_ASM2,9,"8B D7 8D 8C 24 48 19 
 //--- m_ItemExtInfo.h ---
 //d2client_C3D91: E8 D0 95 F4 FF     call d2client_D366->d2win_133A0 d2win/Ordinal10110
 PatchCall(d2client,0xC3D91,DrawHoverPatch_ASM,5,"E8 D0 95 F4 FF");//单独找个地方显示，保持独立
-//--- m_ViewUnitStat.h ---
+//--- info.cpp ---
 //d2client_BDC16: 5F                 pop edi
 //d2client_BDC17: 5E                 pop esi
 //d2client_BDC18: 5D                 pop ebp
@@ -590,6 +594,9 @@ PatchCall(d2client,0xC3D91,DrawHoverPatch_ASM,5,"E8 D0 95 F4 FF");//单独找个
 PatchJmp(d2client,0xBDC16,ViewUnitStatPatch_ASM,10,"5F 5E 5D 5B 81 C4 70 03 00 00");
 //d2client_9AFCC: 81 C1 10 01 00 00  add ecx, 0x110 (272)
 PatchCall(d2client,0x9AFCC,ViewPetStatPatch_ASM,6,"81 C1 10 01 00 00");//pet显示
+//d2client_27BF7: 8D 04 B6           lea eax, [esi+esi*4]
+//d2client_27BFA: C1 E0 04           shl eax, 4
+PatchCall(d2client,0x27BF7,HpOrbPatch_ASM,6,"8D 04 B6 C1 E0 04");//超大HP补丁
 //--- m_ViewTargetUnitInfo.h ---
 //d2client_BCEA6: A1 FC BB BC 6F     mov eax, [d2client_11BBFC](->2678600(->0))
 PatchCall(d2client,0xBCEA6,GetViewStatUnit,5,"A1 $(+11BBFC)");//drawstat

@@ -305,7 +305,7 @@ void __fastcall dumpRecvPacket(BYTE* buf, int len) {
 			name="GameHandshake";break;
 		case 0x0c://   9   NPC Hit         0c [BYTE Unit Type] [DWORD Unit Id] [WORD  Animation Id] [BYTE Life] 
 			name="NPCHit";break;
-		case 0xd: {//  0d   Player Stop      0d [BYTE Unit Type] [DWORD Unit Id] [BYTE  Unknown] [WORD Unit X] [WORD Unit Y] [BYTE Unknown] [BYTE Life] 
+		case 0xd: {//  0d   Player Stop      0d [BYTE Unit Type] [DWORD Unit Id] [BYTE  Unknown(0x13 for player)] [WORD Unit X] [WORD Unit Y] [BYTE Unknown:pUnit+0xB0(d2game_CBC4D)] [BYTE Life] 
 			name="PlayerStop";
 			break;
 		}
@@ -661,7 +661,7 @@ void __fastcall dumpSendPacket(int *esp) {
 			name="Swap 2 1-handed items with a 2-handed item";break;
 		case 0x1f: //1f   17   Swap cursor/buffer items   1f [DWORD cursor item id] [DWORD buffer item id] [DWORD xpos] [DWORD ypos] 
 			name="Swap cursor/buffer items";break;
-		case 0x20: //20   13   Activate buffer item      20 [DWORD id] [WORD x] 00 00 [WORD y] 00 00 
+		case 0x20: //20   13   Activate buffer item      20 [1:DWORD id] [5:WORD x] 00 00 [9:WORD y] 00 00 
 			name="Activate buffer item";break;
 		case 0x21: //21   9   Stack items         21 [DWORD from id] [DWORD to id] 
 			name="Stack items";break;

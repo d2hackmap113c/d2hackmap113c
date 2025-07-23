@@ -242,7 +242,8 @@ static void formatItem(FILE *fpin,FILE *fpout,int isSocket,int isMerc) {
 					show[nShow++]=STAT_MAGIC_FIND;
 					break;
 				case 217: //詩寇蒂的憤怒 Skullder's Ire 
-				case 218: //U218 守護天使 Guardian Angel
+				case 218: //U218守護天使 Guardian Angel
+				case 285: //U285撒卡蘭姆使者 Herald of Zakarum
 					needSocket=1;
 					show[nShow++]=STAT_Defense;
 					break;
@@ -471,6 +472,7 @@ void scan_realm(char *realm) {
 			int len=strlen(line);if (line[len-1]=='\n') {len--;line[len]=0;}
 			names[nameN++]=_strdup(line);
 		}
+		fclose(fp);
 		for (int j=0;j<nameN;j++) {
 			formatItems(realm,accounts[i],names[j]);
 		}

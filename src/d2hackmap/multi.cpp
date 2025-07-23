@@ -1016,6 +1016,7 @@ int transferClick(int right,UnitAny *pUnit,int x,int y) {
 	return doTransferClick(right,pUnit,x,y);
 }
 int canTranferClick() {
+	if (!fWinActive) return 0;
 	if (d2client_pScreenBlocked[0]&1) { //right half blocked
 		if (*d2client_pMouseX>=SCREENSIZE.x/2) return 0;
 	} else if (d2client_pScreenBlocked[0]&2) { //left half blocked

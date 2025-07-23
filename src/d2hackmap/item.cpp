@@ -12,7 +12,8 @@ char 			anGoldGoodCol[4]=		  {(BYTE)-1};
 char 			anGoldPoorCol[4]=		  {(BYTE)-1};
 char 			anRuneColours[100][4]	={		 {0}};
 char 			anItemColours[3000][8][2][7][4]	={{0}};
-char 			anItemHideLevel[3000][8]		={{0}};
+static char anItemHideLevelDown[3000][8]={{0}};
+static char anItemHideLevelUp[3000][8]={{0}};
 char 			anItemShowCLevel[3000][2]		={{0}};
 ToggleVar 	tSwitchItemMode={		TOGGLEVAR_DOWN,	0,	-1,		1,	"SwitchItemMode",	&SwitchItemMode};
 int 	    dwItemShowMode=1;
@@ -78,7 +79,8 @@ static ConfigVar aConfigVars[] = {
   //{CONFIG_VAR_TYPE_CHAR_ARRAY1, "RubyColours",       &anItemColours[2069], 4, {5, 8, 2, 7} },
   //{CONFIG_VAR_TYPE_CHAR_ARRAY1, "DiamondColours",    &anItemColours[2074], 4, {5, 8, 2, 7} },
   //{CONFIG_VAR_TYPE_CHAR_ARRAY1, "SkullColours",      &anItemColours[2089], 4, {5, 8, 2, 7} },
-  {CONFIG_VAR_TYPE_CHAR_ARRAY1, "ItemHideLvl",       &anItemHideLevel,     1, {3000 , 8} },
+  {CONFIG_VAR_TYPE_CHAR_ARRAY1, "ItemHideLvl",       &anItemHideLevelDown,     1, {3000 , 8} },
+  {CONFIG_VAR_TYPE_CHAR_ARRAY1, "ItemHideLvlUp",       &anItemHideLevelUp,     1, {3000 , 8} },
   {CONFIG_VAR_TYPE_CHAR_ARRAY1,"ItemShowCLvl",&anItemShowCLevel,2,{3000}},
   {CONFIG_VAR_TYPE_CHAR_ARRAY1, "GoodGoldColour",      &anGoldGoodCol,     4,{1}},
   {CONFIG_VAR_TYPE_CHAR_ARRAY1, "PoorGoldColour",      &anGoldPoorCol,     4,{1}},
@@ -134,7 +136,8 @@ void item_initConfigVars() {
   memset(anGoldPoorCol,     -1,       sizeof(anGoldPoorCol));
   memset(anItemColours,     -1,       sizeof(anItemColours));
   memset(anRuneColours,     -1,       sizeof(anRuneColours));
-  memset(anItemHideLevel,   -1,       sizeof(anItemHideLevel));
+  memset(anItemHideLevelDown,   -1,       sizeof(anItemHideLevelDown));
+  memset(anItemHideLevelUp,-1,sizeof(anItemHideLevelUp));
   memset(anItemShowCLevel,   -1,       sizeof(anItemShowCLevel));
   memset(wszEtherealItemPrefix ,    0 ,      sizeof(wszEtherealItemPrefix) );
   memset(wszEtherealItemPostfix ,   0 ,      sizeof(wszEtherealItemPostfix) );
@@ -207,11 +210,13 @@ BYTE GetItemColour(UnitAny *pItem,int isMinimap) {
 		}
 	}
 	DWORD dwQuality = (pItem->pItemData->dwQuality-1)&7;
-	if ( arridx>0 ){
-		BYTE nHiddenLevel = anItemHideLevel[index][dwQuality];//小于隐藏等级的隐藏
-		if (nHiddenLevel!=(BYTE)-1 && ( pItem->pItemData->dwItemLevel < (DWORD)(nHiddenLevel>99?0:nHiddenLevel) )  ) return (BYTE)-2;
-	}
 	int socknum = d2common_GetUnitStat(pItem, STAT_NUMSOCKETS, 0);
+	if (arridx>0) {
+		BYTE nHiddenLevel=anItemHideLevelDown[index][dwQuality];//小于隐藏等级的隐藏
+		if (nHiddenLevel!=(BYTE)-1 && ( pItem->pItemData->dwItemLevel < (DWORD)(nHiddenLevel>99?0:nHiddenLevel) )  ) return (BYTE)-2;
+		BYTE up=anItemHideLevelUp[index][dwQuality];//大于隐藏等级无孔的隐藏
+		if (up!=(BYTE)-1&&pItem->pItemData->dwItemLevel>up&&socknum==0) return (BYTE)-2;
+	}
 	if( socknum > 6) socknum = 6;
 	char color = anItemColours[index][dwQuality][!!d2common_CheckItemFlag(pItem, ITEMFLAG_ETHEREAL, 0, "?")][socknum][arridx];
 	if (color==-2) {

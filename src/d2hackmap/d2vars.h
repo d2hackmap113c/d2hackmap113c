@@ -110,8 +110,8 @@ enum UnitStat {
 	STAT_LASTEXP =				29	,		//
 	STAT_NEXTEXP=30,
 	STAT_Defense=31,
-	STAT_MAGIC_DAMAGE_REDUCED = 35	,		// damage reduction
-	STAT_DAMAGE_REDUCED =		36	,		// magic damage reduction
+	STAT_MAGIC_DAMAGE_REDUCED = 35	,		// magic damage reduction
+	STAT_DAMAGE_REDUCED =		36	,		// damage reduction
 	STAT_MAGIC_RESIST =			37	,		// magic resist
 	STAT_MAX_MAGIC_RESIST =		38	,		// max magic resist
 	STAT_FIRE_RESIST =			39	,		// fire resist

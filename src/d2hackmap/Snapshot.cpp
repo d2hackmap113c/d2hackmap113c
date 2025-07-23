@@ -1103,7 +1103,7 @@ static void dumpUnit(FILE *fp,UnitAny *pUnit) {
 			if (debug&&fIsSinglePlayer) {
 				UnitAny *real=getSinglePlayerUnit(dwUnitId,unitType);
 				if (real) {
-					fprintf(fp,"  GameServer: %x",real);fflush(fp);
+					fprintf(fp,"  GameServer: %X ",real);fflush(fp);
 					StatList *plist=real->pStatList;
 					if (plist&&!IsBadReadPtr(plist,sizeof(StatList)))
 						dumpStatList(fp,plist,1);
@@ -1125,11 +1125,13 @@ static void dumpUnit(FILE *fp,UnitAny *pUnit) {
 		}
 		memset(&runeInfo,0,sizeof(RuneInfo));
 		if (dwUnitId!=dwPlayerId||nStashPages==0) {
-			for (pItem=d2common_GetFirstItemInInv(pUnit->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem))
-				countGemRunes(pItem);
-			outputGemRune(fp);
-			lastLocation=-1;
-			dumpItems(fp,d2common_GetFirstItemInInv(pUnit->pInventory),0);
+			if (dwUnitId==dwPlayerId) {
+				for (pItem=d2common_GetFirstItemInInv(pUnit->pInventory);pItem;pItem=d2common_GetNextItemInInv(pItem))
+					countGemRunes(pItem);
+				outputGemRune(fp);
+				lastLocation=-1;
+				dumpItems(fp,d2common_GetFirstItemInInv(pUnit->pInventory),0);
+			}
 		} else {
 			for (int i=0;i<nStashPages;i++) {
 				if (i==curStashPage) {
@@ -1326,7 +1328,7 @@ static void dumpInventory() {
 		}
 	}
 	int soj=d2common_GetUnitBaseStat(PLAYER,192,0);
-	if (soj) {
+	if (1||soj) {
 		fp=openSnapshotFile("dat","soj.txt","w+",'_',"soj",1);
 		if (fp) {fprintf(fp,"%d\n",soj);fclose(fp);}
 	}
@@ -1707,8 +1709,8 @@ void dumpServerQuest(FILE *fp) {
 }
 int DoSnapshot() {
 	check_d2ptrs();
-	rebuild_snap();
 	if (!fInGame) return 0;
+	//rebuild_snap();
 	debug=0;
 	if (tSnapshot.isOn) dumpInventory();
 	FILE *fp=openDbgFile("_debug.txt");
@@ -1727,7 +1729,7 @@ int DoSnapshot() {
 	fp=openDbgFile("_quest.txt");
 	if (fp) {dumpServerQuest(fp);fclose(fp);}
 	//dumpMinimap();
-	dumpMap();
+	//dumpMap();
 	dumpTxt();
 	fp=openDbgFile("_self.txt");
 	if (fp) {
@@ -1756,15 +1758,14 @@ int DoSnapshot() {
 			}
 		}
 		fp=openDbgFile("_monsters.txt");
+		FILE *fp2=openDbgFile("_merc.txt");
 		for (int i=0;i<128;i++) {
 			for (UnitAny *pUnit=d2client_pUnitTable[UNITNO_MONSTER*128+i];pUnit;pUnit=pUnit->pHashNext) {
 				if (IsBadReadPtr(pUnit,sizeof(UnitAny))) break;
 				if (pUnit->dwUnitType!=UNITNO_MONSTER) break;
 				int owner=d2client_GetMonsterOwner(pUnit->dwUnitId);
 				if (owner==dwPlayerId) {
-					FILE *fp2=openDbgFile("_merc.txt");
 					dumpUnit2(fp2,pUnit);
-					fclose(fp2);
 				} else if (owner!=-1) {
 					dumpUnit2(playerfp,pUnit);
 				} else {
@@ -1772,10 +1773,20 @@ int DoSnapshot() {
 				}
 			}
 		}
+		fclose(fp2);
 		fclose(playerfp);
 		fclose(fp);
+		fp=openDbgFile("_roster.txt");
+		if (fp) {
+			for (RosterUnit *pRU=PLAYERLIST;pRU;pRU=pRU->pNext) {
+				fprintf(fp,"id=%d hp=%d name=%s\n",pRU->dwUnitId,pRU->dwPartyLife,pRU->szName);
+				fprintf(fp," lv=%d party=%d area=%d (%d,%d)\n",pRU->wLevel,pRU->wPartyId,pRU->dwLevelNo,pRU->dwPosX,pRU->dwPosY);
+				hex(fp,0,pRU,0x80);
+			}
+			fclose(fp);
+		}
 	}
-	if (1) {
+	if (0) {
 		fp=openDbgFile("_objects.txt");
 		if (fp) {
 			for (int i=0;i<128;i++) {
@@ -1801,7 +1812,7 @@ int DoSnapshot() {
 		}
 		fclose(fp);
 	}
-	if (1) {
+	if (0) {
 		fp=openDbgFile("_areatile.txt");
 		if (fp) {
 			for (int i=0;i<128;i++) {

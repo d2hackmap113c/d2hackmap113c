@@ -3,13 +3,21 @@
 #Load Symbols File: "symbols\keycodes.txt"
 ServerEnableSlainCowKing: 1
 ServerEnableNihlathakPortal: 1
+ServerInfiniteImbue: 1 //无限任务附魔
 ServerInfiniteSocket: 1 //无限任务打孔
 ServerInfiniteIdentify: 1 //无限辨识书
 ServerInfinitePortal: 1 //无限回城书
 ServerInfiniteArrow: 1 //无限箭标枪投掷物
-ServerInfiniteMana: 0 //无限法力
+ServerInfiniteMana: 1 //无限法力
+ServerInfiniteLife: 1 //无限生命
+ServerInstantKill: 1 //一击必杀,最好配合三种灵气,stat{aura-118},i2096,stat{aura-102},i2096,stat{aura-114},i2096
 ServerInfiniteDurability: 1 //无限耐久度
+//ServerAddPlayerStat[0-3]: 999999 //进入游戏时加力量敏捷等
+//ServerAddPlayerStat[6-11]: 999999 //进入游戏时加生命法力等
+//ServerPlayerREP: 999999 //进入游戏时加恢复生命
 MaxPlayerResist: 127 //95-127
+MaxMonsterResist: -100
+Enable2025Patch: 1, VK_ //启用异次元钥匙补丁(单机用钥匙,i2172-,i2208打开场景,p137-,p177)
 //--------------- Undo撤消 ---------------
 //Press Ctrl+Alt or Ctrl+Alt+Shift(Batch) when clicking to undo stats and skills
 //Press Shift+Ctrl+Alt and click a quest to undo that quest

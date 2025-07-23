@@ -68,9 +68,12 @@ int compareSymbol(const void *a,const void *b) {
 }
 ConfigVar *findConfigVar(char *name) {
 	ConfigVar c,*pc;c.szCmdName=name;pc=&c;
-	ConfigVar *cv=*(ConfigVar **)bsearch(&pc,configVars,configVarCount,sizeof(struct ConfigVar *),compareConfigVar);
-	if (cv&&strcmp(name,cv->szCmdName)!=0) LOG("Case Warning: %s\n",name);
-	return cv;
+	ConfigVar **pcv=(ConfigVar **)bsearch(&pc,configVars,configVarCount,sizeof(struct ConfigVar *),compareConfigVar);
+	if (pcv) {
+		if (strcmp(name,(*pcv)->szCmdName)!=0) {LOG("Case Warning: %s\n",name);}
+		return *pcv;
+	}
+	return NULL;
 }
 void addConfigVar(ConfigVar *var) {
 	if (configVarCount>=configVarCap) {
@@ -97,6 +100,7 @@ void autoskill_initConfigVars();void waypoint_initConfigVars();void winmsg_initC
 void item_initConfigVars();void dangerous_initConfigVars();void DropProtection_initConfigVars();
 void multiclient_initConfigVars();void packet_initConfigVars();void gamemonitor_initConfigVars();
 void autoteleport_initConfigVars();void chat_initConfigVars();void quest_initConfigVars();
+void server_initConfigVars();
 static void InitValues(){
 	static char *base0arrays[]={
 		"DropProtectionRuneword","DropProtectionUnique", 
@@ -138,7 +142,7 @@ static void InitValues(){
 	DropProtection_initConfigVars();packet_initConfigVars();gamemonitor_initConfigVars();
 	autoteleport_initConfigVars();multiclient_initConfigVars();autoskill_initConfigVars();
 	waypoint_initConfigVars();chat_initConfigVars();
-	quest_initConfigVars();PartyHelp_initConfigVars();
+	quest_initConfigVars();PartyHelp_initConfigVars();server_initConfigVars();
 	fHasHardCoreConfig=0;
 }
 
@@ -276,8 +280,7 @@ void AddWarningMessage(char *msg,int keep) {
 	char buf[256];
 	for (WarningMsg *p=warningMsgs;p;p=p->next) if(_stricmp(p->msg,msg)==0) return;
 	if (warningMsgCount>=199) return ; 
-	if (keep) strncpy(buf,msg,99);
-	else sprintf(buf,"Parse Error line %d: %s", lineId,msg);
+	_snprintf(buf,256,"Load config error %s:%d %s",cfgFileName,lineId,msg);
 	LOG("Warning: %s\n",buf);
 	WarningMsg *p=(WarningMsg *)HeapAlloc(confHeap,0,sizeof(WarningMsg));
 	p->msg=heap_strdup(confHeap,buf);p->next=warningMsgs;warningMsgs=p;warningMsgCount++;
@@ -933,7 +936,7 @@ static void loadConfig(char *path) {
 			if (!name&&!value) continue;
 			if (!name||!value||!name[0]||!value[0]) {
 				LOG("Warning config line: %s\n",line);
-				AddWarningMessage(line,1);
+				AddWarningMessage(line,0);
 				continue;
 			}
 			//LOG("%s %s\n",name,value);
@@ -959,11 +962,11 @@ static void loadConfig(char *path) {
 			}
 			if (!hascmd){
 				LOG("Warning config line: %s\n",line);
-				AddWarningMessage(line,1);
+				AddWarningMessage(line,0);
 			}
 		} __except(EXCEPTION_EXECUTE_HANDLER) {
-			LOG("ERROR: config line %s\n", line);
-			AddWarningMessage("Load CFG Error!" , 1 );
+			LOG("Caught exception: config line %s\n", line);
+			AddWarningMessage("Load CFG excpetion!" , 0 );
 		}
 	}
 	LOG("Load %d lines from %s\n",nLines,path);

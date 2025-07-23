@@ -6,7 +6,10 @@ int dwPartyInvideMs;
 void ResponseInvite();
 int fCanInvite=0,mAutoPartyDelays=500,dwPartyResponseMs=0;
 ToggleVar tAutoParty={TOGGLEVAR_ONOFF,	0,	-1, 1,	"Auto Party Toggle"};
-ToggleVar tAutoInvite={TOGGLEVAR_ONOFF,	0,	-1,	1,  "Auto Invite Toggle"};
+ToggleVar tAutoInviteLocal={TOGGLEVAR_ONOFF,0,-1,1,"Auto Invite Local"};
+ToggleVar tAutoInviteRogue={TOGGLEVAR_ONOFF,0,-1,1,"Auto Invite Rogue"};
+ToggleVar tAutoInviteRogueMF={TOGGLEVAR_ONOFF,0,-1,1,"Auto Invite Rogue MF"};
+ToggleVar tAutoInviteRogueHC={TOGGLEVAR_ONOFF,0,-1,1,"Auto Invite Rogue HC"};
 ToggleVar tAutoPermit={TOGGLEVAR_ONOFF,	0,	-1,	1,  "Auto Loot Permit Toggle"};
 ToggleVar tAutoLocalPermit={TOGGLEVAR_ONOFF,	0,	-1,	1,  "Auto Local Loot Permit Toggle"};
 ToggleVar tAutoPartyBugMF={TOGGLEVAR_ONOFF,	0,	-1, 1,	"Auto Party BugMF Toggle"};
@@ -16,7 +19,10 @@ static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_KEY,"HardCoreBackTownIfAnyoneDie",&tHardCoreBackTownIfAnyoneDie},
   {CONFIG_VAR_TYPE_KEY,"AutoPartyBugMFToggle",&tAutoPartyBugMF},
   {CONFIG_VAR_TYPE_KEY,"AutoPartyToggle",&tAutoParty},
-  {CONFIG_VAR_TYPE_KEY,"AutoInviteToggle",&tAutoInvite},
+  {CONFIG_VAR_TYPE_KEY,"AutoInviteLocal",&tAutoInviteLocal},
+  {CONFIG_VAR_TYPE_KEY,"AutoInviteRogue",&tAutoInviteRogue},
+  {CONFIG_VAR_TYPE_KEY,"AutoInviteRogueMF",&tAutoInviteRogueMF},
+  {CONFIG_VAR_TYPE_KEY,"AutoInviteRogueHC",&tAutoInviteRogueHC},
   {CONFIG_VAR_TYPE_KEY,"AutoLootPermit",&tAutoPermit},
   {CONFIG_VAR_TYPE_KEY,"AutoLocalLootPermit",&tAutoLocalPermit},
   {CONFIG_VAR_TYPE_INT,"AutoPartyDelays",&mAutoPartyDelays, 4},
@@ -224,14 +230,27 @@ void AutoInvite() {
 		if (PLAYER&&uid==PLAYER->dwUnitId) continue;
 		RosterUnit *runit=getRosterUnit(uid);
 		LOG("AutoInvite uid=%d lv=%d name=%s local=%d\n",p->uid,p->lv,p->name,local);
-		if (tAutoInvite.isOn&&fCanInvite&&autoPartyBugMF()&&runit&&!runit->dwPartyFlags) {
+		if (fCanInvite&&autoPartyBugMF()&&runit&&!runit->dwPartyFlags) {
 			int doInvite=0;
+			int isMF=0;
+			if (*d2client_pGameInfo) {
+				char *game=(*d2client_pGameInfo)->szGameName;
+				isMF=(game[0]=='m'||game[0]=='M')&&(game[1]=='f'||game[1]=='F');
+			}
 			if (local) {
-				doInvite=1;
-			} else if (autoPartyLevelRange[DIFFICULTY][0]<=lv&&lv<=autoPartyLevelRange[DIFFICULTY][1]) {
-				doInvite=1;
+				if (tAutoInviteLocal.isOn) doInvite=1;
 			} else {
-				doInvite=0;
+				if (autoPartyLevelRange[DIFFICULTY][0]<=lv&&lv<=autoPartyLevelRange[DIFFICULTY][1]) {
+					if (fIsHardCoreGame) {
+						if (tAutoInviteRogueHC.isOn) doInvite=1;
+					} else if (isMF) {
+						if (tAutoInviteRogueMF.isOn) doInvite=1;
+					} else {
+						if (tAutoInviteRogue.isOn) doInvite=1;
+					}
+				} else {
+					doInvite=0;
+				}
 			}
 			LOG("%s %s: lv%d range(%d-%d) invite=%d\n",local?"local":"alien",p->name,p->lv,
 				autoPartyLevelRange[DIFFICULTY][0],autoPartyLevelRange[DIFFICULTY][1],doInvite);
@@ -241,8 +260,8 @@ void AutoInvite() {
 				BYTE InvitePlayer[6]={0x5E,0x06};*(int *)&InvitePlayer[2] = uid;
 				SendPacket(InvitePlayer,sizeof(InvitePlayer));		
 			} else {
-				gameMessage("Didn't invite %s %s: lv%d range(%d-%d)",local?"local":"alien",p->name,p->lv,
-					autoPartyLevelRange[DIFFICULTY][0],autoPartyLevelRange[DIFFICULTY][1]);
+				gameMessage("Didn't invite %s %s: lv%d range(%d-%d) mf=%d",local?"local":"rogue",p->name,p->lv,
+					autoPartyLevelRange[DIFFICULTY][0],autoPartyLevelRange[DIFFICULTY][1],isMF);
 			}
 		}
 		if (fInGame&&fIsHardCoreGame) {

@@ -14,20 +14,22 @@ POINT TPtarget;
 AreaRectData *TPtargetRect,*TPfailedRect;
 int dwTpMs,dwTpDoneMs;
 static int fTpAvoiding,fTpAutoTarget,dwLastTpMs;
-static char aMonYard[32][2];
+static char aMonYard[3][2];
 static char aMonYardHC[3][2];
 static int dwArcaneSanctuaryYard=4;
 static int defMonYard,maxTpYard,tpDelayMs,tpMinStep,stepInvalidMs,avoidEdge=0,dwAutoTeleportSafeDistance;
 static int reachDis=6;
 static ToggleVar tLogTP={TOGGLEVAR_ONOFF,0,-1,1,"Log TP Toggle"};
-static int dwAutoTeleportTelekinesisDistance,dwAutoTeleportTelekinesisSafeDistance;
-static int dwAutoTeleportTelekinesisEnterChamber;
+static int dwAutoTeleportTelekinesisDistance=24,dwAutoTeleportTelekinesisSafeDistance;
+static int dwAutoTeleportTelekinesisEnterChamber=0;
 static int dwAutoTeleportRescueBarAvoid=10;
 int maxTpDisRaw;
 static int forceEnterCharLevelNormal=60;
 static int forceEnterCharLevelNightmare=80;
 ToggleVar tAutoTeleportEvade={TOGGLEVAR_ONOFF,0,-1,1,"Auto Teleport Evade Toggle"};
 static int autoTPEvadeYard[2];
+static int autoTPEvadeDiff[3];
+static int talRashaChamberTpXy[8][2];
 static ConfigVar aConfigVars[] = {
   {CONFIG_VAR_TYPE_INT,"ForceEnterCharLevelNormal",&forceEnterCharLevelNormal,4},
   {CONFIG_VAR_TYPE_INT,"ForceEnterCharLevelNightmare",&forceEnterCharLevelNightmare,4},
@@ -43,11 +45,13 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportTelekinesisDistance",&dwAutoTeleportTelekinesisDistance,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportTelekinesisSafeDistance",&dwAutoTeleportTelekinesisSafeDistance,4 },
 	{CONFIG_VAR_TYPE_INT,"AutoTeleportRescueBarAvoid",&dwAutoTeleportRescueBarAvoid,4 },
-	{CONFIG_VAR_TYPE_CHAR_ARRAY0,"AutoTeleportMonsterDistance",&aMonYard,2,{32}},
+	{CONFIG_VAR_TYPE_CHAR_ARRAY0,"AutoTeleportMonsterDistance",&aMonYard,2,{3}},
 	{CONFIG_VAR_TYPE_CHAR_ARRAY0,"AutoTeleportMonsterDistanceHC",&aMonYardHC,2,{3}},
 	{CONFIG_VAR_TYPE_KEY,"LogTPToggle",&tLogTP},
 	{CONFIG_VAR_TYPE_KEY,"AutoTeleportEvadeToggle",&tAutoTeleportEvade},
   {CONFIG_VAR_TYPE_INT_ARRAY1,"AutoTeleportEvadeYard",&autoTPEvadeYard,2,{0}},
+  {CONFIG_VAR_TYPE_INT_ARRAY1,"AutoTeleportEvadeDifficulty",&autoTPEvadeDiff,3,{0}},
+  {CONFIG_VAR_TYPE_INT_ARRAY0,"TalRashaChamberTpXy",&talRashaChamberTpXy,2,{8}},
 };
 void autoteleport_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
@@ -55,6 +59,7 @@ void autoteleport_addConfigVars() {
 void autoteleport_initConfigVars() {
 	memset(aMonYard,0,sizeof(aMonYard));
 	memset(aMonYardHC,0,sizeof(aMonYardHC));
+	memset(talRashaChamberTpXy,0,sizeof(talRashaChamberTpXy));
 }
 void autoteleport_fixValues() {
 	maxTpDisRaw=(maxTpYard*3)>>1;
@@ -125,7 +130,7 @@ static void findMonsters(int evade) {
 	resetMonsters();
 	char *yard;
 	if (fIsHardCoreGame) yard=aMonYardHC[DIFFICULTY];
-	else yard=aMonYard[dwPlayerFcrFrame];
+	else yard=aMonYard[DIFFICULTY]; //dwPlayerFcrFrame];
 	for (int i=0;i<128;i++) {
 		for (UnitAny *pMon=d2client_pUnitTable[UNITNO_MONSTER*128+i];pMon;pMon=pMon->pHashNext) {
 			if (pMon->dwUnitType!=UNITNO_MONSTER) break;
@@ -286,6 +291,8 @@ nextPosition:
 int autoTpEvade(char *packet) {
 	if (!tAutoTeleportEvade.isOn) return 0;
 	if (isAutoTeleporting||!packet) return 0;
+	if (!autoTPEvadeDiff[DIFFICULTY]) return 0;
+	if (DIFFICULTY==0&&dwPlayerLevel>=forceEnterCharLevelNormal) return 0;
 	if (!tposs) {posCap=4096;tposs=(TPPos *)HeapAlloc(dllHeap,0,sizeof(TPPos)*posCap);}
 	int x,y;
 	switch (packet[0]) {
@@ -397,23 +404,16 @@ static void interact(POINT *src,int type,int txt) {
 	}
 }
 extern int dwTotalMonsterCount;
-static int autoTeleportStartMs,leftSkill;
+static int autoTeleportStartMs,leftSkill=-1;
 int fAutoTeleporting=0,unexpectedMonCount=0,unexpectedMonTotalMs=0;
 int AutoTeleportStart() {
 	fAutoTeleporting=1;autoTeleportStartMs=dwCurMs;fTpAvoiding=0;fTpAutoTarget=0;nPrevMons=0;
 	leftSkill=-1;
-	if (dwAutoTeleportTelekinesisEnterChamber&&dwPlayerClass==1&&hasSkill(Skill_Telekinesis)) {
-		switch (dwCurrentLevel) {
-			case Level_TalRashaTomb1:case Level_TalRashaTomb2:case Level_TalRashaTomb3:
-			case Level_TalRashaTomb4:case Level_TalRashaTomb5:case Level_TalRashaTomb6:case Level_TalRashaTomb7:
-				leftSkill=dwLeftSkill;switchLeftSkill(Skill_Telekinesis);
-		}
-	}
 	return 0;
 }
 int AutoTeleportEnd() {
 	fAutoTeleporting=0;
-	if (leftSkill>=0) switchLeftSkill(leftSkill);
+	if (leftSkill>=0) {switchLeftSkill(leftSkill);leftSkill=-1;}
 	if (unexpectedMonCount) {
 		switch (dwCurrentLevel) {
 			case Level_TheWorldstoneChamber:break;
@@ -482,7 +482,7 @@ static int findTelekinesisPosition() {
 	for (TPPos *p=tposs;p<end;p++) {
 		int monDis=getMonDis(&p->p);
 		if ((getDistanceM256(p->p.x-src.x,p->p.y-src.y)>>8)>dwAutoTeleportTelekinesisDistance) continue;
-		if (d2common_IsLineBlocked(PLAYER->pMonPath->pAreaRectData,&src,&p->p,4)) continue;
+		//if (d2common_IsLineBlocked(PLAYER->pMonPath->pAreaRectData,&src,&p->p,4)) continue;
 		if (monDis<dwAutoTeleportTelekinesisSafeDistance) continue;
 		if (monDis>maxDis) {
 			maxDis=monDis;bestRect=p->pData;bestP=p->p;
@@ -552,14 +552,23 @@ static int tpToBoss() {
 	return 1;
 }
 static int telekinesisTarget(UnitAny *pObject) {
-	if (dwLeftSkill!=Skill_Telekinesis) return teleportToSafety()?0:1;
-	wchar_t buf[128];
-	if ((int)getPlayerDistanceRaw(pObject)<=dwAutoTeleportTelekinesisDistance) {
-		POINT p2;p2.x=pObject->pMonPath->wUnitX;p2.y=pObject->pMonPath->wUnitY;
-		if (!d2common_IsLineBlocked(PLAYER->pMonPath->pAreaRectData,&src,&p2,4)) {
-			ShiftLeftClickUnit(pObject);startProcessMs=dwCurMs+100;
-			return 0;
+	if (dwLeftSkill!=Skill_Telekinesis) {
+		if (dwAutoTeleportTelekinesisEnterChamber&&dwPlayerClass==1&&hasSkill(Skill_Telekinesis)) {
+			leftSkill=dwLeftSkill;switchLeftSkill(Skill_Telekinesis);
+			startProcessMs=dwCurMs+60;return 0;
+		} else {
+			return teleportToSafety()?0:1;
 		}
+	}
+	wchar_t buf[128];
+	int curDis=getPlayerDistanceM256(pObject)>>8;
+	if (curDis<=dwAutoTeleportTelekinesisDistance) {
+		//POINT p2;p2.x=pObject->pMonPath->wUnitX;p2.y=pObject->pMonPath->wUnitY;
+		//if (!d2common_IsLineBlocked(PLAYER->pMonPath->pAreaRectData,&src,&p2,4)) {
+		//LOG("Telekinesis distance %d\n",curDis);
+		ShiftLeftClickUnit(pObject);startProcessMs=dwCurMs+100;
+		return 0;
+		//}
 	}
 	AreaRectData *pData = PLAYER->pMonPath->pAreaRectData;
 	maxDisM256=0x7FFFFFFF;nPos=0;
@@ -593,6 +602,8 @@ static int autoDuranceofHateLevel3() {
 	}
 	return teleportToSafety()?0:1;
 }
+extern int sealOpened[5];
+void nextSeal();
 //return 1 if auto skill can be used
 static int autoTarget() {
 	int kbMode=!fIsHardCoreGame&&(dwLeftSkill==Skill_ChargedStrike||dwLeftSkill==Skill_Smite);
@@ -620,19 +631,84 @@ static int autoTarget() {
 				}
 			}
 			break;
+		case Level_ChaosSanctuary:
+		//rightbottom 392 righttop 393, top txt394 , lefttop 395, leftbottom 396
+			if (curdis<reachDis) {
+				interact(&src,targetType,targetTxt);startProcessMs=dwCurMs+100;return 0;
+			} else if (dwAutoTeleportTelekinesisEnterChamber) {
+				AreaRectData *pData=d2common_getRectData(PLAYER);
+				UnitAny *seal=findTxtNearby(pData,2,targetTxt,targetTxt,-1);
+				if (seal&&seal->dwMode) {
+					if (392<=targetTxt&&targetTxt<=396) {
+						sealOpened[targetTxt-392]=1;nextSeal();
+						startProcessMs=dwCurMs+100;return 0;
+					}
+				}
+				if (seal&&seal->dwMode==0) {
+					return telekinesisTarget(seal);
+				} else if (leftSkill>=0) {switchLeftSkill(leftSkill);leftSkill=-1;}
+			}
+			break;
 		case Level_TalRashaTomb1:case Level_TalRashaTomb2:case Level_TalRashaTomb3:
 		case Level_TalRashaTomb4:case Level_TalRashaTomb5:case Level_TalRashaTomb6:case Level_TalRashaTomb7:
-			if (dwLeftSkill==Skill_Telekinesis&&dwAutoTeleportTelekinesisEnterChamber) {
-				int txt=getAreatileTxtToLevel(Level_TalRashaChamber);
-				if (txt) {
-					UnitAny *portal=getAreatileByTxt(txt);
-					if (portal) return telekinesisTarget(portal);
+			if (dwAutoTeleportTelekinesisEnterChamber) {
+				AreaRectData *pData=d2common_getRectData(PLAYER);
+				UnitAny *door=findTxtNearby(pData,2,100,100,-1);
+				if (door&&door->dwMode==2) {
+					return telekinesisTarget(door);
+				} else if (leftSkill>=0) {
+					switchLeftSkill(leftSkill);leftSkill=-1;
 				}
 			}
 			break;
 		case Level_DuranceofHateLevel3:
 			return autoDuranceofHateLevel3();
 	}
+	return teleportToSafety()?0:1;
+}
+static int talRashaChamberTpPos=0;
+void AutoTeleportNewLevel() {
+	if (fAutoTeleporting&&leftSkill>=0) {switchLeftSkill(leftSkill);leftSkill=-1;}
+	talRashaChamberTpPos=0;
+}
+static int talRashaChamberTp() {
+	//can't teleport to place can't see
+	if (nBoss>0&&bossHps[0]>0) {talRashaChamberTpPos=0;return 1;}
+	else if (dwRightSkill==Skill_Teleport) {
+		int x=talRashaChamberTpXy[talRashaChamberTpPos][0],y=talRashaChamberTpXy[talRashaChamberTpPos][1];
+		talRashaChamberTpPos++;
+		if (x&&y) {
+			POINT p1,p2;p1.x=dwPlayerX;p1.y=dwPlayerY;p2.x=x;p2.y=y;
+			int dx=x-dwPlayerX,dy=y-dwPlayerY;if (dx<0) dx=-dx;if (dy<0) dy=-dy;
+			int minDis=0x7fffffff,minPos=-1;
+			if (dx>50||dy>50||d2common_IsLineBlocked(PLAYER->pMonPath->pAreaRectData,&p1,&p2,4)) {
+				LOG("talRashaChamberTp %d,%d %d,%d %d,%d\n",dx,dy,x,y,dwPlayerX,dwPlayerY);
+				for (int i=0;;i++) {
+					x=talRashaChamberTpXy[i][0];y=talRashaChamberTpXy[i][1];if (!x||!y) goto end;
+					p2.x=x;p2.y=y;
+					if (d2common_IsLineBlocked(PLAYER->pMonPath->pAreaRectData,&p1,&p2,4)) continue;
+					int dis=getDistanceM256(x-dwPlayerX,y-dwPlayerY);
+					if (dis<minDis) {minPos=i;minDis=dis;}
+				}
+				if (minPos<0) goto end;
+				talRashaChamberTpPos=minPos;
+				x=talRashaChamberTpXy[talRashaChamberTpPos][0];y=talRashaChamberTpXy[talRashaChamberTpPos][1];
+				talRashaChamberTpPos++;
+			}
+			//int r=rand()&3;if (r==1) x++;if (r==2) x--;
+			//r=rand()&3;if (r==1) y++;if (r==2) y--;
+			tpMonCount=dwTotalMonsterCount;
+			dwTpMs=dwCurMs;//TPtarget=bestP;TPtargetRect=bestRect;dwTpDoneMs=0;TPfailedRect=NULL;
+			isAutoTeleporting=1;
+			RightSkillPos(x,y);
+			isAutoTeleporting=0;
+		} else {
+			AreaRectData *pData=d2common_getRectData(PLAYER);
+			UnitAny *tyrael=findTxtNearby(pData,1,251,251,1);
+			if (tyrael) {LeftClickUnit(tyrael);startProcessMs=dwCurMs+300;return 0;}
+		}
+	}
+end:
 	return teleportToSafety()?0:1;
 }
 //return 1 if auto skill can be used
@@ -660,6 +736,7 @@ int AutoTeleport() {
 	if (PLAYER->dwMode==PlayerMode_Attacking1||PLAYER->dwMode==PlayerMode_Attacking2||PLAYER->dwMode==PlayerMode_Cast)
 		return 0;
 	switch (dwCurrentLevel) {
+		case Level_TalRashaChamber: return talRashaChamberTp();
 		case Level_TheWorldstoneChamber:
 			if (!fIsHardCoreGame&&findBoss(Mon_BaalCrab,0)) hasTarget=1;
 			break;
@@ -684,7 +761,7 @@ int AutoTeleport() {
 				switch (dwCurrentLevel) {
 				case Level_StonyField:
 				case Level_MaggotLairLevel3:dstType=2;break;
-				case Level_ChaosSanctuary:dstType=3;break;
+				case Level_ChaosSanctuary:dstType=5;break;
 				}
 			}
 		}
@@ -711,7 +788,7 @@ int AutoTeleport() {
 			fTpAvoiding=1;
 			return teleportToSafety()?0:1;
 		}
-		if (fTpAutoTarget||dstType==5&&curdis<20) {
+		if (fTpAutoTarget||dstType==5&&curdis<24) {
 			fTpAutoTarget=1;
 			return autoTarget();
 		}

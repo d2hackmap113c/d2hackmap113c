@@ -1167,7 +1167,7 @@ AreaRectData *testPosition(AreaRectData *pData,int x,int y) {
 }
 extern int actlvls[6];//{1, 40, 75, 103, 109, 137};
 int portalToLevel(World* game, UnitAny* pUnit, int levelId) {
-	LOG("levels=%d\n",*d2common_pnLevels);
+	//LOG("levels=%d\n",*d2common_pnLevels);
 	if (levelId<Level_RogueEncampment||levelId>*d2common_pnLevels) return 0;
 	AreaRectData *pData=d2common_getRectData(pUnit);
 	int curArea=d2common_GetLevelIdFromRectData(pData);
@@ -1205,13 +1205,28 @@ int hasPortalInRect(AreaRectData* pData, int dstLvl) {
 	}
 	return 0;
 }
-int hasPortalNearby(AreaRectData* pData, int dstLvl) {
+int hasPortalNearby(AreaRectData *pData, int dstLvl) {
 	if (hasPortalInRect(pData,dstLvl)) return 1;
 	for(int i = 0; i < pData->nearbyRectCount; i++) {
-		AreaRectData* pData2 = pData->paDataNear[i];
+		AreaRectData *pData2=pData->paDataNear[i];
 		if (hasPortalInRect(pData2,dstLvl)) return 1;
 	}
 	return 0;
+}
+UnitAny *findTxtInRect(AreaRectData *pData,int type,int txtFrom,int txtTo,int mode) {
+	for (UnitAny *pUnit=pData->pUnit;pUnit;pUnit=pUnit->pRectNext) {
+		if (pUnit->dwUnitType==type&&txtFrom<=pUnit->dwTxtFileNo&&pUnit->dwTxtFileNo<=txtTo
+			&&(mode<0||pUnit->dwMode==mode))
+			return pUnit;
+	}
+	return 0;
+}
+UnitAny *findTxtNearby(AreaRectData *pData,int type,int txtFrom,int txtTo,int mode) {
+	UnitAny *pUnit=findTxtInRect(pData,type,txtFrom,txtTo,mode);if (pUnit) return pUnit;
+	for (int i=0;i<pData->nearbyRectCount;i++) {
+		pUnit=findTxtInRect(pData->paDataNear[i],type,txtFrom,txtTo,mode);if (pUnit) return pUnit;
+	}
+	return NULL;
 }
 int hasPortalInLevel(DrlgLevel* level, int dstLvl) {
 	for (AreaRectInfo* pInfo = level->pAreaRectInfo; pInfo; pInfo = pInfo->pNext) {
@@ -1308,6 +1323,15 @@ int cpLocaleName(wchar_t *dst,wchar_t *s,int max) {
 	}
 	return n;
 }
+void acp_fputs(wchar_t *str,FILE *fp) {
+	char buf[256];
+	wchar_t *s=str;int n=0;
+	while (1) {wchar_t c=*s++;if (!c) break;n++;}
+	n=WideCharToMultiByte(CP_ACP,0,str,n,buf,256,NULL,NULL);
+	if (n>255) n=255;
+	buf[n]=0;
+	fputs(buf,fp);
+}
 int acpLocaleName(char *dst,wchar_t *s,int bufsize) {
 	if (!s) {if (dst) *dst=0;return 0;}
 	wchar_t *src=s;int n=0;
@@ -1380,3 +1404,51 @@ int getSimpleItemStackContent(UnitAny *pUnit,int *ptxt) {
 	}
 	return 0;
 }
+UnitAny *getUnitFromWorld(World *world,int unit_type,int unit_id) {
+	__asm {
+		mov eax,unit_type
+		mov ecx,world
+		mov edx,unit_id
+		call d2game_GetUnit
+	}
+	/*
+	UnitAny *list=NULL;
+	switch (type) {
+		case UNITNO_PLAYER:list=world->playerHash[id&0x7f];break;
+		case UNITNO_MONSTER:list=world->monsterHash[id&0x7f];break;
+		case UNITNO_OBJECT:list=world->objectHash[id&0x7f];break;
+		case UNITNO_MISSILE:list=world->missileHash[id&0x7f];break;
+		case UNITNO_ITEM:list=world->itemHash[id&0x7f];break;
+		case UNITNO_AREA_ENTRANCE:list=world->areaEntrances;break;
+	}
+	if (!list) return NULL;
+	for (UnitAny *pUnit=list;pUnit;pUnit=pUnit->pHashNext) {
+		//if (IsBadReadPtr(pUnit,sizeof(UnitAny))) return NULL;
+		if (pUnit->dwUnitType!=type) return NULL;
+		if (pUnit->dwUnitId==id) return pUnit;
+	}
+	return NULL;
+	*/
+}
+void sendItemToClient(NetClient *client,UnitAny *player,UnitAny *pItem) {
+	__asm {
+		mov eax, player
+		mov ecx, client
+		mov esi, pItem
+		push 0
+		call d2game_sendItemToClient
+	}
+}
+/*
+int getItemTxtByCode(int code) {
+	//replaced by d2common_getTxtNoByCode(code);
+	int nTxt=*d2common_pItemTxtCount;
+	ItemTxt *ptxt=*d2common_pItemTxts;
+	for (int id=0;id<nTxt;ptxt=(ItemTxt *)((char *)ptxt+0x1a8),id++) {
+		if (code==(int)ptxt->dwCode[0]) return id;
+	}
+	char buf[8];memcpy(buf,&code,4);buf[4]=0;
+	LOG("Can't find code %s\n",buf);
+	return -1;
+}
+*/

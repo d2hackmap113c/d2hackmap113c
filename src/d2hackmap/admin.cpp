@@ -58,6 +58,14 @@ void setCharLv(World *world,UnitAny *pUnit,int lv) {
 		call d2game_playerUpgrade
 	}
 }
+static void gold(World *world,UnitAny *pUnit) {
+	int id=14,v=990000;
+	int cur=d2common_GetUnitBaseStat(pUnit,id,0);
+	if (v!=cur) d2common_AddPlayerStat(pUnit,id,v-cur,0);
+	id=15;v=2500000;
+	cur=d2common_GetUnitBaseStat(pUnit,id,0);
+	if (v!=cur) d2common_AddPlayerStat(pUnit,id,v-cur,0);
+}
 void maxCharStat(World *world,UnitAny *pUnit) {
 	setCharLv(world,pUnit,99);
 	for (int id=0;id<16;id++) {
@@ -165,36 +173,12 @@ int itemIndex2txt(int id) {
 	else return -1;
 	return id;
 }
-struct DropParam {
-	UnitAny *pMon; //+00
-	int off04; //+04 =0
-	World *world; //+08
-	int itemLevel; //+0C
-	int off10; //+10
-	int txt; //+14
-	int off18; //+18 mon:3 npc:4
-	int x,y; //+1C
-	AreaRectData *pAreaData; //+24
-	short off28; //+28 =1
-	short itemFormat; //+2A =world[0x78]=0x65
-	int notInStore; //+2C
-	int quality; //+30
-	int off34[3]; //+34
-	int off40; //+40
-	int itemFlag; //+44 0x8:socket
-	int off48[2]; //+48
-	int off50[4]; //+50
-	int off60[4]; //+60
-	int off70[4]; //+70
-	int flags; //+80 bit0:HellBovine bit1:npc,notEthereal bit2:ethereal bit3:noSocket
-};
-static UnitAny *dropItem(World *world,UnitAny *pUnit,int itemIndex,int quality,int lv,int flags) {
+
+UnitAny *dropItemTxt(World *world,UnitAny *pUnit,int txt,int quality,int lv,int flags) {
 	if (quality<0) {
-		if (itemIndex<2000) quality=7;
+		if (txt<*d2common_pWeaponsTxts+*d2common_pArmorTxts) quality=7;
 		else quality=0;
 	}
-	int txt=itemIndex2txt(itemIndex);
-	if (txt<0) {LOG("dropItem can't find txt for %d\n",itemIndex);return NULL;}
 	//LOG("drop idx=%d txt=%d q=%d lv=%d\n",itemIndex,txt,quality,lv);
 	/*	__asm {
 			mov ebx, pUnit
@@ -230,6 +214,11 @@ static UnitAny *dropItem(World *world,UnitAny *pUnit,int itemIndex,int quality,i
 	//flags|=4;//if HellBovine
 	param.flags=flags;
 	return d2game_DropItem1490(world,&param,0);
+}
+static UnitAny *dropItemIdx(World *world,UnitAny *pUnit,int itemIndex,int quality,int lv,int flags) {
+	int txt=itemIndex2txt(itemIndex);
+	if (txt<0) {LOG("dropItemIdx can't find txt for %d\n",itemIndex);return NULL;}
+	return dropItemTxt(world,pUnit,txt,quality,lv,flags);
 }
 static int dropUniqueId=-1,dropSetId=-1;
 #define MAX_NAMES 512
@@ -300,16 +289,6 @@ original:
 		jmp d2common_setItemFileIndex
 		ret
 	}
-}
-int getItemTxtByCode(int code) {
-	int nTxt=*d2common_pItemTxtCount;
-	ItemTxt *ptxt=*d2common_pItemTxts;
-	for (int id=0;id<nTxt;ptxt=(ItemTxt *)((char *)ptxt+0x1a8),id++) {
-		if (code==(int)ptxt->dwCode[0]) return id;
-	}
-	char buf[8];memcpy(buf,&code,4);buf[4]=0;
-	LOG("Can't find code %s\n",buf);
-	return -1;
 }
 void maximizeProps(UnitAny *pItem,ItemProp *props,int n) {
 	for (int i=0;i<n;i++) {
@@ -394,7 +373,7 @@ void putItemIntoSocket(World *world,UnitAny *pUnit,UnitAny *pEquipment,UnitAny *
 }
 static UnitAny *dropRuneword(World *world,UnitAny *pUnit,int rwid,int idx,int flags) {
 	RuneWordTxt *txt=getRunewordTxt(rwid);if (!txt) return NULL;
-	UnitAny *pItem=dropItem(world,pUnit,idx,3,99,flags);
+	UnitAny *pItem=dropItemIdx(world,pUnit,idx,3,99,flags);
 	int rtxt[6],n=0;
 	for (int j=0;j<6;j++) {
 		int rtxtid=txt->runeTxtId[j];if (rtxtid<=0) break;
@@ -421,8 +400,8 @@ static UnitAny *dropRuneword(World *world,UnitAny *pUnit,int rwid,int idx,int fl
 	d2common_setItemSocket(pItem,n);
 	pickupItem(world,pUnit,pItem,0);
 	for (int j=0;j<n;j++) {
-		int ridx=GetItemIndex(rtxt[j])+1;
-		UnitAny *rune=dropItem(world,pUnit,ridx,0,99,0);
+		//int ridx=GetItemIndex(rtxt[j])+1;
+		UnitAny *rune=dropItemTxt(world,pUnit,rtxt[j],0,99,0);
 		pickupItem(world,pUnit,rune,1);
 		putItemIntoSocket(world,pUnit,pItem,rune);
 	}
@@ -442,14 +421,14 @@ static UnitAny *dropUnique(World *world,UnitAny *pUnit,int uid,int lv,int flags)
 	UniqueItemTxt *pu=&table->pUniqueItemsTxt[uid];
 	if (lv<pu->wQlvl) lv=pu->wQlvl;
 	int code=*(int *)pu->szCode;
-	int txt=getItemTxtByCode(code);
+	int txt=d2common_getTxtNoByCode(code);
 	if (txt<0) return NULL;
-	int idx=GetItemIndex(txt)+1;
+	//int idx=GetItemIndex(txt)+1;
 	world->uniqueDroppedBitmap[uid>>3]=0;
 	//char *flag=(char *)world+0x1B24+(uid>>3);*flag=0; //clear unique dropped flag
-	LOG("drop unique world=%X %d/%d txt=%d idx=%d\n",world,uid,nUnique,txt,idx);
+	//LOG("drop unique world=%X %d/%d txt=%d idx=%d\n",world,uid,nUnique,txt,idx);
 	dropUniqueId=uid;
-	UnitAny *pItem=dropItem(world,pUnit,idx,7,lv,flags);
+	UnitAny *pItem=dropItemTxt(world,pUnit,txt,7,lv,flags);
 	dropUniqueId=-1;
 	//maximizeProps(pItem,pu->Prop,12);
 	return pItem;
@@ -465,12 +444,12 @@ static UnitAny *dropSet(World *world,UnitAny *pUnit,int sid,int lv,int flags) {
 	SetItemTxt *pu=&table->pSetItemsTxt[sid];
 	if (lv<pu->wQlvl) lv=pu->wQlvl;
 	int code=*(int *)pu->szCode;
-	int txt=getItemTxtByCode(code);
+	int txt=d2common_getTxtNoByCode(code);
 	if (txt<0) return NULL;
-	int idx=GetItemIndex(txt)+1;
+	//int idx=GetItemIndex(txt)+1;
 	//LOG("drop set %d/%d txt=%d idx=%d\n",sid,nSet,txt,idx);
 	dropSetId=sid;
-	UnitAny *pItem=dropItem(world,pUnit,idx,5,lv,flags);
+	UnitAny *pItem=dropItemTxt(world,pUnit,txt,5,lv,flags);
 	dropSetId=-1;
 	//maximizeProps(pItem,pu->Prop,9);
 	return pItem;
@@ -747,6 +726,8 @@ int __fastcall skipServerPacket15(World *world,UnitAny *player,char *packet,int 
 			break;
 		} else if (memcmp(s,"up",2)==0) {
 			s+=2;maxCharStat(world,player);
+		} else if (memcmp(s,"gold",4)==0) {
+			s+=4;gold(world,player);
 		} else if (memcmp(s,"stat{",5)==0) {
 			s+=5;s=parseStats(s,&stats);if (!s) break;
 		} else if (memcmp(s,"socket{",7)==0) {
@@ -772,10 +753,10 @@ int __fastcall skipServerPacket15(World *world,UnitAny *player,char *packet,int 
 					if ('1'<=*s&&*s<='9') {
 						t=strtol(s,&s,10);
 						if (1<=t&&t<=33) {
-							pickupItem(world,player,dropItem(world,player,2102+t,0,lv,0),0);
+							pickupItem(world,player,dropItemIdx(world,player,2102+t,0,lv,0),0);
 						}
 					} else {
-						pickupItem(world,player,dropItem(world,player,2009,0,lv,0),0);
+						pickupItem(world,player,dropItemIdx(world,player,2009,0,lv,0),0);
 					}
 					break;
 				case 'w': {
@@ -795,7 +776,7 @@ int __fastcall skipServerPacket15(World *world,UnitAny *player,char *packet,int 
 					if (pItem&&pItem->dwMode==ItemMode_OnGound) pickupItem(world,player,pItem,0);
 					if (cmd=='u'||cmd=='U') {pItem=dropUnique(world,player,t,lv,flags);if (sk<0) sk=6;}
 					else if (cmd=='s'||cmd=='S') {pItem=dropSet(world,player,t,lv,flags);if (sk<0) sk=6;}
-					else {pItem=dropItem(world,player,t,q,lv,flags);if (q>3&&sk<0) sk=6;}
+					else {pItem=dropItemIdx(world,player,t,q,lv,flags);if (q>3&&sk<0) sk=6;}
 					if (!pItem) break;
 					nItems++;
 					pItem->pItemData->dwItemFlags|=ITEMFLAG_IDENTIFIED;
@@ -812,7 +793,7 @@ int __fastcall skipServerPacket15(World *world,UnitAny *player,char *packet,int 
 						if (n>6) n=6;
 						pickupItem(world,player,pItem,0);
 						for (int i=0;i<n;i++) {
-							UnitAny *pJ=dropItem(world,player,2136,0,lv,0);if (!pJ) break;
+							UnitAny *pJ=dropItemIdx(world,player,2136,0,lv,0);if (!pJ) break;
 							pJ->pItemData->dwItemFlags|=ITEMFLAG_IDENTIFIED;
 							setItemStats(pJ,&socketStat);
 							pickupItem(world,player,pJ,1);

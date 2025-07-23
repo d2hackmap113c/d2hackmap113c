@@ -500,12 +500,13 @@ void DrawMonitorInfo(){
 	wchar_t wszTemp[512];
 	if (tShowTestInfo.isOn) {
 		int pos=wsprintfW(wszTemp, L"(%d,%d)",*d2client_pMouseX,*d2client_pMouseY);
+		pos+=wsprintfW(wszTemp+pos, L"(%d,%d)",dwPlayerX,dwPlayerY);
 		int drawX=d2client_GetScreenDrawX()+*d2client_pMouseX;
 		int drawY=d2client_GetScreenDrawY()+*d2client_pMouseY;
 		int unitX=((drawX>>1)+drawY)>>4;
 		int unitY=(drawY-(drawX>>1))>>4;
-		int dis=getDistanceM256(dwPlayerX-unitX,dwPlayerY-unitY);
-		dis=(dis*2/3)>>8;
+		int dis256=getDistanceM256(dwPlayerX-unitX,dwPlayerY-unitY);
+		int dis=(dis256*2/3)>>8;
 		pos+=wsprintfW(wszTemp+pos, L" %dyard",dis);
 		if (0) 
 		pos+=wsprintfW(wszTemp+pos, L" %d,%d,%c",
@@ -520,7 +521,7 @@ void DrawMonitorInfo(){
 			if (dwCurMs>pwin->cpuMs) continue;
 			pos+=wsprintfW(wszTemp+pos, L" %d:%d%%",i,pwin->cpu); 
 		}
-		d2win_DrawText(wszTemp, 230 , SCREENSIZE.y-50, 0, 0);
+		d2win_DrawText(wszTemp,230,SCREENSIZE.y-50,dwDrawUnitCount&8?0:6, 0);
 	}
 	int xpos = SCREENSIZE.x+dwGameMonitorX;
 	int ypos = SCREENSIZE.y+dwGameMonitorY;
@@ -577,13 +578,14 @@ void DrawMonitorInfo(){
 				}
 				pos+=wsprintfW(wszTemp+pos, L" (%d,%d)",x-dwPlayerX,y-dwPlayerY);
 			}
+			pos+=wsprintfW(wszTemp+pos, L" %d ",getPlayerDistanceM256(pSelectedUnit)>>8);
 			float dis=getPlayerDistanceYard(pSelectedUnit);
 			int dis10=(int)(dis*10+0.5);
 			pos+=wsprintfW(wszTemp+pos, L" %d.%d yard", dis10/10,dis10%10);
 			pos+=wsprintfW(wszTemp+pos, L" size=%d", d2common_getUnitSize(pSelectedUnit));
+			if (d2common_IsUnitBlocked(PLAYER,pSelectedUnit,4)) {color=1;pos+=wsprintfW(wszTemp+pos, L" unattackable");}
 			if (pSelectedUnit->dwUnitType==1) {
 				//if (d2common_IsUnitBlocked(PLAYER,pSelectedUnit,2)) pos+=wsprintfW(wszTemp+pos, L" notvisible");
-				if (d2common_IsUnitBlocked(PLAYER,pSelectedUnit,4)) {color=1;pos+=wsprintfW(wszTemp+pos, L" unattackable");}
 				MonsterTxt *pMonTxt= pSelectedUnit->pMonsterData->pMonsterTxt;
 				pos+=wsprintfW(wszTemp+pos, L" type%X",pSelectedUnit->pMonsterData->bTypeFlags);
 				if (pMonTxt->fBoss)
@@ -597,7 +599,7 @@ void DrawMonitorInfo(){
 			}
 
 			int x=xpos-GetTextWidth(wszTemp);if (x<0) x=0;
-			d2win_DrawText(wszTemp, x , ypos, color, 0);
+			d2win_DrawText(wszTemp, x , ypos, dwDrawUnitCount&8?color:6, 0);
 			ypos = ypos -15;
 		}
 	}
@@ -1065,6 +1067,7 @@ int getOverheadNameGid(int mx,int my) {
 	}
 	return 0;
 }
+extern int dwLeaderId;
 static void drawPlayerName(UnitAny *pUnit) {
 	int pvp=testPvpFlag(pUnit->dwUnitId);
 	int *colors=dwNeutralNameColor;
@@ -1143,6 +1146,7 @@ static void drawPlayerName(UnitAny *pUnit) {
 		}
 	} else if (pWin) {
 		if (pWin->isTeam) drawBgText(L"T",x,y,0,0x76);
+		else if (dwLeaderId&&pWin->uid==dwLeaderId) drawBgText(L"L",x,y,0,0x76);
 	}
 }
 static int cos_sin[16][2]={
@@ -1209,6 +1213,7 @@ static void drawBossHp(UnitAny *pUnit,int boss,int lineColor,int value) {
 	}
 	int drawX = pUnit->pMonPath->drawX;
 	int drawY = pUnit->pMonPath->drawY;
+	int ce=0,fe=0,tp=0;
 	if (dwCurrentLevel==Level_ArreatSummit
 		&&(pUnit->dwTxtFileNo==Mon_LightningSpire||pUnit->dwTxtFileNo==Mon_FireTower)) {
 		int W=16;
@@ -1237,7 +1242,6 @@ static void drawBossHp(UnitAny *pUnit,int boss,int lineColor,int value) {
 		if (pUnit->pMonsterData->fChamp) wbuf[pos++]='C';
 		if (pUnit->pMonsterData->fBoss) wbuf[pos++]='B';
 		if (pUnit->pMonsterData->fMinion) wbuf[pos++]='m';
-		int ce=0,fe=0,tp=0;
 		if (pUnit->pMonsterData->fBoss||pUnit->pMonsterData->fChamp) {
 			for (int i = 0; i < 9; i++) {
 				int enchno = pUnit->pMonsterData->anEnchants[i];if (!enchno) break;
@@ -1248,26 +1252,6 @@ static void drawBossHp(UnitAny *pUnit,int boss,int lineColor,int value) {
 					case 25:wbuf[pos++]='M';wbuf[pos++]='b';break; //ManaBurnDesc
 					case 26:tp=1;wbuf[pos++]='T';wbuf[pos++]='p';break;//Teleport
 					case 27:wbuf[pos++]='S';wbuf[pos++]='h';break; //SpectralHit
-				}
-			}
-			if (ce) {
-				drawCircle(pUnit,8<<1,dwDrawUnitCount&8?0x97:0x9E);
-				int dis256=getPlayerDistanceM256(pUnit);
-				if (dis256<=9*256*3/2) {
-					drawCircle(pUnit,15,dwDrawUnitCount&8?0x97:0x62);
-					drawCircle(pUnit,14,dwDrawUnitCount&8?0x97:0x62);
-					drawCircle(pUnit,13,dwDrawUnitCount&8?0x97:0x62);
-					drawCircle(pUnit,12,dwDrawUnitCount&8?0x97:0x62);
-					drawCircle(pUnit,11,dwDrawUnitCount&8?0x97:0x62);
-				}
-			}
-			if (fe) {
-				drawCircle(pUnit,3<<1,dwDrawUnitCount&8?0x62:0x68);
-				int dis256=getPlayerDistanceM256(pUnit);
-				if (dis256<=3*256*3/2) {
-					drawCircle(pUnit,5,dwDrawUnitCount&8?0x62:0x84);
-					drawCircle(pUnit,4,dwDrawUnitCount&8?0x62:0x84);
-					drawCircle(pUnit,3,dwDrawUnitCount&8?0x62:0x84);
 				}
 			}
 			if (tp) {
@@ -1302,6 +1286,35 @@ static void drawBossHp(UnitAny *pUnit,int boss,int lineColor,int value) {
 		wsprintfW(wbuf,L"%d%%",hpPercent);
 		int w,h;d2win_GetTextAreaSize(wbuf,&w,&h);
 		drawBgTextMiddle(wbuf,drawX-screenDrawX,drawY-screenDrawY-FontHalfH,0,0x10);
+		if (pUnit->pMonsterData->fBoss||pUnit->pMonsterData->fChamp) {
+			for (int i = 0; i < 9; i++) {
+				int enchno = pUnit->pMonsterData->anEnchants[i];if (!enchno) break;
+				switch (enchno) {
+					case 9:fe=1;break; //FireEnchantedDesc
+					case 18:ce=1;break; //ColdEnchantedDesc
+				}
+			}
+		}
+	}
+	if (ce) {
+		drawCircle(pUnit,8<<1,dwDrawUnitCount&8?0x97:0x9E);
+		int dis256=getPlayerDistanceM256(pUnit);
+		if (dis256<=9*256*3/2) {
+			drawCircle(pUnit,15,dwDrawUnitCount&8?0x97:0x62);
+			drawCircle(pUnit,14,dwDrawUnitCount&8?0x97:0x62);
+			drawCircle(pUnit,13,dwDrawUnitCount&8?0x97:0x62);
+			drawCircle(pUnit,12,dwDrawUnitCount&8?0x97:0x62);
+			drawCircle(pUnit,11,dwDrawUnitCount&8?0x97:0x62);
+		}
+	}
+	if (fe) {
+		drawCircle(pUnit,3<<1,dwDrawUnitCount&8?0x62:0x68);
+		int dis256=getPlayerDistanceM256(pUnit);
+		if (dis256<=3*256*3/2) {
+			drawCircle(pUnit,5,dwDrawUnitCount&8?0x62:0x84);
+			drawCircle(pUnit,4,dwDrawUnitCount&8?0x62:0x84);
+			drawCircle(pUnit,3,dwDrawUnitCount&8?0x62:0x84);
+		}
 	}
 	if (!lineColor) return;
 	if (*d2client_pAutomapOn) {
@@ -1344,13 +1357,14 @@ int getTowerValue(int isFire,int type) {
 	else if (type&0x18) exp=(exp<<2)+exp; //85
 	return (exp<<8)/hp;
 }
+extern int dwBarbrianLeft;
 static void drawUnitsInfoInRect(AreaRectData *pData) {
 	for (UnitAny* pUnit = pData->pUnit; pUnit; pUnit = pUnit->pRectNext) {
 		switch (pUnit->dwUnitType) {
 			case UNITNO_OBJECT:
 				switch (pUnit->dwTxtFileNo) {
 					case 473:
-						if (LEVELNO==Level_FrigidHighlands) {//&&dwBarbrianLeft==5) {
+						if (LEVELNO==Level_FrigidHighlands&&dwBarbrianLeft==5) {
 							drawCircle(pUnit,13<<1,dwDrawUnitCount&8?0x97:0x9E);
 							int dis256=getPlayerDistanceM256(pUnit);
 							if (dis256<=13*256*3/2) {
@@ -1412,6 +1426,20 @@ static void drawUnitsInfoInRect(AreaRectData *pData) {
 										} else {
 											drawBossHp(pUnit,0,fr>=100?0:0x6B,value); //pink line
 										}
+									}
+									break;
+								default:
+									if (pUnit->pMonsterData->fBoss||pUnit->pMonsterData->fChamp) {
+										int draw=0;
+										for (int i = 0; i < 9; i++) {
+											int enchno = pUnit->pMonsterData->anEnchants[i];if (!enchno) break;
+											switch (enchno) {
+												case 9:draw=1;break; //FireEnchantedDesc
+												case 18:draw=1;break; //ColdEnchantedDesc
+											}
+										}
+										if (draw)
+											drawBossHp(pUnit,0,0,0); 
 									}
 									break;
 							}

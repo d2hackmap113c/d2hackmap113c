@@ -99,6 +99,7 @@ int portalToLevel(World* game, UnitAny* pUnit, int levelId);
 int hasPortalInRect(AreaRectData* pData, int dstLvl);
 int hasPortalNearby(AreaRectData* pData, int dstLvl);
 int hasPortalInLevel(DrlgLevel* level, int dstLvl);
+UnitAny *findTxtNearby(AreaRectData *pData,int type,int txtFrom,int txtTo,int mode);
 int unitHasItem(UnitAny *pUnit,int index);
 World * getWorldByClientId(int clientId);
 NetClient * getNetClient(World *world,int clientId);
@@ -109,8 +110,14 @@ CharStatsTxt* getCharStatsTxt(int cls);
 World *getSinglePlayerWorld();
 int getStatMaxValue(int id);
 int cpLocaleName(wchar_t *dst,wchar_t *s,int max);
+void acp_fputs(wchar_t *str,FILE *fp);
 int acpLocaleName(char *dst,wchar_t *s,int bufsize);
 void dc6cell2bmp(GfxCell *pcell,char *outpath);
 int getSimpleItemStackContent(UnitAny *pUnit,int *ptxt);
 UnitAny *findObjectByTxt(int from,int to,int mode);
+//server side
+UnitAny *getUnitFromWorld(World *world,int type,int id);
+void pickupItem(World *world,UnitAny *player,UnitAny *pItem,int toHand);
+UnitAny *dropItemTxt(World *world,UnitAny *pUnit,int txt,int quality,int lv,int flags);
+void sendItemToClient(NetClient *client,UnitAny *player,UnitAny *pItem);
 #endif

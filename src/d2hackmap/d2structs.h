@@ -262,7 +262,14 @@ struct NetClient {
 	World* world;	//+1A8
 	int off1AC,off1B0; //+1AC
 	AreaRectData *pAreaRectData; //+1B4
-	int off1B8[188]; //+1B8
+	int off1B8[2]; //+1B8
+	int off1C0[16]; //+1C0
+	int off200[64]; //+200
+	char off300[0xD0]; //+300
+	int off3D0; //+3D0
+	char playerIdNotChanged,off_3D5[11]; //+3D4
+	char off_3E0[32]; //+3E0
+	char off_400[0xA8]; //+400
 	NetClient *ptNextClient; //+4A8
 };
 
@@ -277,9 +284,9 @@ struct UnitAny {
 					eItemModes 3=on the floor
 			*/
 	union {
-		ItemData *pItemData; 
-		PlayerData *pPlayerData; 
 		MonsterData *pMonsterData; 
+		PlayerData *pPlayerData; 
+		ItemData *pItemData; 
 		ObjectData *pObjectData; 
 		MissileData *pMissileData; 
 	};	//+14
@@ -589,7 +596,9 @@ struct TreasureClass {	//size = 0x2C
 	WORD wGroup;		//+00
 	WORD wLevel;		//+02
 	int dwItemNums;	//+04
-	DWORD _1[8];		//+08
+	DWORD off_08[2];		//+08
+	DWORD off_10,off14[3];		//+10
+	DWORD off_20[2];		//+20
 	TreasureClassItem *pItems; //+28
 };
 struct D2MSG {
@@ -946,9 +955,10 @@ struct RuneWordTxt {	//size=0x120
 };
 
 
-struct ItemTypeTxt{  //size = 0xE4
+struct ItemTypeTxt { //size = 0xE4
 	char szCode[8];		//+00
-	BYTE _1[18];		//+08
+	char uk_08[8];		//+08
+	char isThrowingWeapon,uk_11[9];		//+10
 	BYTE nMaxSock1;		//+1A
 	BYTE nMaxSock25;	//+1B
 	BYTE nMaxSock40;	//+1C
@@ -998,7 +1008,7 @@ struct PropertiesTxt {	//size = 0x2E
 };
 
 
-struct MonsterTxt {			//size = 0x1A8
+struct MonsterTxt {			//size=0x1A8
 	WORD	hcIdx ;			//+00
 	WORD	hcIdx2;			//+02
 	BYTE	_1[2];			//+04
@@ -1063,8 +1073,14 @@ struct MonsterTxt {			//size = 0x1A8
 	WORD	S1MaxD[3];		//+F8
 	WORD	_8[3];			//+FE
 	char	szDesc[48];		//+104
-	char	_9[116];		//+134
-
+	char off_134[16];		//+134
+	short stat_36[3]; //+144 DR
+	short stat_37[3]; //+14A MR
+	short stat_39[3]; //+150 FR
+	short stat_41[3]; //+156 LR
+	short stat_43[3]; //+15C CR
+	short stat_45[3]; //+162 PR
+	int off_168[16]; //+168
 };
 
 struct SkillDescTxt {
@@ -1077,7 +1093,6 @@ struct SkillDescTxt {
 	BYTE	nIconCel;
 	WORD	wLocaleTxtNo;
 };
-
 
 struct GameStructInfo{
 	BYTE	_1[27];				//+00
@@ -1348,6 +1363,10 @@ struct CharStatsTxt { //size=0xC4=196
 	short	item10Unknown;
 	char	unknown2[0x18];
 };
+struct ItemCodeTxtNo {
+	int count,uk_04; //+00
+	int *codeTxt; //+08 [code,txt]... sorted by code
+};
 struct D2DataTables {
 	void * pPlayerClassTxt; //+0
 	void * pPlayerClassLink; //+4
@@ -1386,7 +1405,7 @@ struct D2DataTables {
 	void * pMonAiTxt; //+88
 	void * pMonAiLink; //+8C
 	int nMonAi; //+90
-	void * pItemLink; //+94
+	ItemCodeTxtNo *pItemLink; //+94
 	void * pItemCalcCache; //+98
 	int nItemCalcCache; //+9C
 	int nItemCalcCacheDelta; //+A0
@@ -1489,7 +1508,7 @@ struct D2DataTables {
 	void * pPetTypesLink; //+BEC
 	int nPetTypes; //+BF0
 	void * pItemTypesLink; //+BF4
-	void * pItemTypesTxt; //+BF8
+	ItemTypeTxt *pItemTypesTxt; //+BF8
 	int nItemTypes; //+BFC
 	int nItemTypeNesting; //+C00
 	void * pItemTypeNesting; //+C04
@@ -1513,7 +1532,7 @@ struct D2DataTables {
 	void * pMonUModLink; //+C4C
 	void * pMonUModTxt; //+C50
 	int nMonUMod; //+C54
-	void * pLevelsTxt; //+C58
+	LevelTxt *pLevelsTxt; //+C58
 	int nLevels; //+C5C
 	void * pLvlDefsBin; //+C60
 	void * pLvlPrestTxt; //+C64
@@ -1703,6 +1722,29 @@ struct d2lang_map {
 	int totalSize; //+11
 	short map[1]; //+15 size=mapSize*2
 	//after map is count*17
+};
+struct DropParam {
+	UnitAny *pMon; //+00
+	int off04; //+04 =0
+	World *world; //+08
+	int itemLevel; //+0C
+	int off10; //+10
+	int txt; //+14
+	int off18; //+18 mon:3 npc:4
+	int x,y; //+1C
+	AreaRectData *pAreaData; //+24
+	short off28; //+28 =1
+	short itemFormat; //+2A =world[0x78]=0x65
+	int notInStore; //+2C
+	int quality,quantity; //+30
+	int durability,maxDurability; //+38
+	int off40; //+40
+	int itemFlag; //+44 0x8:socket
+	int off48[2]; //+48
+	int off50[4]; //+50
+	int off60[4]; //+60
+	int off70[4]; //+70
+	int flags; //+80 bit0:HellBovine bit1:npc,notEthereal bit2:ethereal bit3:noSocket
 };
 
 #endif 

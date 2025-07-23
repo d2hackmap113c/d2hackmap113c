@@ -104,7 +104,9 @@ print:
 	fclose(fp);
 }
 void exportSymbols(char *path) {
-	FILE *fp=fopen(path,"w+");assert(fp);
+	FILE *fp=fopen(path,"w+");
+	if (!fp) printf("can't open %s\n",path);
+	assert(fp);
 	readSymbols("/d2hackmap/src/d2hackmap/d2ptrs.h",fp);
 	fclose(fp);
 }

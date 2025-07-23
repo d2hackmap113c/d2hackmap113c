@@ -13,17 +13,19 @@ int isWaypointTxt(int txt);
 
 #define MINIMAP_TYPE (*d2client_pMinimapType)
 static int afRevealedActs[5];
-MinimapLevel minimapLevels[140]={0};
+MinimapLevel minimapLevels[256]={0};
 MinimapLevel *pCurMapLevel=NULL;
 #define CELLNO_MYSHRINES 1176
 #define CELLNO_WAYPOINT 307
 #define CELLNO_SHRINE 310
 #define NUMOF_SHRINES 23
+#define CELLNO_BLOCK 9999
 static CellFile* pUnitBlobCells[11]={0};
 static CellFile* apMyShrineCells[2][NUMOF_SHRINES]={0};
 static CellFile* pWaypointCell=0;
 CellFile* pMinimapObjectCell=0;
 static int minimapTargetId=3000;
+int sealOpened[5];
 
 int dwRevealMapMs=0;
 int dwAutoRevealMode=1;
@@ -357,6 +359,7 @@ void AutoMapNewGame() {
 		}
 	}
 	InitScrollLock(0);
+	memset(sealOpened,0,sizeof(sealOpened));
 }
 int PrevMapTarget() {
 	if (!pCurMapLevel||!pCurMapLevel->targets) return 0;
@@ -384,6 +387,20 @@ int NextMapTarget() {
 void incMapTargetIf(int cur) {
 	if (!pCurMapLevel||!pCurMapLevel->curTarget) return;
 	if (pCurMapLevel->cur==cur) NextMapTarget();
+}
+void nextSeal() {
+	int dst=3005;
+	for (int i=0;i<5;i++) {
+		if (!sealOpened[i]) {dst=3000+i;break;}
+	}
+	if (!pCurMapLevel||!pCurMapLevel->targets) return;
+	int id=0;
+	for (MinimapLevelTarget *pTarget=pCurMapLevel->targets;pTarget;pTarget=pTarget->next,id++) {
+		if (pTarget->dstLvl==dst) {
+			pCurMapLevel->curTarget=pTarget;pCurMapLevel->cur=id;
+			updateTargetName();AutoMapRoute();return;
+		}
+	}
 }
 static void selectWaypointTarget() {
 	if (!pCurMapLevel||!pCurMapLevel->targets) return;
@@ -420,7 +437,7 @@ void AutoMapNewLevel() {
 	else if (dwCurrentLevel==Level_ChaosSanctuary) {
 		if (DIFFICULTY==0||DIFFICULTY==1&&!fIsHardCoreGame) {
 			if (pCurMapLevel&&pCurMapLevel->cur==0) {
-				NextMapTarget();
+				nextSeal();
 			}
 		}
 	}
@@ -484,6 +501,11 @@ static void modifyRescueBarTarget() {
 static void modifySealTarget() {
 	MinimapLevel *pMapLevel=&minimapLevels[Level_ChaosSanctuary];
 	if (!pMapLevel->targets) return;
+	for (MinimapLevelTarget *pTarget=pMapLevel->targets;pTarget;pTarget=pTarget->next) {
+		if (pTarget->dstLvl==255) { //center point
+		}
+	}
+	return;
 	int mx=0,my=0,n=0,topY=0x7FFFFFFF;
 	MinimapLevelTarget *pTopSeal=NULL,*leftTop=NULL,*leftBottom=NULL,*rightTop=NULL,*rightBottom=NULL,*t;
 	MinimapTargetPoint top,lt,lb,rt,rb;
@@ -732,6 +754,8 @@ static void ResetAutomapNodeCellNo(AutomapNode *pCell) {
 		pCell->wCellNo = CELLNO_SHRINE;
 	} else if ((short)pCell->wCellNo < 0) {
 		pCell->wCellNo = 0;
+	} else if (pCell->wCellNo==CELLNO_BLOCK) {
+		pCell->wCellNo = 0;
 	}
 	ResetAutomapNodeCellNo (pCell->pMore);
 }
@@ -768,7 +792,12 @@ void __stdcall DrawAutomapNodePatch(CellContext *pCellContext, int xpos, int ypo
 		xpos += (MINIMAP_TYPE ? 4 : 8)-(pWaypointCell->pCells[0]->dwWidth/2);
 		ypos += (MINIMAP_TYPE ? 4 : 0);
 	}
-	if (((cellno-=CELLNO_MYSHRINES)>=0)&&(cellno<NUMOF_SHRINES)) {
+	if (cellno==CELLNO_BLOCK) {
+		DrawCenterText(6,L"X",xpos,ypos+6,0);
+		return;
+	}
+	cellno-=CELLNO_MYSHRINES;
+	if (0<=cellno&&cellno<NUMOF_SHRINES) {
 		CellFile *pMyShrine=apMyShrineCells[MINIMAP_TYPE][cellno];
 		if ( pMyShrine && tMiniShrine.isOn ) {
 			pCellContext->pCellFile = pMyShrine;
@@ -1188,6 +1217,35 @@ static int isConnected(AreaRectInfo *pInfo,AreaRectInfo *pNInfo,POINT *path) {
 	}*/
 	return n;
 }
+static void addBlocks(AreaRectData *pData) {
+	if (!pData||!pData->bitmap) return;
+	int w=pData->bitmap->unitW,h=pData->bitmap->unitH;
+	int stepX=w>>2,stepY=h>>2;
+	int blocked=stepX*stepY;
+	for (int y=0;y<h;y+=stepY) {
+		for (int x=0;x<w;x+=stepX) {
+			unsigned short *ptr=pData->bitmap->bitmap+y*w+x;
+			int blocks=0;
+			for (int i=0;i<stepY;i++) {
+				for (int j=0;j<stepX;j++) {
+					if ((*ptr++)&0x427) blocks++;
+				}
+				ptr+=w-stepX;
+			}
+			if (blocks>=blocked) {
+				int unitX=pData->unitX+x+(stepX>>1);
+				int unitY=pData->unitY+y+(stepY>>1);
+				int drawX = (unitX-unitY)*16;
+				int drawY = (unitX+unitY)*8;
+				AutomapNode *pCell = d2client_NewAutomapNode();
+				pCell->wCellNo = (WORD)CELLNO_BLOCK;
+				pCell->drawXDiv10 = (WORD)(drawX/10+1);
+				pCell->drawYDiv10 = (WORD)(drawY/10-3);
+				d2client_AddAutomapNode(pCell, &LAYER->pObjects);
+			}
+		}
+	}
+}
 int AddRectToMinimap(AreaRectInfo *pInfo,int revealed) {
 	int srcLvl=pInfo->pDrlgLevel->dwLevelNo;
 	for (int i=0;i<(int)pInfo->nearbyRectCount;i++) {
@@ -1225,6 +1283,7 @@ int AddRectToMinimap(AreaRectInfo *pInfo,int revealed) {
 		switch (pUnit->dwUnitType) {
 			case UNITNO_MONSTER: 
 				switch (pUnit->dwTxtFileNo) {
+				case 251:cellno=300;fAddCell=1;fAddLine=1;break;//
 				case 256:cellno=300;fAddCell=1;fAddLine=1;break;//izual
 				//case 434:cellno=minimapTargetId;incTargetId=1;fAddCell=0;fReveal=1;fAddLine=1;break;//prison door
 				}
@@ -1307,7 +1366,19 @@ int AddRectToMinimap(AreaRectInfo *pInfo,int revealed) {
 						if (pInfo->pDrlgLevel&&pInfo->pDrlgLevel->pDrlgMisc->dwStaffTombLvl==cellno) cellno=300;
 						break;
 					case Level_ChaosSanctuary:
-						if (cellno==306) {cellno=minimapTargetId;incTargetId=1;}
+						if (cellno==306) {
+							if (392<=pUnit->dwTxtFileNo&&pUnit->dwTxtFileNo<=396) cellno=3000+pUnit->dwTxtFileNo-392;
+							else cellno=minimapTargetId;incTargetId=1;
+						} else if (cellno==255) { //center point
+							for (int i=0;i<(int)pInfo->nearbyRectCount;i++) {
+								AreaRectInfo *pNInfo=pInfo->pInfoNear[i];
+								if (pNInfo->tileX>pInfo->tileX&&pNInfo->tileY<pInfo->tileY) {
+									int x2=pNInfo->tileX*5;int y2=(pNInfo->tileY+(pNInfo->tileH>>1)-1)*5+3;
+									addMinimapTarget(pNInfo,srcLvl,3005,x2,y2,0,0);
+									break;
+								}
+							}
+						}
 						break;
 				}
 				if (dwWayPointRandom>0&&cellno==CELLNO_WAYPOINT) {
@@ -1319,6 +1390,9 @@ int AddRectToMinimap(AreaRectInfo *pInfo,int revealed) {
 				addMinimapTarget(pInfo,srcLvl,cellno,unitX,unitY,pUnit->dwUnitType,pUnit->dwTxtFileNo);
 			}
 		}
+	}
+	if (srcLvl>=157) {
+		addBlocks(pInfo->pAreaRectData);
 	}
 	if (incTargetId) minimapTargetId++;
 	return revealed;
@@ -1479,7 +1553,7 @@ void __fastcall recvObjectState(char *packet) {
 	UnitAny *pUnit=d2client_GetUnitFromId(id,UNITNO_OBJECT);if (!pUnit) return;
 	switch (pUnit->dwTxtFileNo) {
 		case 392:case 393:case 394:case 395:case 396://seal
-			if (mode) NextMapTarget();
+			if (mode) {sealOpened[pUnit->dwTxtFileNo-392]=1;nextSeal();}
 			break;
 	}
 }

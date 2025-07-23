@@ -13,18 +13,23 @@ int DoServerTest();
 static void serverRecvTest(World *world, UnitAny* pUnit,int param);
 ToggleVar tServerTest={TOGGLEVAR_DOWN,0,-1,0,"ServerTest",&DoServerTest};
 ToggleVar tRepeatAdminCmd={TOGGLEVAR_DOWN,0,-1,0,"RepeatAdminCmd",&RepeatAdminCmd};
+ToggleVar tEnable2025Patch={TOGGLEVAR_ONOFF,0,-1,1,"Enable2025Patch"};
 static int fServerEnableSlainCowKing=1,fServerEnableNihlathakPortal=1;
 static int fServerUndoStat=1,fServerUndoSkill=1,fServerUndoQuest=1;
-static int fServerInfiniteSocket=1,fServerInfiniteIdentify=1,fServerInfinitePortal=1;
-static int fServerInfiniteArrow=1,fServerInfiniteMana=0;
+static int fServerInfiniteSocket=1,fServerInfiniteImbue=1,fServerInfiniteIdentify=1,fServerInfinitePortal=1;
+static int fServerInfiniteArrow=1,fServerInfiniteMana=0,fServerInfiniteLife=0,fServerInstantKill=0;
 int fEnableAdminCmd=1;
 static int fServerInfiniteDurability=1;
 static int fServerNoMonsterDrop=0;
 char adminCmdPrefix[32]=",";
 static char undoPrefix[32]=",,,undo";
-static int maxPlayerResist=127;
+static int maxPlayerResist=127,maxMonsterResist=0;
+static int addPlayerStat[12],addPlayerRep;
 static ConfigVar aConfigVars[] = {
+  {CONFIG_VAR_TYPE_INT_ARRAY0, "ServerAddPlayerStat",&addPlayerStat,1,{12}},
+	{CONFIG_VAR_TYPE_INT,"ServerPlayerREP",&addPlayerRep,4},
 	{CONFIG_VAR_TYPE_INT,"MaxPlayerResist",&maxPlayerResist,4},
+	{CONFIG_VAR_TYPE_INT,"MaxMonsterResist",&maxMonsterResist,4},
 	{CONFIG_VAR_TYPE_STR,"AdminCmdPrefix",adminCmdPrefix,1,{31}},
 	{CONFIG_VAR_TYPE_STR,"UndoPrefix",undoPrefix,1,{31}},
 	{CONFIG_VAR_TYPE_INT,"ServerEnableSlainCowKing",  &fServerEnableSlainCowKing,4},
@@ -33,10 +38,13 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT,"ServerUndoSkill",  &fServerUndoSkill,4},
 	{CONFIG_VAR_TYPE_INT,"ServerUndoQuest",  &fServerUndoQuest,4},
 	{CONFIG_VAR_TYPE_INT,"ServerInfiniteSocket",  &fServerInfiniteSocket,4},
+	{CONFIG_VAR_TYPE_INT,"ServerInfiniteImbue",  &fServerInfiniteImbue,4},
 	{CONFIG_VAR_TYPE_INT,"ServerInfiniteIdentify",  &fServerInfiniteIdentify,4},
 	{CONFIG_VAR_TYPE_INT,"ServerInfinitePortal",  &fServerInfinitePortal,4},
 	{CONFIG_VAR_TYPE_INT,"ServerInfiniteArrow",  &fServerInfiniteArrow,4},
 	{CONFIG_VAR_TYPE_INT,"ServerInfiniteMana",  &fServerInfiniteMana,4},
+	{CONFIG_VAR_TYPE_INT,"ServerInfiniteLife",  &fServerInfiniteLife,4},
+	{CONFIG_VAR_TYPE_INT,"ServerInstantKill",  &fServerInstantKill,4},
 	{CONFIG_VAR_TYPE_INT,"EnableAdminCmd",  &fEnableAdminCmd,4},
 	{CONFIG_VAR_TYPE_INT,"ServerInfiniteDurability",  &fServerInfiniteDurability,4},
 	{CONFIG_VAR_TYPE_INT,"ServerNoMonsterDrop",  &fServerNoMonsterDrop,4},
@@ -44,12 +52,22 @@ static ConfigVar aConfigVars[] = {
 	{CONFIG_VAR_TYPE_INT,"BatchUndoSkillPoints",  &dwBatchUndoSkillPoints,4},
 	{CONFIG_VAR_TYPE_KEY,"ServerTestKey",&tServerTest},
 	{CONFIG_VAR_TYPE_KEY,"RepeatAdminCmdKey",&tRepeatAdminCmd},
+	{CONFIG_VAR_TYPE_KEY,"Enable2025Patch",&tEnable2025Patch},
 };
+void server_initConfigVars() {
+	memset(addPlayerStat,0,sizeof(addPlayerStat));
+	addPlayerRep=0;
+	maxMonsterResist=0;
+}
 void server_addConfigVars() {
 	for (int i=0;i<_ARRAYSIZE(aConfigVars);i++) addConfigVar(&aConfigVars[i]);
 }
 /*
 server recv packet:
+d2game_CC658: push ecx(arg1:len)
+d2game_CC659: push ebx(packet)     ; esp-12
+d2game_CC65A: mov edx, esi(UnitAny pUnit) ; esp-16
+d2game_CC65C: mov ecx, ebp(arg0:World world)
 d2game_CC65E: FF 14 FD 78 A0 B4 00  call dword ptr [edi*8+d2game_FA078] <------------- edi=packet[0]
 stacktrace:
 	d2game_CC550
@@ -403,12 +421,6 @@ static void createHackmapMsg() {
 	*s++=0;d2hackmapMsgLen=s-d2hackmapMsg;
 }
 
-void resetUberQuest();
-static void __fastcall gameStart(NetClient *client) {
-	resetUberQuest();
-	if (!d2hackmapMsgLen||!d2hackmapMsg[0]) createHackmapMsg();
-	sendMessageToClient(client,4,0,"<d2hackmap113c>",d2hackmapMsg);
-}
 static int __fastcall skipDropTxt(int txt) {
 	if (!fServerNoMonsterDrop) return 0;
 	int idx=GetItemIndex(txt)+1;
@@ -443,6 +455,13 @@ skip:
 		ret 0x14
 	}
 }
+void resetUberQuest();
+static void __fastcall gameStart(NetClient *client) {
+	resetUberQuest();
+	if (!d2hackmapMsgLen||!d2hackmapMsg[0]) createHackmapMsg();
+	sendMessageToClient(client,4,0,"<d2hackmap113c>",d2hackmapMsg);
+	LOG("gameStart player=%X\n",client->player);
+}
 //d2game_2AC77: E8 64 F7 05 00     call d2game_8A3E0
 void __declspec(naked) GameStartPatch_ASM() {
 	__asm {
@@ -453,6 +472,316 @@ void __declspec(naked) GameStartPatch_ASM() {
 		jmp d2game_sendPacket
 	}
 }
+static void __fastcall serverSendHandshake(NetClient *client,UnitAny *pUnit) {
+	if (pUnit) {
+		for (int i=0;i<12;i++) {
+			if (addPlayerStat[i]>0) {
+				int t=addPlayerStat[i];
+				if (STAT_HP<=i&&i<=STAT_MAXSTAMINA) t<<=8;
+				d2common_AddPlayerStat(pUnit,i,t,0);
+			}
+		}
+		if (addPlayerRep>0) {
+			d2common_AddPlayerStat(pUnit,STAT_HPREGEN,addPlayerRep,0);
+		}
+	}
+}
+//d2game_4BE00: E8 6B ED FF FF     call d2game_4AB70 int __stdcall d2game_sendHandshake(NetClient* client)//eax:UnitAny *player(1 args)
+void __declspec(naked) ServerSendHandShakePatch_ASM() {
+	__asm {
+		pushad
+		mov ecx,[esp+0x24]
+		mov edx,eax
+		call serverSendHandshake
+		popad
+		jmp d2game_sendHandshake
+	}
+}
+static void __fastcall serverLoadComplete(NetClient *client) {
+}
+//d2game_2DB0F: call d2game_8A3E0 int __stdcall d2game_sendPacket(char *packet,int size)//eax:NetClient* client(2 args)
+void __declspec(naked) ServerSendLoadCompletePatch_ASM() {
+	__asm {
+		pushad
+		mov ecx,eax
+		call serverLoadComplete
+		popad
+		jmp d2game_sendPacket
+	}
+}
+static void __fastcall serverSendPacket(int *esp) {
+	if (!logfp) return;
+	int ret=esp[0];unsigned char *packet=(unsigned char *)esp[1];int size=esp[2];
+	fprintf(logfp,"ServerSend ret=%X len=%d: ",ret,size);
+	for (int i=0;i<size;i++) fprintf(logfp," %02X",packet[i]);
+	fputc('\n',logfp);
+	return;
+	switch (packet[0]) {
+		case 0x0B:
+		dumpStackFrom(esp,128);
+		break;
+	}
+}
+/*
+function int __stdcall d2game_sendPacket(char *packet,int size)//eax:NetClient* client {
+	d2game_8A3E0: 53                 push ebx
+	d2game_8A3E1: 55                 push ebp
+	d2game_8A3E2: 8B 6C 24 10        mov ebp, [esp+0x10]
+	d2game_8A3E6: 56                 push esi
+	d2game_8A3E7: 8B F0              mov esi, eax <--
+	d2game_8A3E9: 33 DB              xor ebx, ebx
+	d2game_8A3EB: 85 F6              test esi, esi
+*/
+void __declspec(naked) ServerSendPacketPatch_ASM() {
+	__asm {
+		pushad
+		lea ecx,[esp+0x30]
+		call serverSendPacket
+		popad
+		mov esi,eax
+		xor ebx,ebx
+		test esi,esi
+		ret
+	}
+}
+static void __fastcall serverActiveBufferItem(World *world,UnitAny *player,int id) {
+	//LOG("server active %d\n",id);
+	UnitAny *pItem=getUnitFromWorld(world,UNITNO_ITEM,id);if (!pItem) return;
+	int txt=pItem->dwTxtFileNo,area=0,n=1;
+	if (txt==simpleItemStackTxt) {
+		int txt=0;int n=getSimpleItemStackContent(pItem,&txt);
+		if (!n) return;
+		if (!txt) return;
+		pickupItem(world,player,dropItemTxt(world,player,txt,0,pItem->pItemData->dwItemLevel,0),0);
+		return;
+	}
+
+	if (679<=txt&&txt<=690) area=157+txt-679;
+	else if (694<=txt&&txt<=713) area=137+txt-694;
+	else {
+		switch (txt) {
+			case 691:area=169;n=2;break;//海皇宮
+			case 692:area=171;n=3;break;//冥王宮
+			case 693:area=174;n=2;break;//女神宮
+			case 715:area=176;n=2;break;//天堂
+		}
+	}
+	if (!area) return;
+	while (n>1) {
+		AreaRectData* pData=d2common_getRectData(player);
+		if (!hasPortalNearby(pData,area)) break;
+		n--;area++;
+	}
+	portalToLevel(world,player,area);
+}
+/*
+	d2game_CF75B: push edi(UnitAny pUnit)
+	d2game_CF75C: mov ecx, esi <-- id
+	d2game_CF75E: mov eax, edx(World world)
+	d2game_CF760: mov [esp+0x1C(arg0:*packet)], ebx
+	d2game_CF764: E8 97 D7 FF FF     call d2game_CCF00 int __fastcall d2game_itemNotInInv(int itemId,int notUsed,UnitAny *pUnit)//eax:World *world
+*/
+void __declspec(naked) ServerRecvPacket20Patch_ASM() {
+	__asm {
+		pushad
+		push esi
+		mov ecx, eax
+		mov edx, edi
+		call serverActiveBufferItem
+		popad
+		jmp d2game_itemNotInInv
+		ret
+	}
+}
+static int __fastcall skipSwapItem(World *world,UnitAny *player,char *packet) {
+	int cursorId=*(int *)(packet+1);int bufferId=*(int *)(packet+5);
+	int x=*(int *)(packet+9);int y=*(int *)(packet+13);
+	UnitAny *pItem=getUnitFromWorld(world,UNITNO_ITEM,bufferId);if (!pItem) return 0;
+	if (pItem->dwTxtFileNo==simpleItemStackTxt) {
+		int txt=0;int n=getSimpleItemStackContent(pItem,&txt);
+		if (n||txt) return 0;
+		UnitAny *item2=getUnitFromWorld(world,UNITNO_ITEM,cursorId);if (!item2) return 0;
+		d2common_setItemFlag(pItem,ITEMFLAG_COMPACTSAVE,0);
+		d2common_changeUnitStat(pItem,simpleItemStackStatId,1,item2->dwTxtFileNo);
+		NetClient *client=player->pPlayerData->client;
+		sendItemToClient(client,player,pItem);
+		return 1;
+	}
+	return 0;
+}
+/*
+	d2game_D102D: 8B 48 01           mov ecx, [eax+0x1]
+	d2game_D1030: 8B 50 09           mov edx, [eax+0x9]
+*/
+void __declspec(naked) ServerRecvPacket1FPatch_ASM() {
+	__asm {
+		pushad
+		mov ecx,ebx //world
+		mov edx,esi //player
+		push eax //packet
+		call skipSwapItem
+		test eax,eax
+		popad
+		jnz skip
+		mov ecx,[eax+1]
+		mov edx,[eax+9]
+		ret
+skip:
+		pop eax
+		xor eax,eax
+		pop esi
+		pop ebx
+		pop ecx
+		ret 8
+	}
+}
+static int __fastcall skipServerChangeHp(UnitAny *pUnit,int hp) {
+	switch (pUnit->dwUnitType) {
+		case UNITNO_PLAYER: {
+			if (fServerInfiniteLife) {
+				int curhp=d2common_GetUnitStat(pUnit,STAT_HP,0);
+				if (hp<curhp) return 1;
+			}
+			break;
+		}
+		case UNITNO_MONSTER:
+			switch (pUnit->dwTxtFileNo) {
+				case Mon_Act1Hireling:case Mon_Act2Hireling:case Mon_Act3Hireling:
+				case Mon_Act5Hireling1hs:case Mon_Act5Hireling:
+				case Mon_Necroskeleton:case Mon_Necromage:
+					if (fServerInfiniteLife) {
+						int curhp=d2common_GetUnitStat(pUnit,STAT_HP,0);
+						if (hp<curhp) return 1;
+					}
+					break;
+				default:
+					if (fServerInstantKill) d2common_changeUnitStat(pUnit,STAT_HP,0,0);
+					break;
+			}
+			return 1;
+	}
+	return 0;
+}
+/*
+	d2game_DE25E: 6A 00              push 0
+	d2game_DE260: 50                 push eax
+	d2game_DE261: 6A 06              push 6
+	d2game_DE263: 56                 push esi
+  d2game_DE264: E8 09 C2 F2 FF     call d2game_A472->d2common_3A740 int __stdcall d2common_changeUnitStat(UnitAny *pUnit,int statId,int value,int param)(4 args)
+*/
+void __declspec(naked) ServerChangeHpPatch_ASM() {
+	__asm {
+		pushad
+		mov ecx,esi
+		mov edx,eax
+		call skipServerChangeHp
+		test eax,eax
+		popad
+		jnz skip
+		jmp d2common_changeUnitStat
+skip:
+		ret 16
+	}
+}
+/*
+	d2game_D95F4: 6A 00              push 0
+	d2game_D95F6: 50                 push eax
+	d2game_D95F7: 6A 06              push 6
+	d2game_D95F9: 55                 push ebp
+	d2game_D95FA: E8 73 0E F3 FF     call d2game_A472->d2common_3A740 int __stdcall d2common_changeUnitStat(UnitAny *pUnit,int statId,int value,int param)(4 args)
+*/
+void __declspec(naked) ServerChangeHp2Patch_ASM() {
+	__asm {
+		pushad
+		mov ecx,ebp
+		mov edx,eax
+		call skipServerChangeHp
+		test eax,eax
+		popad
+		jnz skip
+		jmp d2common_changeUnitStat
+skip:
+		ret 16
+	}
+}
+/*
+	d2game_77D0C: 6A 00              push 0
+	d2game_77D0E: 57                 push edi
+	d2game_77D0F: 6A 06              push 6
+	d2game_77D11: 56                 push esi
+	d2game_77D12: E8 5B 27 F9 FF     call d2game_A472->d2common_3A740 int __stdcall d2common_changeUnitStat(UnitAny *pUnit,int statId,int value,int param)(4 args)
+	d2game_76844: push 0
+	d2game_76846: push edi             ; esp-32
+	d2game_76847: push 6               ; esp-36
+	d2game_76849: push esi(input_edx)  ; esp-40
+	d2game_7684A: E8 23 3C F9 FF     call d2game_A472->d2common_3A740 int __stdcall d2common_changeUnitStat(UnitAny *pUnit,int statId,int value,int param)(4 args)
+*/
+void __declspec(naked) ServerChangeHp3Patch_ASM() {
+	__asm {
+		pushad
+		mov ecx,esi
+		mov edx,edi
+		call skipServerChangeHp
+		test eax,eax
+		popad
+		jnz skip
+		jmp d2common_changeUnitStat
+skip:
+		ret 16
+	}
+}
+static void __fastcall checkSpawnedMonster(UnitAny *pUnit) {
+	if (!pUnit||pUnit->dwUnitType!=1) return;
+	int pet=0;
+	switch (pUnit->dwTxtFileNo) {
+		case Mon_Act1Hireling:case Mon_Act2Hireling:case Mon_Act3Hireling:
+		case Mon_Act5Hireling1hs:case Mon_Act5Hireling:
+		case Mon_Necroskeleton:case Mon_Necromage:
+			pet=1;
+			break;
+	}
+	static int stats[]={36,37,39,41,43,45,0};
+	for (int *p=stats;*p;p++) {
+		int resist=d2common_GetUnitStat(pUnit,*p,0);
+		if (pet) {
+			if (resist<maxPlayerResist) d2common_changeUnitStat(pUnit,*p,maxPlayerResist,0);
+		} else {
+			if (resist>maxMonsterResist) d2common_changeUnitStat(pUnit,*p,maxMonsterResist,0);
+		}
+	}
+}
+//d2game_B045A: 8B 46 14           mov eax,  [esi(arg0:UnitAny pMon)+0x14(->ItemData *pItemData)]
+//d2game_B045D: 85 C0              test eax, eax
+void __declspec(naked) ServerSpawnMonsterPatch_ASM() {
+	__asm {
+		pushad
+		mov ecx,esi
+		call checkSpawnedMonster
+		popad
+		mov eax,[esi+0x14]
+		test eax,eax
+		ret
+	}
+}
+/*
+	d2game_B0116: push ebx(UnitAny pMon) ; esp-116
+	d2game_B0117: call d2game_A472->d2common_3A740 int __stdcall d2common_changeUnitStat(UnitAny *pUnit,int statId,int value,int param)(4 args) ; esp-120
+	d2game_B011C: 8B 74 24 6C        mov esi, [esp+0x6C(arg0:World * game)] 
+	d2game_B0120: 8B 4E 70           mov ecx, [esi(arg0:World  game)+0x70(->int expansion)] <--
+	d2game_B0123: 33 C0              xor eax, eax
+*/
+void __declspec(naked) ServerSpawnMonster2Patch_ASM() {
+	__asm {
+		pushad
+		mov ecx,ebx
+		call checkSpawnedMonster
+		popad
+		mov ecx,[esi+0x70]
+		xor eax,eax
+		ret
+	}
+}
+
 
 void server_test(int param) {
 	sendChatMessageToServer("%stest:%d,%d",undoPrefix,param,0);
@@ -565,54 +894,77 @@ PatchCall(d2common,0x724B1,compileRunesTxt,5,"E8 8A CA FE FF"); //Conflict with 
 	if (fEnableBigStash)
 //d2common_82CA9: A3 5C FA DE 6F     mov [d2common_9FA5C](->28A2460(->"@")), eax
 PatchCall(d2common,0x82CA9,ModifyStashGridPatch_ASM,5,"A3 $(+9FA5C)");
-	if (fServerInfiniteSocket)
-//d2game_585C0: 56                 push esi
-patchValue("Infinite socket quest",PATCH_ADDR(d2game,0x585C0),0xC3,1,"56");
+	if (fServerInfiniteSocket) {
+		//d2game_585C0: 56                 push esi
+		patchValue("Infinite socket quest",PATCH_ADDR(d2game,0x585C0),0xC3,1,"56");
+	}
+	if (fServerInfiniteImbue) {
+		/*
+			d2game_637EF: 6A 00              push 0
+			d2game_637F1: 6A 03              push 3
+			d2game_637F3: 56                 push esi
+			d2game_637F4: E8 81 6D FA FF     call d2game_A57A->d2common_2D0B0 void __stdcall d2common_setQuestFlag(QuestInfo *questData,int questId,int pos)(3 args)
+			d2game_637F9: 6A 01              push 1
+			d2game_637FB: 6A 03              push 3
+			d2game_637FD: 56                 push esi
+			d2game_637FE: E8 83 6D FA FF     call d2game_A586->d2common_2D070 void __stdcall d2common_clearQuestFlag(QuestInfo *questData,int questId,int pos)(3 args)
+		*/
+		patchFill("Infinite imbue",PATCH_ADDR(d2game,0x637EF),INST_NOP,20,"6A 00 6A 03 56 E8 81 6D FA FF 6A 01 6A 03 56 E8 83 6D FA FF");
+	}
 	if (fServerInfiniteIdentify) {
-//d2game_DA280: 6A FF                  push -1
-patchValue("Infinite book of identify",PATCH_ADDR(d2game,0xDA281),0,1,"-1 6A FF");
-//d2game_DA2B8: 55                 push ebp
-//d2game_DA2B9: 8B C7              mov eax, edi
-//d2game_DA2BB: E8 20 EB FF FF     call d2game_D8DE0
-patchFill("Infinite book of identify skill",PATCH_ADDR(d2game,0xDA2B8),INST_NOP,8,"55 8B C7 E8 20 EB FF FF");
+		//d2game_DA280: 6A FF                  push -1
+		patchValue("Infinite book of identify",PATCH_ADDR(d2game,0xDA281),0,1,"-1 6A FF");
+		//d2game_DA2B8: 55                 push ebp
+		//d2game_DA2B9: 8B C7              mov eax, edi
+		//d2game_DA2BB: E8 20 EB FF FF     call d2game_D8DE0
+		patchFill("Infinite book of identify skill",PATCH_ADDR(d2game,0xDA2B8),INST_NOP,8,"55 8B C7 E8 20 EB FF FF");
 	}
 	if (fServerInfinitePortal) {
-//d2game_D9D22: 6A FF                  push -1
-patchValue("Infinite book of town portal",PATCH_ADDR(d2game,0xD9D23),0,1,"-1 6A FF");
-//d2game_D9D87: 56                 push esi
-//d2game_D9D88: 8B C7              mov eax, edi
-//d2game_D9D8A: E8 51 F0 FF FF     call d2game_D8DE0
-patchFill("Infinite book of town portal skill",PATCH_ADDR(d2game,0xD9D87),INST_NOP,8,"56 8B C7 E8 51 F0 FF FF");
+		//d2game_D9D22: 6A FF                  push -1
+		patchValue("Infinite book of town portal",PATCH_ADDR(d2game,0xD9D23),0,1,"-1 6A FF");
+		//d2game_D9D87: 56                 push esi
+		//d2game_D9D88: 8B C7              mov eax, edi
+		//d2game_D9D8A: E8 51 F0 FF FF     call d2game_D8DE0
+		patchFill("Infinite book of town portal skill",PATCH_ADDR(d2game,0xD9D87),INST_NOP,8,"56 8B C7 E8 51 F0 FF FF");
 	}
-	if (fServerInfiniteArrow) 
-//d2game_A16BE: 4D                 dec ebp
-patchValue("Infinite arrow",PATCH_ADDR(d2game,0xA16BE),0x90,1,"4D");
-	if (fServerInfiniteMana)
-//d2game_9F955: F7 DF              neg edi
-//d2game_9F957: 57                 push edi
-patchValue("Infinite mana",PATCH_ADDR(d2game,0x9F955),0x90006A,3,"F7 DF 57");
-	if (fServerInfiniteDurability) 
-//d2game_12F6F: 4D                 dec ebp
-patchFill("InfiniteDurability",PATCH_ADDR(d2game,0x12F6F),INST_NOP,1,"4D");
-//d2game_F6BD: 6A 00                  push 0x00
-patchValue("identified unique",PATCH_ADDR(d2game,0xF6BE),1,1,"00");//identified unique
-//d2game_F651: 8B 34 CD 98 1F B6 00  mov esi, [ecx*8+d2game_111F98]
-PatchCall(d2game,0xF651,SelectUniquePatch_ASM,7,"8B 34 CD $(+111F98)");
-//d2game_13DA4: E8 01 74 FF FF     call d2game_B1AA->d2common_225F0 d2common/Ordinal10536
-PatchCall(d2game,0x13DA4,SelectSetPatch_ASM,5,"E8 01 74 FF FF");
-//d2game_13DA9: 6A 00                  push 0x00
-patchValue("identified set",PATCH_ADDR(d2game,0x13DAA),1,1,"00");//identified set
-//d2common_48B1F: 75 04              jnz d2common_48B25 ->+4 B48B25
-//d2common_48B21: 8B C7              mov eax, edi
-//patchFill("MaximizeRangedProp",PATCH_ADDR(d2common,0x48B1F),0x90,4,"75 04 8B C7");
-//d2game_2AC77: E8 64 F7 05 00     call d2game_8A3E0
-PatchCall(d2game,0x2AC77,GameStartPatch_ASM,5,"E8 64 F7 05 00");
-	if (!hasPlugY) installUberQuestPatches();
-//d2game_12A0B: E8 70 EE FF FF     call d2game_11880
-//PatchCall(d2game,0x12A0B,NoMonsterDropPatch_ASM,5,"E8 70 EE FF FF");
-//d2game_9D4E7: 8B CD              mov ecx, ebp
-//d2game_9D4E9: FF 50 04           call dword ptr [eax+0x4]
-PatchCall(d2game,0x9D4E7,MonsterSleepPatch_ASM,5,"8B CD FF 50 04");
+	if (fServerInfiniteArrow) {
+		//d2game_A16BE: 4D                 dec ebp
+		patchValue("Infinite arrow",PATCH_ADDR(d2game,0xA16BE),0x90,1,"4D");
+	}
+	if (fServerInfiniteMana) {
+		//d2game_9F955: F7 DF              neg edi
+		//d2game_9F957: 57                 push edi
+		patchValue("Infinite mana",PATCH_ADDR(d2game,0x9F955),0x90006A,3,"F7 DF 57");
+		//d2game_DA984: 2B F7              sub esi, edi
+		patchFill("Infinite mana",PATCH_ADDR(d2game,0xDA984),INST_NOP,2,"2B F7");
+	}
+	if (fServerInfiniteDurability) {
+		//d2game_12F6F: 4D                 dec ebp
+		patchFill("InfiniteDurability",PATCH_ADDR(d2game,0x12F6F),INST_NOP,1,"4D");
+	}
+	//d2game_F6BD: 6A 00                  push 0x00
+	patchValue("identified unique",PATCH_ADDR(d2game,0xF6BE),1,1,"00");//identified unique
+	//d2game_F651: 8B 34 CD 98 1F B6 00  mov esi, [ecx*8+d2game_111F98]
+	PatchCall(d2game,0xF651,SelectUniquePatch_ASM,7,"8B 34 CD $(+111F98)");
+	//d2game_13DA4: E8 01 74 FF FF     call d2game_B1AA->d2common_225F0 d2common/Ordinal10536
+	PatchCall(d2game,0x13DA4,SelectSetPatch_ASM,5,"E8 01 74 FF FF");
+	//d2game_13DA9: 6A 00                  push 0x00
+	patchValue("identified set",PATCH_ADDR(d2game,0x13DAA),1,1,"00");//identified set
+	//d2common_48B1F: 75 04              jnz d2common_48B25 ->+4 B48B25
+	//d2common_48B21: 8B C7              mov eax, edi
+	//patchFill("MaximizeRangedProp",PATCH_ADDR(d2common,0x48B1F),0x90,4,"75 04 8B C7");
+	//d2game_2AC77: E8 64 F7 05 00     call d2game_8A3E0
+	PatchCall(d2game,0x2AC77,GameStartPatch_ASM,5,"E8 64 F7 05 00");
+	//d2game_4BE00: E8 6B ED FF FF     call d2game_4AB70 int __stdcall d2game_sendHandshake(NetClient* client)//eax:UnitAny *player
+	PatchCall(d2game,0x4BE00,ServerSendHandShakePatch_ASM,5,"E8 6B ED FF FF");
+	//d2game_2DB0F: E8 CC C8 05 00     call d2game_8A3E0 int __stdcall d2game_sendPacket(char *packet,int size)//eax:NetClient* client(2 args)
+	PatchCall(d2game,0x2DB0F,ServerSendLoadCompletePatch_ASM,5,"E8 CC C8 05 00");
+		if (!hasPlugY) installUberQuestPatches();
+	//d2game_12A0B: E8 70 EE FF FF     call d2game_11880
+	//PatchCall(d2game,0x12A0B,NoMonsterDropPatch_ASM,5,"E8 70 EE FF FF");
+	//d2game_9D4E7: 8B CD              mov ecx, ebp
+	//d2game_9D4E9: FF 50 04           call dword ptr [eax+0x4]
+	PatchCall(d2game,0x9D4E7,MonsterSleepPatch_ASM,5,"8B CD FF 50 04");
 /*
 	d2game_DB466: 83 F8 5F           cmp eax, 0x5F (95) ('_')
 	d2game_DB469: 7C 05              jl d2game_DB470 ->+5 BDB470
@@ -623,6 +975,46 @@ PatchCall(d2game,0x9D4E7,MonsterSleepPatch_ASM,5,"8B CD FF 50 04");
 	} else if (maxPlayerResist>95) {
 		patchValue("max player resist",PATCH_ADDR(d2game,0xDB468),maxPlayerResist,1,"5F");
 		patchValue("max player resist",PATCH_ADDR(d2game,0xDB46C),maxPlayerResist,1,"5F");
+	}
+	if (tEnable2025Patch.isOn) {
+		//d2game_CF764: E8 97 D7 FF FF     call d2game_CCF00 int __fastcall d2game_itemNotInInv(int itemId,int notUsed,UnitAny *pUnit)//eax:World *world
+		PatchCall(d2game,0xCF764,ServerRecvPacket20Patch_ASM,5,"E8 97 D7 FF FF");
+		//d2game_D102D: 8B 48 01           mov ecx, [eax+0x1]
+		//d2game_D1030: 8B 50 09           mov edx, [eax+0x9]
+		PatchCall(d2game,0xD102D,ServerRecvPacket1FPatch_ASM,6,"8B 48 01 8B 50 09");
+	}
+  //d2game_DE264: E8 09 C2 F2 FF     call d2game_A472->d2common_3A740 int __stdcall d2common_changeUnitStat(UnitAny *pUnit,int statId,int value,int param)(4 args)
+	PatchCall(d2game,0xDE264,ServerChangeHpPatch_ASM,5,"E8 09 C2 F2 FF");
+	//d2game_D95FA: E8 73 0E F3 FF     call d2game_A472->d2common_3A740 int __stdcall d2common_changeUnitStat(UnitAny *pUnit,int statId,int value,int param)(4 args)
+	PatchCall(d2game,0xD95FA,ServerChangeHp2Patch_ASM,5,"E8 73 0E F3 FF");
+	//d2game_77D12: E8 5B 27 F9 FF     call d2game_A472->d2common_3A740 int __stdcall d2common_changeUnitStat(UnitAny *pUnit,int statId,int value,int param)(4 args)
+	PatchCall(d2game,0x77D12,ServerChangeHp3Patch_ASM,5,"E8 5B 27 F9 FF");
+	//d2game_7684A: E8 23 3C F9 FF     call d2game_A472->d2common_3A740 int __stdcall d2common_changeUnitStat(UnitAny *pUnit,int statId,int value,int param)(4 args)
+	PatchCall(d2game,0x7684A,ServerChangeHp3Patch_ASM,5,"E8 23 3C F9 FF");
+	if (maxMonsterResist) {
+		//d2game_B045A: 8B 46 14           mov eax,  [esi(arg0:UnitAny pMon)+0x14(->ItemData *pItemData)]
+		//d2game_B045D: 85 C0              test eax, eax
+		PatchCall(d2game,0xB045A,ServerSpawnMonsterPatch_ASM,5,"8B 46 14 85 C0");
+		//d2game_B0120: 8B 4E 70           mov ecx, [esi(arg0:World  game)+0x70(->int expansion)] 
+		//d2game_B0123: 33 C0              xor eax, eax
+		//PatchCall(d2game,0xB0120,ServerSpawnMonster2Patch_ASM,5,"8B 4E 70 33 C0");
+		if (0) {
+			//d2game_AFF66: 0F BF 94 75 50 01 00 00  movsx edx, word ptr [ebp+esi*2+0x150]
+			//d2game_AFF6E: 6A 00              push 0
+			//d2game_AFF70: 52                 push edx
+			patchFill("monster fr=0",PATCH_ADDR(d2game,0xAFF66),INST_NOP,7,"0F BF 94 75 50 01 00");
+			patchValue("monster fr=0",PATCH_ADDR(d2game,0xAFF6D),0x006A006A,4,"00 6A 00 52");
+			//d2game_AFF79: 0F BF 84 75 56 01 00 00  movsx eax, word ptr [ebp+esi*2+0x156]
+			//d2game_AFF81: 6A 00              push 0
+			//d2game_AFF83: 50                 push eax
+			patchFill("monster lr=0",PATCH_ADDR(d2game,0xAFF79),INST_NOP,7,"0F BF 84 75 56 01 00");
+			patchValue("monster lr=0",PATCH_ADDR(d2game,0xAFF80),0x006A006A,4,"00 6A 00 50");
+			//d2game_AFF8C: 0F BF 8C 75 5C 01 00 00  movsx ecx, word ptr [ebp+esi*2+0x15C]
+			//d2game_AFF94: 6A 00              push 0
+			//d2game_AFF96: 51                 push ecx
+			patchFill("monster cr=0",PATCH_ADDR(d2game,0xAFF8C),INST_NOP,7,"0F BF 8C 75 5C 01 00");
+			patchValue("monster cr=0",PATCH_ADDR(d2game,0xAFF93),0x006A006A,4,"00 6A 00 51");
+		}
 	}
 	return 1;
 }

@@ -136,6 +136,7 @@ int isLocalPlayer(int uid);
 int isLocalPlayerName(char *name);
 void check_d2ptrs();
 void draw2map(POINT *minimap,int drawX,int drawY);
+void __stdcall dumpStackFrom(int *stack,int n);
 void __stdcall dumpStack(int n);
 int ReloadConfig();
 int BackToTown();

@@ -396,11 +396,12 @@ void refreshScreenSaver() {
 void refreshMenuScreenSaver() {
 	fSkipPaintingMenu=tEnableMenuScreenSaver.isOn&&!fWinActive;
 }
+extern int fTransferClick;
 void winActiveMsg(int active) {
 	fWinActive=active;
 	refreshScreenSaver();
 	refreshMenuScreenSaver();
-	forceStandStill=0;altDown=0;ctrlDown=0;shiftDown=0;
+	forceStandStill=0;altDown=0;ctrlDown=0;shiftDown=0;fTransferClick=0;
 	fUserOperating=0;fLeftBtnDown=0;fRightBtnDown=0;dwBtnReleaseMs=0;
 	memset(isKeyDown,0,sizeof(isKeyDown));
 	memset(isCombKeyDown,0,sizeof(isCombKeyDown));
